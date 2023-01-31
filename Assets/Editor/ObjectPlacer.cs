@@ -1,5 +1,4 @@
 using UnityEditor;
-using UnityEditor.ShaderGraph.Legacy;
 using UnityEngine;
 
 namespace Arena.Editor

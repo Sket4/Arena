@@ -231,7 +231,7 @@ namespace Arena.Editor
 
             if (targetParentTransform != null)
             {
-                var instance = Instantiate(targetPrefab, targetParentTransform);
+                var instance = PrefabUtility.InstantiatePrefab(targetPrefab, targetParentTransform) as GameObject;
                 instance.transform.position = position;
                 instance.transform.rotation = rotation;
             }

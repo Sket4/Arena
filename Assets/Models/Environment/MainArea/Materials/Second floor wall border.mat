@@ -7,7 +7,7 @@ Material:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: Stone wall_
+  m_Name: Second floor wall border
   m_Shader: {fileID: -6465566751694194690, guid: 71c691c46f3397c4e919ac6e6fd00aa8, type: 3}
   m_Parent: {fileID: 0}
   m_ModifiedSerializedProperties: 0
@@ -61,7 +61,7 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _Normal_map:
-        m_Texture: {fileID: 2800000, guid: edbe4e7949dfa1846a996af119c4bff4, type: 3}
+        m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _OcclusionMap:
@@ -116,20 +116,23 @@ Material:
     - _QueueControl: 0
     - _QueueOffset: 0
     - _ReceiveShadows: 1
-    - _Reflection_blur: 3.52
+    - _Reflection_blur: 3.76
     - _Reflection_highlight_lightmap_influence: 1
     - _Reflection_highlight_multiplier: 2.78
     - _Reflection_highlight_remove_factor: 0
     - _Reflection_highlight_saturation: 0
     - _Reflection_highlight_treshold: 0.8
     - _Reflection_lighting: 0.07
-    - _Smoothness: 0.5
+    - _Smoothness: 0.13
     - _SmoothnessTextureChannel: 0
     - _SpecularHighlights: 1
     - _SrcBlend: 1
     - _SrcBlendAlpha: 1
     - _Surface: 0
+    - _UNDERWATER: 0
     - _UVSec: 0
+    - _Underwater_fog_density_factor: 5
+    - _Underwater_fog_height_mult: 2
     - _WorkflowMode: 1
     - _ZWrite: 1
     m_Colors:
@@ -138,7 +141,8 @@ Material:
     - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
     - _Reflection_highlight_treshold: {r: 1, g: 1, b: 1, a: 0}
     - _SpecColor: {r: 0.19999996, g: 0.19999996, b: 0.19999996, a: 1}
-    - _UV_tiling: {r: 25, g: 25, b: 25, a: 25}
+    - _UV_tiling: {r: 12, g: 12, b: 12, a: 12}
+    - _Underwater_color: {r: 0, g: 0.6386905, b: 1, a: 1}
   m_BuildTextureStacks: []
 --- !u!114 &9210498166425895956
 MonoBehaviour:

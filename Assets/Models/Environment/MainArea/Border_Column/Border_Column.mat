@@ -11,9 +11,9 @@ Material:
   m_Shader: {fileID: -6465566751694194690, guid: 71c691c46f3397c4e919ac6e6fd00aa8, type: 3}
   m_Parent: {fileID: 0}
   m_ModifiedSerializedProperties: 0
-  m_ValidKeywords:
+  m_ValidKeywords: []
+  m_InvalidKeywords:
   - EVALUATE_SH_VERTEX
-  m_InvalidKeywords: []
   m_LightmapFlags: 4
   m_EnableInstancingVariants: 0
   m_DoubleSidedGI: 0
@@ -53,7 +53,7 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _MainTex:
-        m_Texture: {fileID: 0}
+        m_Texture: {fileID: 2800000, guid: b40975f3fbbcccf49b1bc08ed3b87dc7, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _MetallicGlossMap:
@@ -117,6 +117,7 @@ Material:
     - _ReceiveShadows: 1
     - _Reflection_blur: 0
     - _Reflection_highlight_multiplier: 5
+    - _Reflection_highlight_remove_factor: 0
     - _Reflection_highlight_saturation: 0
     - _Reflection_highlight_treshold: 0.8
     - _Reflection_lighting: 0
@@ -126,14 +127,19 @@ Material:
     - _SrcBlend: 1
     - _SrcBlendAlpha: 1
     - _Surface: 0
+    - _UNDERWATER: 0
+    - _Underwater_fog_density_factor: 5
+    - _Underwater_fog_height_mult: 2
     - _WorkflowMode: 1
     - _ZWrite: 1
     m_Colors:
     - _BaseColor: {r: 1, g: 1, b: 1, a: 1}
     - _Color: {r: 1, g: 1, b: 1, a: 1}
     - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
+    - _Reflection_highlight_treshold: {r: 1, g: 1, b: 1, a: 0}
     - _SpecColor: {r: 0.19999996, g: 0.19999996, b: 0.19999996, a: 1}
     - _UV_tiling: {r: 1, g: 1, b: 1, a: 1}
+    - _Underwater_color: {r: 0, g: 0.6386905, b: 1, a: 1}
   m_BuildTextureStacks: []
 --- !u!114 &4522426713606412468
 MonoBehaviour:

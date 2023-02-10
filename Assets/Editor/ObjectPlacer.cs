@@ -9,6 +9,7 @@ namespace Arena.Editor
         GameObject targetPrefab;
         GameObject targetParent;
         float fixedInterval = 1;
+        bool reverse = false;
         float offset = 0;
         Vector3 worldSpaceOffset;
         Vector3 additionalRotation;
@@ -72,14 +73,16 @@ namespace Arena.Editor
             targetPrefab = EditorGUILayout.ObjectField("Префаб", targetPrefab, typeof(GameObject), true) as GameObject;
             targetParent = EditorGUILayout.ObjectField("Объект-контейнер", targetParent, typeof(GameObject), true) as GameObject;
 
+            reverse = EditorGUILayout.Toggle("Реверс", reverse);
             worldSpaceOffset = EditorGUILayout.Vector3Field("Смещение в мировых координатах", worldSpaceOffset);
             var newRot = EditorGUILayout.Vector3Field("Доп. поворот (углы)", additionalRotation);
 
             if(newRot != additionalRotation)
             {
                 additionalRotation = newRot;
-                additionalRotationQ = Quaternion.Euler(additionalRotation);
             }
+
+            additionalRotationQ = Quaternion.Euler(additionalRotation);
 
             normalOffset = EditorGUILayout.FloatField("Смещение по нормали", normalOffset);
 
@@ -154,17 +157,20 @@ namespace Arena.Editor
                 //        var tmp = verts[v + 1];
                 //        verts[v + 1] = verts[closestVertexIndex];
                 //        verts[closestVertexIndex] = tmp;
-                //    }
+                //    } 
                 //}
 
                 float accumulatedDistance = offset;
+                var vertCount = verts.Length;
 
-                while (currentIndex < verts.Length-1)
+                while (currentIndex < vertCount - 1)
                 {
-                    var v = verts[currentIndex];
-                    var v2 = verts[currentIndex + 1];
-                    var n = normals[currentIndex];
-                    var n2 = normals[currentIndex + 1];
+                    var actualIndex = reverse ? vertCount - currentIndex - 1 : currentIndex;
+                    int nextAdd = reverse ? -1 : 1;
+                    var v = verts[actualIndex];
+                    var v2 = verts[actualIndex + nextAdd];
+                    var n = normals[actualIndex];
+                    var n2 = normals[actualIndex + nextAdd];
 
                     v = tr.TransformPoint(v);
                     v2 = tr.TransformPoint(v2);
@@ -183,6 +189,7 @@ namespace Arena.Editor
                         instantiate(position, finalNormal, targetParentTransform);
 
                         Debug.DrawRay(position, Vector3.up * 10, Color.yellow, 20);
+                        Debug.DrawRay(position, finalNormal, Color.cyan, 20);
                     }
                     accumulatedDistance -= distance;
                     currentIndex++;
@@ -211,13 +218,16 @@ namespace Arena.Editor
                 Color startColor = Color.yellow;
                 Color endColor = Color.blue;
                 var totalCount = verts.Length;
+                var normals = calculateNormals(verts, tr);
 
                 for (int i = 0; i < totalCount; i++)
                 {
-                    Vector3 v = verts[i];
+                    var actualIndex = reverse ? totalCount - i - 1 : i;
+                    Vector3 v = verts[actualIndex];
                     var position = tr.TransformPoint(v);
-                    var finalColor = Color.Lerp(startColor, endColor, i / (float)totalCount);
+                    var finalColor = Color.Lerp(startColor, endColor, actualIndex / (float)totalCount);
                     Debug.DrawRay(position, Vector3.up, finalColor, 10);
+                    Debug.DrawRay(position, normals[actualIndex], Color.cyan, 10);
                 }
             }
         }

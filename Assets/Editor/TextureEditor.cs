@@ -45,6 +45,9 @@ namespace Arena.Editor
         [SerializeField]
         float normalStrengthScale = 2;
 
+        [SerializeField]
+        float contrast = 2;
+
         [MenuItem("Arena/Утилиты/Редактор текстур")]
         static void show()
         {
@@ -76,6 +79,18 @@ namespace Arena.Editor
                         if (GUILayout.Button("Усилить нормали"))
                         {
                             normalStrength(normalStrengthScale);
+                        }
+                    }
+
+                    GUILayout.Space(10);
+
+                    using (new VerticalGUILayout())
+                    {
+                        contrast = EditorGUILayout.FloatField("Контраст", contrast);
+
+                        if (GUILayout.Button("Применить коррекцию цвета"))
+                        {
+                            colorCorrection(contrast);
                         }
                     }
                 }
@@ -131,7 +146,8 @@ namespace Arena.Editor
             clearTexture();
         }
 
-        void normalStrength(float normalStrength)
+
+        void modifyTexture(Action<Color[]> actionCallback)
         {
             clearTexture();
 
@@ -152,6 +168,38 @@ namespace Arena.Editor
 
                 var sourcePixels = resultTexture.GetPixels();
 
+                actionCallback(sourcePixels);
+
+                resultTexture.SetPixels(sourcePixels);
+                resultTexture.Apply();
+            }
+            finally
+            {
+                if (rt != null)
+                {
+                    RenderTexture.ReleaseTemporary(rt);
+                }
+            }
+        }
+
+        void colorCorrection(float contrast)
+        {
+            modifyTexture((sourcePixels) =>
+            {
+                for (int i = 0; i < sourcePixels.Length; i++)
+                {
+                    ref Color pixel = ref sourcePixels[i];
+                    pixel.r = Mathf.Pow(pixel.r, contrast);
+                    pixel.g = Mathf.Pow(pixel.g, contrast);
+                    pixel.b = Mathf.Pow(pixel.b, contrast);
+                }
+            });
+        }
+
+        void normalStrength(float normalStrength)
+        {
+            modifyTexture((sourcePixels) =>
+            {
                 for (int i = 0; i < sourcePixels.Length; i++)
                 {
                     ref Color pixel = ref sourcePixels[i];
@@ -173,17 +221,7 @@ namespace Arena.Editor
 
                     pixel.a = 0;
                 }
-
-                resultTexture.SetPixels(sourcePixels);
-                resultTexture.Apply();
-            }
-            finally
-            {
-                if(rt != null)
-                {
-                    RenderTexture.ReleaseTemporary(rt);
-                }
-            }
+            });
         }
     }
 }

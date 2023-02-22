@@ -16,7 +16,8 @@ MonoBehaviour:
   - Assets/Bakery/examples/content/sponza/sponza.FBX
   - Assets/Models/Environment/MainArea/MainArea.blend
   - Assets/Models/Environment/MainArea/Small window/Small window.blend
-  modifiedAssetPaddingHash: d6a958ff62049d0e07a3ddde
+  - Assets/Models/Environment/MainArea/Huge maidan window/Huge_maidan_Window.blend
+  modifiedAssetPaddingHash: d6a958ff981d20f507a3ddde0951cb51
   modifiedMeshList: []
   modifiedMeshPaddingList: 
   modifiedAssets:
@@ -416,12 +417,19 @@ MonoBehaviour:
     - Underwater
     - Second floor right
     - Second floor left
-    padding: 0a000000160000000f0000001f0000001f0000000d0000000e0000000600000006000000180000009b0000003900000036000000050000000b0000000a000000
-    unwrapper: 00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
+    - Sea
+    - Water inner
+    padding: 0a000000160000000f0000001f0000001f0000000d0000000e0000000c00000006000000180000009b0000003300000036000000050000000b0000000a0000001b00000018000000
+    unwrapper: 000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
   - meshName:
     - Window low poly
     padding: 91000000
     unwrapper: 00000000
+  - meshName:
+    - Main window LP
+    - Side window left LP
+    padding: 380000006b000000
+    unwrapper: 0000000000000000
   assetList:
   - Assets/Bakery/examples/content/sponza/bush.FBX
   - Assets/Bakery/examples/content/floor_lamp.FBX
@@ -439,7 +447,9 @@ MonoBehaviour:
   - Assets/Models/Environment/MainArea/Window/BigWindow_HP.obj
   - Assets/Models/Environment/MainArea/Window/rpg_city_window.blend
   - Assets/Models/Environment/SkyBox/Simple day.fbx
-  uvOverlapAssetList: 00000000ffffffff0000000001010000000000000101000000000000000000000101000001010000000000000000000000000000010100000101000000000000
+  - Assets/Models/Environment/MainArea/Small window/Small window HP.obj
+  - Assets/Models/Environment/MainArea/Huge maidan window/Huge_maidan_Window.blend
+  uvOverlapAssetList: 00000000ffffffff00000000010100000000000001010000000000000000000001010000010100000000000000000000000000000101000001010000000000000000000001010000
   xatlasWarningShown: 0
   foundCompatibleSetup: 1
   gpuName: NVIDIA GeForce RTX 3050 Laptop GPU
@@ -529,7 +539,7 @@ MonoBehaviour:
   renderSettingsRTPVWidth: 640
   renderSettingsRTPVHeight: 360
   tagOverrides: []
-  modifiedMeshPaddingArray: 0a000000160000000f0000001f0000001f0000000d0000000e0000000600000006000000180000009b0000003900000036000000050000000b0000000a000000
-  modifiedMeshUnwrapperArray: 00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
+  modifiedMeshPaddingArray: 380000006b000000
+  modifiedMeshUnwrapperArray: 0000000000000000
   texSettingsKey: []
   texSettingsVal: []

@@ -22,6 +22,9 @@ public class ObjectGroup
 
 public class Tester : MonoBehaviour
 {
+    [SerializeField] private bool autoRotation = false;
+    [SerializeField] private float autoRotationSpeed = 10;
+
     [SerializeField]
     int rotationStep = 0;
 
@@ -54,6 +57,8 @@ public class Tester : MonoBehaviour
 
     private void Start()
     {
+        Screen.sleepTimeout = SleepTimeout.NeverSleep;
+        
         Application.targetFrameRate = 60;
 
         currentRotation = Mathf.RoundToInt(transform.rotation.eulerAngles.y);
@@ -70,5 +75,13 @@ public class Tester : MonoBehaviour
     {
         currentRotation += rotationStep;
         transform.rotation = Quaternion.Euler(0, currentRotation, 0);
+    }
+
+    void Update()
+    {
+        if (autoRotation)
+        {
+            transform.Rotate(0, Time.deltaTime * autoRotationSpeed, 0);
+        }
     }
 }

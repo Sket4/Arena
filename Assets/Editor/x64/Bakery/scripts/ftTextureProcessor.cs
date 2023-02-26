@@ -17,6 +17,8 @@ public class ftTextureProcessor : AssetPostprocessor
 
     void OnPreprocessTexture()
     {
+        return;
+        
         TextureImporter importer = assetImporter as TextureImporter;
         Vector2 settings;
 

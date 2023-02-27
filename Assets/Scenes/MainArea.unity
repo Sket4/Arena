@@ -26,7 +26,7 @@ RenderSettings:
   m_AmbientIntensity: 1
   m_AmbientMode: 1
   m_SubtractiveShadowColor: {r: 0.42, g: 0.478, b: 0.627, a: 1}
-  m_SkyboxMaterial: {fileID: 0}
+  m_SkyboxMaterial: {fileID: 1744040916}
   m_HaloStrength: 0.5
   m_FlareStrength: 1
   m_FlareFadeSpeed: 3
@@ -432,7 +432,7 @@ MonoBehaviour:
   renderSettingsPerformRendering: 1
   renderSettingsUserRenderMode: 0
   renderSettingsDistanceShadowmask: 1
-  renderSettingsSettingsMode: 0
+  renderSettingsSettingsMode: 1
   renderSettingsFixSeams: 1
   renderSettingsDenoise: 1
   renderSettingsDenoise2x: 0
@@ -536,10 +536,8 @@ MonoBehaviour:
     cookie: {fileID: 8900000, guid: d4ca55a7d53283d409b9a17d1133c614, type: 3}
     angle: 30
     UID: 1
-  implicitGroups:
-  - {fileID: 1534398348}
-  implicitGroupedObjects:
-  - {fileID: 0}
+  implicitGroups: []
+  implicitGroupedObjects: []
   bounds:
   - m_Center: {x: 408.94818, y: 19.514006, z: -4.317932}
     m_Extent: {x: 710.6685, y: 14.5166, z: 1004.31775}
@@ -585,13 +583,18 @@ MonoBehaviour:
   lightmapHasRNM: 00000000000000000000000100
   modifiedAssetPathList:
   - Assets/Models/Environment/MainArea/Small window/Small window.blend
-  - Assets/Models/Environment/MainArea/MainArea.blend
   - Assets/Models/Environment/MainArea/Huge maidan window/Huge_maidan_Window.blend
+  - Assets/Models/Environment/MainArea/MainArea.blend
   modifiedAssets:
   - meshName:
     - Window low poly
     padding: 91000000
     unwrapper: 00000000
+  - meshName:
+    - Main window LP
+    - Side window left LP
+    padding: 380000006b000000
+    unwrapper: 0000000000000000
   - meshName:
     - Water
     - Wall 2
@@ -612,13 +615,12 @@ MonoBehaviour:
     - Sea
     - Water inner
     - Sea ground
-    padding: 0a000000160000000f0000001f0000001f0000000d0000000e0000000c00000006000000180000009b0000003300000036000000050000000b0000000a0000001b000000180000000b000000
-    unwrapper: 00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
-  - meshName:
-    - Main window LP
-    - Side window left LP
-    padding: 380000006b000000
-    unwrapper: 0000000000000000
+    - Border
+    - Border 2
+    - Border 3
+    - Border 4
+    padding: 0a000000160000000f0000001f0000001f0000000d0000000e0000000c00000006000000180000009b0000003300000036000000050000000b0000000a0000001b000000180000001500000074000000530000003900000039000000
+    unwrapper: 0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
   maps:
   - {fileID: 2800000, guid: 211e26d602f936f42a263e2d3660f366, type: 3}
   - {fileID: 2800000, guid: 45a96937e3f861d4db9e27d7976c872d, type: 3}
@@ -3506,49 +3508,6 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0, y: 0}
---- !u!114 &1534398348
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ec0b4dd729a12d046982652f834580a2, type: 3}
-  m_Name: probes
-  m_EditorClassIdentifier: 
-  resolution: 16
-  bitmask: 1
-  id: 11
-  sortingID: 0
-  isImplicit: 1
-  area: 0
-  totalVertexCount: 21
-  vertexCounter: 0
-  sceneLodLevel: -1
-  autoResolution: 0
-  sceneName: 
-  tag: -1
-  containsTerrains: 0
-  probes: 1
-  mode: 2
-  renderMode: 1000
-  renderDirMode: 5
-  atlasPacker: 1000
-  computeSSS: 0
-  sssSamples: 16
-  sssDensity: 10
-  sssColor: {r: 1, g: 1, b: 1, a: 1}
-  sssScale: 1
-  fakeShadowBias: 0
-  transparentSelfShadow: 0
-  flipNormal: 0
-  parentName: 
-  overridePath: 
-  fixPos3D: 0
-  voxelSize: {x: 1, y: 1, z: 1}
-  passedFilter: 0
 --- !u!1 &1640056401
 GameObject:
   m_ObjectHideFlags: 0
@@ -3684,6 +3643,44 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1640056401}
   m_CullTransparentMesh: 1
+--- !u!21 &1744040916
+Material:
+  serializedVersion: 8
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: Bakery/Skybox
+  m_Shader: {fileID: 4800000, guid: 8dd49cd8305cbae4f8c358c16965dbba, type: 3}
+  m_Parent: {fileID: 0}
+  m_ModifiedSerializedProperties: 0
+  m_ValidKeywords: []
+  m_InvalidKeywords: []
+  m_LightmapFlags: 4
+  m_EnableInstancingVariants: 0
+  m_DoubleSidedGI: 0
+  m_CustomRenderQueue: -1
+  stringTagMap: {}
+  disabledShaderPasses: []
+  m_LockedProperties: 
+  m_SavedProperties:
+    serializedVersion: 3
+    m_TexEnvs:
+    - _Tex:
+        m_Texture: {fileID: 8900000, guid: d4ca55a7d53283d409b9a17d1133c614, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    m_Ints: []
+    m_Floats:
+    - _Exposure: 1
+    - _Hemispherical: 0
+    - _NoTexture: 0
+    m_Colors:
+    - _MatrixForward: {r: 0, g: 0, b: 1, a: 0}
+    - _MatrixRight: {r: 1, g: 0, b: 0, a: 0}
+    - _MatrixUp: {r: 0, g: 1, b: 0, a: 0}
+    - _Tint: {r: 1, g: 1, b: 1, a: 1}
+  m_BuildTextureStacks: []
 --- !u!1 &1768515316
 GameObject:
   m_ObjectHideFlags: 0

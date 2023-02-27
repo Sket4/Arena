@@ -100,6 +100,7 @@ Material:
     - _ClearCoatSmoothness: 0
     - _Cull: 2
     - _Cutoff: 0.5
+    - _DIFFUSE_ALPHA_AS_ROUGHNESS: 0
     - _DetailAlbedoMapScale: 1
     - _DetailNormalMapScale: 1
     - _DstBlend: 0
@@ -117,7 +118,7 @@ Material:
     - _QueueControl: 0
     - _QueueOffset: 0
     - _ReceiveShadows: 1
-    - _Reflection_blur: 3.03
+    - _Reflection_blur: 1.25
     - _Reflection_highlight_lightmap_influence: 1
     - _Reflection_highlight_multiplier: 0.54
     - _Reflection_highlight_remove_factor: 0
@@ -125,7 +126,7 @@ Material:
     - _Reflection_highlight_treshold: 0.85
     - _Reflection_lighting: 0.12
     - _Shininess: 0
-    - _Smoothness: 0.1
+    - _Smoothness: 0.23
     - _SmoothnessSource: 0
     - _SmoothnessTextureChannel: 0
     - _SpecSource: 0
@@ -133,7 +134,10 @@ Material:
     - _SrcBlend: 1
     - _SrcBlendAlpha: 1
     - _Surface: 0
+    - _UNDERWATER: 0
     - _UVSec: 0
+    - _Underwater_fog_density_factor: 5
+    - _Underwater_fog_height_mult: 2
     - _WorkflowMode: 1
     - _ZWrite: 1
     m_Colors:
@@ -143,6 +147,8 @@ Material:
     - _Reflection_highlight_treshold: {r: 1, g: 1, b: 1, a: 0}
     - _SpecColor: {r: 0.19999996, g: 0.19999996, b: 0.19999996, a: 1}
     - _UV_tiling: {r: 50, g: 50, b: 50, a: 50}
+    - _Underwater_color: {r: 0, g: 0.6386905, b: 1, a: 1}
+    - _Underwater_fog_color: {r: 0, g: 0.6386905, b: 1, a: 1}
   m_BuildTextureStacks: []
 --- !u!114 &983171141048747171
 MonoBehaviour:

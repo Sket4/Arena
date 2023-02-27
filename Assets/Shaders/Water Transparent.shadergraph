@@ -35,9 +35,16 @@
         },
         {
             "m_Id": "5ffee0f4ac6c49cca1df49646ecef6e0"
+        },
+        {
+            "m_Id": "e68177d906a04e08a90acb7f7e8bab76"
         }
     ],
-    "m_Keywords": [],
+    "m_Keywords": [
+        {
+            "m_Id": "e4b86ddf559043d3bbd730fd6a49fda6"
+        }
+    ],
     "m_Dropdowns": [],
     "m_CategoryData": [
         {
@@ -107,6 +114,9 @@
         },
         {
             "m_Id": "3bded8d0278f44ef824d676fefb4f174"
+        },
+        {
+            "m_Id": "ae108790f4d54d93b8c46c68f1f90e79"
         }
     ],
     "m_GroupDatas": [],
@@ -292,6 +302,20 @@
                     "m_Id": "84623b37bae549dc87ca255ecffb03e8"
                 },
                 "m_SlotId": 1985056803
+            }
+        },
+        {
+            "m_OutputSlot": {
+                "m_Node": {
+                    "m_Id": "ae108790f4d54d93b8c46c68f1f90e79"
+                },
+                "m_SlotId": 0
+            },
+            "m_InputSlot": {
+                "m_Node": {
+                    "m_Id": "84623b37bae549dc87ca255ecffb03e8"
+                },
+                "m_SlotId": 1620275434
             }
         },
         {
@@ -912,6 +936,31 @@
 
 {
     "m_SGVersion": 0,
+    "m_Type": "UnityEditor.ShaderGraph.Vector4MaterialSlot",
+    "m_ObjectId": "428787a739654ae9bec18f793940ae41",
+    "m_Id": 1620275434,
+    "m_DisplayName": "Custom fog color",
+    "m_SlotType": 0,
+    "m_Hidden": false,
+    "m_ShaderOutputName": "_Custom_fog_color",
+    "m_StageCapability": 2,
+    "m_Value": {
+        "x": 0.4865313470363617,
+        "y": 0.724647045135498,
+        "z": 0.7735849022865295,
+        "w": 1.0
+    },
+    "m_DefaultValue": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0,
+        "w": 0.0
+    },
+    "m_Labels": []
+}
+
+{
+    "m_SGVersion": 0,
     "m_Type": "UnityEditor.ShaderGraph.Vector3MaterialSlot",
     "m_ObjectId": "4470bfc3cca642188a8b00b8885df0e9",
     "m_Id": 1,
@@ -1464,6 +1513,9 @@
             "m_Id": "b4ef5f444c4e4f1f9354667ee6e75257"
         },
         {
+            "m_Id": "428787a739654ae9bec18f793940ae41"
+        },
+        {
             "m_Id": "dd1baa0ca5f042feb12e13f9ff162b90"
         }
     ],
@@ -1488,7 +1540,8 @@
         "52476850-1539-4a17-b67e-0466e16a2add",
         "93e6ca38-ebd8-4a8b-950d-43b4fd9b271b",
         "83b30f40-580b-4661-a455-6c968f42c399",
-        "721850e1-4157-4756-8df4-b13cb27f92ca"
+        "721850e1-4157-4756-8df4-b13cb27f92ca",
+        "24c168b9-92c0-45a6-9a21-b43809ab4039"
     ],
     "m_PropertyIds": [
         -236455360,
@@ -1502,7 +1555,8 @@
         -1551996610,
         1980348296,
         -897761184,
-        -1016227191
+        -1016227191,
+        1620275434
     ],
     "m_Dropdowns": [],
     "m_DropdownSelectedEntries": []
@@ -1568,6 +1622,31 @@
     "m_StageCapability": 2,
     "m_Value": 0.0,
     "m_DefaultValue": 0.0,
+    "m_Labels": []
+}
+
+{
+    "m_SGVersion": 0,
+    "m_Type": "UnityEditor.ShaderGraph.Vector4MaterialSlot",
+    "m_ObjectId": "88dd98bd786a49399b74c5fd3c140aec",
+    "m_Id": 0,
+    "m_DisplayName": "Custom fog color",
+    "m_SlotType": 1,
+    "m_Hidden": false,
+    "m_ShaderOutputName": "Out",
+    "m_StageCapability": 3,
+    "m_Value": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0,
+        "w": 0.0
+    },
+    "m_DefaultValue": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0,
+        "w": 0.0
+    },
     "m_Labels": []
 }
 
@@ -1673,6 +1752,12 @@
         },
         {
             "m_Id": "5ffee0f4ac6c49cca1df49646ecef6e0"
+        },
+        {
+            "m_Id": "e4b86ddf559043d3bbd730fd6a49fda6"
+        },
+        {
+            "m_Id": "e68177d906a04e08a90acb7f7e8bab76"
         }
     ]
 }
@@ -1951,6 +2036,42 @@
         "m_SerializableColors": []
     },
     "m_SerializedDescriptor": "VertexDescription.Tangent"
+}
+
+{
+    "m_SGVersion": 0,
+    "m_Type": "UnityEditor.ShaderGraph.PropertyNode",
+    "m_ObjectId": "ae108790f4d54d93b8c46c68f1f90e79",
+    "m_Group": {
+        "m_Id": ""
+    },
+    "m_Name": "Property",
+    "m_DrawState": {
+        "m_Expanded": true,
+        "m_Position": {
+            "serializedVersion": "2",
+            "x": -455.40008544921877,
+            "y": 599.916748046875,
+            "width": 0.0,
+            "height": 0.0
+        }
+    },
+    "m_Slots": [
+        {
+            "m_Id": "88dd98bd786a49399b74c5fd3c140aec"
+        }
+    ],
+    "synonyms": [],
+    "m_Precision": 0,
+    "m_PreviewExpanded": true,
+    "m_DismissedVersion": 0,
+    "m_PreviewMode": 0,
+    "m_CustomColors": {
+        "m_SerializableColors": []
+    },
+    "m_Property": {
+        "m_Id": "e68177d906a04e08a90acb7f7e8bab76"
+    }
 }
 
 {
@@ -2254,6 +2375,61 @@
         "z": 0.0
     },
     "m_Labels": []
+}
+
+{
+    "m_SGVersion": 1,
+    "m_Type": "UnityEditor.ShaderGraph.ShaderKeyword",
+    "m_ObjectId": "e4b86ddf559043d3bbd730fd6a49fda6",
+    "m_Guid": {
+        "m_GuidSerialized": "6fd4e972-53f5-4f27-9461-2b4e58c5fcb3"
+    },
+    "m_Name": "Use custom fog color",
+    "m_DefaultRefNameVersion": 1,
+    "m_RefNameGeneratedByDisplayName": "Use custom fog color",
+    "m_DefaultReferenceName": "_USE_CUSTOM_FOG_COLOR",
+    "m_OverrideReferenceName": "",
+    "m_GeneratePropertyBlock": true,
+    "m_UseCustomSlotLabel": false,
+    "m_CustomSlotLabel": "",
+    "m_DismissedVersion": 0,
+    "m_KeywordType": 0,
+    "m_KeywordDefinition": 0,
+    "m_KeywordScope": 0,
+    "m_KeywordStages": 63,
+    "m_Entries": [],
+    "m_Value": 0,
+    "m_IsEditable": true
+}
+
+{
+    "m_SGVersion": 3,
+    "m_Type": "UnityEditor.ShaderGraph.Internal.ColorShaderProperty",
+    "m_ObjectId": "e68177d906a04e08a90acb7f7e8bab76",
+    "m_Guid": {
+        "m_GuidSerialized": "57e7c402-b32e-4761-828b-8b56313858a4"
+    },
+    "m_Name": "Custom fog color",
+    "m_DefaultRefNameVersion": 1,
+    "m_RefNameGeneratedByDisplayName": "Custom fog color",
+    "m_DefaultReferenceName": "_Custom_fog_color",
+    "m_OverrideReferenceName": "",
+    "m_GeneratePropertyBlock": true,
+    "m_UseCustomSlotLabel": false,
+    "m_CustomSlotLabel": "",
+    "m_DismissedVersion": 0,
+    "m_Precision": 0,
+    "overrideHLSLDeclaration": false,
+    "hlslDeclarationOverride": 0,
+    "m_Hidden": false,
+    "m_Value": {
+        "r": 0.27044016122817995,
+        "g": 1.0,
+        "b": 0.9848038554191589,
+        "a": 1.0
+    },
+    "isMainColor": false,
+    "m_ColorMode": 0
 }
 
 {

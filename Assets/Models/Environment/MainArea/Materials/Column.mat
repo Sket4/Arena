@@ -21,11 +21,13 @@ Material:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_Name: Column
-  m_Shader: {fileID: -6465566751694194690, guid: 71c691c46f3397c4e919ac6e6fd00aa8, type: 3}
+  m_Shader: {fileID: 4800000, guid: 537b6c3f7a4218d459a2cdaea0cd4bf7, type: 3}
   m_Parent: {fileID: 0}
   m_ModifiedSerializedProperties: 0
-  m_ValidKeywords: []
-  m_InvalidKeywords: []
+  m_ValidKeywords:
+  - USE_LIGHTING
+  m_InvalidKeywords:
+  - _ZWRITE_ON
   m_LightmapFlags: 4
   m_EnableInstancingVariants: 0
   m_DoubleSidedGI: 0
@@ -112,6 +114,7 @@ Material:
     - _ClearCoatSmoothness: 0
     - _Cull: 2
     - _Cutoff: 0.5
+    - _DIFFUSE_ALPHA_AS_ROUGHNESS: 0
     - _DetailAlbedoMapScale: 1
     - _DetailNormalMapScale: 1
     - _DstBlend: 0
@@ -129,6 +132,7 @@ Material:
     - _ReceiveShadows: 1
     - _Reflection_blur: 2.46
     - _Reflection_highlight_multiplier: 5
+    - _Reflection_highlight_remove_factor: 0
     - _Reflection_highlight_saturation: 0
     - _Reflection_highlight_treshold: 0.8
     - _Reflection_lighting: 0
@@ -138,13 +142,20 @@ Material:
     - _SrcBlend: 1
     - _SrcBlendAlpha: 1
     - _Surface: 0
+    - _UNDERWATER: 0
     - _UVSec: 0
+    - _Underwater_fog_density_factor: 5
+    - _Underwater_fog_height_mult: 2
+    - _UseLighting: 1
     - _WorkflowMode: 1
     - _ZWrite: 1
     m_Colors:
     - _BaseColor: {r: 1, g: 1, b: 1, a: 1}
     - _Color: {r: 1, g: 1, b: 1, a: 1}
     - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
+    - _Reflection_highlight_treshold: {r: 1, g: 1, b: 1, a: 0}
     - _SpecColor: {r: 0.19999996, g: 0.19999996, b: 0.19999996, a: 1}
     - _UV_tiling: {r: 1, g: 1, b: 1, a: 1}
+    - _Underwater_color: {r: 0, g: 0.6386905, b: 1, a: 1}
+    - _Underwater_fog_color: {r: 0, g: 0.6386905, b: 1, a: 1}
   m_BuildTextureStacks: []

@@ -21,12 +21,14 @@ Material:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_Name: Small window
-  m_Shader: {fileID: -6465566751694194690, guid: 71c691c46f3397c4e919ac6e6fd00aa8, type: 3}
+  m_Shader: {fileID: 4800000, guid: 537b6c3f7a4218d459a2cdaea0cd4bf7, type: 3}
   m_Parent: {fileID: 0}
   m_ModifiedSerializedProperties: 0
   m_ValidKeywords:
+  - USE_LIGHTING
+  m_InvalidKeywords:
   - _DIFFUSE_ALPHA_AS_ROUGHNESS
-  m_InvalidKeywords: []
+  - _ZWRITE_ON
   m_LightmapFlags: 4
   m_EnableInstancingVariants: 0
   m_DoubleSidedGI: 0
@@ -38,11 +40,11 @@ Material:
     serializedVersion: 3
     m_TexEnvs:
     - _BaseMap:
-        m_Texture: {fileID: 0}
+        m_Texture: {fileID: 2800000, guid: cc543e9a0eb6bf84bbc69260028337c1, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _BumpMap:
-        m_Texture: {fileID: 0}
+        m_Texture: {fileID: 2800000, guid: f6d69b9f85acb70409843bb581908546, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _DetailAlbedoMap:
@@ -66,7 +68,7 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _MetallicGlossMap:
-        m_Texture: {fileID: 0}
+        m_Texture: {fileID: 2800000, guid: 37a75002d156d524b96687af6ebcbb31, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _Normal_map:
@@ -135,6 +137,7 @@ Material:
     - _UNDERWATER: 0
     - _Underwater_fog_density_factor: 5
     - _Underwater_fog_height_mult: 2
+    - _UseLighting: 1
     - _WorkflowMode: 1
     - _ZWrite: 1
     m_Colors:
@@ -145,4 +148,5 @@ Material:
     - _SpecColor: {r: 0.19999996, g: 0.19999996, b: 0.19999996, a: 1}
     - _UV_tiling: {r: 1, g: 1, b: 1, a: 1}
     - _Underwater_color: {r: 0, g: 0.6386905, b: 1, a: 1}
+    - _Underwater_fog_color: {r: 0, g: 0.6386905, b: 1, a: 1}
   m_BuildTextureStacks: []

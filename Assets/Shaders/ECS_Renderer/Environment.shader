@@ -129,7 +129,7 @@ Shader "Arena/Environment"
                 //bakedGI_Color = LoadDOTSInstancedData_SHAb().rgb;
                 #endif
                 
-                o.color = 0;//bakedGI_Color;//half4(bakedGI_Color /** skinMatrix[1]*/, 1); 
+                o.color = bakedGI_Color;//half4(bakedGI_Color /** skinMatrix[1]*/, 1); 
 
                 return o;
             }

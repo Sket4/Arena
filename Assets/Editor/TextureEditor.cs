@@ -61,6 +61,20 @@ namespace Arena.Editor
             {
                 const float settingsWidth = 200;
 
+                //if(GUILayout.Button("create texture"))
+                //{
+                //    Texture2D tt = new Texture2D(4, 4, TextureFormat.RGBA32, default);
+                //    var pixels = tt.GetPixels();
+                //    for (int i = 0; i < pixels.Length; i++)
+                //    {
+                //        pixels[i] = new Color(0, 0, 0, 0);
+                //    }
+                //    tt.SetPixels(pixels);
+
+                //    var bytes = tt.EncodeToTGA();
+                //    File.WriteAllBytes("black.tga", bytes);
+                //}
+
                 using(new VerticalGUILayout())
                 {
                     sourceTexture = EditorGUILayout.ObjectField("Исходная текстура", sourceTexture, typeof(Texture2D), false, GUILayout.Width(settingsWidth)) as Texture2D;

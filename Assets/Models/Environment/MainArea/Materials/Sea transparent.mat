@@ -21,16 +21,18 @@ Material:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_Name: Sea transparent
-  m_Shader: {fileID: -6465566751694194690, guid: 55ae18bc96a25b145adaa7e12070a2e8, type: 3}
+  m_Shader: {fileID: 4800000, guid: 9ba78930bdb7c473db374bdfe49c271e, type: 3}
   m_Parent: {fileID: 0}
   m_ModifiedSerializedProperties: 0
   m_ValidKeywords:
+  - USE_CUSTOM_FOG_COLOR
+  - USE_CUSTOM_REFLECTIONS
+  m_InvalidKeywords:
   - _USE_CUSTOM_FOG_COLOR
-  m_InvalidKeywords: []
   m_LightmapFlags: 4
   m_EnableInstancingVariants: 0
   m_DoubleSidedGI: 1
-  m_CustomRenderQueue: 3010
+  m_CustomRenderQueue: -1
   stringTagMap: {}
   disabledShaderPasses: []
   m_LockedProperties: 
@@ -42,7 +44,11 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _BumpMap:
-        m_Texture: {fileID: 0}
+        m_Texture: {fileID: 2800000, guid: 11154d936b05e66498f68fa178c5cfbb, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _CustomReflectionTex:
+        m_Texture: {fileID: 8900000, guid: c4d77f63397090445ade5d9690188407, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _DetailAlbedoMap:
@@ -124,7 +130,7 @@ Material:
     - _Lightmap_reflection_blur: 3.12
     - _Metallic: 0
     - _Mode: 0
-    - _Normal_strength: 0.4
+    - _Normal_strength: 0.16
     - _OcclusionStrength: 1
     - _Parallax: 0.02
     - _QueueControl: 0
@@ -133,6 +139,7 @@ Material:
     - _Reflection_blur: 0.15
     - _Reflection_lightmap_fade: 0
     - _Rim_mult: 1
+    - _Roughness: 0
     - _Shininess: 0
     - _Smoothness: 0.96
     - _SmoothnessSource: 0
@@ -144,17 +151,21 @@ Material:
     - _Surface: 0
     - _USE_CUSTOM_FOG_COLOR: 1
     - _UVSec: 0
+    - _UseCustomFogColor: 1
+    - _UseCustomReflections: 1
     - _Wave_deform_mult: 0.2
     - _WorkflowMode: 1
     - _ZWrite: 1
     m_Colors:
-    - _BaseColor: {r: 0, g: 0.36750066, b: 0.6320754, a: 0.7921569}
+    - _BaseColor: {r: 0.03529412, g: 0.5764706, b: 0.5176471, a: 0.7921569}
     - _Color: {r: 0.036193125, g: 0.5764706, b: 0.5176471, a: 1}
+    - _CustomFogColor: {r: 0.40824136, g: 0.55997074, b: 0.6226415, a: 1}
     - _Custom_fog_color: {r: 0.5176471, g: 0.6, b: 0.6431373, a: 1}
     - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
     - _SpecColor: {r: 0.19999996, g: 0.19999996, b: 0.19999996, a: 1}
     - _Tiling: {r: 50, g: 50, b: 0, a: 0}
     - _Tiling_and_speed_1: {r: 120, g: 120, b: -0.1, a: 0}
     - _Tiling_and_speed_2: {r: 100, g: 100, b: 0, a: -0.1}
+    - _Tiling_and_speed_3: {r: 50, g: 50, b: -0.05, a: 0}
     - _reflection_highlight_treshold: {r: 1, g: 1, b: 1, a: 0}
   m_BuildTextureStacks: []

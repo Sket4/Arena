@@ -19,6 +19,12 @@ Shader "Arena/Environment"
         _MetallicGlossMap("Metallic/Smoothness map", 2D) = "white" {}
         _Metallic("Metallic", Range(0,1)) = 1.0
     	_Smoothness ("Smoothness", Range(0,1)) = 0.5
+        
+        [Toggle(USE_UNDERWATER)]
+        _UseUnderwater("Underwater", Float) = 0
+        _Underwater_color("Underwater color", Color) = (1,1,1,1)
+        _Underwater_fog_density_factor("Underwater fog density factor", Float) = 1
+        _Underwater_fog_height_mult("Underwater fog height mult", Float) = 1
     }
     SubShader
     {
@@ -45,6 +51,7 @@ Shader "Arena/Environment"
             #pragma shader_feature __ USE_LIGHTING
             #pragma shader_feature __ TG_TRANSPARENT
             #pragma shader_feature TG_USE_ALPHACLIP
+            #pragma shader_feature USE_UNDERWATER
             //#pragma multi_compile_instancing
 
 
@@ -62,6 +69,9 @@ Shader "Arena/Environment"
                 float3 normal : NORMAL;
                 float4 tangent : TANGENT;
                 float2 uv : TEXCOORD0;
+                #if USE_UNDERWATER
+                half4 color : COLOR;
+                #endif
                 UNITY_VERTEX_INPUT_INSTANCE_ID
             };
 
@@ -70,7 +80,7 @@ Shader "Arena/Environment"
                 half4 vertex : SV_POSITION;
                 half2 uv : TEXCOORD0;
                 half fogCoords : TEXCOORD1;
-                half3 color : TEXCOORD2;
+                half4 color : TEXCOORD2;
 
                 float3 normalWS : TEXCOORD3;
                 float4 tangentWS : TEXCOORD4;
@@ -81,6 +91,7 @@ Shader "Arena/Environment"
             CBUFFER_START(UnityPerMaterial)
                 half4 _BaseMap_ST;
                 half4 _BaseColor;
+                half4 _Underwater_color;
 				half _Metallic;
 				half _Smoothness;
                 half _Cutoff;
@@ -129,8 +140,15 @@ Shader "Arena/Environment"
                 //bakedGI_Color = LoadDOTSInstancedData_SHAb().rgb;
                 #endif
                 
-                o.color = bakedGI_Color;//half4(bakedGI_Color /** skinMatrix[1]*/, 1); 
+                o.color.rgb = bakedGI_Color.rgb;
 
+                #if USE_UNDERWATER
+                o.color.a = v.color.r;
+                #else
+                o.color.a = 1;
+                #endif
+                
+                
                 return o;
             }
 
@@ -157,6 +175,11 @@ Shader "Arena/Environment"
                 half roughness = 1 - smoothness;
 
                 half4 finalColor = LightingPBR(diffuse, i.color.rgb, viewDirWS, normalWS, mesm.rgb, roughness);
+
+                #if USE_UNDERWATER
+                finalColor.rgb = lerp(finalColor.rgb, _Underwater_color, i.color.a);
+                #endif
+                
                 
                 // apply fog
                 return half4(MixFog(finalColor.rgb, i.fogCoords), finalColor.a);

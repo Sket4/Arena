@@ -184,13 +184,14 @@ Shader"Arena/Water"
                 diffuse.rgb = lerp(reflColor, _BaseColor.rgb, rim);
                 diffuse.a = i.color.g;
                 
-                half4 finalColor = LightingPBR(diffuse, 1, viewDirWS, normalWS, _Metallic, _Roughness);
-
+                //half4 finalColor = LightingPBR(diffuse, 1, viewDirWS, normalWS, _Metallic, _Roughness);
+                half4 finalColor = diffuse;
+                
                 // apply fog
                 #if USE_CUSTOM_FOG_COLOR
-                return half4(MixFogColor(diffuse, _CustomFogColor.rgb, i.fogCoords), finalColor.a);
+                return half4(MixFogColor(finalColor, _CustomFogColor.rgb, i.fogCoords), finalColor.a);
                 #else
-                return half4(MixFogColor(diffuse, unity_FogColor.rgb, i.fogCoords), finalColor.a);
+                return half4(MixFogColor(finalColor, unity_FogColor.rgb, i.fogCoords), finalColor.a);
                 #endif
                 
             }

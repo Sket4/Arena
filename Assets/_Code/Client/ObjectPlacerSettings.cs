@@ -21,6 +21,10 @@ namespace Arena.Tools
         public GameObject TargetParent;
         public float FixedInterval = 1;
         public bool Reverse = false;
+        public bool RandomYaw = false;
+        public bool ChangeScale = false;
+        public Vector3 MinScale = Vector3.one;
+        public Vector3 MaxScale = Vector3.one;
         public float Offset = 0;
         public Vector3 WorldSpaceOffset;
         public Vector3 AdditionalRotation;

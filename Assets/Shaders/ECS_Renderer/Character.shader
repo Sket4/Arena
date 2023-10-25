@@ -116,7 +116,7 @@ Shader"Arena/Character"
 
                 //float4 bc = UNITY_ACCESS_DOTS_INSTANCED_PROP(float4, _BaseColor);
                 half3 bakedGI_Color = SHADERGRAPH_BAKED_GI(vertInputs.positionWS, normalInputs.normalWS, half2(0, 0), half2(0, 0), true);
-                o.color.rgb = 0;//bakedGI_Color;
+                o.color.rgb = bakedGI_Color;
                 
                 #if USE_DISTANCE_LIGHT
                 float3 dirToPos = o.positionWS - _WorldSpaceCameraPos;

@@ -214,15 +214,32 @@ namespace Arena.Editor
             position += normal * placerSettings.NormalOffset;
             var rotation = Quaternion.LookRotation(normal, Vector3.up) * Quaternion.Euler(placerSettings.AdditionalRotation);
 
+            if (placerSettings.RandomYaw)
+            {
+                rotation *= Quaternion.Euler(0,Random.Range(0, 360),0);
+            }
+
+            GameObject instance;
+            
             if (targetParentTransform != null)
             {
-                var instance = PrefabUtility.InstantiatePrefab(placerSettings.TargetPrefab, targetParentTransform) as GameObject;
+                instance = PrefabUtility.InstantiatePrefab(placerSettings.TargetPrefab, targetParentTransform) as GameObject;
                 instance.transform.position = position;
                 instance.transform.rotation = rotation;
             }
             else
             {
-                Instantiate(placerSettings.TargetPrefab, position, rotation);
+                instance = Instantiate(placerSettings.TargetPrefab, position, rotation);
+            }
+            
+            if (placerSettings.ChangeScale)
+            {
+                var randomScale = Vector3.one;
+                randomScale.x = Random.Range(placerSettings.MinScale.x, placerSettings.MaxScale.x);
+                randomScale.y = Random.Range(placerSettings.MinScale.y, placerSettings.MaxScale.y);
+                randomScale.z = Random.Range(placerSettings.MinScale.z, placerSettings.MaxScale.z);
+                
+                instance.transform.localScale = randomScale;
             }
         }
     }

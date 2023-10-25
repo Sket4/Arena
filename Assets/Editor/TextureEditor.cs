@@ -107,6 +107,14 @@ namespace Arena.Editor
                             colorCorrection(contrast);
                         }
                     }
+                    
+                    using (new VerticalGUILayout())
+                    {
+                        if (GUILayout.Button("Roughness -> Smoothness"))
+                        {
+                            roughnessToSmoothness();
+                        }
+                    }
                 }
 
                 if (resultTexture != null)
@@ -206,6 +214,20 @@ namespace Arena.Editor
                     pixel.r = Mathf.Pow(pixel.r, contrast);
                     pixel.g = Mathf.Pow(pixel.g, contrast);
                     pixel.b = Mathf.Pow(pixel.b, contrast);
+                }
+            });
+        }
+
+        void roughnessToSmoothness()
+        {
+            modifyTexture((sourcePixels) =>
+            {
+                for (int i = 0; i < sourcePixels.Length; i++)
+                {
+                    ref Color pixel = ref sourcePixels[i];
+                    pixel.r = 1.0f - pixel.r;
+                    pixel.g = 1.0f - pixel.g;
+                    pixel.b = 1.0f - pixel.b;
                 }
             });
         }

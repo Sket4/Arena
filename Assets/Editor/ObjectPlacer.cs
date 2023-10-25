@@ -11,7 +11,7 @@ namespace Arena.Editor
     {
         public ObjectPlacerSettings Settings;
 
-        [MenuItem("Arena/Утилиты/Расставление объектов")]
+        [MenuItem("Arena/РЈС‚РёР»РёС‚С‹/Р Р°СЃСЃС‚Р°РІР»РµРЅРёРµ РѕР±СЉРµРєС‚РѕРІ")]
         static void show()
         {
             var window = CreateWindow<ObjectPlacer>();
@@ -66,15 +66,15 @@ namespace Arena.Editor
 
         private void OnGUI()
         {
-            Settings = EditorGUILayout.ObjectField("Настройки", Settings, typeof(ObjectPlacerSettings), true) as ObjectPlacerSettings;
+            Settings = EditorGUILayout.ObjectField("РќР°СЃС‚СЂРѕР№РєРё", Settings, typeof(ObjectPlacerSettings), true) as ObjectPlacerSettings;
 
             if(Settings == null)
             {
-                GUILayout.Label($"Не указан объект с настройками. назначьте объект с добавленным {nameof(ObjectPlacerSettings)}");
+                GUILayout.Label($"РќРµ СѓРєР°Р·Р°РЅ РѕР±СЉРµРєС‚ СЃ РЅР°СЃС‚СЂРѕР№РєР°РјРё. РЅР°Р·РЅР°С‡СЊС‚Рµ РѕР±СЉРµРєС‚ СЃ РґРѕР±Р°РІР»РµРЅРЅС‹Рј {nameof(ObjectPlacerSettings)}");
                 return;
             }
 
-            if (GUILayout.Button("Расставить объекты по точкам исходного мешa"))
+            if (GUILayout.Button("Р Р°СЃСЃС‚Р°РІРёС‚СЊ РѕР±СЉРµРєС‚С‹ РїРѕ С‚РѕС‡РєР°Рј РёСЃС…РѕРґРЅРѕРіРѕ РјРµС€a"))
             {
                 foreach(var setting in Settings.Settings)
                 {
@@ -94,7 +94,7 @@ namespace Arena.Editor
                 }
             }
 
-            if (GUILayout.Button("Расставить объекты по точкам исходного мешa через фиксированный интервал"))
+            if (GUILayout.Button("Р Р°СЃСЃС‚Р°РІРёС‚СЊ РѕР±СЉРµРєС‚С‹ РїРѕ С‚РѕС‡РєР°Рј РёСЃС…РѕРґРЅРѕРіРѕ РјРµС€a С‡РµСЂРµР· С„РёРєСЃРёСЂРѕРІР°РЅРЅС‹Р№ РёРЅС‚РµСЂРІР°Р»"))
             {
                 foreach (var setting in Settings.Settings)
                 {
@@ -159,7 +159,7 @@ namespace Arena.Editor
                 }
             }
 
-            if(GUILayout.Button("Удалить объекты в объекте-контейнере"))
+            if(GUILayout.Button("РЈРґР°Р»РёС‚СЊ РѕР±СЉРµРєС‚С‹ РІ РѕР±СЉРµРєС‚Рµ-РєРѕРЅС‚РµР№РЅРµСЂРµ"))
             {
                 var childs = new List<Transform>();
 
@@ -181,7 +181,7 @@ namespace Arena.Editor
 
             
 
-            if (GUILayout.Button("Отобразить порядок вершин"))
+            if (GUILayout.Button("РћС‚РѕР±СЂР°Р·РёС‚СЊ РїРѕСЂСЏРґРѕРє РІРµСЂС€РёРЅ"))
             {
                 foreach (var setting in Settings.Settings)
                 {

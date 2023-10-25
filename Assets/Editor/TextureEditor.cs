@@ -48,7 +48,7 @@ namespace Arena.Editor
         [SerializeField]
         float contrast = 2;
 
-        [MenuItem("Arena/Утилиты/Редактор текстур")]
+        [MenuItem("Arena/РЈС‚РёР»РёС‚С‹/Р РµРґР°РєС‚РѕСЂ С‚РµРєСЃС‚СѓСЂ")]
         static void show()
         {
             var window = GetWindow<TextureEditor>();
@@ -77,9 +77,9 @@ namespace Arena.Editor
 
                 using(new VerticalGUILayout())
                 {
-                    sourceTexture = EditorGUILayout.ObjectField("Исходная текстура", sourceTexture, typeof(Texture2D), false, GUILayout.Width(settingsWidth)) as Texture2D;
+                    sourceTexture = EditorGUILayout.ObjectField("РСЃС…РѕРґРЅР°СЏ С‚РµРєСЃС‚СѓСЂР°", sourceTexture, typeof(Texture2D), false, GUILayout.Width(settingsWidth)) as Texture2D;
                     GUILayout.Space(10);
-                    texturePreviewSize = EditorGUILayout.FloatField("Размер превью", texturePreviewSize, GUILayout.Width(settingsWidth));
+                    texturePreviewSize = EditorGUILayout.FloatField("Р Р°Р·РјРµСЂ РїСЂРµРІСЊСЋ", texturePreviewSize, GUILayout.Width(settingsWidth));
                 }
                 
                 if(sourceTexture != null)
@@ -88,9 +88,9 @@ namespace Arena.Editor
 
                     using(new VerticalGUILayout())
                     {
-                        normalStrengthScale = EditorGUILayout.FloatField("Усиление нормали", normalStrengthScale);
+                        normalStrengthScale = EditorGUILayout.FloatField("РЈСЃРёР»РµРЅРёРµ РЅРѕСЂРјР°Р»Рё", normalStrengthScale);
 
-                        if (GUILayout.Button("Усилить нормали"))
+                        if (GUILayout.Button("РЈСЃРёР»РёС‚СЊ РЅРѕСЂРјР°Р»Рё"))
                         {
                             normalStrength(normalStrengthScale);
                         }
@@ -100,9 +100,9 @@ namespace Arena.Editor
 
                     using (new VerticalGUILayout())
                     {
-                        contrast = EditorGUILayout.FloatField("Контраст", contrast);
+                        contrast = EditorGUILayout.FloatField("РљРѕРЅС‚СЂР°СЃС‚", contrast);
 
-                        if (GUILayout.Button("Применить коррекцию цвета"))
+                        if (GUILayout.Button("РџСЂРёРјРµРЅРёС‚СЊ РєРѕСЂСЂРµРєС†РёСЋ С†РІРµС‚Р°"))
                         {
                             colorCorrection(contrast);
                         }
@@ -113,7 +113,7 @@ namespace Arena.Editor
                 {
                     GUILayout.Space(10);
 
-                    if (GUILayout.Button("Сохранить результат"))
+                    if (GUILayout.Button("РЎРѕС…СЂР°РЅРёС‚СЊ СЂРµР·СѓР»СЊС‚Р°С‚"))
                     {
                         saveResultTexture();
                     }
@@ -134,7 +134,7 @@ namespace Arena.Editor
             var bytes = resultTexture.EncodeToPNG();
 
             var defaultName = sourceTexture != null ? sourceTexture.name : "result";
-            var savePath = EditorUtility.SaveFilePanelInProject("Сохранить результат", defaultName, "png", "Выберите путь сохранения");
+            var savePath = EditorUtility.SaveFilePanelInProject("РЎРѕС…СЂР°РЅРёС‚СЊ СЂРµР·СѓР»СЊС‚Р°С‚", defaultName, "png", "Р’С‹Р±РµСЂРёС‚Рµ РїСѓС‚СЊ СЃРѕС…СЂР°РЅРµРЅРёСЏ");
 
             if(string.IsNullOrEmpty(savePath))
             {

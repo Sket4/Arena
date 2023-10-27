@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 8900000, guid: d4ca55a7d53283d409b9a17d1133c614, type: 3}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.23199636, g: 0.380269, b: 0.49696046, a: 1}
+  m_IndirectSpecularColor: {r: 0.23319921, g: 0.37913007, b: 0.4940175, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -97,7 +97,7 @@ LightmapSettings:
     m_ExportTrainingData: 0
     m_TrainingDataDestination: TrainingData
     m_LightProbeSampleCountMultiplier: 4
-  m_LightingDataAsset: {fileID: 112000000, guid: 2bab67274cbc30c4d843a865bf37e1e6, type: 2}
+  m_LightingDataAsset: {fileID: 112000002, guid: 721e056ac89a3b646858edafb02c4098, type: 2}
   m_LightingSettings: {fileID: 2066734670}
 --- !u!196 &4
 NavMeshSettings:
@@ -133,6 +133,7 @@ GameObject:
   m_Component:
   - component: {fileID: 28}
   - component: {fileID: 29}
+  - component: {fileID: 30}
   m_Layer: 0
   m_Name: Sun(Clone)
   m_TagString: Untagged
@@ -217,6 +218,29 @@ Light:
   m_UseViewFrustumForShadowCasterCull: 1
   m_ShadowRadius: 0
   m_ShadowAngle: 3
+--- !u!114 &30
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 27}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 474bcb49853aa07438625e644c072ee6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Version: 3
+  m_UsePipelineSettings: 1
+  m_AdditionalLightsShadowResolutionTier: 2
+  m_LightLayerMask: 1
+  m_RenderingLayers: 1
+  m_CustomShadowLayers: 0
+  m_ShadowLayerMask: 1
+  m_ShadowRenderingLayers: 1
+  m_LightCookieSize: {x: 1, y: 1}
+  m_LightCookieOffset: {x: 0, y: 0}
+  m_SoftShadowQuality: 0
 --- !u!1 &170836733
 GameObject:
   m_ObjectHideFlags: 0
@@ -484,284 +508,6 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 188095583}
   m_CullTransparentMesh: 1
---- !u!1 &190597481
-GameObject:
-  m_ObjectHideFlags: 1
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 190597483}
-  - component: {fileID: 190597482}
-  m_Layer: 0
-  m_Name: '!ftraceLightmaps'
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!114 &190597482
-MonoBehaviour:
-  m_ObjectHideFlags: 1
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 190597481}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: b7fa80e7116296f4eb4f49ec1544ee22, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  renderSettingsBounces: 5
-  renderSettingsGISamples: 16
-  renderSettingsGIBackFaceWeight: 0
-  renderSettingsTileSize: 512
-  renderSettingsPriority: 2
-  renderSettingsTexelsPerUnit: 8
-  renderSettingsForceRefresh: 1
-  renderSettingsForceRebuildGeometry: 1
-  renderSettingsPerformRendering: 1
-  renderSettingsUserRenderMode: 0
-  renderSettingsDistanceShadowmask: 1
-  renderSettingsSettingsMode: 1
-  renderSettingsFixSeams: 1
-  renderSettingsDenoise: 1
-  renderSettingsDenoise2x: 0
-  renderSettingsEncode: 1
-  renderSettingsEncodeMode: 0
-  renderSettingsOverwriteWarning: 0
-  renderSettingsAutoAtlas: 1
-  renderSettingsUnwrapUVs: 1
-  renderSettingsForceDisableUnwrapUVs: 0
-  renderSettingsMaxAutoResolution: 1024
-  renderSettingsMinAutoResolution: 16
-  renderSettingsUnloadScenes: 1
-  renderSettingsAdjustSamples: 1
-  renderSettingsGILODMode: 2
-  renderSettingsGILODModeEnabled: 0
-  renderSettingsCheckOverlaps: 0
-  renderSettingsSkipOutOfBoundsUVs: 1
-  renderSettingsHackEmissiveBoost: 1
-  renderSettingsHackIndirectBoost: 1
-  renderSettingsTempPath: 
-  renderSettingsOutPath: BakeryLightmaps
-  renderSettingsUseScenePath: 0
-  renderSettingsHackAOIntensity: 0
-  renderSettingsHackAOSamples: 16
-  renderSettingsHackAORadius: 1
-  renderSettingsShowAOSettings: 0
-  renderSettingsShowTasks: 1
-  renderSettingsShowTasks2: 0
-  renderSettingsShowPaths: 1
-  renderSettingsShowNet: 1
-  renderSettingsOcclusionProbes: 0
-  renderSettingsTexelsPerMap: 0
-  renderSettingsTexelsColor: 1
-  renderSettingsTexelsMask: 1
-  renderSettingsTexelsDir: 1
-  renderSettingsShowDirWarning: 1
-  renderSettingsRenderDirMode: 0
-  renderSettingsShowCheckerSettings: 0
-  renderSettingsSamplesWarning: 1
-  renderSettingsSuppressPopups: 0
-  renderSettingsPrefabWarning: 1
-  renderSettingsSplitByScene: 0
-  renderSettingsSplitByTag: 0
-  renderSettingsUVPaddingMax: 0
-  renderSettingsPostPacking: 1
-  renderSettingsHoleFilling: 0
-  renderSettingsBeepOnFinish: 0
-  renderSettingsExportTerrainAsHeightmap: 1
-  renderSettingsRTXMode: 1
-  renderSettingsLightProbeMode: 1
-  renderSettingsClientMode: 0
-  renderSettingsServerAddress: 127.0.0.1
-  renderSettingsUnwrapper: 0
-  renderSettingsDenoiserType: 100
-  renderSettingsExportTerrainTrees: 0
-  renderSettingsShowPerf: 1
-  renderSettingsSampleDiv: 1
-  renderSettingsAtlasPacker: 0
-  renderSettingsBatchPoints: 1
-  renderSettingsCompressVolumes: 0
-  renderSettingsSector: {fileID: 0}
-  renderSettingsRTPVExport: 1
-  renderSettingsRTPVSceneView: 0
-  renderSettingsRTPVHDR: 0
-  renderSettingsRTPVWidth: 640
-  renderSettingsRTPVHeight: 360
-  lastBakeTime: 79
-  enlightenWarningShown: 0
-  enlightenWarningShown2: 0
-  uniqueLights: []
-  lights: []
-  implicitGroups:
-  - {fileID: 300718169}
-  implicitGroupedObjects:
-  - {fileID: 0}
-  bounds:
-  - m_Center: {x: -58.836716, y: 18.166674, z: 19.421722}
-    m_Extent: {x: 185.5034, y: 23.166683, z: 203.0998}
-  - m_Center: {x: 408.94818, y: 12.607044, z: -4.317932}
-    m_Extent: {x: 710.6685, y: 7.559639, z: 1004.31775}
-  - m_Center: {x: -48.591103, y: 19.466686, z: 11.990723}
-    m_Extent: {x: 69.393326, y: 7.133346, z: 189.53876}
-  - m_Center: {x: -42.940384, y: 7.5905294, z: 73.42758}
-    m_Extent: {x: 75.044044, y: 12.576168, z: 130.3021}
-  - m_Center: {x: 20.859177, y: 7.5905004, z: -118.15776}
-    m_Extent: {x: 11.24448, y: 12.576168, z: 61.283237}
-  - m_Center: {x: -46.62168, y: 15.669452, z: 4.7349854}
-    m_Extent: {x: 72.07868, y: 3.3469114, z: 179.06903}
-  - m_Center: {x: -41.675766, y: 15.669458, z: 34.518692}
-    m_Extent: {x: 66.98584, y: 3.346918, z: 159.18222}
-  - m_Center: {x: -46.621674, y: 15.669452, z: 4.7349854}
-    m_Extent: {x: 72.07869, y: 3.3469114, z: 179.06903}
-  - m_Center: {x: -36.706223, y: 15.669458, z: 34.518692}
-    m_Extent: {x: 62.016304, y: 3.346918, z: 159.18222}
-  - m_Center: {x: -46.62166, y: 15.669457, z: 9.683426}
-    m_Extent: {x: 72.078705, y: 3.3469229, z: 184.01749}
-  - m_Center: {x: -46.67521, y: 15.669451, z: 9.727669}
-    m_Extent: {x: 71.98534, y: 3.3469162, z: 134.3912}
-  - m_Center: {x: -77.095566, y: 10.621485, z: 12.09877}
-    m_Extent: {x: 109.499176, y: 16.668875, z: 191.62167}
-  hasEmissive: 
-  uvBuffOffsets: 
-  uvBuffLengths: 
-  uvSrcBuff: []
-  uvDestBuff: []
-  lmrIndicesOffsets: 
-  lmrIndicesLengths: 
-  lmrIndicesBuff: 
-  lmGroupLODResFlags: 
-  lmGroupMinLOD: 
-  lmGroupLODMatrix: 
-  serverGetFileList: []
-  lightmapHasColor: 
-  lightmapHasMask: 
-  lightmapHasDir: 
-  lightmapHasRNM: 
-  modifiedAssetPathList:
-  - Assets/Models/Environment/MainArea/Small window/Small window.blend
-  - Assets/Models/Environment/MainArea/Huge maidan window/Huge_maidan_Window.blend
-  - Assets/Models/Environment/MainArea/MainArea.blend
-  modifiedAssets:
-  - meshName:
-    - Window low poly
-    padding: 91000000
-    unwrapper: 00000000
-  - meshName:
-    - Main window LP
-    - Side window left LP
-    padding: 380000006b000000
-    unwrapper: 0000000000000000
-  - meshName:
-    - Water
-    - Wall 2
-    - Wall
-    - Roof 2
-    - Roof
-    - Main Sides 2
-    - Main Sides
-    - Main maidan
-    - Main
-    - Maidan wall
-    - Column basement
-    - Border BOTTOM
-    - Big window
-    - Underwater
-    - Second floor right
-    - Second floor left
-    - Sea
-    - Water inner
-    - Sea ground
-    - Border
-    - Border 2
-    - Border 3
-    - Border 4
-    - border bottom
-    - border up
-    padding: 0a000000160000000f0000001f0000001f0000000d0000000e0000000c00000006000000180000009b0000003300000036000000050000000b0000000a0000001b0000001800000011000000740000005300000039000000390000001900000017000000
-    unwrapper: 00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
-  maps:
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  masks: []
-  dirMaps: []
-  rnmMaps0: []
-  rnmMaps1: []
-  rnmMaps2: []
-  mapsMode: 
-  bakedRenderers: []
-  bakedIDs: 
-  bakedScaleOffset: []
-  bakedVertexOffset: 
-  bakedVertexColorMesh: []
-  nonBakedRenderers: []
-  bakedLights: []
-  bakedLightChannels: 
-  bakedRenderersTerrain: []
-  bakedIDsTerrain: 
-  bakedScaleOffsetTerrain: []
-  assetList: []
-  uvOverlapAssetList: 
-  idremap: 0100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
-  usesRealtimeGI: 0
-  emptyDirectionTex: {fileID: 0}
-  anyVolumes: 0
-  compressedVolumes: 0
-  sectors:
-  - name: $G
-    maps:
-    - {fileID: 2800000, guid: 211e26d602f936f42a263e2d3660f366, type: 3}
-    - {fileID: 2800000, guid: 45a96937e3f861d4db9e27d7976c872d, type: 3}
-    - {fileID: 2800000, guid: 92373a1264d5ef347a688fcd5a1f1eae, type: 3}
-    - {fileID: 2800000, guid: 66462422b2fe38c4e8301d242750c445, type: 3}
-    - {fileID: 2800000, guid: 45cce6ec3fefd2846bddea6b05c8a482, type: 3}
-    - {fileID: 2800000, guid: eb5aec5e4c5fe7d419b64ca45738ce07, type: 3}
-    - {fileID: 2800000, guid: 0a652bc634eb1f44e9ccf405db6b597a, type: 3}
-    - {fileID: 2800000, guid: 27b2b1eb17620e544925dc920d9cac67, type: 3}
-    - {fileID: 2800000, guid: ef31220507de9e3479e064616a8dc1a6, type: 3}
-    - {fileID: 2800000, guid: e82d0875969da524da071d4bac563fec, type: 3}
-    - {fileID: 2800000, guid: fa4c2d4347a76b0439988b12bcbd951f, type: 3}
-    masks: []
-    dirMaps: []
-    rnmMaps0: []
-    rnmMaps1: []
-    rnmMaps2: []
-    mapsMode: 
-    bakedRenderers: []
-    bakedIDs: 
-    bakedScaleOffset: []
-    bakedVertexColorMesh: []
-    bakedRenderersTerrain: []
-    bakedIDsTerrain: 
-    bakedScaleOffsetTerrain: []
-    nonBakedRenderers: []
---- !u!4 &190597483
-Transform:
-  m_ObjectHideFlags: 1
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 190597481}
-  serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 0}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &229961529
 GameObject:
   m_ObjectHideFlags: 0
@@ -910,49 +656,6 @@ MonoBehaviour:
   cloudShadowOffsetY: 0
   supersample: 1
   UID: 642685527
---- !u!114 &300718169
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ec0b4dd729a12d046982652f834580a2, type: 3}
-  m_Name: probes
-  m_EditorClassIdentifier: 
-  resolution: 16
-  bitmask: 1
-  id: 0
-  sortingID: -1
-  isImplicit: 1
-  area: 0
-  totalVertexCount: 21
-  vertexCounter: 0
-  sceneLodLevel: -1
-  autoResolution: 0
-  sceneName: 
-  tag: -1
-  containsTerrains: 0
-  probes: 1
-  mode: 2
-  renderMode: 1000
-  renderDirMode: 5
-  atlasPacker: 1000
-  computeSSS: 0
-  sssSamples: 16
-  sssDensity: 10
-  sssColor: {r: 1, g: 1, b: 1, a: 1}
-  sssScale: 1
-  fakeShadowBias: 0
-  transparentSelfShadow: 0
-  flipNormal: 0
-  parentName: 
-  overridePath: 
-  fixPos3D: 0
-  voxelSize: {x: 1, y: 1, z: 1}
-  passedFilter: 0
 --- !u!1 &688092697
 GameObject:
   m_ObjectHideFlags: 0
@@ -1263,37 +966,6 @@ MonoBehaviour:
     State: 0
     Objects:
     - {fileID: 0}
---- !u!1 &881925017
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 881925018}
-  m_Layer: 0
-  m_Name: Static scene
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &881925018
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 881925017}
-  serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 0}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1101998862
 GameObject:
   m_ObjectHideFlags: 0
@@ -2781,10 +2453,8 @@ SceneRoots:
   - {fileID: 28}
   - {fileID: 2051434750}
   - {fileID: 1255743722}
-  - {fileID: 190597483}
   - {fileID: 1768515318}
   - {fileID: 1818268344}
   - {fileID: 229961532}
-  - {fileID: 881925018}
   - {fileID: 2135477623}
   - {fileID: 8599833787679838528}

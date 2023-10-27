@@ -26,7 +26,7 @@ Shader "Arena/Environment"
         _Underwater_fog_density_factor("Underwater fog density factor", Float) = 1
         _Underwater_fog_height_mult("Underwater fog height mult", Float) = 1
 
-        [HideInInspector][NoScaleOffset]unity_Lightmaps("unity_Lightmaps", 2DArray) = "" {}
+        [HideInInspector][NoScaleOffset]unity_Lightmaps("unity_Lightmaps", 2DArray) = "" {} 
     }
     SubShader
     {
@@ -59,8 +59,13 @@ Shader "Arena/Environment"
 
             #include_with_pragmas "Packages/com.unity.render-pipelines.universal/ShaderLibrary/RenderingLayers.hlsl"
             #include_with_pragmas "Packages/com.unity.render-pipelines.universal/ShaderLibrary/DOTS.hlsl"
+            #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Core.hlsl" 
             #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Lighting.hlsl"
             #include "Packages/com.tzargames.renderer/Shaders/Lighting.hlsl"
+
+
+            #define UNITY_DECLARE_TEX2DARRAY(tex) TEXTURE2D_ARRAY(tex); SAMPLER(sampler##tex)
+            #define UNITY_SAMPLE_TEX2DARRAY(tex,coord) SAMPLE_TEXTURE2D_ARRAY(tex, sampler##tex, coord)
             
             struct appdata
             {
@@ -91,7 +96,11 @@ Shader "Arena/Environment"
 
                 half4 color : TEXCOORD7;
 #if LIGHTMAP_ON
+                #if defined(UNITY_DOTS_INSTANCING_ENABLED)
                 float3 uv2 : TEXCOORD8;
+                #else
+                float2 uv2 : TEXCOORD8;
+                #endif
 #endif
             };
 
@@ -136,8 +145,12 @@ Shader "Arena/Environment"
 
 #if LIGHTMAP_ON
                 float4 lightmapST = unity_LightmapST;
-                o.uv2.xy = v.uv2.xy * lightmapST.xy + lightmapST.zw;
-                //o.uv2.z = unity_LightmapIndex;
+                o.uv2.xy = v.uv2 * lightmapST.xy + lightmapST.zw;
+
+    #if defined(UNITY_DOTS_INSTANCING_ENABLED)
+                o.uv2.z = unity_LightmapIndex.x;
+    #endif
+                
 #endif
 
                 VertexNormalInputs normalInputs = GetVertexNormalInputs(normalOS, tangentOS);
@@ -179,14 +192,18 @@ Shader "Arena/Environment"
 
                 float3 normalWS = TransformTangentToWorld(normalTS.xyz, tangentToWorld, true);
 
-//#if defined(UNITY_DOTS_INSTANCING_ENABLED)
-                //return half4(unity_LightmapIndex.x, 0,0,1);
-//#endif
-
                 half3 ambientLight;
 
+                
 #if LIGHTMAP_ON
+                #if defined(UNITY_DOTS_INSTANCING_ENABLED)
+                //return half4(i.uv2.z, 0,0,1);
+                ambientLight = unity_Lightmaps.Sample(samplerunity_Lightmaps, i.uv2);
+                //return half4(ambientLight, 1);
+                #else 
                 ambientLight = SampleLightmap(i.uv2.xy, float2(0, 0), normalWS);
+                #endif
+                
 #else
                 ambientLight = i.color.rgb;
 #endif

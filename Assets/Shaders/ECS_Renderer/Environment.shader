@@ -25,6 +25,8 @@ Shader "Arena/Environment"
         _Underwater_color("Underwater color", Color) = (1,1,1,1)
         _Underwater_fog_density_factor("Underwater fog density factor", Float) = 1
         _Underwater_fog_height_mult("Underwater fog height mult", Float) = 1
+
+        [HideInInspector][NoScaleOffset]unity_Lightmaps("unity_Lightmaps", 2DArray) = "" {}
     }
     SubShader
     {
@@ -52,16 +54,13 @@ Shader "Arena/Environment"
             #pragma shader_feature __ TG_TRANSPARENT
             #pragma shader_feature TG_USE_ALPHACLIP
             #pragma shader_feature USE_UNDERWATER
-            //#pragma multi_compile_instancing
-
-
+            #pragma multi_compile _ LIGHTMAP_ON
+            //#pragma require 2darray
 
             #include_with_pragmas "Packages/com.unity.render-pipelines.universal/ShaderLibrary/RenderingLayers.hlsl"
             #include_with_pragmas "Packages/com.unity.render-pipelines.universal/ShaderLibrary/DOTS.hlsl"
             #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Lighting.hlsl"
             #include "Packages/com.tzargames.renderer/Shaders/Lighting.hlsl"
-            
-            
             
             struct appdata
             {
@@ -69,6 +68,10 @@ Shader "Arena/Environment"
                 float3 normal : NORMAL;
                 float4 tangent : TANGENT;
                 float2 uv : TEXCOORD0;
+#if LIGHTMAP_ON
+                float2 uv2 : TEXCOORD1;
+#endif
+
                 #if USE_UNDERWATER
                 half4 color : COLOR;
                 #endif
@@ -80,12 +83,16 @@ Shader "Arena/Environment"
                 half4 vertex : SV_POSITION;
                 half2 uv : TEXCOORD0;
                 half fogCoords : TEXCOORD1;
-                half4 color : TEXCOORD2;
 
                 float3 normalWS : TEXCOORD3;
                 float4 tangentWS : TEXCOORD4;
                 float3 bitangentWS : TEXCOORD5;
                 float3 positionWS : TEXCOORD6;
+
+                half4 color : TEXCOORD7;
+#if LIGHTMAP_ON
+                float3 uv2 : TEXCOORD8;
+#endif
             };
 
             CBUFFER_START(UnityPerMaterial)
@@ -103,7 +110,8 @@ Shader "Arena/Environment"
 
 #if defined(DOTS_INSTANCING_ON)
             //UNITY_DOTS_INSTANCING_START(UserPropertyMetadata)
-            //    UNITY_DOTS_INSTANCED_PROP(uint4, _SkinningData)
+                //UNITY_DOTS_INSTANCED_PROP(uint, unity_LightmapIndex)
+                //UNITY_DOTS_INSTANCED_PROP(float4, unity_LightmapST)
             //UNITY_DOTS_INSTANCING_END(UserPropertyMetadata)
 
             UNITY_DOTS_INSTANCING_START(BuiltinPropertyMetadata)
@@ -126,21 +134,24 @@ Shader "Arena/Environment"
                 o.uv = TRANSFORM_TEX(v.uv, _BaseMap);
                 o.fogCoords = ComputeFogFactor(o.vertex.z);
 
+#if LIGHTMAP_ON
+                float4 lightmapST = unity_LightmapST;
+                o.uv2.xy = v.uv2.xy * lightmapST.xy + lightmapST.zw;
+                //o.uv2.z = unity_LightmapIndex;
+#endif
+
                 VertexNormalInputs normalInputs = GetVertexNormalInputs(normalOS, tangentOS);
 
                 o.normalWS = normalInputs.normalWS;
                 o.tangentWS = float4(normalInputs.tangentWS, tangentOS.w);
                 o.bitangentWS = normalInputs.bitangentWS;
                 
-                #if defined(DOTS_INSTANCING_ON)
-                #endif
-                
+#if !LIGHTMAP_ON
                 half3 bakedGI_Color = SampleSH(normalInputs.normalWS);//SHADERGRAPH_BAKED_GI(vertInputs.positionWS, normalInputs.normalWS, half2(0, 0), half2(0, 0), true);
-                #if defined(DOTS_INSTANCING_ON) 
-                //bakedGI_Color = LoadDOTSInstancedData_SHAb().rgb;
-                #endif
-                
                 o.color.rgb = bakedGI_Color.rgb;
+#else
+                o.color.rgb = 0;
+#endif
 
                 #if USE_UNDERWATER
                 o.color.a = v.color.r;
@@ -152,7 +163,7 @@ Shader "Arena/Environment"
                 return o;
             }
 
-            half4 frag (v2f i) : SV_Target
+            half4 frag(v2f i) : SV_Target
             {
             	half4 diffuse = tex2D(_BaseMap, i.uv) * _BaseColor;
 
@@ -168,13 +179,25 @@ Shader "Arena/Environment"
 
                 float3 normalWS = TransformTangentToWorld(normalTS.xyz, tangentToWorld, true);
 
+//#if defined(UNITY_DOTS_INSTANCING_ENABLED)
+                //return half4(unity_LightmapIndex.x, 0,0,1);
+//#endif
+
+                half3 ambientLight;
+
+#if LIGHTMAP_ON
+                ambientLight = SampleLightmap(i.uv2.xy, float2(0, 0), normalWS);
+#else
+                ambientLight = i.color.rgb;
+#endif
+
                 half4 mesm = tex2D(_MetallicGlossMap, i.uv);
                 mesm.rgb *= _Metallic;
 
                 half smoothness = mesm.a * _Smoothness;
                 half roughness = 1 - smoothness;
 
-                half4 finalColor = LightingPBR(diffuse, i.color.rgb, viewDirWS, normalWS, mesm.rgb, roughness);
+                half4 finalColor = LightingPBR(diffuse, ambientLight, viewDirWS, normalWS, mesm.rgb, roughness);
 
                 #if USE_UNDERWATER
                 finalColor.rgb = lerp(finalColor.rgb, _Underwater_color, i.color.a);

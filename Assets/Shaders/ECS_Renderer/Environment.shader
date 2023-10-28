@@ -57,8 +57,6 @@ Shader "Arena/Environment"
             #pragma multi_compile _ LIGHTMAP_ON
             //#pragma require 2darray
 
-            #include_with_pragmas "Packages/com.unity.render-pipelines.universal/ShaderLibrary/RenderingLayers.hlsl"
-            #include_with_pragmas "Packages/com.unity.render-pipelines.universal/ShaderLibrary/DOTS.hlsl"
             #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Core.hlsl" 
             #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Lighting.hlsl"
             #include "Packages/com.tzargames.renderer/Shaders/Lighting.hlsl"
@@ -142,7 +140,6 @@ Shader "Arena/Environment"
 
                 o.uv = TRANSFORM_TEX(v.uv, _BaseMap);
                 o.fogCoords = ComputeFogFactor(o.vertex.z);
-
 #if LIGHTMAP_ON
                 float4 lightmapST = unity_LightmapST;
                 o.uv2.xy = v.uv2 * lightmapST.xy + lightmapST.zw;
@@ -192,14 +189,14 @@ Shader "Arena/Environment"
 
                 float3 normalWS = TransformTangentToWorld(normalTS.xyz, tangentToWorld, true);
 
-                half3 ambientLight;
+                real3 ambientLight;
 
-                
 #if LIGHTMAP_ON
                 #if defined(UNITY_DOTS_INSTANCING_ENABLED)
-                //return half4(i.uv2.z, 0,0,1);
-                ambientLight = unity_Lightmaps.Sample(samplerunity_Lightmaps, i.uv2);
-                //return half4(ambientLight, 1);
+
+                ambientLight = TG_SampleLightmap(i.uv2.xy, i.uv2.z);
+                //ambientLight = unity_Lightmaps.Sample(samplerunity_Lightmaps, i.uv2);
+                
                 #else 
                 ambientLight = SampleLightmap(i.uv2.xy, float2(0, 0), normalWS);
                 #endif

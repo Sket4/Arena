@@ -37,13 +37,11 @@ Shader"Arena/Water"
             #pragma multi_compile _ DOTS_INSTANCING_ON
             #pragma shader_feature __ USE_CUSTOM_REFLECTIONS
             #pragma shader_feature __ USE_CUSTOM_FOG_COLOR
+            #pragma multi_compile _ LIGHTMAP_ON
             //#pragma multi_compile_instancing
 
-            #include_with_pragmas "Packages/com.unity.render-pipelines.universal/ShaderLibrary/DOTS.hlsl"
             #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Core.hlsl"
             #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Input.hlsl" 
-            #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Lighting.hlsl"
-            #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/ShaderGraphFunctions.hlsl"
             #include "Packages/com.tzargames.renderer/Shaders/Lighting.hlsl"
 
             struct appdata
@@ -53,6 +51,9 @@ Shader"Arena/Water"
                 half3 color : COLOR;
                 float4 tangent : TANGENT;
                 float2 uv : TEXCOORD0;
+#if LIGHTMAP_ON
+                float2 uv2 : TEXCOORD1;
+#endif
                 //uint vid : SV_VertexID;
                 UNITY_VERTEX_INPUT_INSTANCE_ID
             };
@@ -68,6 +69,14 @@ Shader"Arena/Water"
                 float4 tangentWS : TEXCOORD4;
                 float3 bitangentWS : TEXCOORD5;
                 float3 positionWS : TEXCOORD6;
+
+#if LIGHTMAP_ON
+                #if defined(UNITY_DOTS_INSTANCING_ENABLED)
+                float3 uv2 : TEXCOORD7;
+                #else
+                float2 uv2 : TEXCOORD7;
+                #endif
+#endif
             };
 
             CBUFFER_START(UnityPerMaterial)
@@ -119,6 +128,11 @@ Shader"Arena/Water"
                 o.bitangentWS = normalInputs.bitangentWS;
 
                 o.color.rgb = v.color;
+
+#if LIGHTMAP_ON
+                TG_TRANSFORM_LIGHTMAP_TEX(v.uv2, o.uv2)
+                TG_SET_LIGHTMAP_INDEX(o.uv2)
+#endif
                 
                 return o;
             }
@@ -183,6 +197,10 @@ Shader"Arena/Water"
                 half4 diffuse;
                 diffuse.rgb = lerp(reflColor, _BaseColor.rgb, rim);
                 diffuse.a = i.color.g;
+
+#if LIGHTMAP_ON
+                diffuse.rgb *= TG_SampleLightmap(i.uv2);
+#endif
                 
                 //half4 finalColor = LightingPBR(diffuse, 1, viewDirWS, normalWS, _Metallic, _Roughness);
                 half4 finalColor = diffuse;

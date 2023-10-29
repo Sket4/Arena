@@ -19,6 +19,7 @@ Shader "Arena/Environment"
         _MetallicGlossMap("Metallic/Smoothness map", 2D) = "white" {}
         _Metallic("Metallic", Range(0,1)) = 1.0
     	_Smoothness ("Smoothness", Range(0,1)) = 0.5
+        [HDR] _EmissionColor("Emission color", Color) = (0,0,0)
         
         [Toggle(USE_UNDERWATER)]
         _UseUnderwater("Underwater", Float) = 0
@@ -32,9 +33,7 @@ Shader "Arena/Environment"
     {
         Tags { "RenderType"="TransparentCutout" }
         LOD 100
-
         
-
         Pass
         {
             //AlphaToMask[_AlphaToMask]
@@ -55,15 +54,13 @@ Shader "Arena/Environment"
             #pragma shader_feature TG_USE_ALPHACLIP
             #pragma shader_feature USE_UNDERWATER
             #pragma multi_compile _ LIGHTMAP_ON
-            //#pragma require 2darray
 
-            #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Core.hlsl" 
+            
+            #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Core.hlsl"
             #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Lighting.hlsl"
             #include "Packages/com.tzargames.renderer/Shaders/Lighting.hlsl"
 
-
-            #define UNITY_DECLARE_TEX2DARRAY(tex) TEXTURE2D_ARRAY(tex); SAMPLER(sampler##tex)
-            #define UNITY_SAMPLE_TEX2DARRAY(tex,coord) SAMPLE_TEXTURE2D_ARRAY(tex, sampler##tex, coord)
+            
             
             struct appdata
             {
@@ -72,7 +69,7 @@ Shader "Arena/Environment"
                 float4 tangent : TANGENT;
                 float2 uv : TEXCOORD0;
 #if LIGHTMAP_ON
-                float2 uv2 : TEXCOORD1;
+                TG_DECLARE_LIGHTMAP_UV(1)
 #endif
 
                 #if USE_UNDERWATER
@@ -94,11 +91,7 @@ Shader "Arena/Environment"
 
                 half4 color : TEXCOORD7;
 #if LIGHTMAP_ON
-                #if defined(UNITY_DOTS_INSTANCING_ENABLED)
-                float3 uv2 : TEXCOORD8;
-                #else
-                float2 uv2 : TEXCOORD8;
-                #endif
+                TG_DECLARE_LIGHTMAP_UV(8)
 #endif
             };
 
@@ -106,6 +99,7 @@ Shader "Arena/Environment"
                 half4 _BaseMap_ST;
                 half4 _BaseColor;
                 half4 _Underwater_color;
+                half4 _EmissionColor;
 				half _Metallic;
 				half _Smoothness;
                 half _Cutoff;
@@ -140,27 +134,21 @@ Shader "Arena/Environment"
 
                 o.uv = TRANSFORM_TEX(v.uv, _BaseMap);
                 o.fogCoords = ComputeFogFactor(o.vertex.z);
-#if LIGHTMAP_ON
-                float4 lightmapST = unity_LightmapST;
-                o.uv2.xy = v.uv2 * lightmapST.xy + lightmapST.zw;
-
-    #if defined(UNITY_DOTS_INSTANCING_ENABLED)
-                o.uv2.z = unity_LightmapIndex.x;
-    #endif
-                
-#endif
 
                 VertexNormalInputs normalInputs = GetVertexNormalInputs(normalOS, tangentOS);
 
                 o.normalWS = normalInputs.normalWS;
                 o.tangentWS = float4(normalInputs.tangentWS, tangentOS.w);
                 o.bitangentWS = normalInputs.bitangentWS;
+
+#if LIGHTMAP_ON
+                TG_TRANSFORM_LIGHTMAP_TEX(v.lightmapUV, o.lightmapUV)
+                TG_SET_LIGHTMAP_INDEX(o.lightmapUV)
                 
-#if !LIGHTMAP_ON
-                half3 bakedGI_Color = SampleSH(normalInputs.normalWS);//SHADERGRAPH_BAKED_GI(vertInputs.positionWS, normalInputs.normalWS, half2(0, 0), half2(0, 0), true);
-                o.color.rgb = bakedGI_Color.rgb;
-#else
                 o.color.rgb = 0;
+#else
+                half3 bakedGI_Color = SampleSH(normalInputs.normalWS);
+                o.color.rgb = bakedGI_Color.rgb;
 #endif
 
                 #if USE_UNDERWATER
@@ -192,15 +180,7 @@ Shader "Arena/Environment"
                 real3 ambientLight;
 
 #if LIGHTMAP_ON
-                #if defined(UNITY_DOTS_INSTANCING_ENABLED)
-
-                ambientLight = TG_SampleLightmap(i.uv2.xy, i.uv2.z);
-                //ambientLight = unity_Lightmaps.Sample(samplerunity_Lightmaps, i.uv2);
-                
-                #else 
-                ambientLight = SampleLightmap(i.uv2.xy, float2(0, 0), normalWS);
-                #endif
-                
+                ambientLight = TG_SampleLightmap(i.lightmapUV);
 #else
                 ambientLight = i.color.rgb;
 #endif
@@ -221,6 +201,45 @@ Shader "Arena/Environment"
                 // apply fog
                 return half4(MixFog(finalColor.rgb, i.fogCoords), finalColor.a);
             }
+            ENDHLSL
+        }
+
+        Pass
+        {
+            Name "Meta"
+            Tags { "LightMode" = "Meta" }
+            
+            Cull Off
+            HLSLPROGRAM
+
+            #pragma target 2.0
+            
+            #pragma vertex UniversalVertexMeta
+            #pragma fragment UniversalFragmentMetaCustom
+            #pragma shader_feature_local_fragment _SPECULAR_SETUP
+            #pragma shader_feature_local_fragment _EMISSION
+            #pragma shader_feature_local_fragment _METALLICSPECGLOSSMAP
+            #pragma shader_feature_local_fragment _ALPHATEST_ON
+            #pragma shader_feature_local_fragment _ _SMOOTHNESS_TEXTURE_ALBEDO_CHANNEL_A
+            #pragma shader_feature_local _ _DETAIL_MULX2 _DETAIL_SCALED
+            #pragma shader_feature_local_fragment _SPECGLOSSMAP
+            #pragma shader_feature EDITOR_VISUALIZATION
+            
+            #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Core.hlsl" 
+            
+            
+            CBUFFER_START(UnityPerMaterial)
+                half4 _BaseMap_ST;
+                half4 _BaseColor;
+                half4 _Underwater_color;
+                half4 _EmissionColor;
+				half _Metallic;
+				half _Smoothness;
+                half _Cutoff;  
+            CBUFFER_END
+
+            #include "Packages/com.tzargames.renderer/Shaders/MetaPass.hlsl"
+            
             ENDHLSL
         }
     }

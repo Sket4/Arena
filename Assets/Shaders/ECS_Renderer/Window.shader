@@ -5,10 +5,11 @@ Shader"Arena/Window"
         [Toggle(USE_LIGHTING)]
         _UseLighting("Use lighting", float) = 1
         
-        _Color1("Color 1", Color) = (1,1,1,1)
+        _BaseColor("Base color", Color) = (1,1,1,1)
         _Color2("Color 2", Color) = (1,1,1,1)
         _BaseMap ("Mask", 2D) = "white" {}
         _BumpMap ("Normal map", 2D) = "bump" {}
+        [HDR] _EmissionColor("Emission color", Color) = (0,0,0)
 
         _Roughness("Roughness", Range(0,1)) = 1
         _Metallic("Metallic", Range(0,1)) = 1
@@ -29,13 +30,12 @@ Shader"Arena/Window"
             #pragma multi_compile_fog
             #pragma multi_compile _ DOTS_INSTANCING_ON
             #pragma shader_feature __ USE_LIGHTING
+            #pragma multi_compile _ LIGHTMAP_ON
             //#pragma multi_compile_instancing
 
-            #include_with_pragmas "Packages/com.unity.render-pipelines.universal/ShaderLibrary/DOTS.hlsl"
             #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Core.hlsl"
             #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Input.hlsl" 
             #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Lighting.hlsl"
-            #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/ShaderGraphFunctions.hlsl"
             #include "Packages/com.tzargames.renderer/Shaders/Lighting.hlsl"
 
             struct appdata
@@ -44,6 +44,7 @@ Shader"Arena/Window"
                 float4 normal : NORMAL;
                 float4 tangent : TANGENT;
                 float2 uv : TEXCOORD0;
+                TG_DECLARE_LIGHTMAP_UV(1)
                 
                 //uint vid : SV_VertexID;
                 UNITY_VERTEX_INPUT_INSTANCE_ID
@@ -54,17 +55,23 @@ Shader"Arena/Window"
                 half2 uv : TEXCOORD0;
                 half fogCoords : TEXCOORD1;
                 half4 vertex : SV_POSITION;
-                half3 color : TEXCOORD2;
+                
                 
                 float3 normalWS : TEXCOORD3;
                 float4 tangentWS : TEXCOORD4;
                 float3 bitangentWS : TEXCOORD5;
                 float3 positionWS : TEXCOORD6;
+#if LIGHTMAP_ON
+                TG_DECLARE_LIGHTMAP_UV(7)
+#else
+                half3 color : TEXCOORD7;
+#endif
             };
 
             CBUFFER_START(UnityPerMaterial)
                 half4 _BaseMap_ST;
-                half4 _Color1;
+                half4 _BaseColor;
+                half4 _EmissionColor;
                 half4 _Color2;
                 half _Roughness;
                 half _Metallic;
@@ -95,15 +102,19 @@ Shader"Arena/Window"
                 o.fogCoords = ComputeFogFactor(o.vertex.z);
 
     
-                 VertexNormalInputs normalInputs = GetVertexNormalInputs(normalOS, tangentOS);
+                VertexNormalInputs normalInputs = GetVertexNormalInputs(normalOS, tangentOS);
 
                 o.normalWS = normalInputs.normalWS;
                 o.tangentWS = float4(normalInputs.tangentWS, tangentOS.w);
                 o.bitangentWS = normalInputs.bitangentWS;
 
-                //float4 bc = UNITY_ACCESS_DOTS_INSTANCED_PROP(float4, _BaseColor);
-                half3 bakedGI_Color = SHADERGRAPH_BAKED_GI(vertInputs.positionWS, normalInputs.normalWS, half2(0, 0), half2(0, 0), true);
-                o.color.rgb = bakedGI_Color;
+#if LIGHTMAP_ON
+                TG_TRANSFORM_LIGHTMAP_TEX(v.lightmapUV, o.lightmapUV)
+                TG_SET_LIGHTMAP_INDEX(o.lightmapUV)
+#else
+                half3 bakedGI_Color = SampleSH(normalInputs.normalWS);
+                o.color.rgb = bakedGI_Color.rgb;
+#endif
                 
                 return o;
             }
@@ -112,7 +123,7 @@ Shader"Arena/Window"
             {
                 //UNITY_SETUP_INSTANCE_ID(i);
                 half mask = tex2D(_BaseMap, i.uv).r;
-                half4 diffuse = lerp(_Color1, _Color2, mask);
+                half4 diffuse = lerp(_BaseColor, _Color2, mask);
     
                 half3 normalTS = UnpackNormal(tex2D(_BumpMap, i.uv));
                 half3 viewDirWS = GetWorldSpaceNormalizeViewDir(i.positionWS);
@@ -121,13 +132,56 @@ Shader"Arena/Window"
 
                 float3 normalWS = TransformTangentToWorld(normalTS.xyz, tangentToWorld, true);
 
-                half roughness = _Roughness * lerp(_Color1.a, _Color2.a, mask);
+                half roughness = _Roughness * lerp(_BaseColor.a, _Color2.a, mask);
 
-                half4 finalColor = LightingPBR(diffuse, i.color.rgb, viewDirWS, normalWS, _Metallic, roughness);
+#if LIGHTMAP_ON
+                half3 lighting = TG_SampleLightmap(i.lightmapUV);
+#else
+                half3 lighting = i.color.rgb;
+#endif
+
+                half4 finalColor = LightingPBR(diffuse, lighting, viewDirWS, normalWS, _Metallic, roughness);
 
                 // apply fog
                 return half4(MixFog(finalColor, i.fogCoords), finalColor.a);
             }
+            ENDHLSL
+        }
+
+        Pass
+        {
+            Name "Meta"
+            Tags { "LightMode" = "Meta" }
+            
+            Cull Off
+            HLSLPROGRAM
+
+            #pragma target 2.0
+            
+            #pragma vertex UniversalVertexMeta
+            #pragma fragment UniversalFragmentMetaCustom
+            #pragma shader_feature_local_fragment _SPECULAR_SETUP
+            #pragma shader_feature_local_fragment _EMISSION
+            #pragma shader_feature_local_fragment _METALLICSPECGLOSSMAP
+            #pragma shader_feature_local_fragment _ALPHATEST_ON
+            #pragma shader_feature_local_fragment _ _SMOOTHNESS_TEXTURE_ALBEDO_CHANNEL_A
+            #pragma shader_feature_local _ _DETAIL_MULX2 _DETAIL_SCALED
+            #pragma shader_feature_local_fragment _SPECGLOSSMAP
+            #pragma shader_feature EDITOR_VISUALIZATION
+            
+            #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Core.hlsl"
+            
+            CBUFFER_START(UnityPerMaterial)
+                half4 _BaseMap_ST;
+                half4 _BaseColor;
+                half4 _EmissionColor;
+                half4 _Color2;
+                half _Roughness;
+                half _Metallic;
+            CBUFFER_END
+
+            #include "Packages/com.tzargames.renderer/Shaders/MetaPass.hlsl"
+            
             ENDHLSL
         }
     }

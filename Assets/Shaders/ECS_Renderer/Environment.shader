@@ -19,6 +19,7 @@ Shader "Arena/Environment"
         _MetallicGlossMap("Metallic/Smoothness map", 2D) = "white" {}
         _Metallic("Metallic", Range(0,1)) = 1.0
     	_Smoothness ("Smoothness", Range(0,1)) = 0.5
+        _HighlightRemove("Highlight remove", Float) = 0
         [HDR] _EmissionColor("Emission color", Color) = (0,0,0)
         
         [Toggle(USE_UNDERWATER)]
@@ -43,6 +44,7 @@ Shader "Arena/Environment"
 
             HLSLPROGRAM
             #pragma target 4.5
+            #pragma require cubearray
             #pragma exclude_renderers gles //excluded shader from OpenGL ES 2.0 because it uses non-square matrices
             #pragma vertex vert
             #pragma fragment frag
@@ -82,7 +84,7 @@ Shader "Arena/Environment"
             {
                 half4 vertex : SV_POSITION;
                 half2 uv : TEXCOORD0;
-                half fogCoords : TEXCOORD1;
+                half2 data : TEXCOORD1;
 
                 float3 normalWS : TEXCOORD3;
                 float4 tangentWS : TEXCOORD4;
@@ -103,6 +105,7 @@ Shader "Arena/Environment"
 				half _Metallic;
 				half _Smoothness;
                 half _Cutoff;
+                half _HighlightRemove;
             CBUFFER_END
 
             sampler2D _BaseMap;
@@ -110,17 +113,13 @@ Shader "Arena/Environment"
             sampler2D _MetallicGlossMap;
 
 #if defined(DOTS_INSTANCING_ON)
-            //UNITY_DOTS_INSTANCING_START(UserPropertyMetadata)
-                //UNITY_DOTS_INSTANCED_PROP(uint, unity_LightmapIndex)
-                //UNITY_DOTS_INSTANCED_PROP(float4, unity_LightmapST)
-            //UNITY_DOTS_INSTANCING_END(UserPropertyMetadata)
-
-            UNITY_DOTS_INSTANCING_START(BuiltinPropertyMetadata)
-            UNITY_DOTS_INSTANCING_END(BuiltinPropertyMetadata)
+            UNITY_DOTS_INSTANCING_START(UserPropertyMetadata)
+                UNITY_DOTS_INSTANCED_PROP(float2, tg_CommonInstanceData)
+            UNITY_DOTS_INSTANCING_END(UserPropertyMetadata)
 #endif
 
             v2f vert (appdata v)
-            {
+            { 
                 v2f o;
                 UNITY_SETUP_INSTANCE_ID(v);
 
@@ -133,7 +132,10 @@ Shader "Arena/Environment"
                 o.positionWS = vertInputs.positionWS;
 
                 o.uv = TRANSFORM_TEX(v.uv, _BaseMap);
-                o.fogCoords = ComputeFogFactor(o.vertex.z);
+                o.data.x = ComputeFogFactor(o.vertex.z);
+
+                float2 instanceData = tg_InstanceData;
+                o.data.y = TG_REFL_PROBE_INDEX(instanceData);
 
                 VertexNormalInputs normalInputs = GetVertexNormalInputs(normalOS, tangentOS);
 
@@ -143,7 +145,7 @@ Shader "Arena/Environment"
 
 #if LIGHTMAP_ON
                 TG_TRANSFORM_LIGHTMAP_TEX(v.lightmapUV, o.lightmapUV)
-                TG_SET_LIGHTMAP_INDEX(o.lightmapUV)
+                TG_SET_LIGHTMAP_INDEX(instanceData, o.lightmapUV)
                 
                 o.color.rgb = 0;
 #else
@@ -191,15 +193,25 @@ Shader "Arena/Environment"
                 half smoothness = mesm.a * _Smoothness;
                 half roughness = 1 - smoothness;
 
-                half4 finalColor = LightingPBR(diffuse, ambientLight, viewDirWS, normalWS, mesm.rgb, roughness);
+                half3 envMapColor = TG_ReflectionProbe(viewDirWS, normalWS, i.data.y,roughness * 4);
+
+                half3 remEnvMapColor = clamp(envMapColor - 0.5, 0, 10);
+                remEnvMapColor = remEnvMapColor * _HighlightRemove;
+                remEnvMapColor = envMapColor - remEnvMapColor;
+
+                half lum = tg_luminance(ambientLight);
+
+                envMapColor = lerp(remEnvMapColor, envMapColor, saturate(lum * lum * lum));
+
+                half4 finalColor = LightingPBR(diffuse, ambientLight, viewDirWS, normalWS, mesm.rgb, roughness, envMapColor);
 
                 #if USE_UNDERWATER
-                finalColor.rgb = lerp(finalColor.rgb, _Underwater_color, i.color.a);
+                finalColor.rgb = lerp(finalColor.rgb, _Underwater_color * ambientLight, i.color.a);
                 #endif
                 
                 
                 // apply fog
-                return half4(MixFog(finalColor.rgb, i.fogCoords), finalColor.a);
+                return half4(MixFog(finalColor.rgb, i.data.x), finalColor.a);
             }
             ENDHLSL
         }
@@ -235,7 +247,8 @@ Shader "Arena/Environment"
                 half4 _EmissionColor;
 				half _Metallic;
 				half _Smoothness;
-                half _Cutoff;  
+                half _Cutoff;
+                half _HighlightRemove;
             CBUFFER_END
 
             #include "Packages/com.tzargames.renderer/Shaders/MetaPass.hlsl"

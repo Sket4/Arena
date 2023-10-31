@@ -13,16 +13,19 @@ Shader"Arena/Window"
 
         _Roughness("Roughness", Range(0,1)) = 1
         _Metallic("Metallic", Range(0,1)) = 1
+        
+        [HideInInspector][NoScaleOffset]unity_Lightmaps("unity_Lightmaps", 2DArray) = "" {} 
     }
     SubShader
     {
         Tags { "RenderType"="Opaque" }
         LOD 100
 
-        Pass
+        Pass 
         {
             HLSLPROGRAM
             #pragma target 4.5
+            #pragma require cubearray
             #pragma exclude_renderers gles //excluded shader from OpenGL ES 2.0 because it uses non-square matrices
             #pragma vertex vert
             #pragma fragment frag
@@ -53,7 +56,7 @@ Shader"Arena/Window"
             struct v2f
             {
                 half2 uv : TEXCOORD0;
-                half fogCoords : TEXCOORD1;
+                half3 data : TEXCOORD1;
                 half4 vertex : SV_POSITION;
                 
                 
@@ -79,6 +82,7 @@ Shader"Arena/Window"
 
 #if defined(DOTS_INSTANCING_ON)
                 UNITY_DOTS_INSTANCING_START(UserPropertyMetadata)
+                    UNITY_DOTS_INSTANCED_PROP(float2, tg_CommonInstanceData)
                 UNITY_DOTS_INSTANCING_END(UserPropertyMetadata)
 #endif
             
@@ -99,8 +103,10 @@ Shader"Arena/Window"
                 o.positionWS = vertInputs.positionWS;
 
                 o.uv = TRANSFORM_TEX(v.uv, _BaseMap);
-                o.fogCoords = ComputeFogFactor(o.vertex.z);
+                o.data.x = ComputeFogFactor(o.vertex.z);
 
+                float2 instanceData = tg_InstanceData;
+                o.data.y = TG_REFL_PROBE_INDEX(instanceData);
     
                 VertexNormalInputs normalInputs = GetVertexNormalInputs(normalOS, tangentOS);
 
@@ -110,7 +116,7 @@ Shader"Arena/Window"
 
 #if LIGHTMAP_ON
                 TG_TRANSFORM_LIGHTMAP_TEX(v.lightmapUV, o.lightmapUV)
-                TG_SET_LIGHTMAP_INDEX(o.lightmapUV)
+                TG_SET_LIGHTMAP_INDEX(instanceData, o.lightmapUV)
 #else
                 half3 bakedGI_Color = SampleSH(normalInputs.normalWS);
                 o.color.rgb = bakedGI_Color.rgb;
@@ -140,10 +146,11 @@ Shader"Arena/Window"
                 half3 lighting = i.color.rgb;
 #endif
 
-                half4 finalColor = LightingPBR(diffuse, lighting, viewDirWS, normalWS, _Metallic, roughness);
+                half3 envMapColor = TG_ReflectionProbe(viewDirWS, normalWS, i.data.y, roughness * 4);
+                half4 finalColor = LightingPBR(diffuse, lighting, viewDirWS, normalWS, _Metallic, roughness, envMapColor);
 
                 // apply fog
-                return half4(MixFog(finalColor, i.fogCoords), finalColor.a);
+                return half4(MixFog(finalColor, i.data.x), finalColor.a);
             }
             ENDHLSL
         }

@@ -18,6 +18,8 @@ Shader"Arena/Water"
         [Toggle(USE_CUSTOM_REFLECTIONS)]
         _UseCustomReflections("Use custom reflections", Float) = 0
         [NoScaleOffset] _CustomReflectionTex("Custom reflection  (HDR)", Cube) = "white" {}
+        
+        [HideInInspector][NoScaleOffset]unity_Lightmaps("unity_Lightmaps", 2DArray) = "" {} 
     }
     SubShader
     {
@@ -29,6 +31,7 @@ Shader"Arena/Water"
         {
             HLSLPROGRAM
             #pragma target 4.5
+            #pragma require cubearray
             #pragma exclude_renderers gles //excluded shader from OpenGL ES 2.0 because it uses non-square matrices
             #pragma vertex vert
             #pragma fragment frag
@@ -61,7 +64,7 @@ Shader"Arena/Water"
             struct v2f
             {
                 float2 uv : TEXCOORD0;
-                half fogCoords : TEXCOORD1;
+                half2 data : TEXCOORD1;
                 half4 vertex : SV_POSITION;
                 half3 color : TEXCOORD2;
                 
@@ -93,6 +96,7 @@ Shader"Arena/Water"
 
 #if defined(DOTS_INSTANCING_ON)
                 UNITY_DOTS_INSTANCING_START(UserPropertyMetadata)
+                    UNITY_DOTS_INSTANCED_PROP(float2, tg_CommonInstanceData)
                 UNITY_DOTS_INSTANCING_END(UserPropertyMetadata)
 #endif
 
@@ -118,8 +122,9 @@ Shader"Arena/Water"
                 o.positionWS = vertInputs.positionWS;
 
                 o.uv = v.uv;//TRANSFORM_TEX(v.uv, _Bum);
-                o.fogCoords = ComputeFogFactor(o.vertex.z);
-
+                o.data.x = ComputeFogFactor(o.vertex.z);
+                float2 instanceData = tg_InstanceData;
+                o.data.y = TG_REFL_PROBE_INDEX(instanceData);
     
                 VertexNormalInputs normalInputs = GetVertexNormalInputs(normalOS, tangentOS);
 
@@ -131,7 +136,7 @@ Shader"Arena/Water"
 
 #if LIGHTMAP_ON
                 TG_TRANSFORM_LIGHTMAP_TEX(v.uv2, o.uv2)
-                TG_SET_LIGHTMAP_INDEX(o.uv2)
+                TG_SET_LIGHTMAP_INDEX(instanceData, o.uv2)
 #endif
                 
                 return o;
@@ -191,25 +196,33 @@ Shader"Arena/Water"
 	            //half3 reflColor = texCUBE(_CustomReflectionTex, reflectVec);
 	            half3 reflColor = DecodeHDREnvironment(SAMPLE_TEXTURECUBE_LOD(_CustomReflectionTex, sampler_CustomReflectionTex, reflectVec, reflectionLOD), unity_SpecCube0_HDR);
                 #else
-                half3 reflColor = TG_ReflectionProbe(viewDirWS, normalWS, reflectionLOD);
+                half3 reflColor = TG_ReflectionProbe(viewDirWS, normalWS, i.data.y, reflectionLOD);  
                 #endif
                 
                 half4 diffuse;
                 diffuse.rgb = lerp(reflColor, _BaseColor.rgb, rim);
-                diffuse.a = i.color.g;
+                
 
+                
 #if LIGHTMAP_ON
-                diffuse.rgb *= TG_SampleLightmap(i.uv2);
+                half3 lighting = TG_SampleLightmap(i.uv2);
+#else
+                half3 lighting = half3(1,1,1);
 #endif
+
+                diffuse.rgb *= lighting;
+
+                half lum = tg_luminance(lighting);
+                diffuse.a = i.color.g;
                 
                 //half4 finalColor = LightingPBR(diffuse, 1, viewDirWS, normalWS, _Metallic, _Roughness);
                 half4 finalColor = diffuse;
                 
                 // apply fog
                 #if USE_CUSTOM_FOG_COLOR
-                return half4(MixFogColor(finalColor, _CustomFogColor.rgb, i.fogCoords), finalColor.a);
+                return half4(MixFogColor(finalColor, _CustomFogColor.rgb, i.data.x), finalColor.a);
                 #else
-                return half4(MixFogColor(finalColor, unity_FogColor.rgb, i.fogCoords), finalColor.a);
+                return half4(MixFogColor(finalColor, unity_FogColor.rgb, i.data.x), finalColor.a);
                 #endif
                 
             }

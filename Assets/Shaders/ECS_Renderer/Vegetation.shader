@@ -24,6 +24,7 @@ Shader "Arena/Vegetation"
         _Metallic("Metallic", Range(0,1)) = 1.0
     	_Smoothness ("Smoothness", Range(0,1)) = 0.5
         [HDR] _EmissionColor("Emission color", Color) = (0,0,0)
+        _EmissionMap("Emission", 2D) = "white" {}
         
         [HideInInspector][NoScaleOffset]unity_Lightmaps("unity_Lightmaps", 2DArray) = "" {} 
     }
@@ -41,6 +42,7 @@ Shader "Arena/Vegetation"
 
             HLSLPROGRAM
             #pragma target 4.5
+            #pragma require cubearray
             #pragma exclude_renderers gles //excluded shader from OpenGL ES 2.0 because it uses non-square matrices
             #pragma vertex vert
             #pragma fragment frag
@@ -52,6 +54,7 @@ Shader "Arena/Vegetation"
             #pragma shader_feature __ TG_TRANSPARENT
             #pragma shader_feature TG_USE_ALPHACLIP
             #pragma multi_compile _ LIGHTMAP_ON
+            
 
             
             #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Core.hlsl"
@@ -75,7 +78,7 @@ Shader "Arena/Vegetation"
             {
                 half4 vertex : SV_POSITION;
                 half2 uv : TEXCOORD0;
-                half fogCoords : TEXCOORD1;
+                half2 data : TEXCOORD1;
 
                 float3 normalWS : TEXCOORD3;
                 float4 tangentWS : TEXCOORD4;
@@ -98,16 +101,13 @@ Shader "Arena/Vegetation"
 
             sampler2D _BaseMap;
             sampler2D _BumpMap;
+            sampler2D _EmissionMap;
             sampler2D _MetallicGlossMap;
 
 #if defined(DOTS_INSTANCING_ON)
-            //UNITY_DOTS_INSTANCING_START(UserPropertyMetadata)
-                //UNITY_DOTS_INSTANCED_PROP(uint, unity_LightmapIndex)
-                //UNITY_DOTS_INSTANCED_PROP(float4, unity_LightmapST)
-            //UNITY_DOTS_INSTANCING_END(UserPropertyMetadata)
-
-            UNITY_DOTS_INSTANCING_START(BuiltinPropertyMetadata)
-            UNITY_DOTS_INSTANCING_END(BuiltinPropertyMetadata)
+            UNITY_DOTS_INSTANCING_START(UserPropertyMetadata)
+                UNITY_DOTS_INSTANCED_PROP(float2, tg_CommonInstanceData)
+            UNITY_DOTS_INSTANCING_END(UserPropertyMetadata)
 #endif
 
             v2f vert (appdata v)
@@ -117,7 +117,10 @@ Shader "Arena/Vegetation"
 
                 float3 positionOS = v.vertex;
 
-                positionOS.y += sin(_Time.z) * 0.1;
+                float4 time = _Time;
+                half wind = (sin(time.z + (positionOS.x + positionOS.z) * 2) + sin(time.y) + sin(time.w)) * 0.05;
+                positionOS.x += wind;
+                positionOS.z += wind;
                 
                 float3 normalOS = v.normal;
                 float4 tangentOS = v.tangent;
@@ -127,8 +130,11 @@ Shader "Arena/Vegetation"
                 o.positionWS = vertInputs.positionWS;
 
                 o.uv = TRANSFORM_TEX(v.uv, _BaseMap);
-                o.fogCoords = ComputeFogFactor(o.vertex.z);
+                o.data.x = ComputeFogFactor(o.vertex.z);
 
+                float2 instanceData = tg_InstanceData;
+                o.data.y = TG_REFL_PROBE_INDEX(instanceData);
+                
                 VertexNormalInputs normalInputs = GetVertexNormalInputs(normalOS, tangentOS);
 
                 o.normalWS = normalInputs.normalWS;
@@ -137,7 +143,7 @@ Shader "Arena/Vegetation"
 
 #if LIGHTMAP_ON
                 TG_TRANSFORM_LIGHTMAP_TEX(v.lightmapUV, o.lightmapUV)
-                TG_SET_LIGHTMAP_INDEX(o.lightmapUV)
+                TG_SET_LIGHTMAP_INDEX(instanceData, o.lightmapUV)
 #endif
 
                 #if DEBUG_VERTEX_COLOR
@@ -154,6 +160,7 @@ Shader "Arena/Vegetation"
                 #endif
                 
             	half4 diffuse = tex2D(_BaseMap, i.uv) * _BaseColor;
+                half4 emission = tex2D(_EmissionMap, i.uv) * _EmissionColor;
 
 #if defined(TG_USE_ALPHACLIP)
                 clip(diffuse.a - _Cutoff);
@@ -171,6 +178,9 @@ Shader "Arena/Vegetation"
 
 #if LIGHTMAP_ON
                 ambientLight = TG_SampleLightmap(i.lightmapUV);
+#else
+                ambientLight = 1; 
+                
 #endif
 
                 half4 mesm = tex2D(_MetallicGlossMap, i.uv);
@@ -179,10 +189,13 @@ Shader "Arena/Vegetation"
                 half smoothness = mesm.a * _Smoothness;
                 half roughness = 1 - smoothness;
 
-                half4 finalColor = LightingPBR(diffuse, ambientLight, viewDirWS, normalWS, mesm.rgb, roughness);
+                half3 envMapColor = TG_ReflectionProbe(viewDirWS, normalWS, i.data.y, roughness * 4);
+                half4 finalColor = LightingPBR(diffuse, ambientLight, viewDirWS, normalWS, mesm.rgb, roughness, envMapColor);
+
+                finalColor.rgb += diffuse.rgb * ambientLight * 1 + emission.rgb;
                 
                 // apply fog
-                return half4(MixFog(finalColor.rgb, i.fogCoords), finalColor.a);
+                return half4(MixFog(finalColor.rgb, i.data.x), finalColor.a);  
             }
             ENDHLSL
         }

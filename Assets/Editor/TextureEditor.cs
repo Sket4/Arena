@@ -114,6 +114,11 @@ namespace Arena.Editor
                         {
                             roughnessToSmoothness();
                         }
+                        
+                        if (GUILayout.Button("Restore normals"))
+                        {
+                            restoreNormals();
+                        }
                     }
                 }
 
@@ -230,6 +235,30 @@ namespace Arena.Editor
                     pixel.b = 1.0f - pixel.b;
                 }
             });
+        }
+
+        void restoreNormals()
+        {
+            modifyTexture((sourcePixels =>
+            {
+                for (int i = 0; i < sourcePixels.Length; i++)
+                {
+                    ref Color pixel = ref sourcePixels[i];
+
+                    var normal = new Vector3(pixel.r * 2 - 1, pixel.g * 2 - 1, 1);
+                    normal.z = Mathf.Sqrt(1.0f - Mathf.Clamp01(Vector2.Dot(normal, normal)));
+                    
+                    normal.Normalize();
+
+                    normal.x = (normal.x + 1.0f) / 2.0f;
+                    normal.y = (normal.y + 1.0f) / 2.0f;
+                    normal.z = (normal.z + 1.0f) / 2.0f;
+                    
+                    pixel.r = normal.x;
+                    pixel.g = normal.y;
+                    pixel.b = normal.z;
+                }
+            }));
         }
 
         void normalStrength(float normalStrength)

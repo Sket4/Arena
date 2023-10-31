@@ -57,14 +57,13 @@ Shader"Arena/Window"
             struct v2f
             {
                 half2 uv : TEXCOORD0;
-                half3 data : TEXCOORD1;
+                nointerpolation half2 instanceData : TEXCOORD1;
                 half4 vertex : SV_POSITION;
-                
                 
                 float3 normalWS : TEXCOORD3;
                 float4 tangentWS : TEXCOORD4;
                 float3 bitangentWS : TEXCOORD5;
-                float3 positionWS : TEXCOORD6;
+                float4 positionWS_fog : TEXCOORD6;
 #if LIGHTMAP_ON
                 TG_DECLARE_LIGHTMAP_UV(7)
 #else
@@ -101,13 +100,13 @@ Shader"Arena/Window"
 
                 VertexPositionInputs vertInputs = GetVertexPositionInputs(positionOS);    //This function calculates all the relative spaces of the objects vertices
                 o.vertex = vertInputs.positionCS;
-                o.positionWS = vertInputs.positionWS;
+                o.positionWS_fog.xyz = vertInputs.positionWS;
 
                 o.uv = TRANSFORM_TEX(v.uv, _BaseMap);
-                o.data.x = ComputeFogFactor(o.vertex.z);
+                o.positionWS_fog.w = ComputeFogFactor(o.vertex.z);
 
                 float4 instanceData = tg_InstanceData;
-                o.data.y = TG_REFL_PROBE_INDEX(instanceData);
+                o.instanceData = instanceData.xy;
     
                 VertexNormalInputs normalInputs = GetVertexNormalInputs(normalOS, tangentOS);
 
@@ -117,7 +116,6 @@ Shader"Arena/Window"
 
 #if LIGHTMAP_ON
                 TG_TRANSFORM_LIGHTMAP_TEX(v.lightmapUV, o.lightmapUV)
-                TG_SET_LIGHTMAP_INDEX(instanceData, o.lightmapUV)
 #else
                 half3 bakedGI_Color = SampleSH(normalInputs.normalWS);
                 o.color.rgb = bakedGI_Color.rgb;
@@ -133,7 +131,7 @@ Shader"Arena/Window"
                 half4 diffuse = lerp(_BaseColor, _Color2, mask);
     
                 half3 normalTS = UnpackNormal(tex2D(_BumpMap, i.uv));
-                half3 viewDirWS = GetWorldSpaceNormalizeViewDir(i.positionWS);
+                half3 viewDirWS = GetWorldSpaceNormalizeViewDir(i.positionWS_fog.xyz);
 
                 half3x3 tangentToWorld = half3x3(i.tangentWS.xyz, i.bitangentWS.xyz, i.normalWS.xyz);
 
@@ -142,16 +140,16 @@ Shader"Arena/Window"
                 half roughness = _Roughness * lerp(_BaseColor.a, _Color2.a, mask);
 
 #if LIGHTMAP_ON
-                half3 lighting = TG_SampleLightmap(i.lightmapUV);
+                half3 lighting = TG_SAMPLE_LIGHTMAP(i.lightmapUV, i.instanceData.x);
 #else
                 half3 lighting = i.color.rgb;
 #endif
 
-                half3 envMapColor = TG_ReflectionProbe(viewDirWS, normalWS, i.data.y, roughness * 4);
+                half3 envMapColor = TG_ReflectionProbe(viewDirWS, normalWS, i.instanceData.y, roughness * 4);
                 half4 finalColor = LightingPBR(diffuse, lighting, viewDirWS, normalWS, _Metallic, roughness, envMapColor);
 
                 // apply fog
-                return half4(MixFog(finalColor, i.data.x), finalColor.a);
+                return half4(MixFog(finalColor, i.positionWS_fog.w), finalColor.a);
             }
             ENDHLSL
         }

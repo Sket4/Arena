@@ -84,17 +84,17 @@ Shader "Arena/Environment"
             struct v2f
             {
                 half4 vertex : SV_POSITION;
-                half2 uv : TEXCOORD0;
-                half2 data : TEXCOORD1;
+                float2 uv : TEXCOORD0;
+                nointerpolation half2 instanceData : TEXCOORD1;
 
-                float3 normalWS : TEXCOORD3;
-                float4 tangentWS : TEXCOORD4;
-                float3 bitangentWS : TEXCOORD5;
-                float3 positionWS : TEXCOORD6;
+                float3 normalWS : TEXCOORD2;
+                float4 tangentWS : TEXCOORD3;
+                float3 bitangentWS : TEXCOORD4;
+                float4 positionWS_fog : TEXCOORD5;
 
-                half4 color : TEXCOORD7;
+                half4 color : TEXCOORD6;
 #if LIGHTMAP_ON
-                TG_DECLARE_LIGHTMAP_UV(8)
+                TG_DECLARE_LIGHTMAP_UV(7)
 #endif
             };
 
@@ -116,6 +116,7 @@ Shader "Arena/Environment"
 #if defined(DOTS_INSTANCING_ON)
             UNITY_DOTS_INSTANCING_START(UserPropertyMetadata)
                 UNITY_DOTS_INSTANCED_PROP(float4, tg_CommonInstanceData)
+                //UNITY_DOTS_INSTANCED_PROP_OVERRIDE_REQUIRED(float4, tg_CommonInstanceData)
             UNITY_DOTS_INSTANCING_END(UserPropertyMetadata)
 #endif
 
@@ -130,13 +131,13 @@ Shader "Arena/Environment"
                 
                 VertexPositionInputs vertInputs = GetVertexPositionInputs(positionOS);    //This function calculates all the relative spaces of the objects vertices
                 o.vertex = vertInputs.positionCS;
-                o.positionWS = vertInputs.positionWS;
+                o.positionWS_fog.xyz = vertInputs.positionWS;
 
                 o.uv = TRANSFORM_TEX(v.uv, _BaseMap);
-                o.data.x = ComputeFogFactor(o.vertex.z);
+                o.positionWS_fog.w = ComputeFogFactor(o.vertex.z);
 
                 float4 instanceData = tg_InstanceData;
-                o.data.y = TG_REFL_PROBE_INDEX(instanceData);
+                o.instanceData.xy = instanceData.xy;
 
                 VertexNormalInputs normalInputs = GetVertexNormalInputs(normalOS, tangentOS);
 
@@ -146,7 +147,6 @@ Shader "Arena/Environment"
 
 #if LIGHTMAP_ON
                 TG_TRANSFORM_LIGHTMAP_TEX(v.lightmapUV, o.lightmapUV)
-                TG_SET_LIGHTMAP_INDEX(instanceData, o.lightmapUV)
                 
                 o.color.rgb = 0;
 #else
@@ -174,7 +174,7 @@ Shader "Arena/Environment"
             	
             	half3 normalTS = UnpackNormal(tex2D(_BumpMap, i.uv));
                 //normalTS.xy *= 2;
-                half3 viewDirWS = GetWorldSpaceNormalizeViewDir(i.positionWS);
+                half3 viewDirWS = GetWorldSpaceNormalizeViewDir(i.positionWS_fog.xyz);
 
                 half3x3 tangentToWorld = half3x3(i.tangentWS.xyz, i.bitangentWS.xyz, i.normalWS.xyz); 
 
@@ -183,7 +183,7 @@ Shader "Arena/Environment"
                 real3 ambientLight;
 
 #if LIGHTMAP_ON
-                ambientLight = TG_SampleLightmap(i.lightmapUV);
+                ambientLight = TG_SAMPLE_LIGHTMAP(i.lightmapUV, i.instanceData.x);
 #else
                 ambientLight = i.color.rgb;
 #endif
@@ -194,7 +194,7 @@ Shader "Arena/Environment"
                 half smoothness = mesm.a * _Smoothness;
                 half roughness = 1 - smoothness;
 
-                half3 envMapColor = TG_ReflectionProbe(viewDirWS, normalWS, i.data.y,roughness * 4);
+                half3 envMapColor = TG_ReflectionProbe(viewDirWS, normalWS, i.instanceData.y,roughness * 4);
 
                 half3 remEnvMapColor = clamp(envMapColor - 0.5, 0, 10);
                 remEnvMapColor = remEnvMapColor * _HighlightRemove;
@@ -212,7 +212,7 @@ Shader "Arena/Environment"
                 
                 
                 // apply fog
-                return half4(MixFog(finalColor.rgb, i.data.x), finalColor.a);
+                return half4(MixFog(finalColor.rgb, i.positionWS_fog.w), finalColor.a);
             }
             ENDHLSL
         }

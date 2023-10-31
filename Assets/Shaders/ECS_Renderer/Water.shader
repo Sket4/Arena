@@ -6,7 +6,7 @@ Shader"Arena/Water"
         _Tiling_and_speed_2("Tiling and speed 1", Vector) = (1,1,1,1)
         _Tiling_and_speed_3("Tiling and speed 3", Vector) = (1,1,1,1)
         _BaseColor("Color", Color) = (1,1,1,1)
-        _BumpMap ("Normal map", 2D) = "bump" {}
+        _BumpMap ("Normal map", 2D) = "white" {}
         _Roughness("Roughness", Range(0,1)) = 1
         _Metallic("Metallic", Range(0,1)) = 1
         _Rim_mult("Rim multiplier", Float) = 1
@@ -65,14 +65,14 @@ Shader"Arena/Water"
             struct v2f
             {
                 float2 uv : TEXCOORD0;
-                half2 data : TEXCOORD1;
+                nointerpolation half2 instanceData : TEXCOORD1;
                 half4 vertex : SV_POSITION;
                 half3 color : TEXCOORD2;
                 
                 float3 normalWS : TEXCOORD3;
                 float4 tangentWS : TEXCOORD4;
                 float3 bitangentWS : TEXCOORD5;
-                float3 positionWS : TEXCOORD6;
+                float4 positionWS_fog : TEXCOORD6;
 
 #if LIGHTMAP_ON
                 #if defined(UNITY_DOTS_INSTANCING_ENABLED)
@@ -120,12 +120,12 @@ Shader"Arena/Water"
 
                 VertexPositionInputs vertInputs = GetVertexPositionInputs(positionOS);    //This function calculates all the relative spaces of the objects vertices
                 o.vertex = vertInputs.positionCS;
-                o.positionWS = vertInputs.positionWS;
+                o.positionWS_fog.xyz = vertInputs.positionWS;
 
                 o.uv = v.uv;//TRANSFORM_TEX(v.uv, _Bum);
-                o.data.x = ComputeFogFactor(o.vertex.z);
+                o.positionWS_fog.a = ComputeFogFactor(o.vertex.z);
                 float4 instanceData = tg_InstanceData;
-                o.data.y = TG_REFL_PROBE_INDEX(instanceData);
+                o.instanceData = instanceData.xy;
     
                 VertexNormalInputs normalInputs = GetVertexNormalInputs(normalOS, tangentOS);
 
@@ -133,11 +133,10 @@ Shader"Arena/Water"
                 o.tangentWS = float4(normalInputs.tangentWS, tangentOS.w);
                 o.bitangentWS = normalInputs.bitangentWS;
 
-                o.color.rgb = v.color;
+                o.color = v.color;
 
 #if LIGHTMAP_ON
                 TG_TRANSFORM_LIGHTMAP_TEX(v.uv2, o.uv2)
-                TG_SET_LIGHTMAP_INDEX(instanceData, o.uv2)
 #endif
                 
                 return o;
@@ -166,23 +165,23 @@ Shader"Arena/Water"
                 uv1 += _Tiling_and_speed_1.zw * _Time.y;
                 float3 normalTS = tex2D(_BumpMap, uv1);
 
-                float2 uv2 = i.uv * _Tiling_and_speed_2.xy;
-                uv2 += _Tiling_and_speed_2.zw * _Time.y;
-                normalTS.xy += tex2D(_BumpMap, uv2);
-
-                float2 uv3 = i.uv * _Tiling_and_speed_3.xy;
-                uv3 += _Tiling_and_speed_3.zw * _Time.y;
-                normalTS.xy += tex2D(_BumpMap, uv3);
-
-                normalTS.xy *= 0.3333333;
+                 float2 uv2 = i.uv * _Tiling_and_speed_2.xy;
+                 uv2 += _Tiling_and_speed_2.zw * _Time.y;
+                 normalTS.xy += tex2D(_BumpMap, uv2);
+                //
+                 float2 uv3 = i.uv * _Tiling_and_speed_3.xy;
+                 uv3 += _Tiling_and_speed_3.zw * _Time.y;
+                 normalTS.xy += tex2D(_BumpMap, uv3);
+                
+                 normalTS.xy *= 0.333333;
                 
                 NormalReconstructZ_float(normalTS.xy, normalTS);
                 normalTS = UnpackNormal(float4(normalTS,0));
 
-                NormalStrength_float(normalTS, _Normal_strength, normalTS);
+                NormalStrength_float(normalTS, _Normal_strength * i.positionWS_fog.a, normalTS);
                 normalTS = normalize(normalTS);
-                
-                half3 viewDirWS = GetWorldSpaceNormalizeViewDir(i.positionWS);
+
+                half3 viewDirWS = GetWorldSpaceNormalizeViewDir(i.positionWS_fog.xyz);
 
                 half3x3 tangentToWorld = half3x3(i.tangentWS.xyz, i.bitangentWS.xyz, i.normalWS.xyz);
 
@@ -191,39 +190,36 @@ Shader"Arena/Water"
                 //mesm.rgb *= _Metallic;
                 float rim = saturate(dot(normalWS, viewDirWS) * _Rim_mult);
 
+
                 half reflectionLOD = _Roughness * 4;
                 #if USE_CUSTOM_REFLECTIONS
                 float3 reflectVec = reflect(-viewDirWS, normalWS);
-	            //half3 reflColor = texCUBE(_CustomReflectionTex, reflectVec);
 	            half3 reflColor = DecodeHDREnvironment(SAMPLE_TEXTURECUBE_LOD(_CustomReflectionTex, sampler_CustomReflectionTex, reflectVec, reflectionLOD), unity_SpecCube0_HDR);
                 #else
-                half3 reflColor = TG_ReflectionProbe(viewDirWS, normalWS, i.data.y, reflectionLOD);  
+                half3 reflColor = TG_ReflectionProbe(viewDirWS, normalWS, i.instanceData.y, reflectionLOD);  
                 #endif
                 
                 half4 diffuse;
                 diffuse.rgb = lerp(reflColor, _BaseColor.rgb, rim);
-                
 
                 
 #if LIGHTMAP_ON
-                half3 lighting = TG_SampleLightmap(i.uv2);
+                half3 lighting = TG_SAMPLE_LIGHTMAP(i.uv2, i.instanceData.x);
 #else
                 half3 lighting = half3(1,1,1);
 #endif
 
                 diffuse.rgb *= lighting;
 
-                half lum = tg_luminance(lighting);
                 diffuse.a = i.color.g;
                 
-                //half4 finalColor = LightingPBR(diffuse, 1, viewDirWS, normalWS, _Metallic, _Roughness);
                 half4 finalColor = diffuse;
                 
                 // apply fog
                 #if USE_CUSTOM_FOG_COLOR
-                return half4(MixFogColor(finalColor, _CustomFogColor.rgb, i.data.x), finalColor.a);
+                return half4(MixFogColor(finalColor, _CustomFogColor.rgb, i.positionWS_fog.a), finalColor.a);
                 #else
-                return half4(MixFogColor(finalColor, unity_FogColor.rgb, i.data.x), finalColor.a);
+                return half4(MixFogColor(finalColor, unity_FogColor.rgb, i.positionWS_fog.a), finalColor.a);
                 #endif
                 
             }

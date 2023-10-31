@@ -26,6 +26,7 @@ Shader"Arena/Window"
             HLSLPROGRAM
             #pragma target 4.5
             #pragma require cubearray
+            #pragma require 2darray
             #pragma exclude_renderers gles //excluded shader from OpenGL ES 2.0 because it uses non-square matrices
             #pragma vertex vert
             #pragma fragment frag
@@ -82,7 +83,7 @@ Shader"Arena/Window"
 
 #if defined(DOTS_INSTANCING_ON)
                 UNITY_DOTS_INSTANCING_START(UserPropertyMetadata)
-                    UNITY_DOTS_INSTANCED_PROP(float2, tg_CommonInstanceData)
+                    UNITY_DOTS_INSTANCED_PROP(float4, tg_CommonInstanceData)
                 UNITY_DOTS_INSTANCING_END(UserPropertyMetadata)
 #endif
             
@@ -105,7 +106,7 @@ Shader"Arena/Window"
                 o.uv = TRANSFORM_TEX(v.uv, _BaseMap);
                 o.data.x = ComputeFogFactor(o.vertex.z);
 
-                float2 instanceData = tg_InstanceData;
+                float4 instanceData = tg_InstanceData;
                 o.data.y = TG_REFL_PROBE_INDEX(instanceData);
     
                 VertexNormalInputs normalInputs = GetVertexNormalInputs(normalOS, tangentOS);

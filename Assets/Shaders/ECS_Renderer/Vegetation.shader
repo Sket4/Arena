@@ -43,6 +43,7 @@ Shader "Arena/Vegetation"
             HLSLPROGRAM
             #pragma target 4.5
             #pragma require cubearray
+            #pragma require 2darray
             #pragma exclude_renderers gles //excluded shader from OpenGL ES 2.0 because it uses non-square matrices
             #pragma vertex vert
             #pragma fragment frag
@@ -106,7 +107,7 @@ Shader "Arena/Vegetation"
 
 #if defined(DOTS_INSTANCING_ON)
             UNITY_DOTS_INSTANCING_START(UserPropertyMetadata)
-                UNITY_DOTS_INSTANCED_PROP(float2, tg_CommonInstanceData)
+                UNITY_DOTS_INSTANCED_PROP(float4, tg_CommonInstanceData)
             UNITY_DOTS_INSTANCING_END(UserPropertyMetadata)
 #endif
 
@@ -118,7 +119,7 @@ Shader "Arena/Vegetation"
                 float3 positionOS = v.vertex;
 
                 float4 time = _Time;
-                half wind = (sin(time.z + (positionOS.x + positionOS.z) * 2) + sin(time.y) + sin(time.w)) * 0.05;
+                half wind = (sin(time.z + (positionOS.x + positionOS.z) * 2) + sin(time.y) + sin(time.w)) * 0.05 * v.color.x;
                 positionOS.x += wind;
                 positionOS.z += wind;
                 

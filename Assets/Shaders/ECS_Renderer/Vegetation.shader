@@ -61,7 +61,7 @@ Shader "Arena/Vegetation"
             #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Core.hlsl"
             #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Lighting.hlsl"
             #include "Packages/com.tzargames.renderer/Shaders/Lighting.hlsl"
-
+            
             struct appdata
             {
                 float4 vertex : POSITION;
@@ -79,14 +79,19 @@ Shader "Arena/Vegetation"
             {
                 half4 vertex : SV_POSITION;
                 half2 uv : TEXCOORD0;
-                nointerpolation half2 instanceData : TEXCOORD1;
+                nointerpolation half4 instanceData : TEXCOORD1;
 
                 float3 normalWS : TEXCOORD3;
                 float4 tangentWS : TEXCOORD4;
                 float3 bitangentWS : TEXCOORD5;
                 float4 positionWS_fog : TEXCOORD6;
+
 #if LIGHTMAP_ON
-                TG_DECLARE_LIGHTMAP_UV(8)
+                TG_DECLARE_LIGHTMAP_UV(7)
+#else
+                nointerpolation half3 lightDir : TEXCOORD7;
+                nointerpolation half3 lightColor : TEXCOORD8;
+                nointerpolation half3 ambientColor : TEXCOORD9;
 #endif
             };
 
@@ -133,8 +138,10 @@ Shader "Arena/Vegetation"
                 o.uv = TRANSFORM_TEX(v.uv, _BaseMap);
                 o.positionWS_fog.a = ComputeFogFactor(o.vertex.z);
 
-                float2 instanceData = tg_InstanceData;
-                o.instanceData = instanceData.xy;
+                float4 instanceData = tg_InstanceData;
+                o.instanceData = instanceData;
+
+                
                 
                 VertexNormalInputs normalInputs = GetVertexNormalInputs(normalOS, tangentOS);
 
@@ -144,6 +151,9 @@ Shader "Arena/Vegetation"
 
 #if LIGHTMAP_ON
                 TG_TRANSFORM_LIGHTMAP_TEX(v.lightmapUV, o.lightmapUV)
+#else
+                TG_GetLightProbeDirAndColor(instanceData, o.lightDir, o.lightColor);
+                TG_GetLightProbeAmbientColor(instanceData, o.ambientColor);
 #endif
 
                 #if DEBUG_VERTEX_COLOR
@@ -179,7 +189,12 @@ Shader "Arena/Vegetation"
 #if LIGHTMAP_ON
                 ambientLight = TG_SAMPLE_LIGHTMAP(i.lightmapUV, i.instanceData.x);
 #else
-                ambientLight = 1; 
+                
+                #if defined(UNITY_DOTS_INSTANCING_ENABLED)
+                ambientLight = TG_CalculateLightProbeLighting(i.lightDir, i.lightColor, i.ambientColor, normalWS);
+                #else
+                ambientLight = SampleSH(normalWS); 
+                #endif
                 
 #endif
 
@@ -194,7 +209,7 @@ Shader "Arena/Vegetation"
                 half3 envMapColor = TG_ReflectionProbe(viewDirWS, normalWS, i.instanceData.y, roughness * 4);
                 half4 finalColor = LightingPBR(diffuse, ambientLight, viewDirWS, normalWS, mesm.rgb, roughness, envMapColor);
 
-                finalColor.rgb += diffuse.rgb * ambientLight * 1 + emission.rgb;
+                finalColor.rgb += /*diffuse.rgb * ambientLight * 1*/ + emission.rgb;
                 
                 // apply fog
                 return half4(MixFog(finalColor.rgb, i.positionWS_fog.w), finalColor.a);  

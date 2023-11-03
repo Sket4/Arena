@@ -62,12 +62,16 @@ Shader"Arena/Character"
                 half2 uv : TEXCOORD0;
                 half fogCoords : TEXCOORD1;
                 half4 vertex : SV_POSITION;
-                half3 color : TEXCOORD2;
+                nointerpolation half4 instanceData : TEXCOORD2;
                 
                 float3 normalWS : TEXCOORD3;
                 float4 tangentWS : TEXCOORD4;
                 float3 bitangentWS : TEXCOORD5;
                 float3 positionWS : TEXCOORD6;
+
+                nointerpolation half3 lightDir : TEXCOORD7;
+                nointerpolation half3 lightColor : TEXCOORD8;
+                nointerpolation half3 ambientColor : TEXCOORD9;
             };
 
             CBUFFER_START(UnityPerMaterial)
@@ -81,7 +85,8 @@ Shader"Arena/Character"
 
 #if defined(DOTS_INSTANCING_ON)
                 UNITY_DOTS_INSTANCING_START(UserPropertyMetadata)
-                UNITY_DOTS_INSTANCED_PROP(uint4, _SkinningData)
+                    UNITY_DOTS_INSTANCED_PROP(uint4, _SkinningData)
+                    UNITY_DOTS_INSTANCED_PROP(float4, tg_CommonInstanceData)
                 UNITY_DOTS_INSTANCING_END(UserPropertyMetadata)
 #endif
             #include "Packages/com.tzargames.renderer/Shaders/Skinning.hlsl"
@@ -109,15 +114,29 @@ Shader"Arena/Character"
                 o.fogCoords = ComputeFogFactor(o.vertex.z);
 
     
-                 VertexNormalInputs normalInputs = GetVertexNormalInputs(normalOS, tangentOS);
+                VertexNormalInputs normalInputs = GetVertexNormalInputs(normalOS, tangentOS);
 
                 o.normalWS = normalInputs.normalWS;
                 o.tangentWS = float4(normalInputs.tangentWS, tangentOS.w);
                 o.bitangentWS = normalInputs.bitangentWS;
 
-                //float4 bc = UNITY_ACCESS_DOTS_INSTANCED_PROP(float4, _BaseColor);
-                half3 bakedGI_Color = SHADERGRAPH_BAKED_GI(vertInputs.positionWS, normalInputs.normalWS, half2(0, 0), half2(0, 0), true);
-                o.color.rgb = bakedGI_Color;
+                float4 instanceData = tg_InstanceData;
+                o.instanceData = instanceData;
+
+                #if defined(UNITY_DOTS_INSTANCING_ENABLED)
+
+                TG_GetLightProbeDirAndColor(instanceData, o.lightDir, o.lightColor);
+                TG_GetLightProbeAmbientColor(instanceData, o.ambientColor);
+                
+                #else
+                
+                o.lightColor = 0;
+                o.lightDir = 0;
+                o.ambientColor = 0;
+                
+                #endif
+                
+                
                 
                 #if USE_DISTANCE_LIGHT
                 float3 dirToPos = o.positionWS - _WorldSpaceCameraPos;
@@ -132,9 +151,6 @@ Shader"Arena/Character"
 
             half4 frag (v2f i) : SV_Target
             {
-                //UNITY_SETUP_INSTANCE_ID(i);
-                //float4 bc = UNITY_ACCESS_DOTS_INSTANCED_PROP(float4, _BaseColor);
-
                 half4 diffuse = tex2D(_BaseMap, i.uv);
     
                 half3 normalTS = UnpackNormal(tex2D(_BumpMap, i.uv));
@@ -148,7 +164,15 @@ Shader"Arena/Character"
     
                 half roughness = (1-diffuse.a) * _Roughness;
 
-                half4 finalColor = LightingPBR(diffuse, i.color.rgb, viewDirWS, normalWS, diffuse.a * _Metallic, roughness);
+                half3 lighting;
+                #if defined(UNITY_DOTS_INSTANCING_ENABLED)
+                lighting = TG_CalculateLightProbeLighting(i.lightDir, i.lightColor, i.ambientColor, normalWS);
+                #else
+                lighting = SHADERGRAPH_BAKED_GI(i.positionWS, normalWS, half2(0, 0), half2(0, 0), true);
+                #endif
+
+                half3 envMapColor = TG_ReflectionProbe(viewDirWS, normalWS, i.instanceData.y, roughness * 4);
+                half4 finalColor = LightingPBR(diffuse, lighting, viewDirWS, normalWS, diffuse.a * _Metallic, roughness, envMapColor);
 
                 #if USE_RIM
                 half ndotv = dot(viewDirWS, normalWS);

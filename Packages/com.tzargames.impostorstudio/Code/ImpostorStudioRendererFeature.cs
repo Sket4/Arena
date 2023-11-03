@@ -62,34 +62,34 @@ namespace TzarGames.ImpostorStudio
                     cmd.Blit (src, dest.id, mat, 0);
                 }
 
-                // if (settings.Blur != 0.0f)
-                // {
-                //     int orig = Shader.PropertyToID("TG_BlurTex1");
-                //     int temp = Shader.PropertyToID("TG_BlurTex2");
-                //     
-                //     mat.SetFloat("_Blur", settings.Blur);
-                //     mat.SetFloat("_BlurAlphaMultiply", settings.BlurAlphaMultiply);
-                //
-                //     var camDesc = renderingData.cameraData.cameraTargetDescriptor;
-                //     cmd.GetTemporaryRT(orig,  camDesc.width, camDesc.height);
-                //     cmd.GetTemporaryRT(temp, camDesc.width, camDesc.height);
-                //
-                //     cmd.Blit(dest.id, orig);
-                //
-                //     for (int i=0; i < settings.BlurIterations; i++)
-                //     {
-                //         cmd.Blit(dest.id, temp, mat, 2);
-                //         cmd.Blit(temp, dest.id, mat, 3);
-                //     }
-                //
-                //     cmd.Blit(dest.id, temp);
-                //     cmd.SetGlobalTexture("_SecondTex", orig);
-                //     //mat.SetTexture("_SecondTex", orig);
-                //     cmd.Blit(temp, dest.id, mat, 4);
-                //
-                //     cmd.ReleaseTemporaryRT(temp);
-                //     cmd.ReleaseTemporaryRT(orig);
-                // }
+                if (settings.Blur != 0.0f)
+                {
+                    int orig = Shader.PropertyToID("TG_BlurTex1");
+                    int temp = Shader.PropertyToID("TG_BlurTex2");
+                    
+                    mat.SetFloat("_Blur", settings.Blur);
+                    mat.SetFloat("_BlurAlphaMultiply", settings.BlurAlphaMultiply);
+                
+                    var camDesc = renderingData.cameraData.cameraTargetDescriptor;
+                    cmd.GetTemporaryRT(orig,  camDesc.width, camDesc.height);
+                    cmd.GetTemporaryRT(temp, camDesc.width, camDesc.height);
+                
+                    cmd.Blit(dest.id, orig);
+                
+                    for (int i=0; i < settings.BlurIterations; i++)
+                    {
+                        cmd.Blit(dest.id, temp, mat, 2);
+                        cmd.Blit(temp, dest.id, mat, 3);
+                    }
+                
+                    cmd.Blit(dest.id, temp);
+                    cmd.SetGlobalTexture("_SecondTex", orig);
+                    //mat.SetTexture("_SecondTex", orig);
+                    cmd.Blit(temp, dest.id, mat, 4);
+                
+                    cmd.ReleaseTemporaryRT(temp);
+                    cmd.ReleaseTemporaryRT(orig);
+                }
                 
                 cmd.Blit(dest.id, src);
                 

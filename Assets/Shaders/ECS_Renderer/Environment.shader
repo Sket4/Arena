@@ -62,7 +62,6 @@ Shader "Arena/Environment"
             #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Core.hlsl"
             #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Lighting.hlsl"
             #include "Packages/com.tzargames.renderer/Shaders/Lighting.hlsl"
-
             
             
             struct appdata
@@ -85,7 +84,7 @@ Shader "Arena/Environment"
             {
                 half4 vertex : SV_POSITION;
                 float2 uv : TEXCOORD0;
-                nointerpolation half2 instanceData : TEXCOORD1;
+                nointerpolation half4 instanceData : TEXCOORD1;
 
                 float3 normalWS : TEXCOORD2;
                 float4 tangentWS : TEXCOORD3;
@@ -95,6 +94,10 @@ Shader "Arena/Environment"
                 half4 color : TEXCOORD6;
 #if LIGHTMAP_ON
                 TG_DECLARE_LIGHTMAP_UV(7)
+#else
+                nointerpolation half3 lightDir : TEXCOORD7;
+                nointerpolation half3 lightColor : TEXCOORD8;
+                nointerpolation half3 ambientColor : TEXCOORD9;
 #endif
             };
 
@@ -137,7 +140,7 @@ Shader "Arena/Environment"
                 o.positionWS_fog.w = ComputeFogFactor(o.vertex.z);
 
                 float4 instanceData = tg_InstanceData;
-                o.instanceData.xy = instanceData.xy;
+                o.instanceData = instanceData;
 
                 VertexNormalInputs normalInputs = GetVertexNormalInputs(normalOS, tangentOS);
 
@@ -147,11 +150,10 @@ Shader "Arena/Environment"
 
 #if LIGHTMAP_ON
                 TG_TRANSFORM_LIGHTMAP_TEX(v.lightmapUV, o.lightmapUV)
-                
                 o.color.rgb = 0;
 #else
-                half3 bakedGI_Color = SampleSH(normalInputs.normalWS);
-                o.color.rgb = bakedGI_Color.rgb;
+                TG_GetLightProbeDirAndColor(instanceData, o.lightDir, o.lightColor);
+                TG_GetLightProbeAmbientColor(instanceData, o.ambientColor); 
 #endif
 
                 #if USE_UNDERWATER
@@ -185,7 +187,11 @@ Shader "Arena/Environment"
 #if LIGHTMAP_ON
                 ambientLight = TG_SAMPLE_LIGHTMAP(i.lightmapUV, i.instanceData.x);
 #else
-                ambientLight = i.color.rgb;
+                #if defined(UNITY_DOTS_INSTANCING_ENABLED) 
+                    ambientLight = TG_CalculateLightProbeLighting(i.lightDir, i.lightColor, i.ambientColor, normalWS);
+                #else
+                ambientLight = SampleSH(normalWS); 
+                #endif
 #endif
 
                 half4 mesm = tex2D(_MetallicGlossMap, i.uv);

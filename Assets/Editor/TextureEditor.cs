@@ -178,7 +178,7 @@ namespace Arena.Editor
         {
             clearTexture();
 
-            resultTexture = new Texture2D(sourceTexture.width, sourceTexture.height, TextureFormat.RGB24, false);
+            resultTexture = new Texture2D(sourceTexture.width, sourceTexture.height, TextureFormat.RGBA32, false);
 
             var rt = RenderTexture.GetTemporary(sourceTexture.width, sourceTexture.height);
 

@@ -38,12 +38,12 @@ Shader"Arena/Character"
             #pragma shader_feature __ USE_DISTANCE_LIGHT
             //#pragma multi_compile_instancing
 
-            #include_with_pragmas "Packages/com.unity.render-pipelines.universal/ShaderLibrary/DOTS.hlsl"
+            //#define UNITY_DOTS_INSTANCED_PROP_OVERRIDE_DISABLED_BY_DEFAULT
+            
             #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Core.hlsl"
             #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Input.hlsl" 
             #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Lighting.hlsl"
-            #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/ShaderGraphFunctions.hlsl"
-            #include "Packages/com.tzargames.rendering/Shaders/Lighting.hlsl"
+            
 
             struct appdata
             {
@@ -79,11 +79,15 @@ Shader"Arena/Character"
                 half _Metallic;
             CBUFFER_END
 
+            #include "Packages/com.tzargames.rendering/Shaders/Lighting.hlsl"
+            #include "Packages/com.tzargames.rendering/Shaders/Skinning.hlsl"
+            
 #if defined(DOTS_INSTANCING_ON)
                 UNITY_DOTS_INSTANCING_START(UserPropertyMetadata)
                 UNITY_DOTS_INSTANCING_END(UserPropertyMetadata)
 #endif
-            #include "Packages/com.tzargames.rendering/Shaders/Skinning.hlsl"
+
+            
 
             sampler2D _BaseMap;
             sampler2D _BumpMap;
@@ -148,6 +152,13 @@ Shader"Arena/Character"
                 half roughness = (1-diffuse.a) * _Roughness;
 
                 half3 lighting = TG_ComputeAmbientLight_half(normalWS);
+
+                // experemental specular
+                //half3 reflectDir = reflect(-normalWS, normalWS);
+                //float spec = pow(max(dot(viewDirWS, reflectDir), 0.0), 32);
+                //float3 specular = diffuse.a * spec * lighting;
+                ////return half4(specular,1);
+                //lighting += specular;
 
                 half3 envMapColor = TG_ReflectionProbe(viewDirWS, normalWS, i.instanceData.y, roughness * 4);
                 half4 finalColor = LightingPBR(diffuse, lighting, viewDirWS, normalWS, diffuse.a * _Metallic, roughness, envMapColor);

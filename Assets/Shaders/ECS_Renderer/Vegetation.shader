@@ -241,7 +241,7 @@ Shader "Arena/Vegetation"
                 half _Cutoff;  
             CBUFFER_END
 
-            #include "Packages/com.tzargames.renderer/Shaders/MetaPass.hlsl"
+            #include "Packages/com.tzargames.rendering/Shaders/MetaPass.hlsl"
             
             ENDHLSL
         }

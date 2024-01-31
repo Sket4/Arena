@@ -40,7 +40,7 @@ Shader"Arena/Window"
             #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Core.hlsl"
             #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Input.hlsl" 
             #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Lighting.hlsl"
-            #include "Packages/com.tzargames.renderer/Shaders/Lighting.hlsl"
+            #include "Packages/com.tzargames.rendering/Shaders/Lighting.hlsl"
 
             struct appdata
             {
@@ -82,7 +82,6 @@ Shader"Arena/Window"
 
 #if defined(DOTS_INSTANCING_ON)
                 UNITY_DOTS_INSTANCING_START(UserPropertyMetadata)
-                    UNITY_DOTS_INSTANCED_PROP(float4, tg_CommonInstanceData)
                 UNITY_DOTS_INSTANCING_END(UserPropertyMetadata)
 #endif
             
@@ -186,7 +185,7 @@ Shader"Arena/Window"
                 half _Metallic;
             CBUFFER_END
 
-            #include "Packages/com.tzargames.renderer/Shaders/MetaPass.hlsl"
+            #include "Packages/com.tzargames.rendering/Shaders/MetaPass.hlsl"
             
             ENDHLSL
         }

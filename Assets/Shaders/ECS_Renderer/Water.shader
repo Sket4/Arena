@@ -46,7 +46,7 @@ Shader"Arena/Water"
 
             #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Core.hlsl"
             #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Input.hlsl" 
-            #include "Packages/com.tzargames.renderer/Shaders/Lighting.hlsl"
+            #include "Packages/com.tzargames.rendering/Shaders/Lighting.hlsl"
 
             struct appdata
             {
@@ -58,7 +58,6 @@ Shader"Arena/Water"
 #if LIGHTMAP_ON
                 float2 uv2 : TEXCOORD1;
 #endif
-                //uint vid : SV_VertexID;
                 UNITY_VERTEX_INPUT_INSTANCE_ID
             };
 
@@ -97,7 +96,6 @@ Shader"Arena/Water"
 
 #if defined(DOTS_INSTANCING_ON)
                 UNITY_DOTS_INSTANCING_START(UserPropertyMetadata)
-                    UNITY_DOTS_INSTANCED_PROP(float4, tg_CommonInstanceData)
                 UNITY_DOTS_INSTANCING_END(UserPropertyMetadata)
 #endif
 

@@ -60,7 +60,7 @@ Shader "Arena/Vegetation"
             
             #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Core.hlsl"
             #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Lighting.hlsl"
-            #include "Packages/com.tzargames.renderer/Shaders/Lighting.hlsl"
+            #include "Packages/com.tzargames.rendering/Shaders/Lighting.hlsl"
             
             struct appdata
             {
@@ -88,11 +88,8 @@ Shader "Arena/Vegetation"
 
 #if LIGHTMAP_ON
                 TG_DECLARE_LIGHTMAP_UV(7)
-#else
-                nointerpolation half3 lightDir : TEXCOORD7;
-                nointerpolation half3 lightColor : TEXCOORD8;
-                nointerpolation half3 ambientColor : TEXCOORD9;
 #endif
+                UNITY_VERTEX_INPUT_INSTANCE_ID
             };
 
             CBUFFER_START(UnityPerMaterial)
@@ -112,7 +109,6 @@ Shader "Arena/Vegetation"
 
 #if defined(DOTS_INSTANCING_ON)
             UNITY_DOTS_INSTANCING_START(UserPropertyMetadata)
-                UNITY_DOTS_INSTANCED_PROP(float4, tg_CommonInstanceData)
             UNITY_DOTS_INSTANCING_END(UserPropertyMetadata)
 #endif
 
@@ -120,6 +116,7 @@ Shader "Arena/Vegetation"
             {
                 v2f o;
                 UNITY_SETUP_INSTANCE_ID(v);
+                UNITY_TRANSFER_INSTANCE_ID(v, o);
 
                 float3 positionOS = v.vertex;
 
@@ -151,9 +148,6 @@ Shader "Arena/Vegetation"
 
 #if LIGHTMAP_ON
                 TG_TRANSFORM_LIGHTMAP_TEX(v.lightmapUV, o.lightmapUV)
-#else
-                TG_GetLightProbeDirAndColor(instanceData, o.lightDir, o.lightColor);
-                TG_GetLightProbeAmbientColor(instanceData, o.ambientColor);
 #endif
 
                 #if DEBUG_VERTEX_COLOR
@@ -165,6 +159,8 @@ Shader "Arena/Vegetation"
 
             half4 frag(v2f i) : SV_Target
             {
+                UNITY_SETUP_INSTANCE_ID(i);
+                
                 #if DEBUG_VERTEX_COLOR
                 return i.uv.x;
                 #endif
@@ -189,13 +185,7 @@ Shader "Arena/Vegetation"
 #if LIGHTMAP_ON
                 ambientLight = TG_SAMPLE_LIGHTMAP(i.lightmapUV, i.instanceData.x);
 #else
-                
-                #if defined(UNITY_DOTS_INSTANCING_ENABLED)
-                ambientLight = TG_CalculateLightProbeLighting(i.lightDir, i.lightColor, i.ambientColor, normalWS);
-                #else
-                ambientLight = SampleSH(normalWS); 
-                #endif
-                
+                ambientLight = TG_ComputeAmbientLight_half(normalWS);
 #endif
 
                 half4 mesm = tex2D(_MetallicGlossMap, i.uv);

@@ -5,22 +5,15 @@ namespace Arena.Tools
     [System.Serializable]
     public class PlacerSettings
     {
-        public GameObject TargetMeshObject;
-        public MeshFilter TargetMesh
-        {
-            get
-            {
-                if(TargetMeshObject == null)
-                {
-                    return null;
-                }
-                return TargetMeshObject.GetComponentInChildren<MeshFilter>();
-            }
-        }
+        [Header("Path settings")]
+        public GameObject PathObject;
+        public Vector3 PathObjectScale = Vector3.one;
+        public bool Reverse = false;
+        
+        [Header("Instance placement settings")]
         public GameObject TargetPrefab;
         public GameObject TargetParent;
         public float FixedInterval = 1;
-        public bool Reverse = false;
         public bool RandomYaw = false;
         public bool ChangeScale = false;
         public Vector3 MinScale = Vector3.one;

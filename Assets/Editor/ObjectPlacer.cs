@@ -1,9 +1,10 @@
+using System;
 using Arena.Tools;
-using NUnit.Framework;
 using System.Collections.Generic;
-using Unity.Transforms;
+using System.IO;
 using UnityEditor;
 using UnityEngine;
+using Random = UnityEngine.Random;
 
 namespace Arena.Editor
 {
@@ -18,7 +19,7 @@ namespace Arena.Editor
             window.Show();
         }
 
-        Vector3[] calculateNormals(Vector3[] verts, Transform tr)
+        Vector3[] calculateNormals(Vector3[] verts)
         {
             Vector3[] normals = new Vector3[verts.Length];
 
@@ -28,23 +29,23 @@ namespace Arena.Editor
 
                 if (v == 0)
                 {
-                    var vertex = tr.TransformPoint(verts[0]);
-                    var nextVertex = tr.TransformPoint(verts[1]);
+                    var vertex = verts[0];
+                    var nextVertex = verts[1];
                     var dir = (nextVertex - vertex).normalized;
                     normal = Vector3.Cross(Vector3.up, dir);
                 }
                 else if (v == verts.Length - 1)
                 {
-                    var nextVertex = tr.TransformPoint(verts[verts.Length - 1]);
-                    var vertex = tr.TransformPoint(verts[verts.Length - 2]);
+                    var nextVertex = verts[verts.Length - 1];
+                    var vertex = verts[verts.Length - 2];
                     var dir = (nextVertex - vertex).normalized;
                     normal = Vector3.Cross(Vector3.up, dir);
                 }
                 else
                 {
-                    var prevVertex = tr.TransformPoint(verts[v - 1]);
-                    var vertex = tr.TransformPoint(verts[v]);
-                    var nextVertex = tr.TransformPoint(verts[v + 1]);
+                    var prevVertex = verts[v - 1];
+                    var vertex = verts[v];
+                    var nextVertex = verts[v + 1];
 
 
                     var dir1 = (vertex - prevVertex).normalized;
@@ -64,6 +65,47 @@ namespace Arena.Editor
             return normals;
         }
 
+        static Vector3[] GetVertices(PlacerSettings settings)
+        {
+            var path = AssetDatabase.GetAssetPath(settings.PathObject);
+
+            if (path.EndsWith("obj") == false)
+            {
+                EditorUtility.DisplayDialog(title: "Неправильный файл", message: "Назначен неверный меш для построения пути. Поддерживается только OBJ формат", ok: "OK");
+                throw new Exception("поддерживаются только OBJ файлы");
+            }
+            
+            var lines = File.ReadAllLines(path);
+            var vertices = new List<Vector3>(lines.Length);
+            var transformMatrix = Matrix4x4.Scale(settings.PathObjectScale);
+            
+            foreach (var line in lines)
+            {
+                if (line.StartsWith("v ") == false)
+                {
+                    continue;
+                }
+                var parsed = line.Replace("v ", "");
+                var splitted = parsed.Split();
+
+                if (splitted.Length != 3)
+                {
+                    Debug.LogError("Неверное количество чисел для постороения вершины");
+                    continue;
+                }
+
+                var vert = new Vector3();
+                vert.x = float.Parse(splitted[0].Trim().Replace('.', ','));
+                vert.y = float.Parse(splitted[1].Trim().Replace('.', ','));
+                vert.z = float.Parse(splitted[2].Trim().Replace('.', ','));
+
+                vert = transformMatrix * vert;
+                
+                vertices.Add(vert);
+            }
+            return vertices.ToArray();
+        }
+
         private void OnGUI()
         {
             Settings = EditorGUILayout.ObjectField("Настройки", Settings, typeof(ObjectPlacerSettings), true) as ObjectPlacerSettings;
@@ -78,18 +120,14 @@ namespace Arena.Editor
             {
                 foreach(var setting in Settings.Settings)
                 {
-                    var tr = setting.TargetMesh.transform;
-                    var mf = setting.TargetMesh;
-                    var mesh = mf.sharedMesh;
-                    var verts = mesh.vertices;
+                    var verts = GetVertices(setting);
                     Transform targetParentTransform = setting.TargetParent != null ? setting.TargetParent.transform : null;
-                    var normals = calculateNormals(verts, tr);
+                    var normals = calculateNormals(verts);
 
                     for (int i = 0; i < verts.Length; i++)
                     {
                         Vector3 v = verts[i];
-                        var position = tr.TransformPoint(v);
-                        instantiate(position, normals[i], targetParentTransform, setting);
+                        instantiate(v, normals[i], targetParentTransform, setting);
                     }
                 }
             }
@@ -98,11 +136,8 @@ namespace Arena.Editor
             {
                 foreach (var setting in Settings.Settings)
                 {
-                    var tr = setting.TargetMesh.transform;
-                    var mf = setting.TargetMesh;
-                    var mesh = mf.sharedMesh;
-                    var verts = mesh.vertices;
-                    var normals = calculateNormals(verts, tr);
+                    var verts = GetVertices(setting);
+                    var normals = calculateNormals(verts);
                     Transform targetParentTransform = setting.TargetParent != null ? setting.TargetParent.transform : null;
 
 
@@ -120,9 +155,6 @@ namespace Arena.Editor
                         var v2 = verts[actualIndex + nextAdd];
                         var n = normals[actualIndex];
                         var n2 = normals[actualIndex + nextAdd];
-
-                        v = tr.TransformPoint(v);
-                        v2 = tr.TransformPoint(v2);
 
                         Debug.DrawRay(v, Vector3.up * 10, Color.red, 20);
                         Debug.DrawRay(v2, Vector3.up * 10, Color.red, 20);
@@ -185,24 +217,20 @@ namespace Arena.Editor
             {
                 foreach (var setting in Settings.Settings)
                 {
-                    var tr = setting.TargetMesh.transform;
-                    var mf = setting.TargetMesh;
-                    var mesh = mf.sharedMesh;
-                    var verts = mesh.vertices;
+                    var verts = GetVertices(setting);
 
                     Color startColor = Color.yellow;
                     Color endColor = Color.blue;
                     var totalCount = verts.Length;
-                    var normals = calculateNormals(verts, tr);
+                    var normals = calculateNormals(verts);
 
                     for (int i = 0; i < totalCount; i++)
                     {
                         var actualIndex = setting.Reverse ? totalCount - i - 1 : i;
                         Vector3 v = verts[actualIndex];
-                        var position = tr.TransformPoint(v);
                         var finalColor = Color.Lerp(startColor, endColor, actualIndex / (float)totalCount);
-                        Debug.DrawRay(position, Vector3.up, finalColor, 10);
-                        Debug.DrawRay(position, normals[actualIndex], Color.cyan, 10);
+                        Debug.DrawRay(v, Vector3.up, finalColor, 10);
+                        Debug.DrawRay(v, normals[actualIndex], Color.cyan, 10);
                     }
                 }
             }

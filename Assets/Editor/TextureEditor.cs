@@ -2,6 +2,7 @@ using System;
 using System.IO;
 using UnityEditor;
 using UnityEngine;
+using UnityEngine.Experimental.Rendering;
 
 namespace Arena.Editor
 {
@@ -47,6 +48,10 @@ namespace Arena.Editor
 
         [SerializeField]
         float contrast = 2;
+
+        [SerializeField] private float saturation = 1;
+
+        [SerializeField] private float brightness = 1;
 
         [MenuItem("Arena/Утилиты/Редактор текстур")]
         static void show()
@@ -101,10 +106,12 @@ namespace Arena.Editor
                     using (new VerticalGUILayout())
                     {
                         contrast = EditorGUILayout.FloatField("Контраст", contrast);
+                        brightness = EditorGUILayout.FloatField("Яркость", brightness);
+                        saturation = EditorGUILayout.FloatField("Сатурация", saturation);
 
                         if (GUILayout.Button("Применить коррекцию цвета"))
                         {
-                            colorCorrection(contrast);
+                            colorCorrection(contrast, brightness, saturation);
                         }
                     }
                     
@@ -180,7 +187,7 @@ namespace Arena.Editor
 
             resultTexture = new Texture2D(sourceTexture.width, sourceTexture.height, TextureFormat.RGBA32, false);
 
-            var rt = RenderTexture.GetTemporary(sourceTexture.width, sourceTexture.height);
+            var rt = RenderTexture.GetTemporary(sourceTexture.width, sourceTexture.height, 0, RenderTextureFormat.ARGB32);
 
             try
             {
@@ -209,16 +216,26 @@ namespace Arena.Editor
             }
         }
 
-        void colorCorrection(float contrast)
+        void colorCorrection(float contrast, float brightness, float saturation)
         {
             modifyTexture((sourcePixels) =>
             {
                 for (int i = 0; i < sourcePixels.Length; i++)
                 {
-                    ref Color pixel = ref sourcePixels[i];
+                    ref var pixel = ref sourcePixels[i];
+                    
+                    Color.RGBToHSV(pixel, out var h, out var s, out var v);
+                    s = Mathf.Clamp01(saturation * s);
+                    pixel = Color.HSVToRGB(h, s, v);
+                    
                     pixel.r = Mathf.Pow(pixel.r, contrast);
                     pixel.g = Mathf.Pow(pixel.g, contrast);
                     pixel.b = Mathf.Pow(pixel.b, contrast);
+
+                    var br = brightness - 1.0f;
+                    pixel.r = Mathf.Max(0, pixel.r + br);
+                    pixel.g = Mathf.Max(0, pixel.g + br);
+                    pixel.b = Mathf.Max(0, pixel.b + br);
                 }
             });
         }

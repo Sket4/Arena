@@ -232,10 +232,10 @@ namespace Arena.Editor
                     pixel.g = Mathf.Pow(pixel.g, contrast);
                     pixel.b = Mathf.Pow(pixel.b, contrast);
 
-                    var br = brightness - 1.0f;
-                    pixel.r = Mathf.Max(0, pixel.r + br);
-                    pixel.g = Mathf.Max(0, pixel.g + br);
-                    pixel.b = Mathf.Max(0, pixel.b + br);
+                    var br = brightness;// - 1.0f;
+                    pixel.r = Mathf.Max(0, pixel.r * br);
+                    pixel.g = Mathf.Max(0, pixel.g * br);
+                    pixel.b = Mathf.Max(0, pixel.b * br);
                 }
             });
         }

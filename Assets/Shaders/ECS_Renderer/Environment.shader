@@ -2,8 +2,6 @@ Shader "Arena/Environment"
 {
     Properties
     {
-        [Toggle(USE_LIGHTING)]
-        _UseLighting("Use lighting", float) = 1.0
         [Toggle] _ZWrite("ZWrite", int) = 1
         [Toggle(TG_USE_ALPHACLIP)] _AlphaClip("Use alpha clipping", float) = 0.0
         //[Enum(Off,0,On,1)] _AlphaToMask("Alpha to Mask", Int) = 0
@@ -52,7 +50,6 @@ Shader "Arena/Environment"
             // make fog work
             #pragma multi_compile_fog
             #pragma multi_compile _ DOTS_INSTANCING_ON
-            #pragma shader_feature __ USE_LIGHTING
             #pragma shader_feature __ TG_TRANSPARENT
             #pragma shader_feature TG_USE_ALPHACLIP
             #pragma shader_feature USE_UNDERWATER
@@ -202,7 +199,7 @@ Shader "Arena/Environment"
 
                 envMapColor = lerp(remEnvMapColor, envMapColor, saturate(lum * lum * lum));
 
-                half4 finalColor = LightingPBR(diffuse, ambientLight, viewDirWS, normalWS, mesm.rgb, roughness, envMapColor);
+                half4 finalColor = LightingPBR(diffuse, ambientLight, viewDirWS, normalWS, mesm.rrr, roughness, envMapColor);
 
                 #if USE_UNDERWATER
                 finalColor.rgb = lerp(finalColor.rgb, _Underwater_color * ambientLight, i.color.a);

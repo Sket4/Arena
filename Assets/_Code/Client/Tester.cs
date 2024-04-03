@@ -29,9 +29,14 @@ public class Tester : MonoBehaviour
     int rotationStep = 0;
 
     [SerializeField]
+    float moveSpeed = 1;
+
+    [SerializeField]
     ObjectGroup[] groups;
 
     int currentRotation = 0;
+
+    bool canMove = false;
 
     void updateObjectGroups()
     {
@@ -77,11 +82,22 @@ public class Tester : MonoBehaviour
         transform.rotation = Quaternion.Euler(0, currentRotation, 0);
     }
 
+    public void MoveForward(bool move)
+    {
+        canMove = move;
+    }
+
     void Update()
     {
         if (autoRotation)
         {
             transform.Rotate(0, Time.deltaTime * autoRotationSpeed, 0);
+        }
+
+        if (canMove || Input.GetKey(KeyCode.W))
+        {
+            var move = transform.forward * moveSpeed * Time.deltaTime;
+            transform.position += move;
         }
     }
 }

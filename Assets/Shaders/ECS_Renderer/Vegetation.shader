@@ -27,6 +27,7 @@ Shader "Arena/Vegetation"
         _EmissionMap("Emission", 2D) = "white" {}
         
         [HideInInspector][NoScaleOffset]unity_Lightmaps("unity_Lightmaps", 2DArray) = "" {} 
+        [HideInInspector][NoScaleOffset] unity_LightmapsInd("unity_LightmapsInd", 2DArray) = "" {} 
     }
     SubShader
     {
@@ -183,7 +184,7 @@ Shader "Arena/Vegetation"
                 real3 ambientLight;
 
 #if LIGHTMAP_ON
-                ambientLight = TG_SAMPLE_LIGHTMAP(i.lightmapUV, i.instanceData.x);
+                ambientLight = TG_SAMPLE_LIGHTMAP(i.lightmapUV, i.instanceData.x, normalWS);
 #else
                 ambientLight = TG_ComputeAmbientLight_half(normalWS);
 #endif

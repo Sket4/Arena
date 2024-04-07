@@ -20,6 +20,7 @@ Shader"Arena/Water"
         [NoScaleOffset] _CustomReflectionTex("Custom reflection  (HDR)", Cube) = "white" {}
         
         [HideInInspector][NoScaleOffset]unity_Lightmaps("unity_Lightmaps", 2DArray) = "" {} 
+        [HideInInspector][NoScaleOffset] unity_LightmapsInd("unity_LightmapsInd", 2DArray) = "" {} 
     }
     SubShader
     {
@@ -202,7 +203,7 @@ Shader"Arena/Water"
 
                 
 #if LIGHTMAP_ON
-                half3 lighting = TG_SAMPLE_LIGHTMAP(i.uv2, i.instanceData.x);
+                half3 lighting = TG_SAMPLE_LIGHTMAP(i.uv2, i.instanceData.x, normalWS);
 #else
                 half3 lighting = half3(1,1,1);
 #endif

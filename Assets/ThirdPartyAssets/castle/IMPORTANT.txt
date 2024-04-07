@@ -1,0 +1,30 @@
+Thank you for purchasing The Big Castle Kit. I hope you like it and it fits your needs.
+
+Please use the following project settings when using The Big Castle Kit
+
+BuiltIn RP
+Edit->Project Settings->Player->Other Settings/Rendering
+Set the Color Space to "Linear"
+Edit->Project Settings->Graphics->Tier Settings
+Set the Rendering Path to "Deferred"
+To achieve the same visuals as shown in the screenshots install the Post Processing stack via the Windows->Packet Manager. 
+Follow the Unity docs to set up the Postprocessing stack.
+You find the according profiles under RenderPipelines/BuiltIn/*
+
+URP
+Import the package into a new URP Unity project.
+Double-click the RenderPipelines/URP package.
+Create a Global Volume in the Hierarchy Window. Assing the provided Profiles to be found in the folder RenderPipelines/URP/ 
+
+HDRP
+Import the package into a new HDRP Unity project.
+Double-click the RenderPipelines/HDRP package.
+Create a Global Volume in the Hierarchy Window. Assing the provided Profiles to be found in the folder RenderPipelines/HDRP/ 
+In the hierarchy window adjust the lighting/Sunlight to your liking (for the snow scene you might choose a very high value if you use the provided Volume Profile).
+Consider using Screen Space Reflection (disable the provided Reflection Probes).
+
+
+Include an FPS Controller of your choice.
+
+Best regards
+TripleBrick

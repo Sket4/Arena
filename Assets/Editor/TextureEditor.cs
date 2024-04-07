@@ -1,5 +1,6 @@
 using System;
 using System.IO;
+using Unity.Mathematics;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.Experimental.Rendering;
@@ -181,13 +182,20 @@ namespace Arena.Editor
         }
 
 
-        void modifyTexture(Action<Color[]> actionCallback)
+        void modifyTexture(Action<Color[]> actionCallback, bool useAlpha = false)
         {
             clearTexture();
 
-            resultTexture = new Texture2D(sourceTexture.width, sourceTexture.height, TextureFormat.RGBA32, false);
-
-            var rt = RenderTexture.GetTemporary(sourceTexture.width, sourceTexture.height, 0, RenderTextureFormat.ARGB32);
+            if (useAlpha)
+            {
+                resultTexture = new Texture2D(sourceTexture.width, sourceTexture.height, TextureFormat.RGBA32, false);    
+            }
+            else
+            {
+                resultTexture = new Texture2D(sourceTexture.width, sourceTexture.height, TextureFormat.RGB24, false);    
+            }
+            
+            var rt = RenderTexture.GetTemporary(sourceTexture.width, sourceTexture.height);
 
             try
             {
@@ -285,21 +293,22 @@ namespace Arena.Editor
                 for (int i = 0; i < sourcePixels.Length; i++)
                 {
                     ref Color pixel = ref sourcePixels[i];
-                    pixel.r = (pixel.r - 0.5f) * 2;
-                    pixel.g = (pixel.g - 0.5f) * 2;
-                    pixel.b = (pixel.b - 0.5f) * 2;
+                    //pixel.r = (pixel.r - 0.5f) * 2;
+                    //pixel.g = (pixel.g - 0.5f) * 2;
+                    //pixel.b = (pixel.b - 0.5f) * 2;
 
+                    pixel.r *= normalStrength;
                     pixel.g *= normalStrength;
-                    //pixel.b *= normalStrength;
-
-                    var normalized = new Vector3(pixel.r, pixel.g, pixel.b).normalized;
-                    normalized.x = (normalized.x + 1) * 0.5f;
-                    normalized.y = (normalized.y + 1) * 0.5f;
-                    normalized.z = (normalized.z + 1) * 0.5f;
-
-                    pixel.r = normalized.x;
-                    pixel.g = normalized.y;
-                    pixel.b = normalized.z;
+                    pixel.b = math.lerp(1.0f, pixel.b, math.saturate(normalStrength));
+                    
+                    // var normalized = new Vector3(pixel.r, pixel.g, pixel.b).normalized;
+                    // normalized.x = (normalized.x + 1) * 0.5f;
+                    // normalized.y = (normalized.y + 1) * 0.5f;
+                    // normalized.z = (normalized.z + 1) * 0.5f;
+                    //
+                    // pixel.r = normalized.x;
+                    // pixel.g = normalized.y;
+                    // pixel.b = normalized.z;
 
                     pixel.a = 0;
                 }

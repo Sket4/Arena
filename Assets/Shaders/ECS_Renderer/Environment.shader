@@ -2,6 +2,7 @@ Shader "Arena/Environment"
 {
     Properties
     {
+        [Toggle(DIFFUSE_ALPHA_AS_SMOOTHNESS)] _UseAlphaAsSmoothness("Use diffuse alpha as smoothess", int) = 0
         [Toggle] _ZWrite("ZWrite", int) = 1
         [Toggle(TG_USE_ALPHACLIP)] _AlphaClip("Use alpha clipping", float) = 0.0
         //[Enum(Off,0,On,1)] _AlphaToMask("Alpha to Mask", Int) = 0
@@ -25,16 +26,31 @@ Shader "Arena/Environment"
         _Underwater_color("Underwater color", Color) = (1,1,1,1)
         _Underwater_fog_density_factor("Underwater fog density factor", Float) = 1
         _Underwater_fog_height_mult("Underwater fog height mult", Float) = 1
-
-        [HideInInspector][NoScaleOffset]unity_Lightmaps("unity_Lightmaps", 2DArray) = "" {} 
+        
+        [Toggle(USE_SURFACE_BLEND)]
+        _UseSurfaceBlend("Use surface blend", int) = 0.0
+        _SurfaceMap("Surface", 2D) = "white" {}
+        _SurfaceBlendFactor("Blend factor", Float) = 1
+        
+        [HideInInspector][NoScaleOffset] unity_Lightmaps("unity_Lightmaps", 2DArray) = "" {}
+        [HideInInspector][NoScaleOffset] unity_LightmapsInd("unity_LightmapsInd", 2DArray) = "" {} 
     }
     SubShader
     {
-        Tags { "RenderType"="TransparentCutout" }
+        Tags 
+        { 
+            "RenderType"="TransparentCutout" 
+            //"RenderType" = "Opaque"
+        }
         LOD 100
         
         Pass
-        {
+        {   
+            Name "ForwardLit"
+            Tags
+            {
+                "LightMode" = "UniversalForward"
+            }
             //AlphaToMask[_AlphaToMask]
             Blend[_SrcBlend][_DstBlend]
             Cull[_Cull]
@@ -53,7 +69,11 @@ Shader "Arena/Environment"
             #pragma shader_feature __ TG_TRANSPARENT
             #pragma shader_feature TG_USE_ALPHACLIP
             #pragma shader_feature USE_UNDERWATER
+            #pragma shader_feature DIFFUSE_ALPHA_AS_SMOOTHNESS
+            #pragma shader_feature USE_SURFACE_BLEND
+            //#pragma multi_compile_fwdbase
             #pragma multi_compile _ LIGHTMAP_ON
+            #pragma multi_compile _ DIRLIGHTMAP_COMBINED
 
             
             #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Core.hlsl"
@@ -98,6 +118,8 @@ Shader "Arena/Environment"
             CBUFFER_START(UnityPerMaterial)
                 half4 _BaseMap_ST;
                 half4 _BaseColor;
+                half4 _SurfaceMap_ST;
+                half _SurfaceBlendFactor;
                 half4 _Underwater_color;
                 half4 _EmissionColor;
 				half _Metallic;
@@ -107,6 +129,7 @@ Shader "Arena/Environment"
             CBUFFER_END
 
             sampler2D _BaseMap;
+            sampler2D _SurfaceMap;
             sampler2D _BumpMap;
             sampler2D _MetallicGlossMap;
 
@@ -173,23 +196,30 @@ Shader "Arena/Environment"
 
                 half3x3 tangentToWorld = half3x3(i.tangentWS.xyz, i.bitangentWS.xyz, i.normalWS.xyz); 
 
-                float3 normalWS = TransformTangentToWorld(normalTS.xyz, tangentToWorld, true);
+                half3 normalWS = TransformTangentToWorld(normalTS.xyz, tangentToWorld, true);
 
-                real3 ambientLight;
+                half3 ambientLight;
 
 #if LIGHTMAP_ON
-                ambientLight = TG_SAMPLE_LIGHTMAP(i.lightmapUV, i.instanceData.x);
+                ambientLight = TG_SAMPLE_LIGHTMAP(i.lightmapUV, i.instanceData.x, normalWS);
 #else
                 ambientLight = TG_ComputeAmbientLight_half(normalWS);
 #endif
 
                 half4 mesm = tex2D(_MetallicGlossMap, i.uv);
                 mesm.rgb *= _Metallic;
-
+                
+                #if DIFFUSE_ALPHA_AS_SMOOTHNESS
+                half roughness = 1.0f - (diffuse.a * _Smoothness);
+                
+                #else
                 half smoothness = mesm.a * _Smoothness;
                 half roughness = 1 - smoothness;
+                #endif
+                
+                
 
-                half3 envMapColor = TG_ReflectionProbe(viewDirWS, normalWS, i.instanceData.y,roughness * 4);
+                half3 envMapColor = TG_ReflectionProbe_half(viewDirWS, normalWS, i.instanceData.y,roughness * 4);
 
                 half3 remEnvMapColor = clamp(envMapColor - 0.5, 0, 10);
                 remEnvMapColor = remEnvMapColor * _HighlightRemove;
@@ -199,6 +229,13 @@ Shader "Arena/Environment"
 
                 envMapColor = lerp(remEnvMapColor, envMapColor, saturate(lum * lum * lum));
 
+                #if USE_SURFACE_BLEND
+                half4 surfaceColor = tex2D(_SurfaceMap, i.uv);
+                float surfaceBlend = saturate(dot(normalWS, half3(0,1,0)));
+                diffuse.rgb = lerp(diffuse.rgb, surfaceColor.rgb, surfaceBlend * _SurfaceBlendFactor);
+                #endif
+
+                //diffuse.rgb = 1;
                 half4 finalColor = LightingPBR(diffuse, ambientLight, viewDirWS, normalWS, mesm.rrr, roughness, envMapColor);
 
                 #if USE_UNDERWATER
@@ -239,6 +276,8 @@ Shader "Arena/Environment"
             CBUFFER_START(UnityPerMaterial)
                 half4 _BaseMap_ST;
                 half4 _BaseColor;
+                half4 _SurfaceMap_ST;
+                half _SurfaceBlendFactor;
                 half4 _Underwater_color;
                 half4 _EmissionColor;
 				half _Metallic;

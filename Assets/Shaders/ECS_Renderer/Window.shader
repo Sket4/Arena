@@ -15,6 +15,7 @@ Shader"Arena/Window"
         _Metallic("Metallic", Range(0,1)) = 1
         
         [HideInInspector][NoScaleOffset]unity_Lightmaps("unity_Lightmaps", 2DArray) = "" {} 
+        [HideInInspector][NoScaleOffset] unity_LightmapsInd("unity_LightmapsInd", 2DArray) = "" {} 
     }
     SubShader
     {
@@ -139,7 +140,7 @@ Shader"Arena/Window"
                 half roughness = _Roughness * lerp(_BaseColor.a, _Color2.a, mask);
 
 #if LIGHTMAP_ON
-                half3 lighting = TG_SAMPLE_LIGHTMAP(i.lightmapUV, i.instanceData.x);
+                half3 lighting = TG_SAMPLE_LIGHTMAP(i.lightmapUV, i.instanceData.x, normalWS);
 #else
                 half3 lighting = i.color.rgb;
 #endif

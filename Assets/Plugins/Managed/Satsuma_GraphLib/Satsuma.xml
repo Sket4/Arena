@@ -1,0 +1,2099 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>Satsuma</name>
+    </assembly>
+    <members>
+        <member name="T:Satsuma.Isomorphism">
+            Determines whether two graphs, digraphs or mixed graphs are isomorphic.
+            Uses simple color refinement, but the multisets are hashed at every step, so only the hashes are stored.
+            The current implementation is fast but will not be able to identify isomorphisms in many cases.
+        </member>
+        <member name="F:Satsuma.Isomorphism.FirstGraph">
+            The first of the two input graphs.
+        </member>
+        <member name="F:Satsuma.Isomorphism.SecondGraph">
+            The second of the two input graphs.
+        </member>
+        <member name="F:Satsuma.Isomorphism.Isomorphic">
+            Whether the graphs are isomorphic. Will be null if the algorithm could not decide.
+            
+            If true, the graphs are isomorphic and FirstToSecond is a valid isomorphism.
+            If false, the graphs are not isomorphic.
+            If null, the graphs may be isomorphic or not. The algorithm could not decide.
+        </member>
+        <member name="F:Satsuma.Isomorphism.FirstToSecond">
+            A mapping from the nodes of the first graph to the nodes of the second graph.
+            Only valid if Isomorphic is true.
+            If u is a node of the first graph, then FirstToSecond[u] is the corresponding node in the second graph.
+        </member>
+        <member name="M:Satsuma.Isomorphism.NodeHash.GetSortedColoring">
+            Sorts the nodes by color and returns the result.
+        </member>
+        <member name="M:Satsuma.Isomorphism.NodeHash.Iterate">
+            Perform a step of color refinement and hashing.
+        </member>
+        <member name="T:Satsuma.LP.MaximumStableSet">
+            Finds a maximum weight stable set in an arbitrary graph, using integer programming.
+            A stable set is a set of nodes with no arcs between any of the nodes.
+        </member>
+        <member name="P:Satsuma.LP.MaximumStableSet.Graph">
+            The input graph.
+        </member>
+        <member name="P:Satsuma.LP.MaximumStableSet.Weight">
+            A finite weight function on the nodes of #Graph.
+            Can be null, in this case each node has weight 1.
+        </member>
+        <member name="F:Satsuma.LP.MaximumStableSet.SolutionType">
+            LP solution type.
+        </member>
+        <member name="P:Satsuma.LP.MaximumStableSet.Nodes">
+            Contains null, or a valid and possibly optimal stable set, depending on SolutionType.
+            If SolutionType is Optimal, this is an optimal set.
+            If SolutionType is Feasible, Nodes is valid but not optimal.
+            Otherwise, Nodes is null.
+        </member>
+        <member name="T:Satsuma.LP.MinimumVertexCover">
+            Finds a minimum cost vertex cover.
+            Edges may have different weights, which means that they have to be covered the given times.
+            Also the vertex cover may be relaxed (fractional weights per node).
+            
+            A vertex cover is a multiset of nodes so that each arc
+            is incident to at least a given number of nodes in the set.
+        </member>
+        <member name="P:Satsuma.LP.MinimumVertexCover.Graph">
+            The input graph.
+        </member>
+        <member name="P:Satsuma.LP.MinimumVertexCover.NodeCost">
+            A finite cost function on the nodes of #Graph.
+            Determines the cost of including a specific node in the covering set.
+            Can be null, in this case each node has cost=1.
+        </member>
+        <member name="P:Satsuma.LP.MinimumVertexCover.ArcWeight">
+            A finite weight function on the arcs of #Graph.
+            Determines the minimum number of times the arc has to be covered.
+            Can be null, in this case each arc has to be covered once.
+        </member>
+        <member name="P:Satsuma.LP.MinimumVertexCover.Relaxed">
+            If true, each node can be chosen with a fractional weight.
+            Otherwise, each node has to be chosen an integer number of times (default).
+        </member>
+        <member name="F:Satsuma.LP.MinimumVertexCover.SolutionType">
+            LP solution type.
+        </member>
+        <member name="P:Satsuma.LP.MinimumVertexCover.Nodes">
+            Contains null, or a valid and possibly optimal weighted covering set, depending on SolutionType.
+            If SolutionType is Optimal, this is a minimum cost vertex cover with multiplicities.
+            If SolutionType is Feasible, Nodes is a valid weighted vertex cover, but not optimal.
+            Otherwise, Nodes is null.
+        </member>
+        <member name="T:Satsuma.LP.OptimalSubgraph">
+            Finds a degree-bounded subgraph with one or more cost functions on the edges.
+            
+            Uses integer programming to achieve this goal.
+            Minimizes a linear objective function which is a combination of cost functions on the edges.
+            
+            Number of variables: O(ArcCount)
+            Number of equations: O(NodeCount + CostFunctionCount)
+        </member>
+        <member name="T:Satsuma.LP.OptimalSubgraph.CostFunction">
+            The definition of a cost function.
+            Cost functions can be used to impose lower/upper bounds on the properties of the resulting subgraph,
+            or to include additional terms in the linear objective function.
+        </member>
+        <member name="P:Satsuma.LP.OptimalSubgraph.CostFunction.Cost">
+            The cost function itself. Cannot be null.
+            Should assign an arbitrary real weight to each edge.
+            The "sum" of the cost function is defined as the sum of its values on the chosen edges
+            for a given subgraph.
+        </member>
+        <member name="P:Satsuma.LP.OptimalSubgraph.CostFunction.LowerBound">
+            The (inclusive) lower bound on the sum of the cost function. Default: double.NegativeInfinity.
+        </member>
+        <member name="P:Satsuma.LP.OptimalSubgraph.CostFunction.UpperBound">
+            The (inclusive) upper bound on the sum of the cost function. Default: double.PositiveInfinity.
+        </member>
+        <member name="P:Satsuma.LP.OptimalSubgraph.CostFunction.ObjectiveWeight">
+            The weight of the sum of this cost function in the LP objective function. Default: 0.
+            May be positive, zero or negative.
+            Keep in mind that the LP objective function is always minimized.
+        </member>
+        <member name="P:Satsuma.LP.OptimalSubgraph.Graph">
+            The original graph.
+        </member>
+        <member name="P:Satsuma.LP.OptimalSubgraph.DegreeWeight">
+            The weight of a specific arc when calculating the weighted node degrees.
+            If null, all arcs have weight==1.
+        </member>
+        <member name="P:Satsuma.LP.OptimalSubgraph.MinInDegree">
+            The (inclusive) lower bound on weighted node in-degrees. If null, no lower bound is imposed at all.
+            Loop edges count twice.
+        </member>
+        <member name="P:Satsuma.LP.OptimalSubgraph.MaxInDegree">
+            The (inclusive) upper bound on weighted node in-degrees. If null, no upper bound is imposed at all.
+            Loop edges count twice.
+        </member>
+        <member name="P:Satsuma.LP.OptimalSubgraph.MinOutDegree">
+            The (inclusive) lower bound on weighted node out-degrees. If null, no lower bound is imposed at all.
+            Loop edges count twice.
+        </member>
+        <member name="P:Satsuma.LP.OptimalSubgraph.MaxOutDegree">
+            The (inclusive) upper bound on weighted node out-degrees. If null, no upper bound is imposed at all.
+            Loop edges count twice.
+        </member>
+        <member name="P:Satsuma.LP.OptimalSubgraph.MinDegree">
+            The (inclusive) lower bound on weighted node degrees. If null, no lower bound is imposed at all.
+            Keep in mind that the degree is the sum of the indegree and the outdegree, so loop arcs count twice.
+        </member>
+        <member name="P:Satsuma.LP.OptimalSubgraph.MaxDegree">
+            The (inclusive) upper bound on weighted node degrees. If null, no upper bound is imposed at all.
+            Keep in mind that the degree is the sum of the indegree and the outdegree, so loop arcs count twice.
+        </member>
+        <member name="P:Satsuma.LP.OptimalSubgraph.MinArcCount">
+            The (inclusive) lower bound on the number of arcs in the subgraph. Default: 0.
+        </member>
+        <member name="P:Satsuma.LP.OptimalSubgraph.MaxArcCount">
+            The (inclusive) upper bound on the number of arcs in the subgraph. Default: int.MaxValue.
+        </member>
+        <member name="P:Satsuma.LP.OptimalSubgraph.ArcCountWeight">
+            The weight of the number of arcs in the subgraph in the LP objective function. Default: 0.
+            May be positive, zero or negative.
+            Keep in mind that the LP objective function is always minimized.
+        </member>
+        <member name="P:Satsuma.LP.OptimalSubgraph.CostFunctions">
+            The cost functions used to make additional restrictions and additive terms in the objective function.
+        </member>
+        <member name="P:Satsuma.LP.OptimalSubgraph.SolutionType">
+            The LP solution type. Invalid if optimization has not been run.
+        </member>
+        <member name="P:Satsuma.LP.OptimalSubgraph.ResultGraph">
+            The resulting optimal subgraph. Null if the optimization has not been run, or if no solution was found.
+            A subgraph of #Graph.
+        </member>
+        <member name="M:Satsuma.LP.OptimalSubgraph.Run(Satsuma.LP.ISolver)">
+            Solves the optimization problem.
+            Result will be put in #SolutionType and (if solution is valid) #ResultGraph.
+        </member>
+        <member name="T:Satsuma.LP.LPMaximumMatching">
+            Computes a maximum matching in an arbitrary graph, using integer programming.
+            \sa #BipartiteMaximumMatching, #LPMinimumCostMatching
+        </member>
+        <member name="F:Satsuma.LP.LPMaximumMatching.SolutionType">
+            LP solution type.
+        </member>
+        <member name="P:Satsuma.LP.LPMaximumMatching.Matching">
+            Contains null, or a valid and possibly optimal matching, depending on SolutionType.
+            If SolutionType is Optimal, this Matching is an optimal matching.
+            If SolutionType is Feasible, Matching is valid but not optimal.
+            Otherwise, Matching is null.
+        </member>
+        <member name="T:Satsuma.LP.LPMinimumCostMatching">
+            Finds a minimum cost matching in an arbitrary graph using integer programming.
+            \sa #LPMaximumMatching, #BipartiteMinimumCostMatching
+        </member>
+        <member name="P:Satsuma.LP.LPMinimumCostMatching.Graph">
+            The input graph.
+        </member>
+        <member name="P:Satsuma.LP.LPMinimumCostMatching.Cost">
+            A finite cost function on the arcs of #Graph.
+        </member>
+        <member name="P:Satsuma.LP.LPMinimumCostMatching.MinimumMatchingSize">
+            Minimum constraint on the size (number of arcs) of the returned matching.
+        </member>
+        <member name="P:Satsuma.LP.LPMinimumCostMatching.MaximumMatchingSize">
+            Maximum constraint on the size (number of arcs) of the returned matching.
+        </member>
+        <member name="F:Satsuma.LP.LPMinimumCostMatching.SolutionType">
+            LP solution type.
+        </member>
+        <member name="P:Satsuma.LP.LPMinimumCostMatching.Matching">
+            Contains null, or a valid and possibly optimal matching, depending on SolutionType.
+            If SolutionType is Optimal, this Matching is an optimal matching.
+            If SolutionType is Feasible, Matching is valid but not optimal.
+            Otherwise, Matching is null.
+        </member>
+        <member name="T:Satsuma.LP.VariableType">
+            The type constraint of an LP Variable.
+        </member>
+        <member name="F:Satsuma.LP.VariableType.Real">
+            The variable can take any real number.
+        </member>
+        <member name="F:Satsuma.LP.VariableType.Integer">
+            The variable must be an integer.
+        </member>
+        <member name="F:Satsuma.LP.VariableType.Binary">
+            The variable must be a binary value (0 or 1).
+        </member>
+        <member name="T:Satsuma.LP.Variable">
+            A linear programming variable.
+            
+            Variables can be combined with other Variables, Expressions and constants using the + - * / operators
+            to yield an Expression.
+            Variables cannot be shared among Problem instances! A Variable created by a Problem can only be used
+            in the same Problem.
+        </member>
+        <member name="F:Satsuma.LP.Variable.Id">
+            The identifier of the Variable can be any object (but not null).
+            This way, variables can be associated with any kinds of objects (e.g. Node, Arc, etc.)
+            Variables with Id's comparing equal are considered the same variable.
+        </member>
+        <member name="F:Satsuma.LP.Variable.SerialNumber">
+            An ordinal, assigned to the Variable by the Problem owning it.
+        </member>
+        <member name="F:Satsuma.LP.Variable.Type">
+            The type of this Variable (real, integer or binary). Default: real.
+        </member>
+        <member name="F:Satsuma.LP.Variable.LowerBound">
+            The minimum allowed value for this variable. Default: negative infinity.
+            Can be negative infinity or any finite number.
+        </member>
+        <member name="F:Satsuma.LP.Variable.UpperBound">
+            The maximum allowed value for this variable. Default: positive infinity.
+            Can be positive infinity or any finite number.
+        </member>
+        <member name="M:Satsuma.LP.Variable.op_Division(Satsuma.LP.Variable,System.Double)">
+            The divisor q must not be zero.
+        </member>
+        <member name="T:Satsuma.LP.Expression">
+            The weighted sum of some variables, plus an optional constant.
+            
+            Expressions can be combined with Variables, Expressions and constants using the + - * / operators
+            to yield another Expression.
+            
+            Expressions can be compared with Variables, Expressions and constants using the &lt;, &lt;=, &gt;, &gt;= or = operators
+            to yield a Constraint. Note that these operators do not compare the Expression objects themselves,
+            yielding bool values, but they create Constraint objects describing the relationship of two Expressions.
+        </member>
+        <member name="F:Satsuma.LP.Expression.Coefficients">
+            Multiplication factors for each variable that comprises this expression.
+        </member>
+        <member name="F:Satsuma.LP.Expression.Bias">
+            The constant summand in the expression.
+        </member>
+        <member name="M:Satsuma.LP.Expression.#ctor(System.Double)">
+            Initializes a constant expression.
+        </member>
+        <member name="M:Satsuma.LP.Expression.#ctor(Satsuma.LP.Expression)">
+            Makes a copy of the supplied Expression.
+        </member>
+        <member name="M:Satsuma.LP.Expression.op_Division(Satsuma.LP.Expression,System.Double)">
+            The divisor q must not be zero.
+        </member>
+        <member name="T:Satsuma.LP.ComparisonOperator">
+            A comparison operator (&lt;, &lt;=, &gt;, &gt;= or =).
+        </member>
+        <member name="T:Satsuma.LP.Constraint">
+            An equality or inequality: two expressions (left-hand side and right-hand side) joined by a comparison operator.
+        </member>
+        <member name="F:Satsuma.LP.Constraint.Lhs">
+            The left-hand side of the equality/inequality.
+        </member>
+        <member name="F:Satsuma.LP.Constraint.Operator">
+            The operator for comparing the Lhs and the Rhs.
+        </member>
+        <member name="F:Satsuma.LP.Constraint.Rhs">
+            The right-hand side of the equality/inequality.
+        </member>
+        <member name="T:Satsuma.LP.OptimizationMode">
+            Describes whether the objective function should be minimized or maximized.
+        </member>
+        <member name="F:Satsuma.LP.OptimizationMode.Minimize">
+            The objective function should be minimized.
+        </member>
+        <member name="F:Satsuma.LP.OptimizationMode.Maximize">
+            The objective function should be maximized.
+        </member>
+        <member name="T:Satsuma.LP.Problem">
+            A linear, integer or mixed integer programming problem.
+            Be aware that variables cannot be shared among Problems.
+        </member>
+        <member name="F:Satsuma.LP.Problem.Mode">
+            Describes whether the objective function should be minimized or maximized. Default: Minimize.
+        </member>
+        <member name="F:Satsuma.LP.Problem.Objective">
+            The objective function. Constant zero by default, can be modified.
+        </member>
+        <member name="F:Satsuma.LP.Problem.Constraints">
+            The constraints, subject to which the objective should be minimized/maximized.
+        </member>
+        <member name="F:Satsuma.LP.Problem.Variables">
+            The variables used in the Objective and Constraints, stored in a dictionary by id.
+            Variables cannot be shared among Problems.
+        </member>
+        <member name="M:Satsuma.LP.Problem.GetVariable(System.Object)">
+            Looks up an existing variable by its Id or creates a new one.
+        </member>
+        <member name="M:Satsuma.LP.CplexLPFormat.Save(Satsuma.LP.Problem,System.String)">
+            Saves the problem in the CPLEX LP file format.
+        </member>
+        <member name="T:Satsuma.LP.SolutionType">
+            Indicates the validity and optimality of an LP Solution.
+        </member>
+        <member name="F:Satsuma.LP.SolutionType.Invalid">
+            The solution is invalid, but there may be a valid solution to the problem.
+            Indicates that the solver was unable to find either a valid solution or a proof that no valid solution exists.
+        </member>
+        <member name="F:Satsuma.LP.SolutionType.Infeasible">
+            The solution is invalid, and there is no valid solution to the problem.
+        </member>
+        <member name="F:Satsuma.LP.SolutionType.Unbounded">
+            The solution is valid, but the objective function is unbounded.
+            This means that there exist infinitely many solutions but there is no optimal one.
+        </member>
+        <member name="F:Satsuma.LP.SolutionType.Feasible">
+            The solution is valid but may or may not be optimal.
+        </member>
+        <member name="F:Satsuma.LP.SolutionType.Optimal">
+            The solution is valid and optimal.
+        </member>
+        <member name="F:Satsuma.LP.Solution.Problem">
+            The Problem whose solution this is.
+        </member>
+        <member name="P:Satsuma.LP.Solution.Valid">
+            True if this is a valid solution to the problem.
+        </member>
+        <member name="F:Satsuma.LP.Solution.Type">
+            The type of this solution.
+        </member>
+        <member name="F:Satsuma.LP.Solution.Bound">
+            A valid finite bound on the objective function,
+            or +-Infinity if the problem is infeasible or the solver could find no such bound.
+            Equals to the value of this Solution if Type is Optimal.
+            If the objective is to be minimized, then Bound equals +Infinity if and only if Type is Infeasible.
+        </member>
+        <member name="F:Satsuma.LP.Solution.Value">
+            The objective value for the current solution, if valid.
+        </member>
+        <member name="P:Satsuma.LP.Solution.Primal">
+            The values assigned to the primal variables.
+            May not contain all variables: those which are equal to 0 may be absent.
+        </member>
+        <member name="M:Satsuma.LP.Solution.SetBoundAndValueForType">
+            Sets Bound and Value according to the solution type, if it is unequivocal.
+        </member>
+        <member name="M:Satsuma.LP.Solution.SetInvalid">
+            Sets an invalid solution.
+        </member>
+        <member name="P:Satsuma.LP.Solution.Item(Satsuma.LP.Variable)">
+            Gets or sets the value assigned to a specific variable in this solution.
+            Throws an exception if solution is not Valid.
+        </member>
+        <member name="T:Satsuma.LP.ISolver">
+            A generic LP solver.
+        </member>
+        <member name="M:Satsuma.LP.ISolver.Solve(Satsuma.LP.Problem)">
+            Solves an LP problem and returns a solution.
+        </member>
+        <member name="T:Satsuma.LP.ScipSolver">
+            LP solver using the SCIP MIP solver.
+            SCIP (http://scip.zib.de) must be installed in order to use this class.
+        </member>
+        <member name="F:Satsuma.LP.ScipSolver.ScipPath">
+            The path to the SCIP executable. Must be set before attempting to solve a problem.
+        </member>
+        <member name="F:Satsuma.LP.ScipSolver.TempFolder">
+            The path to a designated temporary folder. Defaults to System.IO.Path.GetTempPath().
+        </member>
+        <member name="F:Satsuma.LP.ScipSolver.TimeoutSeconds">
+            Maximum allowed time for SCIP to run, in seconds.
+        </member>
+        <member name="M:Satsuma.LP.ScipSolver.Solve(Satsuma.LP.Problem)">
+            Solves a problem using the SCIP solver.
+        </member>
+        <member name="T:Satsuma.BellmanFord">
+             Finds cheapest paths in a graph from a set of source nodes to all nodes,
+             or a negative cycle reachable from the sources.
+             \note Edges count as 2-cycles.
+            
+             There is no restriction on the cost function (as opposed to AStar and Dijkstra),
+             but if a negative cycle is reachable from the sources, the algorithm terminates and
+             does not calculate the distances.
+            
+             If the cost function is non-negative, use Dijkstra, as it runs faster.
+            
+             Querying the results:
+             - If a negative cycle has been reached, then #NegativeCycle is not null and contains such a cycle.
+               - In this case, #GetDistance, #GetParentArc and #GetPath throw an exception.
+             - If no negative cycle could be reached, then #NegativeCycle is null.
+               - In this case, use #GetDistance, #GetParentArc and #GetPath for querying the results.
+               - For unreachable nodes, #GetDistance, #GetParentArc and #GetPath 
+                 return <tt>double.PositiveInfinity</tt>, Arc.Invalid and null respectively.
+            
+             \sa AStar, Bfs, Dijkstra
+        </member>
+        <member name="P:Satsuma.BellmanFord.Graph">
+            The input graph.
+        </member>
+        <member name="P:Satsuma.BellmanFord.Cost">
+            The arc cost function. Each value must be finite or positive infinity.
+            <tt>double.PositiveInfinity</tt> means that an arc is impassable.
+        </member>
+        <member name="P:Satsuma.BellmanFord.NegativeCycle">
+            A negative cycle reachable from the sources, or null if none exists.
+        </member>
+        <member name="M:Satsuma.BellmanFord.#ctor(Satsuma.IGraph,System.Func{Satsuma.Arc,System.Double},System.Collections.Generic.IEnumerable{Satsuma.Node})">
+            Runs the Bellman-Ford algorithm.
+            \param graph See #Graph.
+            \param cost See #Cost.
+            \param sources The source nodes.
+        </member>
+        <member name="M:Satsuma.BellmanFord.Reached(Satsuma.Node)">
+            Returns whether a node has been reached.
+        </member>
+        <member name="P:Satsuma.BellmanFord.ReachedNodes">
+            Returns the reached nodes.
+            \sa Reached
+        </member>
+        <member name="M:Satsuma.BellmanFord.GetDistance(Satsuma.Node)">
+            Gets the cost of the cheapest path from the source nodes to a given node.
+            \return The distance, or <tt>double.PositiveInfinity</tt> if the node is unreachable from the source nodes.
+            \exception InvalidOperationException A reachable negative cycle has been found (i.e. #NegativeCycle is not null).
+        </member>
+        <member name="M:Satsuma.BellmanFord.GetParentArc(Satsuma.Node)">
+            Gets the arc connecting a node with its parent in the forest of cheapest paths.
+            \return The arc, or Arc.Invalid if the node is a source or is unreachable.
+            \exception InvalidOperationException A reachable negative cycle has been found (i.e. #NegativeCycle is not null).
+        </member>
+        <member name="M:Satsuma.BellmanFord.GetPath(Satsuma.Node)">
+            Gets a cheapest path from the source nodes to a given node.
+            \return A cheapest path, or null if the node is unreachable.
+            \exception InvalidOperationException A reachable negative cycle has been found (i.e. #NegativeCycle is not null).
+        </member>
+        <member name="T:Satsuma.Bfs">
+             Performs a breadth-first search (BFS) to find shortest paths from a set of source nodes to all nodes.
+             In other words, Bfs finds cheapest paths for the constant 1 cost function.
+             The advantage of Bfs over Dijkstra is its faster execution.
+            
+             Usage:
+             - #AddSource can be used to initialize the class by providing the source nodes.
+             - Then #Run or #RunUntilReached may be called to obtain a forest of shortest paths to a given set of nodes.
+             - Alternatively, #Step can be called several times.
+            
+             The algorithm \e reaches nodes one after the other (see #Reached for definition).
+            
+             Querying the results:
+             - For reached nodes, use #GetLevel, #GetParentArc and #GetPath.
+             - For currently unreached nodes, #GetLevel, #GetParentArc and #GetPath return -1, Arc.Invalid and null respectively.
+             
+             \sa AStar, BellmanFord, Dijkstra
+        </member>
+        <member name="P:Satsuma.Bfs.Graph">
+            The input graph.
+        </member>
+        <member name="M:Satsuma.Bfs.AddSource(Satsuma.Node)">
+            Adds a new source node.
+            \exception InvalidOperationException The node has already been reached.
+        </member>
+        <member name="M:Satsuma.Bfs.Step(System.Func{Satsuma.Node,System.Boolean},Satsuma.Node@)">
+            Performs an iteration which involves dequeueing a node.
+            The unreached neighbors of the dequeued node are enqueued, 
+            and \e isTarget (which can be null) is called for each of them
+            to find out if they belong to the target node set.
+            If a target node is found among them, then the function returns immediately.
+            \param isTarget Returns \c true for target nodes. Can be null.
+            \param reachedTargetNode The target node that has been newly reached, or Node.Invalid.
+            \return \c true if no target node has been reached in this step,
+            and there is at least one yet unreached node.
+        </member>
+        <member name="M:Satsuma.Bfs.Run">
+            Runs the algorithm until finished.
+        </member>
+        <member name="M:Satsuma.Bfs.RunUntilReached(Satsuma.Node)">
+            Runs the algorithm until a specific target node is reached.
+            \param target The node to reach.
+            \return \e target if it was successfully reached, or Node.Invalid.
+        </member>
+        <member name="M:Satsuma.Bfs.RunUntilReached(System.Func{Satsuma.Node,System.Boolean})">
+            Runs the algorithm until a node satisfying the given condition is reached.
+            \return A target node if one was successfully reached, or Node.Invalid if it is unreachable.
+        </member>
+        <member name="M:Satsuma.Bfs.Reached(Satsuma.Node)">
+            Returns whether a node has been reached.
+            - A node is called \b reached if it belongs to the current Bfs forest.
+            - Each reached node is either a source, or has a <b>parent arc</b>. (see #GetParentArc)
+            - At the beginning, only the source nodes are reached. (see #AddSource)
+            \sa ReachedNodes
+        </member>
+        <member name="P:Satsuma.Bfs.ReachedNodes">
+            Returns the reached nodes.
+            \sa Reached
+        </member>
+        <member name="M:Satsuma.Bfs.GetLevel(Satsuma.Node)">
+            Gets the current distance from the set of source nodes
+            (that is, its level in the Bfs forest).
+            \return The distance, or -1 if the node has not been reached yet.
+        </member>
+        <member name="M:Satsuma.Bfs.GetParentArc(Satsuma.Node)">
+            Gets the arc connecting a node with its parent in the Bfs forest.
+            \return The arc, or Arc.Invalid if the node is a source or has not been reached yet.
+        </member>
+        <member name="M:Satsuma.Bfs.GetPath(Satsuma.Node)">
+            Gets a shortest path from the sources to a node.
+            \return A shortest path, or null if the node has not been reached yet.
+        </member>
+        <member name="T:Satsuma.CompleteBipartiteGraph">
+             A complete bipartite graph on a given number of nodes.
+             The two color classes of the bipartite graph are referred to as \e red and \e blue nodes.
+             The graph may be either directed (from the red to the blue nodes) or undirected.
+            
+             Memory usage: O(1).
+            
+             This type is thread safe.
+             \sa CompleteGraph
+        </member>
+        <member name="T:Satsuma.CompleteBipartiteGraph.Color">
+            The color of a node.
+        </member>
+        <member name="P:Satsuma.CompleteBipartiteGraph.RedNodeCount">
+            The count of nodes in the first color class.
+        </member>
+        <member name="P:Satsuma.CompleteBipartiteGraph.BlueNodeCount">
+            The count of nodes in the second color class.
+        </member>
+        <member name="P:Satsuma.CompleteBipartiteGraph.Directed">
+            \c true if the graph is directed from red to blue nodes, 
+            \c false if it is undirected.
+        </member>
+        <member name="M:Satsuma.CompleteBipartiteGraph.#ctor(System.Int32,System.Int32,Satsuma.Directedness)">
+            Creates a complete bipartite graph.
+            \param directedness If Directedness.Directed, then the graph is directed from the red to the blue nodes.
+            Otherwise, the graph is undirected.
+        </member>
+        <member name="M:Satsuma.CompleteBipartiteGraph.GetRedNode(System.Int32)">
+            Gets a red node by its index.
+            \param index An integer between 0 (inclusive) and RedNodeCount (exclusive).
+        </member>
+        <member name="M:Satsuma.CompleteBipartiteGraph.GetBlueNode(System.Int32)">
+            Gets a blue node by its index.
+            \param index An integer between 0 (inclusive) and BlueNodeCount (exclusive).
+        </member>
+        <member name="M:Satsuma.CompleteBipartiteGraph.GetArc(Satsuma.Node,Satsuma.Node)">
+            Gets the unique arc between two nodes.
+            \param u The first node.
+            \param v The second node.
+            \return The arc whose two ends are \e u and \e v, or Arc.Invalid if the two nodes are of the same color.
+        </member>
+        <member name="M:Satsuma.CompleteBipartiteGraph.U(Satsuma.Arc)">
+            Returns the red node of an arc.
+        </member>
+        <member name="M:Satsuma.CompleteBipartiteGraph.V(Satsuma.Arc)">
+            Returns the blue node of an arc.
+        </member>
+        <member name="M:Satsuma.CompleteBipartiteGraph.Nodes(Satsuma.CompleteBipartiteGraph.Color)">
+            Gets all nodes of a given color.
+        </member>
+        <member name="T:Satsuma.CompleteGraph">
+             A complete undirected or directed graph on a given number of nodes.
+             A complete \b undirected graph is defined as a graph which has all the possible edges.
+             A complete \b directed graph is defined as a graph which has all the possible directed arcs.
+            
+             Memory usage: O(1).
+            
+             This type is thread safe.
+             \sa CompleteBipartiteGraph
+        </member>
+        <member name="P:Satsuma.CompleteGraph.Directed">
+            \c true if the graph contains all the possible directed arcs, 
+            \c false if it contains all the possible edges.
+        </member>
+        <member name="M:Satsuma.CompleteGraph.GetNode(System.Int32)">
+            Gets a node of the complete graph by its index.
+            \param index An integer between 0 (inclusive) and NodeCount() (exclusive).
+        </member>
+        <member name="M:Satsuma.CompleteGraph.GetNodeIndex(Satsuma.Node)">
+            Gets the index of a graph node.
+            \return An integer between 0 (inclusive) and NodeCount() (exclusive).
+        </member>
+        <member name="M:Satsuma.CompleteGraph.GetArc(Satsuma.Node,Satsuma.Node)">
+            Gets the unique arc between two nodes.
+            \param u The first node.
+            \param v The second node.
+            \return The arc that goes from \e u to \e v, or Arc.Invalid if \e u equals \e v.
+        </member>
+        <member name="T:Satsuma.ConnectedComponents">
+             Finds the connected components of a graph.
+            
+             Example:
+             \code
+             var g = new CustomGraph();
+             for (int i = 0; i &lt; 5; i++) g.AddNode();
+             var components = new ConnectedComponents(g, ConnectedComponents.Flags.CreateComponents);
+             Console.WriteLine("Number of components: " + components.Count); // should print 5
+             Console.WriteLine("Components:");
+             foreach (var component in components.Components)
+             	Console.WriteLine(string.Join(" ", component));
+             \endcode
+        </member>
+        <member name="F:Satsuma.ConnectedComponents.Flags.CreateComponents">
+            If set, #Components will contain the connected components.
+        </member>
+        <member name="P:Satsuma.ConnectedComponents.Graph">
+            The input graph.
+        </member>
+        <member name="P:Satsuma.ConnectedComponents.Count">
+            The number of connected components in the graph.
+        </member>
+        <member name="P:Satsuma.ConnectedComponents.Components">
+            The connected components of the graph.
+            Null if Flags.CreateComponents was not set during construction.
+        </member>
+        <member name="T:Satsuma.Bipartition">
+             Decides whether the graph is bipartite and finds a bipartition into red and blue nodes.
+            
+             Example:
+             \code
+             var g = new PathGraph(12, PathGraph.Topology.Cycle, Directedness.Undirected);
+             var bp = new Bipartition(g, Bipartition.Flags.CreateRedNodes | Bipartition.Flags.CreateBlueNodes);
+             Console.WriteLine("Bipartite: " + (bp.Bipartite ? "yes" : "no")); // should print 'yes'
+             if (bp.Bipartite)
+             {
+             	Console.WriteLine("Red nodes: " + string.Join(" ", bp.RedNodes));
+             	Console.WriteLine("Blue nodes: " + string.Join(" ", bp.BlueNodes));
+             }
+             \endcode
+        </member>
+        <member name="F:Satsuma.Bipartition.Flags.CreateRedNodes">
+            If set, #RedNodes will contain the red nodes if the graph is bipartite.
+        </member>
+        <member name="F:Satsuma.Bipartition.Flags.CreateBlueNodes">
+            If set, #BlueNodes will contain the blue nodes if the graph is bipartite.
+        </member>
+        <member name="P:Satsuma.Bipartition.Graph">
+            The input graph.
+        </member>
+        <member name="P:Satsuma.Bipartition.Bipartite">
+            \c true if the graph is bipartite.
+        </member>
+        <member name="P:Satsuma.Bipartition.RedNodes">
+            The elements of the red color class.
+            Null if Flags.CreateRedNodes was not set during construction.
+            Otherwise, empty if the graph is not bipartite.
+        </member>
+        <member name="P:Satsuma.Bipartition.BlueNodes">
+            The elements of the blue color class.
+            Null if Flags.CreateBlueNodes was not set during construction.
+            Otherwise, empty if the graph is not bipartite.
+        </member>
+        <member name="T:Satsuma.TopologicalOrder">
+            Decides whether a digraph is acyclic and finds a topological order of its nodes.
+            Edges count as 2-cycles.
+        </member>
+        <member name="F:Satsuma.TopologicalOrder.Flags.CreateOrder">
+            If set, #Order will contain a topological order of the nodes.
+        </member>
+        <member name="P:Satsuma.TopologicalOrder.Graph">
+            The input graph.
+        </member>
+        <member name="P:Satsuma.TopologicalOrder.Acyclic">
+            \c true if the digraph has no cycles.
+        </member>
+        <member name="P:Satsuma.TopologicalOrder.Order">
+            An order of the nodes where each arc points forward.
+            Null if Flags.CreateTopologicalOrder was not set during construction.
+            Otherwise, empty if the digraph has a cycle.
+        </member>
+        <member name="T:Satsuma.StrongComponents">
+            Finds the strongly connected components of a digraph.
+            Edges count as 2-cycles.
+        </member>
+        <member name="F:Satsuma.StrongComponents.Flags.CreateComponents">
+            If set, #Components will contain the strongly connected components.
+        </member>
+        <member name="P:Satsuma.StrongComponents.Graph">
+            The input digraph.
+        </member>
+        <member name="P:Satsuma.StrongComponents.Count">
+            The number of strongly connected components in the digraph.
+        </member>
+        <member name="P:Satsuma.StrongComponents.Components">
+            The strongly connected components of the digraph,
+            in a topological order of the component DAG (initial components first).
+            Null if Flags.CreateComponents was not set during construction.
+        </member>
+        <member name="T:Satsuma.LowpointDfs">
+            Calculates the lowpoint for each node.
+        </member>
+        <member name="T:Satsuma.BiEdgeConnectedComponents">
+            Finds the bridges and 2-edge-connected components in a graph.
+        </member>
+        <member name="F:Satsuma.BiEdgeConnectedComponents.Flags.CreateComponents">
+            If set, #Components will contain the 2-edge-connected components.
+        </member>
+        <member name="F:Satsuma.BiEdgeConnectedComponents.Flags.CreateBridges">
+            If set, #Bridges will contain the bridges.
+        </member>
+        <member name="P:Satsuma.BiEdgeConnectedComponents.Graph">
+            The input graph.
+        </member>
+        <member name="P:Satsuma.BiEdgeConnectedComponents.Count">
+            The number of 2-edge-connected components in the graph.
+        </member>
+        <member name="P:Satsuma.BiEdgeConnectedComponents.Components">
+            The 2-edge-connected components of the graph.
+            Null if Flags.CreateComponents was not set during construction.
+        </member>
+        <member name="P:Satsuma.BiEdgeConnectedComponents.Bridges">
+            The bridges of the graph.
+            Null if Flags.CreateBridges was not set during construction.
+        </member>
+        <member name="T:Satsuma.BiNodeConnectedComponents">
+            Finds the cutvertices and blocks (2-node-connected components) of a graph.
+            Blocks (2-node-connected components) are maximal 2-node-connected subgraphs and bridge arcs.
+        </member>
+        <member name="F:Satsuma.BiNodeConnectedComponents.Flags.CreateComponents">
+            If set, #Components will contain the 2-edge-connected components.
+        </member>
+        <member name="F:Satsuma.BiNodeConnectedComponents.Flags.CreateCutvertices">
+            If set, #Cutvertices will contain information about the cutvertices.
+        </member>
+        <member name="P:Satsuma.BiNodeConnectedComponents.Graph">
+            The input graph.
+        </member>
+        <member name="P:Satsuma.BiNodeConnectedComponents.Count">
+            The number of blocks (2-node-connected components) in the graph.
+        </member>
+        <member name="P:Satsuma.BiNodeConnectedComponents.Components">
+            The blocks (2-node-connected components) of the graph.
+            Null if Flags.CreateComponents was not set during construction.
+        </member>
+        <member name="P:Satsuma.BiNodeConnectedComponents.Cutvertices">
+            Stores the increase in the number of connected components upon deleting a node.
+            Null if Flags.CreateCutvertices was not set during construction.
+            The only keys are cutvertices (value &gt; 0) and one-node components (value = -1).
+            Other nodes are not contained as keys, as they would all have 0 value assigned.
+        </member>
+        <member name="T:Satsuma.FindPathExtensions">
+            Extension methods for IGraph, for finding paths.
+        </member>
+        <member name="M:Satsuma.FindPathExtensions.FindPath(Satsuma.IGraph,System.Collections.Generic.IEnumerable{Satsuma.Node},System.Func{Satsuma.Node,System.Boolean},Satsuma.Dfs.Direction)">
+            \anchor FindPath_Main Finds a path in a graph from a source node to a target node.
+            \param source The set of source nodes.
+            \param target A function determining whether a node belongs to the set of target nodes.
+            \param direction The direction of the Dfs used to search for the path.
+            \return A path from a source node to a target node, or \e null if none exists.
+        </member>
+        <member name="M:Satsuma.FindPathExtensions.FindPath(Satsuma.IGraph,Satsuma.Node,Satsuma.Node,Satsuma.Dfs.Direction)">
+            Convenience function for finding a path between two nodes. Details: \ref FindPath_Main "here".
+        </member>
+        <member name="T:Satsuma.ContractedGraph">
+            Adaptor for identifying some nodes of an underlying graph.
+            Uses a DisjointSet to keep track of node equivalence classes.
+            Node and Arc objects are interchangeable between the adaptor and the original graph,
+            though some nodes of the underlying graph represent the same node in the adaptor.
+            The underlying graph can be modified while using this adaptor, 
+            as long as none of its nodes are deleted.
+        </member>
+        <member name="M:Satsuma.ContractedGraph.Reset">
+            Undoes all mergings.
+        </member>
+        <member name="M:Satsuma.ContractedGraph.GetRepresentative(Satsuma.Node)">
+            Gets the node of the contracted graph which contains the given original node as a child.
+            \param n A node of the original graph (this includes nodes of the adaptor).
+            \return The merged node which contains the given node.
+        </member>
+        <member name="M:Satsuma.ContractedGraph.GetChildren(Satsuma.Node)">
+            Gets the nodes which are contracted with the given node.
+            \param n A node of the original graph (this includes nodes of the adaptor).
+            \return The nodes in the same equivalence class (at least 1).
+        </member>
+        <member name="M:Satsuma.ContractedGraph.Merge(Satsuma.Node,Satsuma.Node)">
+            Identifies two nodes so they become one node.
+            \param u A node of the original graph (this includes nodes of the adaptor).
+            \param v Another node of the original graph (this includes nodes of the adaptor).
+            \return The object representing the merged node.
+        </member>
+        <member name="M:Satsuma.ContractedGraph.Contract(Satsuma.Arc)">
+            Contracts an arc into a node.
+            \param arc an arc of the original graph (or, equivalently, one of the adaptor)
+            \return The node resulting from the contracted arc.
+        </member>
+        <member name="T:Satsuma.DijkstraMode">
+            The path cost calculation mode for Dijkstra's algorithm.
+        </member>
+        <member name="F:Satsuma.DijkstraMode.Sum">
+            The cost of a path equals to the sum of the costs of its arcs.
+            This is the default mode.
+            \warning In this mode, Dijkstra.Cost must be nonnegative. 
+        </member>
+        <member name="F:Satsuma.DijkstraMode.Maximum">
+            The cost of a path equals to the maximum of the costs of its arcs.
+            In this mode, Dijkstra.Cost can be arbitrary.
+        </member>
+        <member name="T:Satsuma.Dijkstra">
+             Uses %Dijkstra's algorithm to find cheapest paths in a graph.
+             \warning See DijkstraMode for constraints on the cost function.
+             
+             Usage:
+             - #AddSource can be used to initialize the class by providing the source nodes.
+             - Then #Run or #RunUntilFixed may be called to obtain a forest of cheapest paths to a given set of nodes.
+             - Alternatively, #Step can be called several times.
+             
+             The algorithm \e reaches and \e fixes nodes one after the other (see #Reached and #Fixed).
+            
+             Querying the results:
+             - For fixed nodes, use #GetDistance, #GetParentArc and #GetPath.
+             - For reached but unfixed nodes, these methods return valid but not yet optimal values.
+             - For currently unreached nodes, #GetDistance, #GetParentArc and #GetPath
+               return <tt>double.PositiveInfinity</tt>, Arc.Invalid and null respectively.
+             
+             Example (finding a shortest path between two nodes):
+             \code{.cs}
+             var g = new CompleteGraph(50);
+             var pos = new Dictionary&lt;Node, double&gt;();
+             var r = new Random();
+             foreach (var node in g.Nodes())
+             	pos[node] = r.NextDouble();
+             var dijkstra = new Dijkstra(g, arc =&gt; Math.Abs(pos[g.U(arc)] - pos[g.V(arc)]), DijkstraMode.Sum);
+             Node a = g.GetNode(0), b = g.GetNode(1);
+             dijkstra.AddSource(a);
+             dijkstra.RunUntilFixed(b);
+             Console.WriteLine("Distance of b from a: "+dijkstra.GetDistance(b));
+             \endcode
+             \sa AStar, BellmanFord, Bfs
+        </member>
+        <member name="P:Satsuma.Dijkstra.Graph">
+            The input graph.
+        </member>
+        <member name="P:Satsuma.Dijkstra.Cost">
+            The arc cost function.
+            <tt>double.PositiveInfinity</tt> means that an arc is impassable.
+            See DijkstraMode for restrictions on cost functions.
+        </member>
+        <member name="P:Satsuma.Dijkstra.Mode">
+            The path cost calculation mode.
+        </member>
+        <member name="P:Satsuma.Dijkstra.NullCost">
+            The lowest possible cost value.
+            - \c 0 if <tt>#Mode == DijkstraMode.Sum</tt>
+            - \c double.NegativeInfinity if <tt>#Mode == DijkstraMode.Maximum</tt>
+        </member>
+        <member name="M:Satsuma.Dijkstra.#ctor(Satsuma.IGraph,System.Func{Satsuma.Arc,System.Double},Satsuma.DijkstraMode)">
+            \param graph See #Graph.
+            \param cost See #Cost.
+            \param mode See #Mode.
+        </member>
+        <member name="M:Satsuma.Dijkstra.AddSource(Satsuma.Node)">
+            Adds a new source node.
+            \exception InvalidOperationException The node has already been reached.
+        </member>
+        <member name="M:Satsuma.Dijkstra.AddSource(Satsuma.Node,System.Double)">
+            Adds a new source node and sets its initial distance to \e nodeCost.
+            Use this method only if you know what you are doing.
+            \note Equivalent to deleting all arcs entering \e node,
+            and adding a new source node \e s with a new arc from \e s to \e node whose cost equals to \e nodeCost.
+            \exception InvalidOperationException
+            The node has already been reached, or \e nodeCost is invalid as an arc cost.
+        </member>
+        <member name="M:Satsuma.Dijkstra.Step">
+            Performs a step in the algorithm and fixes a node.
+            \return The newly fixed node, or Node.Invalid if there was no reached but unfixed node.
+            \sa #Reached, #Fixed
+        </member>
+        <member name="M:Satsuma.Dijkstra.Run">
+            Runs the algorithm until all possible nodes are fixed.
+        </member>
+        <member name="M:Satsuma.Dijkstra.RunUntilFixed(Satsuma.Node)">
+            Runs the algorithm until a specific target node is fixed. (see #Fixed)
+            \param target The node to fix.
+            \return \e target if it was successfully fixed, or Node.Invalid if it is unreachable.
+        </member>
+        <member name="M:Satsuma.Dijkstra.RunUntilFixed(System.Func{Satsuma.Node,System.Boolean})">
+            Runs the algorithm until a node satisfying the given condition is fixed.
+            \return a target node if one was successfully fixed, or Node.Invalid if all the targets are unreachable.
+        </member>
+        <member name="M:Satsuma.Dijkstra.Reached(Satsuma.Node)">
+            Returns whether a node has been reached. See #Fixed for more information.
+            \sa ReachedNodes
+        </member>
+        <member name="P:Satsuma.Dijkstra.ReachedNodes">
+            Returns the reached nodes.
+            \sa Reached
+        </member>
+        <member name="M:Satsuma.Dijkstra.Fixed(Satsuma.Node)">
+            Returns whether a node has been fixed.
+            - A node is called \e reached if it belongs to the current forest of cheapest paths. (see #Reached)
+            - Each reached node is either a source, or has a <b>parent arc</b>. (see #GetParentArc)
+            - A node is called \e fixed if it is reached and its distance will not change in the future.
+            - At the beginning, only the source nodes are reached and none are fixed. (see #AddSource)
+            - In each step, the algorithm fixes a node and reaches some (maybe zero) other nodes.
+            - The algorithm terminates if there is no node which is reached but not fixed.
+            \sa FixedNodes
+        </member>
+        <member name="P:Satsuma.Dijkstra.FixedNodes">
+            Returns the fixed nodes.
+            \sa Fixed
+        </member>
+        <member name="M:Satsuma.Dijkstra.GetDistance(Satsuma.Node)">
+            Gets the cost of the current cheapest path from the source nodes to a given node
+            (that is, its distance from the sources).
+            \return The distance, or <tt>double.PositiveInfinity</tt> if the node has not been reached yet.
+        </member>
+        <member name="M:Satsuma.Dijkstra.GetParentArc(Satsuma.Node)">
+            Gets the arc connecting a node with its parent in the current forest of cheapest paths.
+            \return The arc, or Arc.Invalid if the node is a source or has not been reached yet.
+        </member>
+        <member name="M:Satsuma.Dijkstra.GetPath(Satsuma.Node)">
+            Gets the current cheapest path from the source nodes to a given node.
+            \return A current cheapest path, or null if the node has not been reached yet.
+        </member>
+        <member name="T:Satsuma.DisjointSetSet`1">
+            Represents a set in the DisjointSet data structure.
+            The purpose is to ensure type safety by distinguishing between sets and their representatives.
+        </member>
+        <member name="T:Satsuma.IReadOnlyDisjointSet`1">
+            Interface to a read-only disjoint-set data structure.
+        </member>
+        <member name="M:Satsuma.IReadOnlyDisjointSet`1.WhereIs(`0)">
+            Returns the set where the given element belongs.
+        </member>
+        <member name="M:Satsuma.IReadOnlyDisjointSet`1.Elements(Satsuma.DisjointSetSet{`0})">
+            Returns the elements of a set.
+        </member>
+        <member name="T:Satsuma.IDisjointSet`1">
+            Interface to a disjoint-set data structure.
+            In its default state the disjoint-set is discretized, i.e. each point forms a one-element set.
+            \e Clear reverts the data structure to this state.
+        </member>
+        <member name="M:Satsuma.IDisjointSet`1.Union(Satsuma.DisjointSetSet{`0},Satsuma.DisjointSetSet{`0})">
+            Merges two sets and returns the merged set.
+        </member>
+        <member name="T:Satsuma.DisjointSet`1">
+            Implementation of the disjoint-set data structure.
+        </member>
+        <member name="T:Satsuma.Node">
+            Represents a graph node, consisting of a wrapped #Id.
+        </member>
+        <member name="P:Satsuma.Node.Id">
+            The integer which uniquely identifies the node within its containing graph.
+            \note Nodes belonging to different graph objects may have the same Id.
+        </member>
+        <member name="M:Satsuma.Node.#ctor(System.Int64)">
+            Creates a Node which has the supplied id.
+        </member>
+        <member name="P:Satsuma.Node.Invalid">
+            A special node value, denoting an invalid node.
+            This is the default value for the Node type.
+        </member>
+        <member name="T:Satsuma.Arc">
+            Represents a graph arc, consisting of a wrapped #Id.
+            Arcs can be either directed or undirected. Undirected arcs are called \e edges.
+            Endpoints and directedness of an arc are not stored in this object, but rather they can be queried
+            using methods of the containing graph (see IArcLookup).
+        </member>
+        <member name="P:Satsuma.Arc.Id">
+            The integer which uniquely identifies the arc within its containing graph.
+            \note Arcs belonging to different graph objects may have the same Id.
+        </member>
+        <member name="M:Satsuma.Arc.#ctor(System.Int64)">
+            Creates an Arc which has the supplied id.
+        </member>
+        <member name="P:Satsuma.Arc.Invalid">
+            A special arc value, denoting an invalid arc.
+            This is the default value for the Arc type.
+        </member>
+        <member name="T:Satsuma.Directedness">
+            Tells whether an arc, an arc set or a graph is \e directed or \e undirected.
+            Undirected arcs are referred to as \e edges.
+        </member>
+        <member name="F:Satsuma.Directedness.Directed">
+            The arc, arc set or graph is \e directed.
+        </member>
+        <member name="F:Satsuma.Directedness.Undirected">
+            The arc, arc set or graph is \e undirected.
+        </member>
+        <member name="T:Satsuma.IBuildableGraph">
+            A graph which can build new nodes and arcs.
+        </member>
+        <member name="M:Satsuma.IBuildableGraph.AddNode">
+            Adds a node to the graph.
+        </member>
+        <member name="M:Satsuma.IBuildableGraph.AddArc(Satsuma.Node,Satsuma.Node,Satsuma.Directedness)">
+            Adds a directed arc or an edge (undirected arc) between u and v to the graph.
+            Only works if the two nodes are valid and belong to the graph,
+            otherwise no exception is guaranteed to be thrown and the result is undefined behaviour.
+            \param u The source node.
+            \param v The target node.
+            \param directedness Determines whether the new arc will be directed or an edge (i.e. undirected).
+        </member>
+        <member name="T:Satsuma.IDestroyableGraph">
+            A graph which can destroy its nodes and arcs.
+        </member>
+        <member name="M:Satsuma.IDestroyableGraph.DeleteNode(Satsuma.Node)">
+            Deletes a node from the graph.
+            \return \c true if the deletion was successful.
+        </member>
+        <member name="M:Satsuma.IDestroyableGraph.DeleteArc(Satsuma.Arc)">
+            Deletes a directed or undirected arc from the graph.
+            \return \c true if the deletion was successful.
+        </member>
+        <member name="T:Satsuma.IArcLookup">
+            A graph which can provide information about its arcs.
+            \sa ArcLookupExtensions
+        </member>
+        <member name="M:Satsuma.IArcLookup.U(Satsuma.Arc)">
+            Returns the first node of an arc. Directed arcs point from \e U to \e V.
+        </member>
+        <member name="M:Satsuma.IArcLookup.V(Satsuma.Arc)">
+            Returns the second node of an arc. Directed arcs point from \e U to \e V.
+        </member>
+        <member name="M:Satsuma.IArcLookup.IsEdge(Satsuma.Arc)">
+            Returns whether the arc is undirected (\c true) or directed (\c false).
+        </member>
+        <member name="T:Satsuma.ArcLookupExtensions">
+            Extension methods for IArcLookup.
+        </member>
+        <member name="M:Satsuma.ArcLookupExtensions.ArcToString(Satsuma.IArcLookup,Satsuma.Arc)">
+            Converts an arc to a readable string representation by looking up its nodes.
+            \param arc An arc belonging to the graph, or Arc.Invalid.
+        </member>
+        <member name="M:Satsuma.ArcLookupExtensions.Other(Satsuma.IArcLookup,Satsuma.Arc,Satsuma.Node)">
+            Returns <tt>U(arc)</tt> if it is different from the given node, or 
+            <tt>V(arc)</tt> if <tt>U(arc)</tt> equals to the given node.
+            \note If the given node is on the given arc, then this function returns the other node of the arc.
+            \param node An arbitrary node, may even be Node.Invalid.
+        </member>
+        <member name="M:Satsuma.ArcLookupExtensions.Nodes(Satsuma.IArcLookup,Satsuma.Arc,System.Boolean)">
+            Returns the two nodes of an arc.
+            \param arc An arc belonging to the graph.
+            \param allowDuplicates 
+            - If \c true, then the resulting array always contains two items, even if the arc connects a node with itself.
+            - If \c false, then the resulting array contains only one node if the arc is a loop.
+        </member>
+        <member name="T:Satsuma.ArcFilter">
+            Allows filtering arcs. Can be passed to functions which return a collection of arcs.
+        </member>
+        <member name="F:Satsuma.ArcFilter.All">
+            All arcs.
+        </member>
+        <member name="F:Satsuma.ArcFilter.Edge">
+            Only undirected arcs.
+        </member>
+        <member name="F:Satsuma.ArcFilter.Forward">
+            Only edges, or directed arcs from the first point (to the second point, if any).
+        </member>
+        <member name="F:Satsuma.ArcFilter.Backward">
+            Only edges, or directed arcs to the first point (from the second point, if any).
+        </member>
+        <member name="T:Satsuma.IGraph">
+            Interface to a read-only graph.
+        </member>
+        <member name="M:Satsuma.IGraph.Nodes">
+            Returns all nodes of the graph.
+        </member>
+        <member name="M:Satsuma.IGraph.Arcs(Satsuma.ArcFilter)">
+            \anchor Arcs1 Returns all arcs of the graph satisfying a given filter.
+            \param filter Cannot be ArcType.Forward/ArcType.Backward.
+            - If ArcFilter.All, then all arcs are returned. 
+            - If ArcFilter.Edge, only the edges (undirected arcs) are returned.
+        </member>
+        <member name="M:Satsuma.IGraph.Arcs(Satsuma.Node,Satsuma.ArcFilter)">
+            \anchor Arcs2 Returns all arcs adjacent to a specific node satisfying a given filter.
+            \param filter
+            - If ArcFilter.All, then all arcs are returned. 
+            - If ArcFilter.Edge, only the edges (undirected arcs) are returned.
+            - If ArcFilter.Forward, only the arcs exiting \e u (this includes edges) are returned.
+            - If ArcFilter.Backward, only the arcs entering \e u (this includes edges) are returned.
+        </member>
+        <member name="M:Satsuma.IGraph.Arcs(Satsuma.Node,Satsuma.Node,Satsuma.ArcFilter)">
+            \anchor Arcs3 Returns all arcs adjacent to two nodes satisfying a given filter.
+            \param filter 
+            - If ArcFilter.All, then all arcs are returned. 
+            - If ArcFilter.Edge, only the edges (undirected arcs) are returned.
+            - If ArcFilter.Forward, only the arcs from \e u to \e v (this includes edges) are returned.
+            - If ArcFilter.Backward, only the arcs from \e v to \e u (this includes edges) are returned.
+        </member>
+        <member name="M:Satsuma.IGraph.NodeCount">
+            Returns the total number of nodes in O(1) time.
+        </member>
+        <member name="M:Satsuma.IGraph.ArcCount(Satsuma.ArcFilter)">
+            Returns the total number of arcs satisfying a given filter.
+            \param filter Detailed description: see \ref Arcs1 "Arcs(ArcFilter)".
+        </member>
+        <member name="M:Satsuma.IGraph.ArcCount(Satsuma.Node,Satsuma.ArcFilter)">
+            Returns the number of arcs adjacent to a specific node satisfying a given filter.
+            \param filter Detailed description: see \ref Arcs2 "Arcs(Node, ArcFilter)".
+        </member>
+        <member name="M:Satsuma.IGraph.ArcCount(Satsuma.Node,Satsuma.Node,Satsuma.ArcFilter)">
+            Returns the number of arcs adjacent to two nodes satisfying a given filter.
+            \param filter Detailed description: see \ref Arcs3 "Arcs(Node, Node, ArcFilter)".
+        </member>
+        <member name="M:Satsuma.IGraph.HasNode(Satsuma.Node)">
+            Returns whether the given node is contained in the graph.
+            Must return the same value as <tt>%Nodes().Contains</tt> in all implementations, but faster if possible.
+            \note \c true may be returned for nodes coming from another graph as well,
+            if those nodes encapsulate an identifier which is valid for this graph, too.
+        </member>
+        <member name="M:Satsuma.IGraph.HasArc(Satsuma.Arc)">
+            Returns whether the given arc is contained in the graph.
+            Must return the same value as <tt>%Arcs().Contains</tt> in all implementations, but faster if possible.
+            \note \c true may be returned for arcs coming from another graph as well,
+            if those arcs encapsulate an identifier which is valid for this graph, too.
+        </member>
+        <member name="T:Satsuma.CustomGraph">
+            A graph implementation capable of storing any graph.
+            Use this class to create custom graphs.
+            Memory usage: O(n+m), where \e n is the number of nodes and \e m is the number of arcs.
+        </member>
+        <member name="T:Satsuma.IO.SimpleGraphFormat">
+             Loads and saves graphs which are stored in a very simple format.
+             The first line must contain two numbers (the <b>count of nodes and arcs</b>).
+             Each additional line must contain a pair of numbers for each arc
+             (that is, the identifiers of the <b>start</b> and <b>end nodes</b> of the arc).
+            
+             Optionally, arc functions (\b extensions) can be defined as excess tokens after the arc definition.
+             Extensions are separated by whitespaces and thus must be nonempty strings containing no whitespaces.
+            
+             The following example describes a path on 4 nodes,
+             whose arcs each have a name and a cost associated to them.
+             %Node numbering starts from 1 here.
+             \code
+             4 3
+             1 2 Arc1 0.2
+             2 3 Arc2 1.25
+             3 4 Arc3 0.33
+             \endcode
+            
+             The above example can be processed like this (provided that it is stored in \c c:\\graph.txt):
+             \code
+             SimpleGraphFormat loader = new SimpleGraphFormat { StartIndex = 1 };
+             Node[] nodes = loader.Load(@"c:\graph.txt", Directedness.Directed);
+             // retrieve the loaded data
+             IGraph graph = loader.Graph;
+             Dictionary&lt;Arc, string&gt; arcNames = loader.Extensions[0];
+             Dictionary&lt;Arc, double&gt; arcCosts = 
+            		loader.Extensions[1].ToDictionary(kv => kv.Key, kv => double.Parse(kv.Value, CultureInfo.InvariantCulture));
+             \endcode
+        </member>
+        <member name="P:Satsuma.IO.SimpleGraphFormat.Graph">
+            The graph itself.
+            - <b>When loading</b>: Must be an IBuildableGraph to accomodate the loaded graph, or null. 
+              If null, will be replaced with a new CustomGraph instance.
+            - <b>When saving</b>: Can be an arbitrary graph (not null).
+        </member>
+        <member name="P:Satsuma.IO.SimpleGraphFormat.Extensions">
+            The extensions (arc functions).
+            \warning All the contained dictionaries must assign values to all the arcs of the graph.
+            Values must be nonempty strings containing no whitespaces.
+            This is not checked when saving.
+        </member>
+        <member name="P:Satsuma.IO.SimpleGraphFormat.StartIndex">
+            The index where node numbering starts (0 by default).
+            Set this parameter to the correct value both before loading and saving.
+        </member>
+        <member name="M:Satsuma.IO.SimpleGraphFormat.Load(System.IO.TextReader,Satsuma.Directedness)">
+            Loads from a reader.
+            \param reader A reader on the input file, e.g. a StreamReader.
+            \param directedness Specifies the directedness of the graph to be loaded. Possible values:
+            - \c Directedness.Directed: each created arc will be directed.
+            - \c Directedness.Undirected: each created arc will be an edge (i.e. undirected).
+            \return the loaded nodes, by index ascending
+        </member>
+        <member name="M:Satsuma.IO.SimpleGraphFormat.Load(System.String,Satsuma.Directedness)">
+            Loads from a file.
+        </member>
+        <member name="M:Satsuma.IO.SimpleGraphFormat.Save(System.IO.TextWriter)">
+            Saves to a writer.
+            \param writer A writer on the output file, e.g. a StreamWriter.
+        </member>
+        <member name="M:Satsuma.IO.SimpleGraphFormat.Save(System.String)">
+            Saves to a file.
+        </member>
+        <member name="T:Satsuma.IO.LemonGraphFormat">
+            Loads and saves graphs stored in the <em>Lemon Graph Format</em>.
+            See <a href='https://projects.coin-or.org/svn/LEMON/trunk/doc/lgf.dox'>this documentation page</a>
+            for a specification of the LGF.
+        </member>
+        <member name="P:Satsuma.IO.LemonGraphFormat.Graph">
+            The graph itself.
+            - <b>When loading</b>: Must be an IBuildableGraph to accomodate the loaded graph, or null. 
+              If null, will be replaced with a new CustomGraph instance.
+            - <b>When saving</b>: Can be an arbitrary graph (not null).
+        </member>
+        <member name="P:Satsuma.IO.LemonGraphFormat.NodeMaps">
+            The node maps, as contained in the \c \@nodes section of the input.
+            \note <tt>NodeMaps["label"]</tt> is never taken into account when saving, 
+            as \e label is a special word in LGF,
+            and node labels are always generated automatically to ensure uniqueness.
+        </member>
+        <member name="P:Satsuma.IO.LemonGraphFormat.ArcMaps">
+            The arc maps, as contained in the \c \@arcs and \c \@edges sections of the input.
+        </member>
+        <member name="P:Satsuma.IO.LemonGraphFormat.Attributes">
+            The attributes, as contained in the \c \@attributes section of the input.
+        </member>
+        <member name="M:Satsuma.IO.LemonGraphFormat.Load(System.IO.TextReader,System.Nullable{Satsuma.Directedness})">
+            Loads from a reader.
+            \param reader A reader on the input file, e.g. a StreamReader.
+            \param directedness Specifies the directedness of the graph to be loaded. Possible values:
+            - \c Directedness.Directed: each created arc will be directed.
+            - \c Directedness.Undirected: each created arc will be undirected.
+            - \c null (default): arcs defined in \c \@arcs sections will be directed, 
+              while those defined in \c \@edges sections will be undirected.
+        </member>
+        <member name="M:Satsuma.IO.LemonGraphFormat.Load(System.String,System.Nullable{Satsuma.Directedness})">
+            Loads from a file.
+        </member>
+        <member name="M:Satsuma.IO.LemonGraphFormat.Save(System.IO.TextWriter,System.Collections.Generic.IEnumerable{System.String})">
+            Saves to a writer.
+            All node and arc maps and attributes are saved as well, except <tt>NodeMaps["label"]</tt> (if present).
+            \param writer A writer on the output file, e.g. a StreamWriter.
+            \param comment Comment lines to write at the beginning of the file.
+        </member>
+        <member name="M:Satsuma.IO.LemonGraphFormat.Save(System.String,System.Collections.Generic.IEnumerable{System.String})">
+            Saves to a file.
+        </member>
+        <member name="T:Satsuma.IMatching">
+             Interface to a read-only matching.
+            
+             A \e matching is a subgraph without loop arcs
+             where the degree of each node of the containing graph is at most 1.
+             The node set of a matching consists of those nodes whose degree is 1 in the matching.
+        </member>
+        <member name="P:Satsuma.IMatching.Graph">
+            The underlying graph, i.e. the graph containing the matching.
+        </member>
+        <member name="M:Satsuma.IMatching.MatchedArc(Satsuma.Node)">
+            Gets the matching arc which contains the given node.
+            Equivalent to <tt>Arcs(node).FirstOrDefault()</tt>, but should be faster.
+            \param node A node of #Graph.
+            \return The arc which matches the given node, or Arc.Invalid if the node is unmatched.
+        </member>
+        <member name="T:Satsuma.Matching">
+            Adaptor for storing a matching of an underlying graph.
+            The Node and Arc set of the adaptor is a subset of that of the original graph.
+            The underlying graph can be modified while using this adaptor,
+            as long as no matched nodes and matching arcs are deleted.
+            
+            A newly created Matching object has zero arcs.
+        </member>
+        <member name="M:Satsuma.Matching.Enable(Satsuma.Arc,System.Boolean)">
+            Enables/disables an arc (adds/removes it from the matching).
+            If the arc is already enabled/disabled, does nothing.
+            \param arc An arc of #Graph.
+            \exception ArgumentException Trying to enable an illegal arc.
+        </member>
+        <member name="T:Satsuma.BipartiteMaximumMatching">
+            Finds a maximum matching in a bipartite graph using the alternating path algorithm.
+            \sa BipartiteMinimumCostMatching
+        </member>
+        <member name="P:Satsuma.BipartiteMaximumMatching.IsRed">
+            Describes a bipartition of the input graph by dividing its nodes into red and blue ones.
+        </member>
+        <member name="P:Satsuma.BipartiteMaximumMatching.Matching">
+            The current matching.
+        </member>
+        <member name="M:Satsuma.BipartiteMaximumMatching.Clear">
+            Removes all arcs from the matching.
+        </member>
+        <member name="M:Satsuma.BipartiteMaximumMatching.GreedyGrow(System.Int32)">
+            Grows the current matching greedily.
+            Can be used to speed up optimization by finding a reasonable initial matching.
+            \param maxImprovements The maximum number of arcs to grow the current matching with.
+            \return The number of arcs added to the matching.
+        </member>
+        <member name="M:Satsuma.BipartiteMaximumMatching.Add(Satsuma.Arc)">
+            Tries to add a specific arc to the current matching.
+            If the arc is already present, does nothing.
+            \param arc An arc of #Graph.
+            \exception ArgumentException Trying to add an illegal arc.
+        </member>
+        <member name="M:Satsuma.BipartiteMaximumMatching.Run">
+            Grows the current matching to a maximum matching by running the whole alternating path algorithm.
+            \note Calling #GreedyGrow before #Run may speed up operation.
+        </member>
+        <member name="T:Satsuma.BipartiteMinimumCostMatching">
+            Finds a minimum cost matching in a bipartite graph using the network simplex method.
+            \sa BipartiteMaximumMatching
+        </member>
+        <member name="P:Satsuma.BipartiteMinimumCostMatching.Graph">
+            The input graph.
+        </member>
+        <member name="P:Satsuma.BipartiteMinimumCostMatching.IsRed">
+            Describes a bipartition of #Graph by dividing its nodes into red and blue ones.
+        </member>
+        <member name="P:Satsuma.BipartiteMinimumCostMatching.Cost">
+            A finite cost function on the arcs of #Graph.
+        </member>
+        <member name="P:Satsuma.BipartiteMinimumCostMatching.MinimumMatchingSize">
+            Minimum constraint on the size (number of arcs) of the returned matching.
+        </member>
+        <member name="P:Satsuma.BipartiteMinimumCostMatching.MaximumMatchingSize">
+            Maximum constraint on the size (number of arcs) of the returned matching.
+        </member>
+        <member name="P:Satsuma.BipartiteMinimumCostMatching.Matching">
+            The minimum cost matching, computed using the network simplex method.
+            Null if a matching of the specified size could not be found.
+        </member>
+        <member name="T:Satsuma.SimplexState">
+            Corresponds to the states of the two-phase primal simplex algorithm.
+        </member>
+        <member name="F:Satsuma.SimplexState.FirstPhase">
+            The first phase (finding a feasible solution) is still running.
+        </member>
+        <member name="F:Satsuma.SimplexState.Infeasible">
+            No feasible solution exists as deduced by the first phase.
+        </member>
+        <member name="F:Satsuma.SimplexState.SecondPhase">
+            The second phase (finding an optimal solution) is still running.
+        </member>
+        <member name="F:Satsuma.SimplexState.Unbounded">
+            The value of the objective function was found to be unbounded.
+        </member>
+        <member name="F:Satsuma.SimplexState.Optimal">
+            The current solution is optimal.
+        </member>
+        <member name="T:Satsuma.NetworkSimplex">
+            Finds a minimum cost feasible circulation using the network simplex method.
+            Lower/upper bounds and supply must be integral, but cost can be double.
+            Edges are treated as directed arcs, but this is not a real restriction 
+            if, for all edges, lower bound + upper bound = 0.
+        </member>
+        <member name="P:Satsuma.NetworkSimplex.LowerBound">
+            The lower bound for the circulation.
+            \c long.MinValue means negative infinity (unbounded).
+            If \c null is supplied in the constructor, then the constant \c 0 function is taken.
+        </member>
+        <member name="P:Satsuma.NetworkSimplex.UpperBound">
+            The upper bound for the circulation.
+            Must be greater or equal to the lower bound.
+            \c long.MaxValue means positive infinity (unbounded).
+            If \c null is supplied in the constructor, then the constant \c long.MaxValue function is taken.
+        </member>
+        <member name="P:Satsuma.NetworkSimplex.Supply">
+            The desired difference of outgoing and incoming flow for a node. Must be finite.
+            The sum must be zero for each graph component.
+            If \c null is supplied in the constructor, then the constant \c 0 function is taken.
+        </member>
+        <member name="P:Satsuma.NetworkSimplex.Cost">
+            The cost of sending a unit of circulation through an arc. Must be finite.
+            If \c null is supplied in the constructor, then the constant \c 1.0 function is taken.
+        </member>
+        <member name="P:Satsuma.NetworkSimplex.State">
+            The current execution state of the simplex algorithm.
+        </member>
+        <member name="M:Satsuma.NetworkSimplex.#ctor(Satsuma.IGraph,System.Func{Satsuma.Arc,System.Int64},System.Func{Satsuma.Arc,System.Int64},System.Func{Satsuma.Node,System.Int64},System.Func{Satsuma.Arc,System.Double})">
+            Hint: use named arguments when calling this constructor.
+        </member>
+        <member name="M:Satsuma.NetworkSimplex.Flow(Satsuma.Arc)">
+            Returns the amount currently circulating on an arc.
+        </member>
+        <member name="P:Satsuma.NetworkSimplex.Forest">
+            Returns those arcs which belong to the basic forest.
+        </member>
+        <member name="P:Satsuma.NetworkSimplex.UpperBoundArcs">
+            Returns those arcs which are saturated (the flow equals to the upper bound),
+            but are not in the basic forest.
+        </member>
+        <member name="M:Satsuma.NetworkSimplex.Clear">
+            Reverts the solver to its initial state.
+        </member>
+        <member name="M:Satsuma.NetworkSimplex.MySubtract(System.Int64,System.Int64)">
+            Returns a-b for two longs (a > b). long.MaxValue/long.MinValue is taken for positive/negative infinity.
+        </member>
+        <member name="M:Satsuma.NetworkSimplex.Step">
+            Performs an iteration in the simplex algorithm.
+            Modifies the State field according to what happened.
+        </member>
+        <member name="M:Satsuma.NetworkSimplex.Run">
+            Runs the algorithm until the problem is found to be infeasible, 
+            an optimal solution is found, or the objective is found to be unbounded.
+        </member>
+        <member name="T:Satsuma.IPath">
+             Interface to a read-only path.
+             Here \e path is used in a sense that no nodes may be repeated.
+             The only exception is that the start and end nodes may be equal. 
+             In this case, the path is called a \e cycle if it has at least one arc.
+            
+             If the path is a cycle with two nodes, then its two arcs \e may be equal,
+             but this is the only case when arc equality is allowed (in fact, possible).
+            
+             The path arcs may be undirected or point in any direction (forward/backward).
+            
+             The #Nodes method always returns the nodes in path order.
+            
+             The \e length of a path is defined as the number of its arcs.
+             A path is called \e empty if it has no nodes.
+             \sa PathExtensions
+        </member>
+        <member name="P:Satsuma.IPath.FirstNode">
+            The first node of the path, or Node.Invalid if the path is empty.
+        </member>
+        <member name="P:Satsuma.IPath.LastNode">
+            The last node of the path, or Node.Invalid if the path is empty.
+            Equals #FirstNode if the path is a cycle.
+        </member>
+        <member name="M:Satsuma.IPath.NextArc(Satsuma.Node)">
+            Returns the arc connecting a node with its successor in the path.
+            Returns Arc.Invalid if the node is not on the path or has no successor.
+            If the path is a cycle, then each node has a successor.
+        </member>
+        <member name="M:Satsuma.IPath.PrevArc(Satsuma.Node)">
+            Returns the arc connecting a node with its predecessor in the path.
+            Returns Arc.Invalid if the node is not on the path or has no predecessor.
+            If the path is a cycle, then each node has a predecessor.
+        </member>
+        <member name="T:Satsuma.PathExtensions">
+            Extension methods to IPath.
+        </member>
+        <member name="M:Satsuma.PathExtensions.IsCycle(Satsuma.IPath)">
+            Returns \c true if FirstNode equals LastNode and the path has at least one arc.
+        </member>
+        <member name="M:Satsuma.PathExtensions.NextNode(Satsuma.IPath,Satsuma.Node)">
+            Returns the successor of a node in the path.
+            Returns Node.Invalid if the node is not on the path or has no successor.
+            If the path is a cycle, then each node has a successor.
+        </member>
+        <member name="M:Satsuma.PathExtensions.PrevNode(Satsuma.IPath,Satsuma.Node)">
+            Returns the predecessor of a node in the path.
+            Returns Node.Invalid if the node is not on the path or has no predecessor.
+            If the path is a cycle, then each node has a predecessor.
+        </member>
+        <member name="M:Satsuma.PathExtensions.ArcsHelper(Satsuma.IPath,Satsuma.Node,Satsuma.ArcFilter)">
+            Implements IGraph.Arcs for paths.
+        </member>
+        <member name="T:Satsuma.Path">
+             Adaptor for storing a path of an underlying graph.
+             The Node and Arc set of the adaptor is a subset of that of the original graph.
+             The underlying graph can be modified while using this adaptor,
+             as long as no path nodes and path arcs are deleted.
+            
+             Example (building a path):
+             \code
+             var g = new CompleteGraph(15);
+             var p = new Path(g);
+             var u = g.GetNode(0), v = g.GetNode(1), w = g.GetNode(2);
+             p.Begin(u);
+             p.AddLast(g.GetArc(u, v));
+             p.AddFirst(g.GetArc(w, u));
+             // now we have the w--u--v path
+             p.Reverse();
+             // now we have the v--u--w path
+             \endcode
+            
+             \sa PathGraph
+        </member>
+        <member name="P:Satsuma.Path.Graph">
+            The graph containing the path.
+        </member>
+        <member name="M:Satsuma.Path.#ctor(Satsuma.IGraph)">
+            Initializes an empty path.
+        </member>
+        <member name="M:Satsuma.Path.Clear">
+            Resets the path to an empty path.
+        </member>
+        <member name="M:Satsuma.Path.Begin(Satsuma.Node)">
+            Makes a one-node path from an empty path.
+            \exception InvalidOperationException The path is not empty.
+        </member>
+        <member name="M:Satsuma.Path.AddFirst(Satsuma.Arc)">
+            Appends an arc to the start of the path.
+            \param arc An arc connecting #FirstNode either with #LastNode or with a node not yet on the path.
+            The arc may point in any direction.
+            \exception ArgumentException The arc is not valid or the path is a cycle.
+        </member>
+        <member name="M:Satsuma.Path.AddLast(Satsuma.Arc)">
+            Appends an arc to the end of the path.
+            \param arc An arc connecting #LastNode either with #FirstNode or with a node not yet on the path.
+            The arc may point in any direction.
+            \exception ArgumentException The arc is not valid or the path is a cycle.
+        </member>
+        <member name="M:Satsuma.Path.Reverse">
+            Reverses the path in O(1) time.
+            For example, the \b u — \b v → \b w path becomes the \b w ← \b v — \b u path.
+        </member>
+        <member name="T:Satsuma.PathGraph">
+             A path or cycle graph on a given number of nodes.
+             \warning Not to be confused with Path.
+             Path is an adaptor which stores a path or cycle of some other graph,
+             while PathGraph is a standalone graph (a \"graph constant\").
+            
+             Memory usage: O(1).
+            
+             This type is thread safe.
+             \sa Path
+        </member>
+        <member name="F:Satsuma.PathGraph.Topology.Path">
+            The graph is a path.
+        </member>
+        <member name="F:Satsuma.PathGraph.Topology.Cycle">
+            The graph is a cycle.
+        </member>
+        <member name="M:Satsuma.PathGraph.GetNode(System.Int32)">
+            Gets a node of the path by its index.
+            \param index An integer between 0 (inclusive) and NodeCount() (exclusive).
+        </member>
+        <member name="M:Satsuma.PathGraph.GetNodeIndex(Satsuma.Node)">
+            Gets the index of a path node.
+            \return An integer between 0 (inclusive) and NodeCount() (exclusive).
+        </member>
+        <member name="T:Satsuma.IFlow`1">
+            Interface to a flow in a network.
+            Edges work as bidirectional channels, as if they were two separate arcs.
+            \tparam TCapacity The arc capacity type.
+        </member>
+        <member name="P:Satsuma.IFlow`1.Graph">
+            The graph of the network.
+        </member>
+        <member name="P:Satsuma.IFlow`1.Capacity">
+            The capacity of the arcs.
+            Must be nonnegative (including positive infinity, if applicable).
+        </member>
+        <member name="P:Satsuma.IFlow`1.Source">
+            The source of the flow.
+        </member>
+        <member name="P:Satsuma.IFlow`1.Target">
+            The target (sink) of the flow.
+        </member>
+        <member name="P:Satsuma.IFlow`1.FlowSize">
+            The total amount of flow exiting the source node.
+        </member>
+        <member name="P:Satsuma.IFlow`1.NonzeroArcs">
+            Those of the arcs where there is nonzero flow.
+            For each nonzero arc, yields a pair consisting of the arc itself and the flow value on the arc.
+        </member>
+        <member name="M:Satsuma.IFlow`1.Flow(Satsuma.Arc)">
+            The amount flowing through an arc.
+            \return A number between 0 and <tt>Capacity(arc)</tt> if the arc is NOT an edge,
+            or between <tt>-Capacity(arc)</tt> and <tt>Capacity(arc)</tt> if the arc is an edge.
+        </member>
+        <member name="T:Satsuma.Preflow">
+            Finds a maximum flow using the Goldberg-Tarjan preflow algorithm.
+            Let \e D denote the sum of capacities for all arcs exiting Source.
+            - If all capacities are integers, and \e D &lt; 2<sup>53</sup>, then the returned flow is exact and optimal.
+            - Otherwise, small round-off errors may occur and the returned flow is \"almost-optimal\" (see #Error).
+            \sa IntegerPreflow, NetworkSimplex
+        </member>
+        <member name="P:Satsuma.Preflow.Error">
+            A (usually very small) approximate upper bound
+            for the difference between #FlowSize and the actual maximum flow value.
+            \note Due to floating-point roundoff errors, the maximum flow cannot be calculated exactly.
+        </member>
+        <member name="T:Satsuma.IntegerPreflow">
+            Finds a maximum flow for integer capacities using the Goldberg-Tarjan preflow algorithm.
+            The sum of capacities on the outgoing edges of Source must be at most \c long.MaxValue.
+            \sa Preflow, NetworkSimplex
+        </member>
+        <member name="T:Satsuma.IReadOnlyPriorityQueue`2">
+            Interface to a read-only priority queue.
+            Elements with lower priorities are prioritized more.
+        </member>
+        <member name="P:Satsuma.IReadOnlyPriorityQueue`2.Count">
+            The count of elements currently in the queue.
+        </member>
+        <member name="P:Satsuma.IReadOnlyPriorityQueue`2.Items">
+            Returns all the element-priority pairs.
+        </member>
+        <member name="M:Satsuma.IReadOnlyPriorityQueue`2.Contains(`0)">
+            Returns whether the specified element is in the priority queue.
+        </member>
+        <member name="M:Satsuma.IReadOnlyPriorityQueue`2.TryGetPriority(`0,`1@)">
+            Gets the priority of an element without throwing an exception.
+            \param priority Becomes \c default(P) if the element is not in the queue,
+            and the priority of the element otherwise.
+            \return \c true if the specified element is in the priority queue.
+        </member>
+        <member name="M:Satsuma.IReadOnlyPriorityQueue`2.Peek">
+            Returns the most prioritized element (that is, which has the lowest priority).
+        </member>
+        <member name="M:Satsuma.IReadOnlyPriorityQueue`2.Peek(`1@)">
+            Returns the most prioritized element (that is, which has the lowest priority) and its priority.
+        </member>
+        <member name="T:Satsuma.IPriorityQueue`2">
+            Interface to a priority queue which does not allow duplicate elements.
+            Elements with lower priorities are prioritized more.
+        </member>
+        <member name="P:Satsuma.IPriorityQueue`2.Item(`0)">
+            Gets or sets the priority of an element.
+        </member>
+        <member name="M:Satsuma.IPriorityQueue`2.Remove(`0)">
+            Removes a certain element from the queue, if present.
+            \return \c true if the given element was present in the queue.
+        </member>
+        <member name="M:Satsuma.IPriorityQueue`2.Pop">
+            Removes the most prioritized element from the queue, if it is not empty.
+            \return \c true if an element could be removed, i.e. the queue was not empty.
+        </member>
+        <member name="T:Satsuma.PriorityQueue`2">
+            A heap-based no-duplicates priority queue implementation.
+        </member>
+        <member name="T:Satsuma.RedirectedGraph">
+            Adaptor for modifying the direction of some arcs of an underlying graph.
+            Node and Arc objects are interchangeable between the adaptor and the original graph.
+            The underlying graph can be freely modified while using this adaptor.
+            For special cases, consider the UndirectedGraph and ReverseGraph classes for performance.
+        </member>
+        <member name="F:Satsuma.RedirectedGraph.Direction.Forward">
+            The arc should be directed from U to V.
+        </member>
+        <member name="F:Satsuma.RedirectedGraph.Direction.Backward">
+            The arc should be directed from V to U.
+        </member>
+        <member name="F:Satsuma.RedirectedGraph.Direction.Edge">
+            The arc should be undirected.
+        </member>
+        <member name="M:Satsuma.RedirectedGraph.#ctor(Satsuma.IGraph,System.Func{Satsuma.Arc,Satsuma.RedirectedGraph.Direction})">
+            Creates an adaptor over the given graph for redirecting its arcs.
+            \param graph The graph to redirect.
+            \param getDirection The function which modifies the arc directions.
+        </member>
+        <member name="T:Satsuma.ReverseGraph">
+            Adaptor for reversing all arcs of an underlying graph.
+            Node and Arc objects are interchangeable between the adaptor and the original graph.
+            The underlying graph can be freely modified while using this adaptor.
+        </member>
+        <member name="M:Satsuma.ReverseGraph.Reverse(Satsuma.ArcFilter)">
+            Returns the opposite of an arc filter.
+        </member>
+        <member name="T:Satsuma.AStar">
+             Uses the A* search algorithm to find cheapest paths in a graph.
+             AStar is essentially Dijkstra's algorithm with an optional heuristic which can speed up path search.
+             
+             Usage:
+             - #AddSource can be used to initialize the class by providing the source nodes.
+             - Then #RunUntilReached can be called to obtain cheapest paths to a target set.
+             
+             \note A target node is \e reached if a cheapest path leading to it is known.
+             Unlike Dijkstra, A* does not use the notion of fixed nodes.
+            
+             Example (finding a shortest path between two nodes):
+             \code{.cs}
+             var g = new CompleteGraph(50);
+             var pos = new Dictionary&lt;Node, double&gt;();
+             var r = new Random();
+             foreach (var node in g.Nodes())
+             	pos[node] = r.NextDouble();
+             Node source = g.GetNode(0);
+             Node target = g.GetNode(1);
+             var astar = new AStar(g, arc => Math.Abs(pos[g.U(arc)] - pos[g.V(arc)]), node => Math.Abs(pos[node] - pos[target]));
+             astar.AddSource(source);
+             astar.RunUntilReached(target);
+             Console.WriteLine("Distance of target from source: "+astar.GetDistance(target));
+             \endcode
+             \sa BellmanFord, Bfs, Dijkstra
+        </member>
+        <member name="P:Satsuma.AStar.Graph">
+            The input graph.
+        </member>
+        <member name="P:Satsuma.AStar.Cost">
+            A non-negative arc cost function.
+        </member>
+        <member name="P:Satsuma.AStar.Heuristic">
+             The A* heuristic function.
+             #Heuristic \b must be a function that is
+             - <b>non-negative</b>,
+             - \b admissible: it must assign for each node a <b>lower bound</b> on the
+             cost of the cheapest path from the given node to the target node set,
+             - and \b consistent: for each \e uv arc, <tt>Heuristic(u) &lt;= Cost(uv) + Heuristic(v)</tt>.
+            
+             From the above it follows that #Heuristic must return 0 for all target nodes.
+            
+             If #Heuristic is the constant zero function,
+             then the algorithm is equivalent to Dijkstra's algorithm.
+        </member>
+        <member name="M:Satsuma.AStar.#ctor(Satsuma.IGraph,System.Func{Satsuma.Arc,System.Double},System.Func{Satsuma.Node,System.Double})">
+            \param graph See #Graph.
+            \param cost See #Cost.
+            \param heuristic See #Heuristic.
+        </member>
+        <member name="M:Satsuma.AStar.AddSource(Satsuma.Node)">
+            Adds a new source node.
+            \exception InvalidOperationException The node has already been reached.
+        </member>
+        <member name="M:Satsuma.AStar.RunUntilReached(Satsuma.Node)">
+            Runs the algorithm until the given node is reached.
+            \param target The node to reach.
+            \return \e target if it was successfully reached, or Node.Invalid if it is unreachable.
+            \exception ArgumentException <tt>Heuristic(target)</tt> is not 0.
+        </member>
+        <member name="M:Satsuma.AStar.RunUntilReached(System.Func{Satsuma.Node,System.Boolean})">
+            Runs the algorithm until a node satisfying the given condition is reached.
+            \return a target node if one was successfully reached, or Node.Invalid if all the targets are unreachable.
+            \exception ArgumentException <tt>Heuristic</tt> is not 0 for the returned node.
+        </member>
+        <member name="M:Satsuma.AStar.GetDistance(Satsuma.Node)">
+            Gets the cost of the cheapest path from the source nodes to a given node
+            (that is, its distance from the sources).
+            \return The distance, or <tt>double.PositiveInfinity</tt> if the node has not been reached yet.
+            \exception ArgumentException <tt>Heuristic(node)</tt> is not 0.
+        </member>
+        <member name="M:Satsuma.AStar.GetPath(Satsuma.Node)">
+            Gets a cheapest path from the source nodes to a given node.
+            \return A cheapest path, or null if the node has not been reached yet.
+            \exception ArgumentException <tt>Heuristic(node)</tt> is not 0.
+        </member>
+        <member name="T:Satsuma.Prim`1">
+             Finds a minimum cost spanning forest in a graph using Prim's algorithm.
+             Most suitable for dense graphs. For sparse (i.e. everyday) graphs, use Kruskal&lt;TCost&gt;.
+            
+             Running time: O((m+n) log n), memory usage: O(n); 
+             where \e n is the number of nodes and \e m is the number of arcs.
+            
+             Example:
+             \code
+             CompleteGraph g = new CompleteGraph(10);
+             Node u = g.GetNode(0);
+             Node v = g.GetNode(1);
+             Node w = g.GetNode(2);
+             var expensiveArcs = new HashSet&lt;Arc&gt;() { g.GetArc(u, v), g.GetArc(v, w) };
+             Func&lt;Arc, double&gt; cost = (arc => expensiveArcs.Contains(arc) ? 1.5 : 1.0);
+             var p = new Prim&lt;double&gt;(g, cost);
+             // the graph is connected, so the spanning forest is a tree
+             Console.WriteLine("Total cost of a minimum cost spanning tree: "+p.Forest.Sum(cost));
+             Console.WriteLine("A minimum cost spanning tree:");
+             foreach (var arc in p.Forest) Console.WriteLine(g.ArcToString(arc));
+             \endcode
+            
+             \note The graph in the example is a complete graph, which is dense.
+             That's why we have used Prim&lt;TCost&gt; instead of Kruskal&lt;TCost&gt;.
+             \tparam TCost The arc cost type.
+        </member>
+        <member name="P:Satsuma.Prim`1.Forest">
+            Contains the arcs of a cheapest spanning forest.
+        </member>
+        <member name="P:Satsuma.Prim`1.ForestGraph">
+            The cheapest spanning forest as a subgraph of the original graph.
+        </member>
+        <member name="T:Satsuma.Kruskal`1">
+             Finds a minimum cost spanning forest in a graph using Kruskal's algorithm.
+             Most suitable for sparse (i.e. everyday) graphs. For dense graphs, use Prim&lt;TCost&gt;.
+            
+             The algorithm starts with an empty forest, and gradually expands it with one arc at a time,
+             taking the cheapest possible arc in each step.
+             At the end of the algorithm, this yields a cheapest spanning forest.
+            
+             Running time: O(m log n), memory usage: O(m); 
+             where \e n is the number of nodes and \e m is the number of arcs.
+            
+             \note This class also allows finding a cheapest forest containing some fixed arc set.
+             Call \c AddArc several times at the beginning to set an initial forest which needs to be contained,
+             then call \c Run to complete the forest.
+             It can be proven that the found spanning forest is optimal among those which contain the given arc set.
+            
+             A maximum degree constraint can also be imposed on the spanning forest,
+             and arbitrary arcs can be added to the forest at any time using \c AddArc.
+             However, if using these features, the resulting forest may not be optimal.
+            
+             See Prim&lt;TCost&gt; for a usage example.
+             \tparam TCost The arc cost type.
+        </member>
+        <member name="P:Satsuma.Kruskal`1.Graph">
+            The input graph.
+        </member>
+        <member name="P:Satsuma.Kruskal`1.Cost">
+            An arbitrary function assigning costs to the arcs.
+        </member>
+        <member name="P:Satsuma.Kruskal`1.MaxDegree">
+             An optional per-node maximum degree constraint on the resulting spanning forest. Can be null.
+            
+             \warning The algorithm will most probably find a suboptimal solution if a maximum degree constraint is imposed,
+             as the minimum cost Hamiltonian path problem can be formulated as a minimum cost spanning tree problem
+             with maximum degree 2.
+        </member>
+        <member name="P:Satsuma.Kruskal`1.Forest">
+            Contains the arcs of the current forest.
+            The forest is empty at the beginning.
+            #Run can be used to run the whole algorithm and make a cheapest spanning forest.
+        </member>
+        <member name="P:Satsuma.Kruskal`1.ForestGraph">
+            The current forest as a subgraph of the original graph.
+        </member>
+        <member name="P:Satsuma.Kruskal`1.Degree">
+            Contains the degree of a node in the found spanning forest.
+        </member>
+        <member name="M:Satsuma.Kruskal`1.Step">
+            Performs a step in Kruskal's algorithm.
+            A step means trying to insert the next arc into the forest.
+            \return \c true if the forest has not been completed with this step.
+        </member>
+        <member name="M:Satsuma.Kruskal`1.Run">
+            Runs the algorithm and completes the current forest to a spanning forest.
+        </member>
+        <member name="M:Satsuma.Kruskal`1.AddArc(Satsuma.Arc)">
+            Tries to add the specified arc to the current forest.
+            An arc cannot be added if it would either create a cycle in the forest,
+            or the maximum degree constraint would be violated with the addition.
+            \return \c true if the arc could be added.
+        </member>
+        <member name="T:Satsuma.Subgraph">
+             Adaptor for hiding/showing nodes/arcs of an underlying graph.
+             Node and Arc objects are interchangeable between the adaptor and the original graph.
+            
+             The underlying graph can be modified while using this adaptor,
+             as long as no nodes/arcs are deleted; and newly added nodes/arcs are explicitly enabled/disabled,
+             since enabledness of newly added nodes/arcs is undefined.
+            
+             By default, all nodes and arcs are enabled.
+             \sa Supergraph
+        </member>
+        <member name="M:Satsuma.Subgraph.EnableAllNodes(System.Boolean)">
+            Enables/disables all nodes at once.
+            \param enabled \c true if all nodes should be enabled, \c false if all nodes should be disabled.
+        </member>
+        <member name="M:Satsuma.Subgraph.EnableAllArcs(System.Boolean)">
+            Enables/disables all arcs at once.
+            \param enabled \c true if all arcs should be enabled, \c false if all arcs should be disabled.
+        </member>
+        <member name="M:Satsuma.Subgraph.Enable(Satsuma.Node,System.Boolean)">
+            Enables/disables a single node.
+            \param enabled \c true if the node should be enabled, \c false if the node should be disabled.
+        </member>
+        <member name="M:Satsuma.Subgraph.Enable(Satsuma.Arc,System.Boolean)">
+            Enables/disables a single arc.
+            \param enabled \c true if the arc should be enabled, \c false if the arc should be disabled.
+        </member>
+        <member name="M:Satsuma.Subgraph.IsEnabled(Satsuma.Node)">
+            Queries the enabledness of a node.
+        </member>
+        <member name="M:Satsuma.Subgraph.IsEnabled(Satsuma.Arc)">
+            Queries the enabledness of an arc.
+        </member>
+        <member name="T:Satsuma.Supergraph">
+             Adaptor for adding nodes/arcs to an underlying graph.
+             Node and Arc objects of the original graph are valid in the adaptor as well, but the converse is not true.
+             The underlying graph must NOT be modified while using this adaptor.
+             The adaptor is an IDestroyableGraph, but only the nodes/arcs added by the adaptor can be deleted.
+            
+             Memory usage: O(n+m), where \e n is the number of new nodes and \e m is the number of new arcs.
+            
+             The following example demonstrates how nodes and arcs can be added to a(n otherwise immutable) CompleteGraph:
+             \code
+             CompleteGraph g = new CompleteGraph(10);
+             Supergraph sg = new Supergraph(g);
+             Node u = sg.AddNode(); // create a new node
+             Arc a = sg.AddArc(u, g.GetNode(3), Directedness.Undirected); // add an edge
+             Console.WriteLine(string.Format("The augmented graph contains {0} nodes and {1} arcs.",
+            		sg.NodeCount(), sg.ArcCount())); // should print 11 and 46, respectively
+             \endcode
+             \sa Subgraph
+        </member>
+        <member name="M:Satsuma.Supergraph.Clear">
+            Deletes all nodes and arcs of the adaptor.
+        </member>
+        <member name="T:Satsuma.Dfs">
+            Performs a customizable depth-first search (DFS).
+        </member>
+        <member name="F:Satsuma.Dfs.Direction.Undirected">
+            The Dfs treats each arc as bidirectional.
+        </member>
+        <member name="F:Satsuma.Dfs.Direction.Forward">
+            The Dfs respects the orientation of each arc.
+        </member>
+        <member name="F:Satsuma.Dfs.Direction.Backward">
+            The Dfs runs on the reverse graph.
+        </member>
+        <member name="P:Satsuma.Dfs.Level">
+            The level of the current node (starting from zero).
+        </member>
+        <member name="M:Satsuma.Dfs.Run(Satsuma.IGraph,System.Collections.Generic.IEnumerable{Satsuma.Node})">
+            Runs the depth-first search. Can be called an arbitrary number of times.
+            \param graph The input graph.
+            \param roots The roots where the search should start, or \c null if all the graph nodes
+            should be considered.
+        </member>
+        <member name="M:Satsuma.Dfs.Start(Satsuma.Dfs.Direction@)">
+            Called before starting the search.
+        </member>
+        <member name="M:Satsuma.Dfs.NodeEnter(Satsuma.Node,Satsuma.Arc)">
+            Called when entering a node through an arc.
+            \param node The node being entered.
+            \param arc The arc connecting the node to its parent in the Dfs forest,
+            or Arc.Invalid if the node is a root.
+            \return \c true if the traversal should continue.
+        </member>
+        <member name="M:Satsuma.Dfs.NodeExit(Satsuma.Node,Satsuma.Arc)">
+            Called when exiting a node and going back through an arc.
+            \param node The node being exited.
+            \param arc The arc connecting the node to its parent in the Dfs forest,
+            or Arc.Invalid if the node is a root.
+            \return \c true if the traversal should continue.
+        </member>
+        <member name="M:Satsuma.Dfs.BackArc(Satsuma.Node,Satsuma.Arc)">
+            Called when encountering a non-forest arc pointing to an already visited node 
+            (this includes loop arcs).
+            \param node The node being processed by the Dfs.
+            \param arc The non-forest arc encountered.
+            \return \c true if the traversal should continue.
+        </member>
+        <member name="M:Satsuma.Dfs.StopSearch">
+            Called after finishing the search.
+        </member>
+        <member name="T:Satsuma.TspUtils">
+            Utilities regarding the \ref p_tsp "traveling salesman problem".
+        </member>
+        <member name="M:Satsuma.TspUtils.GetTourCost``1(System.Collections.Generic.IEnumerable{``0},System.Func{``0,``0,System.Double})">
+            Returns the total cost of a TSP tour.
+            \param tour A node sequence representing a tour. 
+            If the tour is not empty, then the starting node must be repeated at the end.
+            \param cost A finite cost function on the node pairs.
+        </member>
+        <member name="T:Satsuma.ITsp`1">
+            Interface to \ref p_tsp "TSP" solvers.
+            \tparam TNode The node type.
+        </member>
+        <member name="P:Satsuma.ITsp`1.Tour">
+            Returns the nodes present in the current tour in visiting order.
+            If the tour is not empty, then its starting node is repeated at the end.
+        </member>
+        <member name="P:Satsuma.ITsp`1.TourCost">
+            The cost of the current tour.
+        </member>
+        <member name="T:Satsuma.CheapestLinkTsp`1">
+             Solves the \b symmetric \ref p_tsp "traveling salesman problem" by using the cheapest link heuristic.
+             Works in a way very similar to Kruskal's algorithm.
+             It maintains a forest as well, but this time the forest consists of paths only.
+             In each step, it tries to glue two paths together, by using the cheapest possible link.
+            
+             Running time: O(n<sup>2</sup> \e log n), memory usage: O(n<sup>2</sup>); where \e n is the number of nodes.
+        </member>
+        <member name="P:Satsuma.CheapestLinkTsp`1.Nodes">
+            The nodes the salesman has to visit.
+            If your original node collection is not an IList, you can convert it to a list using Enumerable.ToList.
+        </member>
+        <member name="P:Satsuma.CheapestLinkTsp`1.Cost">
+            A finite cost function on the node pairs. Must be symmetric, or at least close to symmetric.
+        </member>
+        <member name="T:Satsuma.TspSelectionRule">
+            The operation mode of InsertionTsp&lt;TNode&gt;.
+        </member>
+        <member name="F:Satsuma.TspSelectionRule.Nearest">
+            The node nearest to the current tour is selected for insertion.
+        </member>
+        <member name="F:Satsuma.TspSelectionRule.Farthest">
+            The node farthest from the current tour is selected for insertion.
+        </member>
+        <member name="T:Satsuma.InsertionTsp`1">
+            Solves the \ref p_tsp "traveling salesman problem" by using the insertion heuristic.
+            It starts from a small tour and gradually extends it by repeatedly choosing a yet unvisited node.
+            The selected node is then inserted into the tour at the optimal place.
+            Running time: O(n<sup>2</sup>).
+            \tparam TNode The node type.
+        </member>
+        <member name="P:Satsuma.InsertionTsp`1.Nodes">
+            The nodes the salesman has to visit.
+        </member>
+        <member name="P:Satsuma.InsertionTsp`1.Cost">
+            A finite cost function on the node pairs.
+        </member>
+        <member name="P:Satsuma.InsertionTsp`1.SelectionRule">
+            The method of selecting new nodes for insertion.
+        </member>
+        <member name="F:Satsuma.InsertionTsp`1.tourNodes">
+            A dictionary mapping each tour node to its containing linked list node.
+        </member>
+        <member name="F:Satsuma.InsertionTsp`1.insertableNodes">
+            The non-tour nodes.
+        </member>
+        <member name="F:Satsuma.InsertionTsp`1.insertableNodeQueue">
+            The non-tour nodes in insertion order.
+        </member>
+        <member name="P:Satsuma.InsertionTsp`1.Tour">
+            See ITsp&lt;TNode&gt;.Tour.
+            \note The current tour contains only a subset of the nodes in the middle of the execution of the algorithm, 
+            since the insertion TSP algorithm works by gradually extending a small tour.
+        </member>
+        <member name="M:Satsuma.InsertionTsp`1.Clear">
+            Reverts the tour to a one-node tour, or a null tour if no node is available.
+        </member>
+        <member name="M:Satsuma.InsertionTsp`1.Insert(`0)">
+            Inserts a given node into the current tour at the optimal place.
+            \return \c true if the node was inserted, \c false if it was already in the tour
+        </member>
+        <member name="M:Satsuma.InsertionTsp`1.Insert">
+            Inserts a new node into the tour according to SelectionRule.
+            \return \c true if a new node was inserted, or \c false if the tour was already full.
+        </member>
+        <member name="M:Satsuma.InsertionTsp`1.Run">
+            Completes the tour.
+        </member>
+        <member name="T:Satsuma.Opt2Tsp`1">
+            Improves a solution for the \ref p_tsp "traveling salesman problem" by using the 2-OPT method.
+            It starts from a precomputed tour (e.g. one returned by InsertionTsp&lt;TNode&gt;) and gradually improves it by 
+            repeatedly swapping two edges.
+            It is advised to use this class for symmetric cost functions only.
+            \tparam TNode The node type.
+        </member>
+        <member name="P:Satsuma.Opt2Tsp`1.Cost">
+            A finite cost function on the node pairs.
+        </member>
+        <member name="M:Satsuma.Opt2Tsp`1.#ctor(System.Func{`0,`0,System.Double},System.Collections.Generic.IEnumerable{`0},System.Nullable{System.Double})">
+            Initializes the 2-OPT optimizer with the supplied tour.
+            \param cost The cost function (should be symmetrical).
+            \param tour The tour to improve with 2-OPT. The starting node must be repeated at the end.
+            \param tourCost The known cost of \c tour. Use this parameter to speed up initialization. 
+            If \c null is supplied, then the tour cost is recalculated.
+        </member>
+        <member name="M:Satsuma.Opt2Tsp`1.Step">
+            Performs an improvement step.
+            \return \c true if the objective could be improved.
+        </member>
+        <member name="M:Satsuma.Opt2Tsp`1.Run">
+            Performs 2-OPT improvement steps until the tour cannot be improved this way.
+        </member>
+        <member name="T:Satsuma.HamiltonianCycle">
+            Attempts to find a (directed) Hamiltonian cycle in a graph using TSP solvers.
+            Edges can be traversed in both directions.
+            
+            \warning If no Hamiltonian cycle is found by this class, that does not prove the nonexistence thereof.
+            However, there are some easy graph properties which prohibit the existence of a Hamiltonian cycle.
+            Namely, if a graph is not 2-connected (see Connectivity.BiNodeConnectedComponents), 
+            then it cannot contain a Hamiltonian cycle.
+        </member>
+        <member name="P:Satsuma.HamiltonianCycle.Graph">
+            The input graph
+        </member>
+        <member name="P:Satsuma.HamiltonianCycle.Cycle">
+            A Hamiltonian cycle in the input graph, or \c null if none has been found.
+            The returned path is a cycle, that is, its start and end nodes are always equal.
+            \note The existence of a Hamiltonian cycle does not guarantee that this class finds it.
+        </member>
+        <member name="T:Satsuma.UndirectedGraph">
+            Adaptor showing all arcs of an underlying graph as undirected edges.
+            Node and Arc objects are interchangeable between the adaptor and the original graph.
+            The underlying graph can be freely modified while using this adaptor.
+        </member>
+        <member name="T:Satsuma.IClearable">
+            Interface for objects which can revert their state to default.
+        </member>
+        <member name="M:Satsuma.IClearable.Clear">
+            Reverts the object to its default state.
+        </member>
+        <member name="T:Satsuma.Utils">
+            Various utilities used by other classes.
+            This class was made public because the functions can prove useful for Satsuma users,
+            but there is no guarantee that the interfaces will remain the same in the future.
+        </member>
+        <member name="M:Satsuma.Utils.ExecuteCommand(System.String,System.String,System.Int32,System.Boolean)">
+            Executes a program with a given list of arguments.
+            Returns true in process completed execution,
+            false if an error occurred or execution timed out.
+        </member>
+        <member name="M:Satsuma.Utils.LargestPowerOfTwo(System.Double)">
+            Returns the largest power of two which is at most Math.Abs(d), or 0 if none exists.
+        </member>
+        <member name="M:Satsuma.Utils.RemoveAll``1(System.Collections.Generic.List{``0},System.Func{``0,System.Boolean})">
+            May reorder the elements.
+        </member>
+        <member name="M:Satsuma.Utils.ReversibleHash1(System.UInt64)">
+            Implements a random-seeming but deterministic 1-to-1 mapping on ulongs.
+        </member>
+        <member name="M:Satsuma.Utils.ReversibleHash2(System.UInt64)">
+            Implements a random-seeming but deterministic 1-to-1 mapping on ulongs.
+        </member>
+        <member name="M:Satsuma.Utils.ReversibleHash3(System.UInt64)">
+            Implements a random-seeming but deterministic 1-to-1 mapping on ulongs.
+        </member>
+        <member name="T:Satsuma.IdAllocator">
+            Allocates integer identifiers.
+        </member>
+        <member name="M:Satsuma.IdAllocator.IsAllocated(System.Int64)">
+            Returns \c true if the given identifier is already allocated.
+        </member>
+        <member name="M:Satsuma.IdAllocator.Rewind">
+            The allocator will try to allocate the next identifier from 1.
+        </member>
+        <member name="M:Satsuma.IdAllocator.Allocate">
+            Allocates and returns a new identifier.
+            Must not be called if the number of currently allocated identifiers is at least int.MaxValue.
+        </member>
+    </members>
+</doc>

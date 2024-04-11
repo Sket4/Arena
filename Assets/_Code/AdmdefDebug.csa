@@ -1,0 +1,31 @@
+﻿using System.Collections.Generic;
+using System.Diagnostics;
+using UnityEditor;
+using UnityEditor.Compilation;
+
+[InitializeOnLoad]
+public class AsmdefDebug
+{
+    static Dictionary<string, Stopwatch> s_Assemblies = new Dictionary<string, Stopwatch>();
+
+    static AsmdefDebug()
+    {
+        UnityEngine.Debug.Log("Setting up");
+        CompilationPipeline.assemblyCompilationStarted += CompilationPipelineOnAssemblyCompilationStarted;
+        CompilationPipeline.assemblyCompilationFinished += CompilationPipelineOnAssemblyCompilationFinished;
+    }
+
+    static void CompilationPipelineOnAssemblyCompilationStarted(string obj)
+    {
+        var sw = new Stopwatch();
+        s_Assemblies[obj] = sw;
+        sw.Start();
+    }
+
+    static void CompilationPipelineOnAssemblyCompilationFinished(string arg1, CompilerMessage[] arg2)
+    {
+        var sw = s_Assemblies[arg1];
+        sw.Stop();
+        UnityEngine.Debug.Log(arg1 + "\nTime:" + sw.Elapsed.ToString());
+    }
+}

@@ -1,0 +1,254 @@
+{
+    "Handlers": [
+        {
+            "HandlerType": "Arena.IServerArenaCommands",
+            "HandlerCode": 0,
+            "Methods": [
+                {
+                    "MethodName": "NotifyReadyToFight",
+                    "MethodCode": 0
+                },
+                {
+                    "MethodName": "RequestRestart",
+                    "MethodCode": 1
+                },
+                {
+                    "MethodName": "RequestContinueGame",
+                    "MethodCode": 2
+                },
+                {
+                    "MethodName": "NotifyExitingFromGame",
+                    "MethodCode": 3
+                }
+            ]
+        },
+        {
+            "HandlerType": "TzarGames.GameCore.Tests.TestSpawnSystem",
+            "HandlerCode": 1,
+            "Methods": [
+                {
+                    "MethodName": "Spawn",
+                    "MethodCode": 0
+                }
+            ]
+        },
+        {
+            "HandlerType": "TzarGames.MatchFramework.IClientMatchSystem",
+            "HandlerCode": 2,
+            "Methods": [
+                {
+                    "MethodName": "AuthError",
+                    "MethodCode": 0
+                }
+            ]
+        },
+        {
+            "HandlerType": "TzarGames.MatchFramework.IServerMatchSystem",
+            "HandlerCode": 3,
+            "Methods": [
+                {
+                    "MethodName": "Authorize",
+                    "MethodCode": 0
+                }
+            ]
+        },
+        {
+            "HandlerType": "TzarGames.MultiplayerKit.Tests.RpcTest",
+            "HandlerCode": 4,
+            "Methods": [
+                {
+                    "MethodName": "NoParam",
+                    "MethodCode": 0
+                },
+                {
+                    "MethodName": "ManyParamsRPC",
+                    "MethodCode": 1
+                },
+                {
+                    "MethodName": "UnmanagedStructRPC",
+                    "MethodCode": 2
+                },
+                {
+                    "MethodName": "Repeating",
+                    "MethodCode": 3
+                },
+                {
+                    "MethodName": "BigNetChunkRpc",
+                    "MethodCode": 4
+                },
+                {
+                    "MethodName": "NoParamForUnreliable",
+                    "MethodCode": 5
+                },
+                {
+                    "MethodName": "ManyParamsForUnreliable",
+                    "MethodCode": 6
+                },
+                {
+                    "MethodName": "NoParamForUnreliableSeq",
+                    "MethodCode": 7
+                },
+                {
+                    "MethodName": "ManyParamsForUnreliableSeq",
+                    "MethodCode": 8
+                },
+                {
+                    "MethodName": "NetMessageInfoCall",
+                    "MethodCode": 9
+                },
+                {
+                    "MethodName": "Callback",
+                    "MethodCode": 10
+                },
+                {
+                    "MethodName": "Response",
+                    "MethodCode": 11
+                }
+            ]
+        },
+        {
+            "HandlerType": "TzarGames.MultiplayerKit.Tests.RpcTesterBehaviour",
+            "HandlerCode": 5,
+            "Methods": [
+                {
+                    "MethodName": "stringRpc",
+                    "MethodCode": 0
+                },
+                {
+                    "MethodName": "vector3Rpc",
+                    "MethodCode": 1
+                },
+                {
+                    "MethodName": "quatRpc",
+                    "MethodCode": 2
+                },
+                {
+                    "MethodName": "rpc",
+                    "MethodCode": 3
+                },
+                {
+                    "MethodName": "bigRpc",
+                    "MethodCode": 4
+                }
+            ]
+        },
+        {
+            "HandlerType": "TzarGames.GameCore.IPathMovementServerNetSync",
+            "HandlerCode": 6,
+            "Methods": [
+                {
+                    "MethodName": "Move",
+                    "MethodCode": 0
+                }
+            ]
+        },
+        {
+            "HandlerType": "TzarGames.GameCore.IAbilityStateNetSync",
+            "HandlerCode": 7,
+            "Methods": [
+                {
+                    "MethodName": "NotifyAbilityStarted",
+                    "MethodCode": 0
+                },
+                {
+                    "MethodName": "NotifyAbilityStopped",
+                    "MethodCode": 1
+                }
+            ]
+        },
+        {
+            "HandlerType": "TzarGames.GameCore.IItemTakenRpcHandler",
+            "HandlerCode": 8,
+            "Methods": [
+                {
+                    "MethodName": "NotifyDroppedItemTaken",
+                    "MethodCode": 0
+                }
+            ]
+        },
+        {
+            "HandlerType": "Arena.IInputSyncSystem",
+            "HandlerCode": 9,
+            "Methods": [
+                {
+                    "MethodName": "SendInputToServer",
+                    "MethodCode": 0
+                }
+            ]
+        },
+        {
+            "HandlerType": "Arena.IServerCorrectionSystem",
+            "HandlerCode": 10,
+            "Methods": [
+                {
+                    "MethodName": "CorrectPositionOnClient",
+                    "MethodCode": 0
+                }
+            ]
+        },
+        {
+            "HandlerType": "TzarGames.GameCore.LevelSystem",
+            "HandlerCode": 11,
+            "Methods": [
+                {
+                    "MethodName": "OnLevelUpEvent",
+                    "MethodCode": 0
+                }
+            ]
+        },
+        {
+            "HandlerType": "TzarGames.GameCore.INetworkSceneLoadingRpc",
+            "HandlerCode": 12,
+            "Methods": [
+                {
+                    "MethodName": "NotifySceneLoadingStateChanged",
+                    "MethodCode": 0
+                }
+            ]
+        },
+        {
+            "HandlerType": "Arena.StoreSystem",
+            "HandlerCode": 13,
+            "Methods": [
+                {
+                    "MethodName": "PurchaseResultRPC",
+                    "MethodCode": 0
+                },
+                {
+                    "MethodName": "PurchaseItemRPC",
+                    "MethodCode": 1
+                }
+            ]
+        },
+        {
+            "HandlerType": "TzarGames.GameCore.MessageDispatcherSystem",
+            "HandlerCode": 14,
+            "Methods": [
+                {
+                    "MethodName": "SendMessage",
+                    "MethodCode": 0
+                }
+            ]
+        },
+        {
+            "HandlerType": "Arena.HitSyncSystem",
+            "HandlerCode": 15,
+            "Methods": [
+                {
+                    "MethodName": "SendHitsToClient",
+                    "MethodCode": 0
+                }
+            ]
+        },
+        {
+            "HandlerType": "TzarGames.GameCore.ActivateItemRequestSystem",
+            "HandlerCode": 16,
+            "Methods": [
+                {
+                    "MethodName": "OnServer_ActivateItem",
+                    "MethodCode": 0
+                }
+            ]
+        }
+    ]
+}

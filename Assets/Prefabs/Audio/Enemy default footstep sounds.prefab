@@ -1,0 +1,68 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1 &1624694271160054305
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 7795281653633916623}
+  - component: {fileID: -5365998392652754404}
+  m_Layer: 0
+  m_Name: Enemy default footstep sounds
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &7795281653633916623
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1624694271160054305}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 0
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &-5365998392652754404
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1624694271160054305}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7cdab39ac42db41ecaaa1b44e4134483, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ConversionTargetOptions: 5
+  SoundGroup:
+    Name: Footstep
+    Clips:
+    - {fileID: 8300000, guid: 64998ce3233967441b1df6570a6892cb, type: 3}
+    - {fileID: 8300000, guid: dbd25787e11179b4b8a335e11fb8771d, type: 3}
+    - {fileID: 8300000, guid: 1eb675ea084824b44b4f2d982452b6a8, type: 3}
+    - {fileID: 8300000, guid: 1afa2cc9f39adc444b9569994405baee, type: 3}
+    - {fileID: 8300000, guid: 881e720b5a749094bb9d14fc86a526e4, type: 3}
+    OptionalMixerGroup: {fileID: 24300002, guid: 64c795c25d71240459ab99e981490730,
+      type: 2}
+    Settings:
+      RandomizeVolume: 1
+      MinVolume: 0.9
+      MaxVolume: 1
+      RandomizePitch: 1
+      MinPitch: 0.9
+      MaxPitch: 1.1
+      SpatializeBlend: 1
+      SetMinDistance: 0
+      MinDistance: 0
+      SetMaxDistance: 0
+      MaxDistance: 0

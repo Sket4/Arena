@@ -1,0 +1,69 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1 &1624694271160054305
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 7795281653633916623}
+  - component: {fileID: -5365998392652754404}
+  m_Layer: 0
+  m_Name: Enemy skeleton footstep sounds
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &7795281653633916623
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1624694271160054305}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 0
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &-5365998392652754404
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1624694271160054305}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7cdab39ac42db41ecaaa1b44e4134483, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ConversionTargetOptions: 5
+  SoundGroup:
+    Name: Footstep
+    Clips:
+    - {fileID: 8300000, guid: 7be26f9598ad41548974850a160a7a94, type: 3}
+    - {fileID: 8300000, guid: d5360fdd37916df4eb722085c3e9007d, type: 3}
+    - {fileID: 8300000, guid: 1542c897bbda33d41bd102fb7c37e25f, type: 3}
+    - {fileID: 8300000, guid: 33c7c43838e3b7b4881db33bcd6a366b, type: 3}
+    - {fileID: 8300000, guid: 886810ef862816347a02a8a7dfab0fe4, type: 3}
+    - {fileID: 8300000, guid: 4046cb560d389764aaffb617edb6c5db, type: 3}
+    OptionalMixerGroup: {fileID: 24300002, guid: 64c795c25d71240459ab99e981490730,
+      type: 2}
+    Settings:
+      RandomizeVolume: 1
+      MinVolume: 0.9
+      MaxVolume: 1
+      RandomizePitch: 1
+      MinPitch: 0.9
+      MaxPitch: 1.1
+      SpatializeBlend: 1
+      SetMinDistance: 0
+      MinDistance: 0
+      SetMaxDistance: 0
+      MaxDistance: 0

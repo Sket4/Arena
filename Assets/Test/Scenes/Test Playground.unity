@@ -97,7 +97,7 @@ LightmapSettings:
     m_ExportTrainingData: 0
     m_TrainingDataDestination: TrainingData
     m_LightProbeSampleCountMultiplier: 4
-  m_LightingDataAsset: {fileID: 112000006, guid: 0e153b28b9f246140abace22d6749819, type: 2}
+  m_LightingDataAsset: {fileID: 112000004, guid: 0e153b28b9f246140abace22d6749819, type: 2}
   m_LightingSettings: {fileID: 4890085278179872738, guid: 7d4be31a86ae09c42a503a3e3b60a574, type: 2}
 --- !u!196 &4
 NavMeshSettings:
@@ -1365,7 +1365,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!114 &1051672100
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1385,7 +1385,7 @@ MonoBehaviour:
   useDebugSettings: 1
   debugLocationType: 0
   debugCharacterClass: 1
-  debugGameSceneKey: {fileID: -323131720312517708, guid: 709759d6d50fadb4ab72406e658ed872, type: 2}
+  debugGameSceneKey: {fileID: 9060113301016945023, guid: 709759d6d50fadb4ab72406e658ed872, type: 2}
 --- !u!4 &1051672101
 Transform:
   m_ObjectHideFlags: 0
@@ -2884,7 +2884,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &1799885882
 Transform:
   m_ObjectHideFlags: 0
@@ -2955,59 +2955,6 @@ MonoBehaviour:
   publicIpAddress: 192.168.1.45
   gameServicePort: 60603
   loadAtStart: 1
---- !u!1 &2065307616
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 2065307618}
-  - component: {fileID: 2065307617}
-  m_Layer: 0
-  m_Name: Test Playground  Server
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!114 &2065307617
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2065307616}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 45a335734b1572644a6a5d09d87adc65, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _SceneAsset: {fileID: 102900000, guid: ee59da3d8d049b6469d45100cb9bd30f, type: 3}
-  _HierarchyColor: {r: 0.5, g: 0.5, b: 0.5, a: 1}
-  AutoLoadScene: 0
-  _SceneGUID:
-    Value:
-      x: 3551368686
-      y: 1186545880
-      z: 1396118
-      w: 4030577084
---- !u!4 &2065307618
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2065307616}
-  serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 0}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &2101129152
 GameObject:
   m_ObjectHideFlags: 0
@@ -3173,4 +3120,3 @@ SceneRoots:
   - {fileID: 1051672101}
   - {fileID: 114381773}
   - {fileID: 950066818}
-  - {fileID: 2065307618}

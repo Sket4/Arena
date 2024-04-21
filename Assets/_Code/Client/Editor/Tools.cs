@@ -83,10 +83,10 @@ public static class Tools
         Debug.Log("DOTS live conversion enabled: " + Unity.Scenes.Editor.LiveConversionEditorSettings.LiveConversionEnabled);
     }
 
-    const string clientAbilityCodegenSettingsPath = "Assets/_ProjectFiles/Data/Codegen/Client ability codegen settings.asset";
-    const string serverAbilityCodegenSettingsPath = "Assets/_ProjectFiles/Data/Codegen/Server ability codegen settings.asset";
-    const string commonAssemblyCodegenSettingsPath = "Assets/_ProjectFiles/Data/Codegen/Common assembly codegen settings.asset";
-    const string clientAssemblyCodegenSettingsPath = "Assets/_ProjectFiles/Data/Codegen/Client assembly codegen settings.asset";
+    const string clientAbilityCodegenSettingsPath = "Assets/Data/Codegen/Client ability codegen settings.asset";
+    const string serverAbilityCodegenSettingsPath = "Assets/Data/Codegen/Server ability codegen settings.asset";
+    const string commonAssemblyCodegenSettingsPath = "Assets/Data/Codegen/Common assembly codegen settings.asset";
+    const string clientAssemblyCodegenSettingsPath = "Assets/Data/Codegen/Client assembly codegen settings.asset";
 
     [MenuItem("Arena/Генерация/Сгенерировать код для клиента")]
     static void generateClientCode()
@@ -493,6 +493,37 @@ public static class Tools
                     DestroyImmediate(r);
                 }
             }
+        }
+        
+        [MenuItem("Arena/Утилиты/Обработать нормали травы в OBJ файле")]
+        static void processGrassNormals()
+        {
+            var selected = Selection.activeObject;
+
+            if (selected == null)
+            {
+                EditorUtility.DisplayDialog("Ошибка", "Сначала выберите файл", "OK");
+                return;
+            }
+
+            var path = AssetDatabase.GetAssetPath(selected);
+
+            var lines = File.ReadAllLines(path);
+
+            for (var index = 0; index < lines.Length; index++)
+            {
+                var line = lines[index];
+
+                if (line.StartsWith("vn") == false)
+                {
+                    continue;
+                }
+
+                lines[index] = "vn 0 1 0";
+            }
+
+            File.WriteAllLines(path, lines);
+            AssetDatabase.ImportAsset(path);
         }
     }
 }

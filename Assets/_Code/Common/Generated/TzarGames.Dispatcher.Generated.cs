@@ -26,11 +26,11 @@ namespace TzarGames.MultiplayerKit.Generated
 				{
 					return;
 				}
-				if (dataInfo.SerializatorID == 6)
+				if (dataInfo.SerializatorID == 19)
 				{
 					commands.AddComponent(entity, new TzarGames.Common.NetworkPlayerSyncTag());
 				}
-				else if (dataInfo.SerializatorID == 35)
+				else if (dataInfo.SerializatorID == 20)
 				{
 					commands.AddComponent(entity, new TzarGames.GameCore.DeathDataNetSyncTag());
 				}
@@ -46,19 +46,19 @@ namespace TzarGames.MultiplayerKit.Generated
 				{
 					commands.AddComponent(entity, new TzarGames.GameCore.PrefabIdSyncTag());
 				}
-				else if (dataInfo.SerializatorID == 17)
+				else if (dataInfo.SerializatorID == 24)
 				{
 					commands.AddComponent(entity, new TzarGames.GameCore.NetworkMovementSyncMessage());
 				}
-				else if (dataInfo.SerializatorID == 18)
+				else if (dataInfo.SerializatorID == 25)
 				{
 					commands.AddComponent(entity, new TzarGames.GameCore.TranslationNetSyncTag());
 				}
-				else if (dataInfo.SerializatorID == 36)
+				else if (dataInfo.SerializatorID == 26)
 				{
 					commands.AddComponent(entity, new TzarGames.GameCore.ScriptViz.ScriptVizDataNetSyncTag());
 				}
-				else if (dataInfo.SerializatorID == 19)
+				else if (dataInfo.SerializatorID == 27)
 				{
 					commands.AddComponent(entity, new TzarGames.GameCore.Abilities.Networking.AbilityStateNetSyncDataTag());
 				}
@@ -70,11 +70,11 @@ namespace TzarGames.MultiplayerKit.Generated
 		{
 			if(type == typeof(TzarGames.Common.NetworkPlayerDataSync))
 			{
-				id = 6; return true;
+				id = 19; return true;
 			}
 			if(type == typeof(TzarGames.GameCore.DeathDataSync))
 			{
-				id = 35; return true;
+				id = 20; return true;
 			}
 			if(type == typeof(TzarGames.GameCore.ItemCreationDataSync))
 			{
@@ -90,19 +90,19 @@ namespace TzarGames.MultiplayerKit.Generated
 			}
 			if(type == typeof(TzarGames.GameCore.SmoothMovementNetSync))
 			{
-				id = 17; return true;
+				id = 24; return true;
 			}
 			if(type == typeof(TzarGames.GameCore.TranslationDataSync))
 			{
-				id = 18; return true;
+				id = 25; return true;
 			}
 			if(type == typeof(TzarGames.GameCore.ScriptViz.ScriptVizDataSync))
 			{
-				id = 36; return true;
+				id = 26; return true;
 			}
 			if(type == typeof(TzarGames.GameCore.Abilities.Networking.AbilityStateNetSync))
 			{
-				id = 19; return true;
+				id = 27; return true;
 			}
 			id = 0; return false;
 		}

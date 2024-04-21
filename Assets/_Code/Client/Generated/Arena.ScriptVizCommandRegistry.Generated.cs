@@ -12,6 +12,7 @@ namespace TzarGames.GameCore.Generated
 		static unsafe void init()
 		{
 			ScriptVizCommandRegistry.RegisterCommand(typeof(Arena.Client.ScriptViz.PlayAnimationCommand), Arena.Client.ScriptViz.PlayAnimationCommand.Exec);
+			ScriptVizCommandRegistry.RegisterCommand(typeof(Arena.Client.ScriptViz.PlayCharacterAnimationCommand), Arena.Client.ScriptViz.PlayCharacterAnimationCommand.Exec);
 		}
 	}
 }

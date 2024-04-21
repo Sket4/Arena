@@ -230,9 +230,15 @@ Shader "Arena/Environment"
                 envMapColor = lerp(remEnvMapColor, envMapColor, saturate(lum * lum * lum));
 
                 #if USE_SURFACE_BLEND
-                half4 surfaceColor = tex2D(_SurfaceMap, i.uv);
-                float surfaceBlend = saturate(dot(normalWS, half3(0,1,0)));
-                diffuse.rgb = lerp(diffuse.rgb, surfaceColor.rgb, surfaceBlend * _SurfaceBlendFactor);
+                float2 surfaceUV = TRANSFORM_TEX(i.positionWS_fog.xz, _SurfaceMap);
+                half4 surfaceColor = tex2D(_SurfaceMap, surfaceUV);
+                float surfaceBlend = saturate(dot(half3(normalWS.x, normalWS.y, normalWS.z), half3(0.0,1,0.0)));
+
+                // pow 4
+                surfaceBlend *= surfaceBlend;
+                surfaceBlend  *= surfaceBlend;
+                
+                diffuse.rgb = lerp(diffuse.rgb, surfaceColor.rgb, surfaceBlend  * _SurfaceBlendFactor);
                 #endif
 
                 //diffuse.rgb = 1;

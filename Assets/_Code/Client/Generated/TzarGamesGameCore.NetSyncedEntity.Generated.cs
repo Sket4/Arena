@@ -188,11 +188,11 @@ namespace TzarGames.MultiplayerKit.Generated
 				commands.DestroyEntity(entity);
 				var data = chunk.GetBufferAccessor(ref netDataElementTypeHandle)[dataPriorityInfo.ArrayIndex];
 				var networkIds = chunk.GetBufferAccessor(ref netIdElementTypeHandle)[dataPriorityInfo.ArrayIndex];
-				if (dataInfo.SerializatorID == 32)
+				if (dataInfo.SerializatorID == 8)
 				{
 					Client.SyncedNetEntityCreationSystemBase.ProcessNetSyncedEntity<TzarGames.GameCore.Client.PredictedEntityCreationJob, TzarGames.GameCore.PredictedEntitySyncData>(job0, data, networkIds, ref commands, ref alreadyCreatedNetIds, in netIdChunks, netIdTypeHandle, enableJournaling, debugRecordArchetype, dataInfo);
 				}
-				if (dataInfo.SerializatorID == 26)
+				if (dataInfo.SerializatorID == 7)
 				{
 					Client.SyncedNetEntityCreationSystemBase.ProcessNetSyncedEntity<TzarGames.GameCore.Client.NetSyncAbilityCreationJob, TzarGames.GameCore.Abilities.AbilityID>(job1, data, networkIds, ref commands, ref alreadyCreatedNetIds, in netIdChunks, netIdTypeHandle, enableJournaling, debugRecordArchetype, dataInfo);
 				}
@@ -211,13 +211,13 @@ namespace TzarGames.MultiplayerKit.Generated
 		static bool IsCreatorID(int id, out int priority)
 		{
 			// TzarGames.GameCore.PredictedEntitySyncData
-			if(id == 32)
+			if(id == 8)
 			{
 				priority = 4;
 				return true;
 			}
 			// TzarGames.GameCore.Abilities.AbilityID
-			else if(id == 26)
+			else if(id == 7)
 			{
 				priority = 3;
 				return true;

@@ -51,8 +51,8 @@ namespace TzarGames.GameCore.Abilities.Generated
 		[ReadOnly] public BufferTypeHandle<TzarGames.GameCore.Abilities.HealthActionData> HealthActionDataType;
 
 		public TzarGames.GameCore.Abilities.InstantiateAbilityComponentJob _InstantiateAbilityComponentJob;
-		public TzarGames.GameCore.Abilities.AbilityCooldownJob _AbilityCooldownJob;
 		public TzarGames.GameCore.Abilities.SetTargetAbilityJob _SetTargetAbilityJob;
+		public TzarGames.GameCore.Abilities.AbilityCooldownJob _AbilityCooldownJob;
 		public TzarGames.GameCore.Abilities.DurationJob _DurationJob;
 		public TzarGames.GameCore.Abilities.CopyOwnerTransformToAbilityOnStartJob _CopyOwnerTransformToAbilityOnStartJob;
 		public TzarGames.GameCore.Abilities.TimerEventAbilityComponentJob _TimerEventAbilityComponentJob;
@@ -107,15 +107,15 @@ namespace TzarGames.GameCore.Abilities.Generated
 				{
 					deltaTime = GlobalDeltaTime;
 				}
-				var _AbilityCooldown = AbilityCooldownArray[c];
-				var _Duration = DurationArray[c];
+				var _AbilityCooldownRef = new RefRW<TzarGames.GameCore.Abilities.AbilityCooldown>(AbilityCooldownArray, c);
+				ref var _AbilityCooldown = ref _AbilityCooldownRef.ValueRW;
+				var _DurationRef = new RefRW<TzarGames.GameCore.Abilities.Duration>(DurationArray, c);
+				ref var _Duration = ref _DurationRef.ValueRW;
 
 				if(_AbilityState.Value == AbilityStates.Idle)
 				{
 					_AbilityCooldownJob.OnIdleUpdate(deltaTime, ref _AbilityCooldown);
 					_DurationJob.OnIdleUpdate(ref _Duration);
-					AbilityCooldownArray[c] = _AbilityCooldown;
-					DurationArray[c] = _Duration;
 				}
 
 				if(_AbilityState.Value == AbilityStates.WaitingForValidation)
@@ -134,15 +134,19 @@ namespace TzarGames.GameCore.Abilities.Generated
 				}
 
 				var _CopyOwnerTransformToAbilityOnStart = CopyOwnerTransformToAbilityOnStartArray[c];
-				var _LocalTransform = LocalTransformArray[c];
+				var _LocalTransformRef = new RefRW<Unity.Transforms.LocalTransform>(LocalTransformArray, c);
+				ref var _LocalTransform = ref _LocalTransformRef.ValueRW;
 				var _AbilityTimerEventBuffer = AbilityTimerEventAccessor[c];
 				var _AbilityTimerSharedData = AbilityTimerSharedDataArray[c];
-				var _AbilityTimerData = AbilityTimerDataArray[c];
+				var _AbilityTimerDataRef = new RefRW<TzarGames.GameCore.Abilities.AbilityTimerData>(AbilityTimerDataArray, c);
+				ref var _AbilityTimerData = ref _AbilityTimerDataRef.ValueRW;
 				var abilityEntity = EntityArray[c];
 				var _InstantiateAbilityComponentData = InstantiateAbilityComponentDataArray[c];
-				var _InstantiateAbilityInstanceData = InstantiateAbilityInstanceDataArray[c];
+				var _InstantiateAbilityInstanceDataRef = new RefRW<TzarGames.GameCore.Abilities.InstantiateAbilityInstanceData>(InstantiateAbilityInstanceDataArray, c);
+				ref var _InstantiateAbilityInstanceData = ref _InstantiateAbilityInstanceDataRef.ValueRW;
 				var _SetOwnerAsTargetAbilityData = SetOwnerAsTargetAbilityDataArray[c];
-				var _Target = TargetArray[c];
+				var _TargetRef = new RefRW<TzarGames.GameCore.Target>(TargetArray, c);
+				ref var _Target = ref _TargetRef.ValueRW;
 
 				bool isJustStarted = false;
 
@@ -152,20 +156,13 @@ namespace TzarGames.GameCore.Abilities.Generated
 					_CopyOwnerTransformToAbilityOnStartJob.OnStarted(in _AbilityOwner, in _CopyOwnerTransformToAbilityOnStart, ref _LocalTransform);
 					_TimerEventAbilityComponentJob.OnStarted(ref _AbilityTimerEventBuffer, in _AbilityTimerSharedData, ref _AbilityTimerData);
 					_InstantiateAbilityComponentJob.OnStarted(abilityEntity, in _AbilityOwner, in _InstantiateAbilityComponentData, ref _InstantiateAbilityInstanceData, Commands, unfilteredChunkIndex, in _LocalTransform);
-					_AbilityCooldownJob.OnStarted(ref _AbilityCooldown);
 					_SetTargetAbilityJob.OnStarted(in _AbilityOwner, in _SetOwnerAsTargetAbilityData, ref _Target);
+					_AbilityCooldownJob.OnStarted(ref _AbilityCooldown);
 
 					if (_AbilityState.Value == AbilityStates.WaitingForValidation || _AbilityState.Value == AbilityStates.ValidatedAndWaitingForStart)
 					{
 						isJustStarted = true;
 					}
-
-					DurationArray[c] = _Duration;
-					LocalTransformArray[c] = _LocalTransform;
-					AbilityTimerDataArray[c] = _AbilityTimerData;
-					InstantiateAbilityInstanceDataArray[c] = _InstantiateAbilityInstanceData;
-					AbilityCooldownArray[c] = _AbilityCooldown;
-					TargetArray[c] = _Target;
 				}
 
 				if (isJustStarted)
@@ -182,7 +179,7 @@ namespace TzarGames.GameCore.Abilities.Generated
 				callWrapper.Init();
 				callWrapper._HealthAbilityActionJob = _HealthAbilityActionJob;
 				callWrapper._HealthActionDataBuffer = _HealthActionDataBuffer;
-				callWrapper._Target = _Target;
+				callWrapper._TargetRef = _TargetRef;
 				callWrapper.Commands = Commands;
 				callWrapper.unfilteredChunkIndex = unfilteredChunkIndex;
 				ref var actionCaller = ref Unity.Collections.LowLevel.Unsafe.UnsafeUtility.As<ActionCallWrapper, ActionCaller>(ref callWrapper);
@@ -226,10 +223,6 @@ namespace TzarGames.GameCore.Abilities.Generated
 						_AbilityState.Value = AbilityStates.Stopped;
 					}
 
-					DurationArray[c] = _Duration;
-					AbilityCooldownArray[c] = _AbilityCooldown;
-					AbilityTimerDataArray[c] = _AbilityTimerData;
-
 				}
 				if(_AbilityState.Value == AbilityStates.Stopped)
 				{
@@ -237,9 +230,6 @@ namespace TzarGames.GameCore.Abilities.Generated
 					Commands.SetComponent(unfilteredChunkIndex, eventEntity, new AbilityEvent { AbilityEntity = abilityEntity, EventType = AbilityEvents.Stopped });
 					_InstantiateAbilityComponentJob.OnStopped(unfilteredChunkIndex, in _InstantiateAbilityComponentData, ref _InstantiateAbilityInstanceData, Commands);
 					_DurationJob.OnStopped(ref _Duration);
-
-					InstantiateAbilityInstanceDataArray[c] = _InstantiateAbilityInstanceData;
-					DurationArray[c] = _Duration;
 
 					_AbilityState.Value = AbilityStates.Idle;
 					AbilityStateArray[c] = _AbilityState;
@@ -256,7 +246,7 @@ namespace TzarGames.GameCore.Abilities.Generated
 			public TzarGames.GameCore.Abilities.HealthAbilityActionJob _HealthAbilityActionJob;
 
 			public DynamicBuffer<TzarGames.GameCore.Abilities.HealthActionData> _HealthActionDataBuffer;
-			public TzarGames.GameCore.Target _Target;
+			public RefRW<TzarGames.GameCore.Target> _TargetRef;
 			public UniversalCommandBuffer Commands;
 			public int unfilteredChunkIndex;
 			public void Init()
@@ -272,7 +262,7 @@ namespace TzarGames.GameCore.Abilities.Generated
 				{
 					if(_HealthActionData.CallerId == callerId && _HealthActionData.ActionId == actionId)
 					{
-						caller._HealthAbilityActionJob.Execute(_HealthActionData, in caller._Target, caller.Commands, caller.unfilteredChunkIndex);
+						caller._HealthAbilityActionJob.Execute(_HealthActionData, in caller._TargetRef.ValueRW, caller.Commands, caller.unfilteredChunkIndex);
 						break;
 					}
 				}
@@ -371,8 +361,8 @@ namespace TzarGames.GameCore.Abilities.Generated
 			var ComponentLookupLocalTransform = state.GetComponentLookup<Unity.Transforms.LocalTransform>(true);
 
 
-
 			job._SetTargetAbilityJob.TargetFromEntity = ComponentLookupTarget;
+
 
 
 			job._CopyOwnerTransformToAbilityOnStartJob.TransformFromEntity = ComponentLookupLocalTransform;
@@ -411,8 +401,8 @@ namespace TzarGames.GameCore.Abilities.Generated
 			var singleton_TzarGamesGameCoreModifyHealthSystemSingleton = SystemAPI.GetSingleton<TzarGames.GameCore.ModifyHealthSystem.Singleton>();
 
 
-
 			job._SetTargetAbilityJob.TargetFromEntity.Update(ref state);
+
 
 
 			job._CopyOwnerTransformToAbilityOnStartJob.TransformFromEntity.Update(ref state);

@@ -183,15 +183,19 @@ namespace Arena.Client
                             {
                                 // перехожим в анимацию CurrentAnimationID
                                 float speedScale = 1;
-                                if (animation.CurrentAnimationDuration > 0)
+                                if (animation.CurrentAnimationDuration > math.EPSILON)
                                 {
                                     var clipDuration = animator.GetClipDuration(currentAnimIndex, ref animBuffer);
                                     speedScale = clipDuration / animation.CurrentAnimationDuration;
                                 }
+                                
                                 // грязный хак для решения проблемы с дерганием анимации
-                                animator.TransitionTo(idleAnimIndex, 1, 1.0f, ref animBuffer, false, true);
-                                //Debug.Log($"Transiting to {currentAnimIndex}, fromspd {animator.FromClipSpeed} tospd {animator.ToClipSpeed}, nextspd {speedScale}");
-                                animator.TransitionTo(currentAnimIndex, math.min(transitionDuration, transitionDuration / speedScale), speedScale, ref animBuffer, true, true);
+                                //animator.TransitionTo(idleAnimIndex, 1, 1.0f, ref animBuffer, false, true);
+                                
+                                transitionDuration = math.min(transitionDuration, transitionDuration / speedScale);
+                                
+                                //Debug.Log($"Transiting to {currentAnimIndex} with duration {transitionDuration}, fromspd {animator.FromClipSpeed} tospd {animator.ToClipSpeed}, nextspd {speedScale}");
+                                animator.TransitionTo(currentAnimIndex, transitionDuration, speedScale, ref animBuffer, true, true);
                                 SystemAPI.SetComponent(animation.AnimatorEntity, animator);
                                 return;
                             }

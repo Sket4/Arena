@@ -38,8 +38,11 @@ public struct SimpleAnimation : IComponentData
             RemainingTransitionTime = duration;
             TotalTransitionTime = duration;
         }
-
-
+        else
+        {
+            IsTransitioning = false;
+        }
+        
         FromClipIndex = ToClipIndex;
         ToClipIndex = toClip;
         FromClipSpeed = ToClipSpeed;

@@ -6,7 +6,7 @@ Shader"Arena/Water"
         _Tiling_and_speed_2("Tiling and speed 1", Vector) = (1,1,1,1)
         _Tiling_and_speed_3("Tiling and speed 3", Vector) = (1,1,1,1)
         _BaseColor("Color", Color) = (1,1,1,1)
-        _BumpMap ("Normal map", 2D) = "white" {}
+        _PackedNormalMap ("Packed normal map", 2D) = "white" {}
         _Roughness("Roughness", Range(0,1)) = 1
         _Metallic("Metallic", Range(0,1)) = 1
         _Rim_mult("Rim multiplier", Float) = 1
@@ -100,7 +100,7 @@ Shader"Arena/Water"
                 UNITY_DOTS_INSTANCING_END(UserPropertyMetadata)
 #endif
 
-            sampler2D _BumpMap;
+            sampler2D _PackedNormalMap;
 
             #if USE_CUSTOM_REFLECTIONS
             TEXTURECUBE(_CustomReflectionTex);
@@ -158,19 +158,21 @@ Shader"Arena/Water"
                 //UNITY_SETUP_INSTANCE_ID(i);
                 //float4 bc = UNITY_ACCESS_DOTS_INSTANCED_PROP(float4, _BaseColor);
 
-                //half3 normalTS = UnpackNormal(tex2D(_BumpMap, i.uv));
+                //half3 normalTS = UnpackNormal(tex2D(_PackedNormalMap, i.uv));
+
+                //return half4(i.color.rrr, 1);
 
                 float2 uv1 = i.uv * _Tiling_and_speed_1.xy;
                 uv1 += _Tiling_and_speed_1.zw * _Time.y;
-                float3 normalTS = tex2D(_BumpMap, uv1);
+                float3 normalTS = tex2D(_PackedNormalMap, uv1);
 
                  float2 uv2 = i.uv * _Tiling_and_speed_2.xy;
                  uv2 += _Tiling_and_speed_2.zw * _Time.y;
-                 normalTS.xy += tex2D(_BumpMap, uv2);
+                 normalTS.xy += tex2D(_PackedNormalMap, uv2);
                 //
                  float2 uv3 = i.uv * _Tiling_and_speed_3.xy;
                  uv3 += _Tiling_and_speed_3.zw * _Time.y;
-                 normalTS.xy += tex2D(_BumpMap, uv3);
+                 normalTS.xy += tex2D(_PackedNormalMap, uv3);
                 
                  normalTS.xy *= 0.333333;
                 

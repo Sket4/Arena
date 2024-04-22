@@ -18,6 +18,9 @@ Shader "Arena/Terrain (for beach)"
         //_Layers_Roughness("Layers roughness", Vector) = (0.5,0.5,0.5,0.5)
         _Layers_Tiling("Layers tiling", Vector) = (1,1,1,1)
         
+        _UnderwaterColor("Underwater color", Color) = (1,1,1,1)
+        _WaterHeight("Water height", Float) = 5
+        _WaterHeightFade("Water height fade", Float) = 1
         _HighlightRemove("Highlight remove", Float) = 0
         
         [HideInInspector][NoScaleOffset] unity_Lightmaps("unity_Lightmaps", 2DArray) = "" {}
@@ -73,10 +76,7 @@ Shader "Arena/Terrain (for beach)"
 #if LIGHTMAP_ON
                 TG_DECLARE_LIGHTMAP_UV(1)
 #endif
-
-                #if USE_UNDERWATER
-                half4 color : COLOR;
-                #endif
+                
                 UNITY_VERTEX_INPUT_INSTANCE_ID
             };
 
@@ -90,8 +90,6 @@ Shader "Arena/Terrain (for beach)"
                 float4 tangentWS : TEXCOORD3;
                 float3 bitangentWS : TEXCOORD4;
                 float4 positionWS_fog : TEXCOORD5;
-
-                half4 color : TEXCOORD6;
 #if LIGHTMAP_ON
                 TG_DECLARE_LIGHTMAP_UV(7)
 #endif
@@ -101,6 +99,9 @@ Shader "Arena/Terrain (for beach)"
             CBUFFER_START(UnityPerMaterial)
                 half4 _Layers_Tiling;
                 half _HighlightRemove;
+                half4 _UnderwaterColor;
+                half _WaterHeight;
+                half _WaterHeightFade;
             CBUFFER_END
 
             sampler2D _SplatMap;
@@ -150,10 +151,10 @@ Shader "Arena/Terrain (for beach)"
 
 #if LIGHTMAP_ON
                 TG_TRANSFORM_LIGHTMAP_TEX(v.lightmapUV, o.lightmapUV)
-                o.color.rgb = 0;
+                //o.color.rgb = 0;
 #endif
 
-                o.color.a = 1;
+                //o.color.a = 1;
                 
                 return o;
             }
@@ -220,6 +221,9 @@ Shader "Arena/Terrain (for beach)"
                 
                 //diffuse.rgb = 1;
                 half4 finalColor = LightingPBR(diffuse, ambientLight, viewDirWS, normalWS, 0, roughness, envMapColor);
+
+                // water height
+                finalColor.rgb = lerp(finalColor.rgb, _UnderwaterColor.rgb, saturate(_WaterHeight - i.positionWS_fog.y));
                 
                 // apply fog
                 return half4(MixFog(finalColor.rgb, i.positionWS_fog.w), finalColor.a);

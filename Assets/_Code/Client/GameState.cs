@@ -1122,7 +1122,7 @@ namespace Arena.Client
                     return firebaseToken;
 #elif UNITY_IOS
                     Debug.Log("Signing into firebase using game center");
-                    var firebaseToken = await Authentication.FirebaseSignInByGameCenter().AsTask();
+                    var firebaseToken = await Authentication.FirebaseSignInByGameCenter();
                     return firebaseToken;
 #else
                     throw new System.NotImplementedException();

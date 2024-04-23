@@ -12,9 +12,9 @@ Material:
   m_Parent: {fileID: 0}
   m_ModifiedSerializedProperties: 0
   m_ValidKeywords:
-  - USE_LIGHTING
   - USE_UNDERWATER
   m_InvalidKeywords:
+  - USE_LIGHTING
   - _UNDERWATER
   - _ZWRITE_ON
   m_LightmapFlags: 4
@@ -79,6 +79,10 @@ Material:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
+    - _SurfaceMap:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
     - unity_Lightmaps:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
@@ -134,11 +138,14 @@ Material:
     - _SrcBlend: 1
     - _SrcBlendAlpha: 1
     - _Surface: 0
+    - _SurfaceBlendFactor: 1
     - _UNDERWATER: 1
     - _UVSec: 0
     - _Underwater_fog_density_factor: 4.9
     - _Underwater_fog_height_mult: 18.1
+    - _UseAlphaAsSmoothness: 0
     - _UseLighting: 1
+    - _UseSurfaceBlend: 0
     - _UseUnderwater: 1
     - _WorkflowMode: 1
     - _ZWrite: 1
@@ -149,7 +156,7 @@ Material:
     - _Reflection_highlight_treshold: {r: 1, g: 1, b: 1, a: 0}
     - _SpecColor: {r: 0.19999996, g: 0.19999996, b: 0.19999996, a: 1}
     - _UV_tiling: {r: 25, g: 25, b: 25, a: 25}
-    - _Underwater_color: {r: 0.03529412, g: 0.5764706, b: 0.5176471, a: 1}
+    - _Underwater_color: {r: 0.3157294, g: 0.49910596, b: 0.5529412, a: 1}
     - _Underwater_fog_color: {r: 0.043137245, g: 0.6238402, b: 0.69803923, a: 1}
   m_BuildTextureStacks: []
 --- !u!114 &2981657396619812795

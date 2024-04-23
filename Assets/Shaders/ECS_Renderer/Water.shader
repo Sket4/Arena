@@ -19,6 +19,10 @@ Shader"Arena/Water"
         _UseCustomReflections("Use custom reflections", Float) = 0
         [NoScaleOffset] _CustomReflectionTex("Custom reflection  (HDR)", Cube) = "white" {}
         
+        [NoScaleOffset] _FoamGradientTex("Foam gradient", 2D) = "black" {}
+        _FoamTex("Foam color", 2D) = "black" {}
+        _FoamParameters("Foam params (x - scale, y - spd, zw - foam spd)", Vector) = (1,1,1,1)
+        
         [HideInInspector][NoScaleOffset]unity_Lightmaps("unity_Lightmaps", 2DArray) = "" {} 
         [HideInInspector][NoScaleOffset] unity_LightmapsInd("unity_LightmapsInd", 2DArray) = "" {} 
     }
@@ -68,17 +72,18 @@ Shader"Arena/Water"
                 nointerpolation half2 instanceData : TEXCOORD1;
                 half4 vertex : SV_POSITION;
                 half3 color : TEXCOORD2;
+                half2 foam_uv : TEXCOORD3;
                 
-                float3 normalWS : TEXCOORD3;
-                float4 tangentWS : TEXCOORD4;
-                float3 bitangentWS : TEXCOORD5;
-                float4 positionWS_fog : TEXCOORD6;
+                float3 normalWS : TEXCOORD4;
+                float4 tangentWS : TEXCOORD5;
+                float3 bitangentWS : TEXCOORD6;
+                float4 positionWS_fog : TEXCOORD7;
 
 #if LIGHTMAP_ON
                 #if defined(UNITY_DOTS_INSTANCING_ENABLED)
-                float3 uv2 : TEXCOORD7;
+                float3 uv2 : TEXCOORD8;
                 #else
-                float2 uv2 : TEXCOORD7;
+                float2 uv2 : TEXCOORD8;
                 #endif
 #endif
             };
@@ -93,6 +98,8 @@ Shader"Arena/Water"
                 half _Metallic;
                 half _Rim_mult;
                 half _Normal_strength;
+                half4 _FoamParameters;
+                half4 _FoamTex_ST;
             CBUFFER_END
 
 #if defined(DOTS_INSTANCING_ON)
@@ -101,6 +108,8 @@ Shader"Arena/Water"
 #endif
 
             sampler2D _PackedNormalMap;
+            sampler2D _FoamTex;
+            sampler2D _FoamGradientTex;
 
             #if USE_CUSTOM_REFLECTIONS
             TEXTURECUBE(_CustomReflectionTex);
@@ -132,7 +141,10 @@ Shader"Arena/Water"
                 o.tangentWS = float4(normalInputs.tangentWS, tangentOS.w);
                 o.bitangentWS = normalInputs.bitangentWS;
 
-                o.color = v.color;
+                o.color.rg = v.color.rg;
+                o.color.b = o.color.g * _FoamParameters.x + _Time.x * _FoamParameters.y;
+                o.foam_uv = TRANSFORM_TEX(v.uv, _FoamTex);
+                o.foam_uv += half2(_SinTime.w * _FoamParameters.z, _SinTime.w * _FoamParameters.w);
 
 #if LIGHTMAP_ON
                 TG_TRANSFORM_LIGHTMAP_TEX(v.uv2, o.uv2)
@@ -199,9 +211,17 @@ Shader"Arena/Water"
                 #else
                 half3 reflColor = TG_ReflectionProbe(viewDirWS, normalWS, i.instanceData.y, reflectionLOD);  
                 #endif
+
+                half waterEdgeFadeInv = 1.0 - i.color.g;
                 
                 half4 diffuse;
                 diffuse.rgb = lerp(reflColor, _BaseColor.rgb, rim);
+
+                half foam = tex2D(_FoamGradientTex, half2(i.color.b, 0)).r;
+                foam *= tex2D(_FoamTex, i.foam_uv).r;
+                
+                
+                diffuse.rgb = lerp(diffuse.rgb, diffuse.rgb + foam.rrr, waterEdgeFadeInv);
 
                 
 #if LIGHTMAP_ON
@@ -212,7 +232,7 @@ Shader"Arena/Water"
 
                 diffuse.rgb *= lighting;
 
-                diffuse.a = i.color.g;
+                diffuse.a = (i.color.g + i.color.r);
                 
                 half4 finalColor = diffuse;
                 

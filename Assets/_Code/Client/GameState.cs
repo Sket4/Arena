@@ -102,7 +102,8 @@ namespace Arena.Client
                 return Connecting.AuthToken;
             }
         }
-        public static bool IsOfflineMode { get; set; }
+
+        public static bool IsOfflineMode { get; set; } = true;
         public static bool UseLocalServer { get; set; }
 
         public GameData PlayerData

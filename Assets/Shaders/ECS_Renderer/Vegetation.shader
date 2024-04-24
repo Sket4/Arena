@@ -2,9 +2,6 @@ Shader "Arena/Vegetation"
 {
     Properties
     {
-        [Toggle(USE_LIGHTING)]
-        _UseLighting("Use lighting", float) = 1.0
-        
         [Toggle(DEBUG_VERTEX_COLOR)]
         _DebugVertexColor("Debug vertex color", float) = 0.0
         
@@ -18,14 +15,16 @@ Shader "Arena/Vegetation"
         [Enum(UnityEngine.Rendering.CullMode)] _Cull("Cull", int) = 2
 
         _BaseColor("Color tint", Color) = (1,1,1,1)
+        _BaseColorMult("Base color mult", Float) = 1
         _BaseMap ("Main color", 2D) = "white" {}
         _BumpMap ("Normal map", 2D) = "bump" {}
         _MetallicGlossMap("Metallic/Smoothness map", 2D) = "white" {}
         _Metallic("Metallic", Range(0,1)) = 1.0
     	_Smoothness ("Smoothness", Range(0,1)) = 0.5
-        [HDR] _EmissionColor("Emission color", Color) = (0,0,0)
-        _EmissionMap("Emission", 2D) = "white" {}
+        _AOAdd("AO add", Float) = 0
+        _WindForce("Wind force", Float) = 1
         
+        [HideInInspector]_EmissionColor("Emission color", Color) = (1,1,1,1)
         [HideInInspector][NoScaleOffset]unity_Lightmaps("unity_Lightmaps", 2DArray) = "" {} 
         [HideInInspector][NoScaleOffset] unity_LightmapsInd("unity_LightmapsInd", 2DArray) = "" {} 
     }
@@ -82,9 +81,9 @@ Shader "Arena/Vegetation"
                 half2 uv : TEXCOORD0;
                 nointerpolation half4 instanceData : TEXCOORD1;
 
-                float3 normalWS : TEXCOORD3;
-                float4 tangentWS : TEXCOORD4;
-                float3 bitangentWS : TEXCOORD5;
+                half4 normalWS_occl : TEXCOORD3;
+                half4 tangentWS : TEXCOORD4;
+                half3 bitangentWS : TEXCOORD5;
                 float4 positionWS_fog : TEXCOORD6;
 
 #if LIGHTMAP_ON
@@ -97,15 +96,17 @@ Shader "Arena/Vegetation"
                 half4 _BaseMap_ST;
                 half4 _BaseColor;
                 half4 _Underwater_color;
-                half4 _EmissionColor;
+                half _BaseColorMult;
 				half _Metallic;
 				half _Smoothness;
                 half _Cutoff;
+                half4 _EmissionColor;
+                half _WindForce;
+                half _AOAdd;
             CBUFFER_END
 
             sampler2D _BaseMap;
             sampler2D _BumpMap;
-            sampler2D _EmissionMap;
             sampler2D _MetallicGlossMap;
 
 #if defined(DOTS_INSTANCING_ON)
@@ -123,6 +124,7 @@ Shader "Arena/Vegetation"
 
                 float4 time = _Time;
                 half wind = (sin(time.z + (positionOS.x + positionOS.z) * 2) + sin(time.y) + sin(time.w)) * 0.05 * v.color.x;
+                wind *= _WindForce;
                 positionOS.x += wind;
                 positionOS.z += wind;
                 
@@ -143,7 +145,8 @@ Shader "Arena/Vegetation"
                 
                 VertexNormalInputs normalInputs = GetVertexNormalInputs(normalOS, tangentOS);
 
-                o.normalWS = normalInputs.normalWS;
+                o.normalWS_occl.xyz = normalInputs.normalWS;
+                o.normalWS_occl.w = saturate(v.color.x + _AOAdd);
                 o.tangentWS = float4(normalInputs.tangentWS, tangentOS.w);
                 o.bitangentWS = normalInputs.bitangentWS;
 
@@ -151,10 +154,6 @@ Shader "Arena/Vegetation"
                 TG_TRANSFORM_LIGHTMAP_TEX(v.lightmapUV, o.lightmapUV)
 #endif
 
-                #if DEBUG_VERTEX_COLOR
-                o.uv.x = v.color.x;
-                #endif
-                
                 return o;
             }
 
@@ -163,11 +162,11 @@ Shader "Arena/Vegetation"
                 UNITY_SETUP_INSTANCE_ID(i);
                 
                 #if DEBUG_VERTEX_COLOR
-                return i.uv.x;
+                return i.normalWS_occl.w;
                 #endif
                 
-            	half4 diffuse = tex2D(_BaseMap, i.uv) * _BaseColor;
-                half4 emission = tex2D(_EmissionMap, i.uv) * _EmissionColor;
+            	half4 diffuse = tex2D(_BaseMap, i.uv);
+                diffuse.rgb *= _BaseColor.rgb * _BaseColorMult;
 
 #if defined(TG_USE_ALPHACLIP)
                 clip(diffuse.a - _Cutoff);
@@ -177,30 +176,34 @@ Shader "Arena/Vegetation"
                 //normalTS.xy *= 2;
                 half3 viewDirWS = GetWorldSpaceNormalizeViewDir(i.positionWS_fog.xyz);
 
-                half3x3 tangentToWorld = half3x3(i.tangentWS.xyz, i.bitangentWS.xyz, i.normalWS.xyz); 
+                half3x3 tangentToWorld = half3x3(i.tangentWS.xyz, i.bitangentWS.xyz, i.normalWS_occl.xyz); 
 
                 float3 normalWS = TransformTangentToWorld(normalTS.xyz, tangentToWorld, true);
 
                 real3 ambientLight;
 
+                half ao =  i.normalWS_occl.w;
+                
 #if LIGHTMAP_ON
                 ambientLight = TG_SAMPLE_LIGHTMAP(i.lightmapUV, i.instanceData.x, normalWS);
 #else
                 ambientLight = TG_ComputeAmbientLight_half(normalWS);
+                ambientLight *= ao;
 #endif
 
                 half4 mesm = tex2D(_MetallicGlossMap, i.uv);
                 mesm.rgb *= _Metallic;
 
+                
                 half lum = tg_luminance(ambientLight);
+                //return lum;
 
                 half smoothness = mesm.a * _Smoothness * lum;
                 half roughness = 1 - smoothness;
 
                 half3 envMapColor = TG_ReflectionProbe(viewDirWS, normalWS, i.instanceData.y, roughness * 4);
+                envMapColor *= ao;
                 half4 finalColor = LightingPBR(diffuse, ambientLight, viewDirWS, normalWS, mesm.rgb, roughness, envMapColor);
-
-                finalColor.rgb += /*diffuse.rgb * ambientLight * 1*/ + emission.rgb;
                 
                 // apply fog
                 return half4(MixFog(finalColor.rgb, i.positionWS_fog.w), finalColor.a);  
@@ -236,10 +239,13 @@ Shader "Arena/Vegetation"
                 half4 _BaseMap_ST;
                 half4 _BaseColor;
                 half4 _Underwater_color;
-                half4 _EmissionColor;
+                half _BaseColorMult;
 				half _Metallic;
 				half _Smoothness;
-                half _Cutoff;  
+                half _Cutoff;
+                half4 _EmissionColor;
+                half _WindForce;
+                half _AOAdd;
             CBUFFER_END
 
             #include "Packages/com.tzargames.rendering/Shaders/MetaPass.hlsl"

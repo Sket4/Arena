@@ -71,19 +71,18 @@ Shader"Arena/Water"
                 float2 uv : TEXCOORD0;
                 nointerpolation half2 instanceData : TEXCOORD1;
                 half4 vertex : SV_POSITION;
-                half3 color : TEXCOORD2;
-                half2 foam_uv : TEXCOORD3;
+                half4 color : TEXCOORD2;
                 
-                float3 normalWS : TEXCOORD4;
-                float4 tangentWS : TEXCOORD5;
-                float3 bitangentWS : TEXCOORD6;
-                float4 positionWS_fog : TEXCOORD7;
+                float3 normalWS : TEXCOORD3;
+                float4 tangentWS : TEXCOORD4;
+                float4 bitangentWS_foamGr : TEXCOORD5;
+                float4 positionWS_fog : TEXCOORD6;
 
 #if LIGHTMAP_ON
                 #if defined(UNITY_DOTS_INSTANCING_ENABLED)
-                float3 uv2 : TEXCOORD8;
+                float3 uv2 : TEXCOORD7;
                 #else
-                float2 uv2 : TEXCOORD8;
+                float2 uv2 : TEXCOORD7;
                 #endif
 #endif
             };
@@ -139,12 +138,12 @@ Shader"Arena/Water"
 
                 o.normalWS = normalInputs.normalWS;
                 o.tangentWS = float4(normalInputs.tangentWS, tangentOS.w);
-                o.bitangentWS = normalInputs.bitangentWS;
+                o.bitangentWS_foamGr.xyz = normalInputs.bitangentWS;
+                o.bitangentWS_foamGr.w = v.color.g * _FoamParameters.x + _Time.x * _FoamParameters.y;
 
                 o.color.rg = v.color.rg;
-                o.color.b = o.color.g * _FoamParameters.x + _Time.x * _FoamParameters.y;
-                o.foam_uv = TRANSFORM_TEX(v.uv, _FoamTex);
-                o.foam_uv += half2(_SinTime.w * _FoamParameters.z, _SinTime.w * _FoamParameters.w);
+                o.color.ba = TRANSFORM_TEX(v.uv, _FoamTex);
+                o.color.ba += half2(_SinTime.w * _FoamParameters.z, _SinTime.w * _FoamParameters.w);
 
 #if LIGHTMAP_ON
                 TG_TRANSFORM_LIGHTMAP_TEX(v.uv2, o.uv2)
@@ -196,7 +195,7 @@ Shader"Arena/Water"
 
                 half3 viewDirWS = GetWorldSpaceNormalizeViewDir(i.positionWS_fog.xyz);
 
-                half3x3 tangentToWorld = half3x3(i.tangentWS.xyz, i.bitangentWS.xyz, i.normalWS.xyz);
+                half3x3 tangentToWorld = half3x3(i.tangentWS.xyz, i.bitangentWS_foamGr.xyz, i.normalWS.xyz);
 
                 float3 normalWS = TransformTangentToWorld(normalTS.xyz, tangentToWorld, true);
 
@@ -217,8 +216,8 @@ Shader"Arena/Water"
                 half4 diffuse;
                 diffuse.rgb = lerp(reflColor, _BaseColor.rgb, rim);
 
-                half foam = tex2D(_FoamGradientTex, half2(i.color.b, 0)).r;
-                foam *= tex2D(_FoamTex, i.foam_uv).r;
+                half foam = tex2D(_FoamGradientTex, half2(i.bitangentWS_foamGr.w, 0)).r;
+                foam *= tex2D(_FoamTex, i.color.ba).r;
                 
                 
                 diffuse.rgb = lerp(diffuse.rgb, diffuse.rgb + foam.rrr, waterEdgeFadeInv);

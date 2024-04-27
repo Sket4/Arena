@@ -58,7 +58,7 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _MetallicGlossMap:
-        m_Texture: {fileID: 2800000, guid: 8eb3a58e8030d5f41b10d46a5823f567, type: 3}
+        m_Texture: {fileID: 2800000, guid: 5d0d4e3713271f241a4b06b690ebdfb0, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _Normal_map:
@@ -74,6 +74,10 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _SpecGlossMap:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _SurfaceMap:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
@@ -122,9 +126,11 @@ Material:
     - _SrcBlend: 1
     - _SrcBlendAlpha: 1
     - _Surface: 0
+    - _SurfaceBlendFactor: 1
     - _Underwater_fog_density_factor: 1
     - _Underwater_fog_height_mult: 1
     - _UseLighting: 1
+    - _UseSurfaceBlend: 0
     - _UseUnderwater: 0
     - _WorkflowMode: 1
     - _ZWrite: 1

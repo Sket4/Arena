@@ -2,11 +2,10 @@ Shader"Arena/Character"
 {
     Properties
     {
-        [Toggle(USE_LIGHTING)]
-        _UseLighting("Use lighting", float) = 0.0
         _BaseMap ("Texture", 2D) = "white" {}
         _BumpMap ("Normal map", 2D) = "bump" {}
-        _SkinningData("SkinData", Vector) = (0, 1, 0, 0)
+        _MeSmAO_Map("Me Sm AO map", 2D) = "white" {} 
+        //_SkinningData("SkinData", Vector) = (0, 1, 0, 0)
         [Toggle(USE_RIM)]
         _UseRim("Use rim", float) = 0.0
         [Toggle(USE_DISTANCE_LIGHT)]
@@ -91,6 +90,7 @@ Shader"Arena/Character"
 
             sampler2D _BaseMap;
             sampler2D _BumpMap;
+            sampler2D _MeSmAO_Map;
             
             v2f vert (appdata v)
             {
@@ -148,8 +148,9 @@ Shader"Arena/Character"
                 float3 normalWS = TransformTangentToWorld(normalTS.xyz, tangentToWorld, true);
 
                 //mesm.rgb *= _Metallic;
+                half4 mesmao = tex2D(_MeSmAO_Map, i.uv);
     
-                half roughness = (1-diffuse.a) * _Roughness;
+                half roughness = (1.0 - mesmao.g) * _Roughness;
 
                 half3 lighting = TG_ComputeAmbientLight_half(normalWS);
 
@@ -161,7 +162,8 @@ Shader"Arena/Character"
                 //lighting += specular;
 
                 half3 envMapColor = TG_ReflectionProbe(viewDirWS, normalWS, i.instanceData.y, roughness * 4);
-                half4 finalColor = LightingPBR(diffuse, lighting, viewDirWS, normalWS, diffuse.a * _Metallic, roughness, envMapColor);
+                envMapColor *= mesmao.b;
+                half4 finalColor = LightingPBR(diffuse, lighting, viewDirWS, normalWS, mesmao.rrr, roughness, envMapColor);
 
                 #if USE_RIM
                 half ndotv = dot(viewDirWS, normalWS);

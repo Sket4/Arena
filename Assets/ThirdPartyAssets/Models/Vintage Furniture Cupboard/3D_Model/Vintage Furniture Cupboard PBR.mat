@@ -12,9 +12,9 @@ Material:
   m_Parent: {fileID: 0}
   m_ModifiedSerializedProperties: 0
   m_ValidKeywords:
-  - USE_LIGHTING
   - _SPECGLOSSMAP
   m_InvalidKeywords:
+  - USE_LIGHTING
   - _NORMALMAP
   - _ZWRITE_ON
   m_LightmapFlags: 4
@@ -56,7 +56,7 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _MetallicGlossMap:
-        m_Texture: {fileID: 2800000, guid: d51322dbd8ec213469c099a64f86a9a6, type: 3}
+        m_Texture: {fileID: 2800000, guid: d8348f3789d90f648a0f2734e09d6e04, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _OcclusionMap:
@@ -71,7 +71,15 @@ Material:
         m_Texture: {fileID: 2800000, guid: 1a6ed06b0a97e314f9a72f35e152ce72, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
+    - _SurfaceMap:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
     - unity_Lightmaps:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - unity_LightmapsInd:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
@@ -95,10 +103,12 @@ Material:
     - _SmoothnessTextureChannel: 0
     - _SpecularHighlights: 1
     - _SrcBlend: 1
+    - _SurfaceBlendFactor: 1
     - _UVSec: 0
     - _Underwater_fog_density_factor: 1
     - _Underwater_fog_height_mult: 1
     - _UseLighting: 1
+    - _UseSurfaceBlend: 0
     - _UseUnderwater: 0
     - _ZWrite: 1
     m_Colors:

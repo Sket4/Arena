@@ -2,7 +2,6 @@ Shader "Arena/Environment"
 {
     Properties
     {
-        [Toggle(DIFFUSE_ALPHA_AS_SMOOTHNESS)] _UseAlphaAsSmoothness("Use diffuse alpha as smoothess", int) = 0
         [Toggle] _ZWrite("ZWrite", int) = 1
         [Toggle(TG_USE_ALPHACLIP)] _AlphaClip("Use alpha clipping", float) = 0.0
         //[Enum(Off,0,On,1)] _AlphaToMask("Alpha to Mask", Int) = 0
@@ -206,20 +205,14 @@ Shader "Arena/Environment"
                 ambientLight = TG_ComputeAmbientLight_half(normalWS);
 #endif
 
-                half4 mesm = tex2D(_MetallicGlossMap, i.uv);
-                mesm.rgb *= _Metallic;
+                half4 mesmao = tex2D(_MetallicGlossMap, i.uv);
+                mesmao.r *= _Metallic;
                 
-                #if DIFFUSE_ALPHA_AS_SMOOTHNESS
-                half roughness = 1.0f - (diffuse.a * _Smoothness);
-                
-                #else
-                half smoothness = mesm.a * _Smoothness;
+                half smoothness = mesmao.g * _Smoothness;
                 half roughness = 1 - smoothness;
-                #endif
-                
-                
 
                 half3 envMapColor = TG_ReflectionProbe_half(viewDirWS, normalWS, i.instanceData.y,roughness * 4);
+                envMapColor *= mesmao.b;
 
                 half3 remEnvMapColor = clamp(envMapColor - 0.5, 0, 10);
                 remEnvMapColor = remEnvMapColor * _HighlightRemove;
@@ -242,7 +235,7 @@ Shader "Arena/Environment"
                 #endif
 
                 //diffuse.rgb = 1;
-                half4 finalColor = LightingPBR(diffuse, ambientLight, viewDirWS, normalWS, mesm.rrr, roughness, envMapColor);
+                half4 finalColor = LightingPBR(diffuse, ambientLight, viewDirWS, normalWS, mesmao.rrr, roughness, envMapColor);
 
                 #if USE_UNDERWATER
                 finalColor.rgb = lerp(finalColor.rgb, _Underwater_color * ambientLight, i.color.a);

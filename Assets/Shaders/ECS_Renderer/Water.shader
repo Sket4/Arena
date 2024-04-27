@@ -7,8 +7,6 @@ Shader"Arena/Water"
         _Tiling_and_speed_3("Tiling and speed 3", Vector) = (1,1,1,1)
         _BaseColor("Color", Color) = (1,1,1,1)
         _PackedNormalMap ("Packed normal map", 2D) = "white" {}
-        _Roughness("Roughness", Range(0,1)) = 1
-        _Metallic("Metallic", Range(0,1)) = 1
         _Rim_mult("Rim multiplier", Float) = 1
         _Normal_strength("Normal strenght", Float) = 1
         

@@ -184,11 +184,12 @@ Shader"Arena/Water"
                  normalTS.xy += tex2D(_PackedNormalMap, uv3);
                 
                  normalTS.xy *= 0.333333;
-                
-                NormalReconstructZ_float(normalTS.xy, normalTS);
+
+                //NormalReconstructZ_float(normalTS.xy, normalTS);
                 normalTS = UnpackNormal(float4(normalTS,0));
 
                 NormalStrength_float(normalTS, _Normal_strength * i.positionWS_fog.a, normalTS);
+
                 normalTS = normalize(normalTS);
 
                 half3 viewDirWS = GetWorldSpaceNormalizeViewDir(i.positionWS_fog.xyz);
@@ -199,6 +200,7 @@ Shader"Arena/Water"
 
                 //mesm.rgb *= _Metallic;
                 float rim = saturate(dot(normalWS, viewDirWS) * _Rim_mult);
+                //rim = 1.0 - rim;
 
 
                 half reflectionLOD = _Roughness * 4;

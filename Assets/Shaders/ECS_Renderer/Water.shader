@@ -206,7 +206,12 @@ Shader"Arena/Water"
                 half reflectionLOD = _Roughness * 4;
                 #if USE_CUSTOM_REFLECTIONS
                 float3 reflectVec = reflect(-viewDirWS, normalWS);
-	            half3 reflColor = DecodeHDREnvironment(SAMPLE_TEXTURECUBE_LOD(_CustomReflectionTex, sampler_CustomReflectionTex, reflectVec, reflectionLOD), unity_SpecCube0_HDR);
+
+                #if defined(DOTS_INSTANCING_ON)
+	            half3 reflColor = DecodeHDREnvironment(SAMPLE_TEXTURECUBE_LOD(_CustomReflectionTex, sampler_CustomReflectionTex, reflectVec, reflectionLOD), tg_ReflectionProbeDecodeInstructions);
+                #else
+                half3 reflColor = DecodeHDREnvironment(SAMPLE_TEXTURECUBE_LOD(_CustomReflectionTex, sampler_CustomReflectionTex, reflectVec, reflectionLOD), unity_SpecCube0_HDR);
+                #endif
                 #else
                 half3 reflColor = TG_ReflectionProbe(viewDirWS, normalWS, i.instanceData.y, reflectionLOD);  
                 #endif

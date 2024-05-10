@@ -149,6 +149,7 @@ namespace Arena
             gameLoop.AddGameSystem<MessageDispatherCleanSystem>();
             gameLoop.AddGameSystem<CommonEventHandlerSystem>();
             gameLoop.AddGameSystem<EventCleanSystem>();
+            gameLoop.AddGameSystem<DistanceToGroundSystem>();
         }
     }
 }

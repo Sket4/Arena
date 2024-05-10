@@ -24,14 +24,16 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1044350104863707741}
+  serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 3864562013354763723}
+  - {fileID: 6028240314791639631}
   - {fileID: 7279848876461913664}
   m_Father: {fileID: 7065657368635813840}
-  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &934362570668730787
 MonoBehaviour:
@@ -48,9 +50,35 @@ MonoBehaviour:
   ConversionTargetOptions: 5
   SetAsSingleton: 1
   Groups:
-  - Name: Concrete
+  - PhysicsMaterialTags:
+      Tag00: 1
+      Tag01: 0
+      Tag02: 0
+      Tag03: 0
+      Tag04: 0
+      Tag05: 0
+      Tag06: 0
+      Tag07: 0
     SoundGroup: {fileID: 7007957981905681370}
-  - Name: Enemy
+  - PhysicsMaterialTags:
+      Tag00: 0
+      Tag01: 0
+      Tag02: 0
+      Tag03: 0
+      Tag04: 1
+      Tag05: 0
+      Tag06: 0
+      Tag07: 0
+    SoundGroup: {fileID: 7698557799130846395}
+  - PhysicsMaterialTags:
+      Tag00: 0
+      Tag01: 0
+      Tag02: 0
+      Tag03: 1
+      Tag04: 0
+      Tag05: 0
+      Tag06: 0
+      Tag07: 0
     SoundGroup: {fileID: 4960076565765905398}
 --- !u!1 &2108502092572017180
 GameObject:
@@ -76,12 +104,13 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2108502092572017180}
+  serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 6546861242564761105}
-  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &6912526343790624598
 MonoBehaviour:
@@ -111,6 +140,7 @@ MonoBehaviour:
       RandomizePitch: 1
       MinPitch: 0.9
       MaxPitch: 1.1
+      Loop: 0
       SpatializeBlend: 1
       SetMinDistance: 0
       MinDistance: 0
@@ -140,12 +170,13 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 4617431630343606847}
+  serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 1601659810226548845}
-  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &7007957981905681370
 MonoBehaviour:
@@ -176,6 +207,7 @@ MonoBehaviour:
       RandomizePitch: 1
       MinPitch: 0.9
       MaxPitch: 1.1
+      Loop: 0
       SpatializeBlend: 1
       SetMinDistance: 0
       MinDistance: 0
@@ -204,14 +236,15 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 4638244647540947184}
+  serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 1601659810226548845}
   - {fileID: 6546861242564761105}
   m_Father: {fileID: 0}
-  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &5391471488266137368
 GameObject:
@@ -224,7 +257,7 @@ GameObject:
   - component: {fileID: 7279848876461913664}
   - component: {fileID: 4960076565765905398}
   m_Layer: 0
-  m_Name: Enemy
+  m_Name: Ground
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -237,12 +270,13 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 5391471488266137368}
+  serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 1601659810226548845}
-  m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &4960076565765905398
 MonoBehaviour:
@@ -260,12 +294,17 @@ MonoBehaviour:
   SoundGroup:
     Name: 
     Clips:
-    - {fileID: 8300000, guid: 64998ce3233967441b1df6570a6892cb, type: 3}
-    - {fileID: 8300000, guid: dbd25787e11179b4b8a335e11fb8771d, type: 3}
-    - {fileID: 8300000, guid: 1eb675ea084824b44b4f2d982452b6a8, type: 3}
-    - {fileID: 8300000, guid: 1afa2cc9f39adc444b9569994405baee, type: 3}
-    - {fileID: 8300000, guid: 881e720b5a749094bb9d14fc86a526e4, type: 3}
-    OptionalMixerGroup: {fileID: 0}
+    - {fileID: 8300000, guid: ddaa0ef3b35f54d1aa9a7eedfd357b55, type: 3}
+    - {fileID: 8300000, guid: 8dde2ea7d9697407ebb61f6cdc5cd6d7, type: 3}
+    - {fileID: 8300000, guid: 32a2a906e7ce04b8f8cd7db24d4dab56, type: 3}
+    - {fileID: 8300000, guid: 918bb5970462c410ab2d8fdd7e7902c1, type: 3}
+    - {fileID: 8300000, guid: 6f10df299b2874e588ac219e4858c45c, type: 3}
+    - {fileID: 8300000, guid: e8b5779970f4946bcbc73c7224b64797, type: 3}
+    - {fileID: 8300000, guid: c13f8092a779d4dc4999628c021b3dd9, type: 3}
+    - {fileID: 8300000, guid: 224bb2cf8044e42a7b96d48a21b5da14, type: 3}
+    - {fileID: 8300000, guid: 401545362fe314013a61a4172ff625f9, type: 3}
+    - {fileID: 8300000, guid: 6ae0a06b847c04710ae28517e22e8f6b, type: 3}
+    OptionalMixerGroup: {fileID: 24300002, guid: 71f1d2b4fccb8664bbab46ae6e36078c, type: 2}
     Settings:
       RandomizeVolume: 1
       MinVolume: 0.9
@@ -273,6 +312,7 @@ MonoBehaviour:
       RandomizePitch: 1
       MinPitch: 0.9
       MaxPitch: 1.1
+      Loop: 0
       SpatializeBlend: 1
       SetMinDistance: 0
       MinDistance: 0
@@ -302,13 +342,14 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 6613415381236275311}
+  serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 8321354878066456306}
   m_Father: {fileID: 7065657368635813840}
-  m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &7199402985873945837
 MonoBehaviour:
@@ -324,3 +365,75 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   ConversionTargetOptions: 5
   swordSwings: {fileID: 6912526343790624598}
+--- !u!1 &7945042632093445459
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 6028240314791639631}
+  - component: {fileID: 7698557799130846395}
+  m_Layer: 0
+  m_Name: Wood
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &6028240314791639631
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7945042632093445459}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1601659810226548845}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &7698557799130846395
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7945042632093445459}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7cdab39ac42db41ecaaa1b44e4134483, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ConversionTargetOptions: 5
+  SoundGroup:
+    Name: Wood
+    Clips:
+    - {fileID: 8300000, guid: 78e225db419594d96910363852407394, type: 3}
+    - {fileID: 8300000, guid: 5681de1ba343e45d0a3e7f56593ee651, type: 3}
+    - {fileID: 8300000, guid: 2f58661421e954c168d941fca0251cfc, type: 3}
+    - {fileID: 8300000, guid: c5efb00dbe1264c24807712fbd54774b, type: 3}
+    - {fileID: 8300000, guid: 9a0c80d0052a5452e8799b817693224d, type: 3}
+    - {fileID: 8300000, guid: d62fb5bae72ba4a40b92511fbde0e4bf, type: 3}
+    - {fileID: 8300000, guid: ebba6fdba910d47779ecc692a2035c64, type: 3}
+    - {fileID: 8300000, guid: e02098e96d076414993367598d4fde83, type: 3}
+    - {fileID: 8300000, guid: 99ca1a040c69147248fe68be21ba84b9, type: 3}
+    - {fileID: 8300000, guid: 5fcaba8ab1b1147da83ee507ca2513dd, type: 3}
+    OptionalMixerGroup: {fileID: 24300002, guid: 64c795c25d71240459ab99e981490730, type: 2}
+    Settings:
+      RandomizeVolume: 1
+      MinVolume: 0.9
+      MaxVolume: 1
+      RandomizePitch: 1
+      MinPitch: 0.9
+      MaxPitch: 1.1
+      Loop: 0
+      SpatializeBlend: 1
+      SetMinDistance: 0
+      MinDistance: 0
+      SetMaxDistance: 0
+      MaxDistance: 0

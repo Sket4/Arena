@@ -2,9 +2,10 @@
 using TzarGames.GameCore;
 using TzarGames.GameCore.Client;
 using Unity.Entities;
-using Unity.Jobs;
 using Unity.Mathematics;
+using Unity.Physics;
 using Unity.Transforms;
+using UnityEngine;
 
 namespace Arena.Client
 {
@@ -17,6 +18,7 @@ namespace Arena.Client
         {
             UniversalCommandBuffer commands = default;
             var footstepSoundGroupBuffers = GetBufferLookup<FootstepSoundGroupElement>(true);
+            var colliderLookup = GetComponentLookup<PhysicsCollider>(true);
             
             Entities
                 .WithoutBurst()
@@ -27,7 +29,7 @@ namespace Arena.Client
                 switch(funcName)
                 {
                     case "Footstep":
-                        playFootstep(in animEvent, ref commands, ref footstepSoundGroupBuffers);
+                        playFootstep(in animEvent, ref commands, ref footstepSoundGroupBuffers, in colliderLookup);
                         break;
 
                     case "WeaponSwing":
@@ -39,25 +41,49 @@ namespace Arena.Client
             }).Run();
         }
 
-        void playFootstep(in AnimationEventData animEvent, ref UniversalCommandBuffer commands, ref BufferLookup<FootstepSoundGroupElement> footstepSoundGroupBuffers)
+        unsafe void playFootstep(in AnimationEventData animEvent, ref UniversalCommandBuffer commands, ref BufferLookup<FootstepSoundGroupElement> footstepSoundGroupBuffers, in ComponentLookup<PhysicsCollider> colliderLookup)
         {
+            if(EntityManager.HasComponent<DistanceToGround>(animEvent.SourceEntity) == false)
+            {
+                Debug.LogError($"no distance on ground component for entity {animEvent.SourceEntity}");
+                return;
+            }
+
+            var distanceToGround = EntityManager.GetComponentData<DistanceToGround>(animEvent.SourceEntity);
+            
+            if (distanceToGround.CurrentHit.Entity == Entity.Null)
+            {
+                return;
+            }
+            
             initCommands(ref commands);
 
-            Entity group;
             DynamicBuffer<FootstepSoundGroupElement> footstepSounds;
 
-            if(footstepSoundGroupBuffers.TryGetBuffer(animEvent.SourceEntity, out footstepSounds))
-            {
-                group = footstepSounds[0].SoundGroupEntity;
-            }
-            else
+            if(footstepSoundGroupBuffers.TryGetBuffer(animEvent.SourceEntity, out footstepSounds) == false)
             {
                 var footstepSoundsEntity = SystemAPI.GetSingletonEntity<FootstepSoundsTag>();
                 footstepSounds = SystemAPI.GetBuffer<FootstepSoundGroupElement>(footstepSoundsEntity);
-                group = footstepSounds[0].SoundGroupEntity;
             }
 
-            var groupInstance = commands.Instantiate(0, group);
+            bool isGroupFound = false;
+            Entity targetGroupEntity = Entity.Null;
+            
+            foreach (var footstepSoundGroup in footstepSounds)
+            {
+                if ((footstepSoundGroup.PhysicsMaterialTags & distanceToGround.CurrentHit.Material.CustomTags) > 0)
+                {
+                    targetGroupEntity = footstepSoundGroup.SoundGroupEntity;
+                    break;
+                }
+            }
+
+            if (targetGroupEntity == Entity.Null)
+            {
+                targetGroupEntity = footstepSounds[0].SoundGroupEntity;
+            }
+            
+            var groupInstance = commands.Instantiate(0, targetGroupEntity);
             commands.AddComponent(0, groupInstance, new PlaySoundEvent());
 
             float3 soundPos = default;
@@ -88,6 +114,7 @@ namespace Arena.Client
                 soundPos = SystemAPI.GetComponent<LocalToWorld>(foot).Position;
             }
 
+            Debug.DrawRay(soundPos, Vector3.up, Color.red, 10);
             //UnityEngine.Debug.Log($"footstep pos {soundPos.Value}");
 
             commands.SetComponent(0, groupInstance, LocalTransform.FromPosition(soundPos));

@@ -65,18 +65,37 @@ namespace Arena.Client
                 var footstepSoundsEntity = SystemAPI.GetSingletonEntity<FootstepSoundsTag>();
                 footstepSounds = SystemAPI.GetBuffer<FootstepSoundGroupElement>(footstepSoundsEntity);
             }
-
-            bool isGroupFound = false;
-            Entity targetGroupEntity = Entity.Null;
             
-            foreach (var footstepSoundGroup in footstepSounds)
+            Entity targetGroupEntity = Entity.Null;
+            var currentHit = distanceToGround.CurrentHit;
+
+            if (EntityManager.HasComponent<TerrainPhysicsMaterial>(currentHit.Entity))
             {
-                if ((footstepSoundGroup.PhysicsMaterialTags & distanceToGround.CurrentHit.Material.CustomTags) > 0)
+                var terrainMat = EntityManager.GetSharedComponent<TerrainPhysicsMaterial>(currentHit.Entity);
+                var traceResult = terrainMat.WorldPositionToLayer(currentHit.Position);
+                //Debug.Log($"has terrain material {currentHit.Entity}, trace: {traceResult}");
+                
+                foreach (var footstepSoundGroup in footstepSounds)
                 {
-                    targetGroupEntity = footstepSoundGroup.SoundGroupEntity;
-                    break;
+                    if ((footstepSoundGroup.PhysicsMaterialTags & traceResult) > 0)
+                    {
+                        targetGroupEntity = footstepSoundGroup.SoundGroupEntity;
+                        break;
+                    }
                 }
             }
+            else
+            {
+                foreach (var footstepSoundGroup in footstepSounds)
+                {
+                    if ((footstepSoundGroup.PhysicsMaterialTags & currentHit.Material.CustomTags) > 0)
+                    {
+                        targetGroupEntity = footstepSoundGroup.SoundGroupEntity;
+                        break;
+                    }
+                }
+            }
+            
 
             if (targetGroupEntity == Entity.Null)
             {
@@ -114,8 +133,7 @@ namespace Arena.Client
                 soundPos = SystemAPI.GetComponent<LocalToWorld>(foot).Position;
             }
 
-            Debug.DrawRay(soundPos, Vector3.up, Color.red, 10);
-            //UnityEngine.Debug.Log($"footstep pos {soundPos.Value}");
+            //Debug.DrawRay(soundPos, Vector3.up, Color.red, 10);
 
             commands.SetComponent(0, groupInstance, LocalTransform.FromPosition(soundPos));
         }

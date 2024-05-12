@@ -33,6 +33,8 @@ Transform:
   - {fileID: 3864562013354763723}
   - {fileID: 6028240314791639631}
   - {fileID: 7279848876461913664}
+  - {fileID: 1819357010955838476}
+  - {fileID: 7879874905430320914}
   m_Father: {fileID: 7065657368635813840}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &934362570668730787
@@ -80,6 +82,26 @@ MonoBehaviour:
       Tag06: 0
       Tag07: 0
     SoundGroup: {fileID: 4960076565765905398}
+  - PhysicsMaterialTags:
+      Tag00: 0
+      Tag01: 0
+      Tag02: 1
+      Tag03: 0
+      Tag04: 0
+      Tag05: 0
+      Tag06: 0
+      Tag07: 0
+    SoundGroup: {fileID: 7733610313521038056}
+  - PhysicsMaterialTags:
+      Tag00: 0
+      Tag01: 1
+      Tag02: 0
+      Tag03: 0
+      Tag04: 0
+      Tag05: 0
+      Tag06: 0
+      Tag07: 0
+    SoundGroup: {fileID: 6290622093668642334}
 --- !u!1 &2108502092572017180
 GameObject:
   m_ObjectHideFlags: 0
@@ -133,6 +155,78 @@ MonoBehaviour:
     - {fileID: 8300000, guid: 51517f184d9349a42ad82c211c12a8c6, type: 3}
     - {fileID: 8300000, guid: cdbcfa54311937042ba90555b334a3dc, type: 3}
     OptionalMixerGroup: {fileID: 0}
+    Settings:
+      RandomizeVolume: 1
+      MinVolume: 0.9
+      MaxVolume: 1
+      RandomizePitch: 1
+      MinPitch: 0.9
+      MaxPitch: 1.1
+      Loop: 0
+      SpatializeBlend: 1
+      SetMinDistance: 0
+      MinDistance: 0
+      SetMaxDistance: 0
+      MaxDistance: 0
+--- !u!1 &3794083850276215387
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1819357010955838476}
+  - component: {fileID: 7733610313521038056}
+  m_Layer: 0
+  m_Name: Sand
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1819357010955838476
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3794083850276215387}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1601659810226548845}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &7733610313521038056
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3794083850276215387}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7cdab39ac42db41ecaaa1b44e4134483, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ConversionTargetOptions: 5
+  SoundGroup:
+    Name: 
+    Clips:
+    - {fileID: 8300000, guid: f7f795dfbeda24e45be80b455ad62785, type: 3}
+    - {fileID: 8300000, guid: 75182b7556028479789589c03f7abf31, type: 3}
+    - {fileID: 8300000, guid: 399e98602cab445e7b95a2bb95661d4d, type: 3}
+    - {fileID: 8300000, guid: 621e484f9952c4e788c778814d84a33e, type: 3}
+    - {fileID: 8300000, guid: 1c7f03601310f4a83b2a23b750c8fbb8, type: 3}
+    - {fileID: 8300000, guid: 7ade138555a6241219003743e6c0cd7e, type: 3}
+    - {fileID: 8300000, guid: 63ec471df2ef84c94af058a594fa98cf, type: 3}
+    - {fileID: 8300000, guid: 7badfbfbd558f45199d2ceb6b87581b4, type: 3}
+    - {fileID: 8300000, guid: eab25e438790c4a9d9befd46bd506c4a, type: 3}
+    - {fileID: 8300000, guid: 54dd09cc7ad6e4853a4bf57212ce56e4, type: 3}
+    OptionalMixerGroup: {fileID: 24300002, guid: 71f1d2b4fccb8664bbab46ae6e36078c, type: 2}
     Settings:
       RandomizeVolume: 1
       MinVolume: 0.9
@@ -285,6 +379,78 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 5391471488266137368}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7cdab39ac42db41ecaaa1b44e4134483, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ConversionTargetOptions: 5
+  SoundGroup:
+    Name: 
+    Clips:
+    - {fileID: 8300000, guid: 8de6aef571273415c85b730198b826fc, type: 3}
+    - {fileID: 8300000, guid: 7c8c645e711fc421497ec83b9055400f, type: 3}
+    - {fileID: 8300000, guid: 9a16140fb820940ceb04163c435f6850, type: 3}
+    - {fileID: 8300000, guid: 2aa0f43bd619948d2a3aaea4ff43a6e2, type: 3}
+    - {fileID: 8300000, guid: 0b42f9031534846149c3257620e69421, type: 3}
+    - {fileID: 8300000, guid: 2005c901086c2490ca6d1ea265d81f3f, type: 3}
+    - {fileID: 8300000, guid: cf0200f452b7b4513bc8aa95a252d03c, type: 3}
+    - {fileID: 8300000, guid: e06628920bc2f4abda93975c2346061d, type: 3}
+    - {fileID: 8300000, guid: 4b94b63191d3a450eb1ff8375643b9e9, type: 3}
+    - {fileID: 8300000, guid: 92772a4a8c9314254b8e670408b1d4f5, type: 3}
+    OptionalMixerGroup: {fileID: 24300002, guid: 71f1d2b4fccb8664bbab46ae6e36078c, type: 2}
+    Settings:
+      RandomizeVolume: 1
+      MinVolume: 0.9
+      MaxVolume: 1
+      RandomizePitch: 1
+      MinPitch: 0.9
+      MaxPitch: 1.1
+      Loop: 0
+      SpatializeBlend: 1
+      SetMinDistance: 0
+      MinDistance: 0
+      SetMaxDistance: 0
+      MaxDistance: 0
+--- !u!1 &6365111675297882738
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 7879874905430320914}
+  - component: {fileID: 6290622093668642334}
+  m_Layer: 0
+  m_Name: Grass
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &7879874905430320914
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6365111675297882738}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1601659810226548845}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &6290622093668642334
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6365111675297882738}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 7cdab39ac42db41ecaaa1b44e4134483, type: 3}

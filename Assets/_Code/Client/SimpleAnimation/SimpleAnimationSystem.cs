@@ -2,6 +2,8 @@ using TzarGames.AnimationFramework;
 using Unity.Entities;
 using Unity.Jobs;
 using Unity.Mathematics;
+using UnityEngine;
+using AnimationState = TzarGames.AnimationFramework.AnimationState;
 
 [UpdateBefore(typeof(AnimationSystemGroup))]
 public partial class SimpleAnimationSystem : SystemBase

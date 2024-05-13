@@ -168,6 +168,8 @@ Shader "Arena/Terrain (for beach)"
                 half2 layer1_uv = i.uv * _Layers_Tiling.x;
                 half2 layer2_uv = i.uv * _Layers_Tiling.y;
                 half2 layer3_uv = i.uv * _Layers_Tiling.z;
+
+                //layer3_uv += half2(0, i.positionWS_fog.x * 0.02);
                 
                 half4 diffuse = tex2D(_Color1, layer1_uv) * splat.x;
 

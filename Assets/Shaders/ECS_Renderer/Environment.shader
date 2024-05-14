@@ -67,6 +67,7 @@ Shader "Arena/Environment"
             #pragma multi_compile _ DOTS_INSTANCING_ON
             #pragma shader_feature __ TG_TRANSPARENT
             #pragma shader_feature TG_USE_ALPHACLIP
+			#pragma multi_compile UG_QUALITY_LOW UG_QUALITY_MED UG_QUALITY_HIGH
             #pragma shader_feature USE_UNDERWATER
             #pragma shader_feature DIFFUSE_ALPHA_AS_SMOOTHNESS
             #pragma shader_feature USE_SURFACE_BLEND
@@ -205,6 +206,21 @@ Shader "Arena/Environment"
                 ambientLight = TG_ComputeAmbientLight_half(normalWS);
 #endif
 
+                
+
+                #if USE_SURFACE_BLEND
+                float2 surfaceUV = TRANSFORM_TEX(i.positionWS_fog.xz, _SurfaceMap);
+                half4 surfaceColor = tex2D(_SurfaceMap, surfaceUV);
+                float surfaceBlend = saturate(dot(half3(normalWS.x, normalWS.y, normalWS.z), half3(0.0,1,0.0)));
+
+                // pow 4
+                surfaceBlend *= surfaceBlend;
+                surfaceBlend  *= surfaceBlend;
+                
+                diffuse.rgb = lerp(diffuse.rgb, surfaceColor.rgb, surfaceBlend  * _SurfaceBlendFactor);
+                #endif
+
+                #if defined(UG_QUALITY_MED) || defined(UG_QUALITY_HIGH)
                 half4 mesmao = tex2D(_MetallicGlossMap, i.uv);
                 mesmao.r *= _Metallic;
                 
@@ -221,21 +237,12 @@ Shader "Arena/Environment"
                 half lum = tg_luminance(ambientLight);
 
                 envMapColor = lerp(remEnvMapColor, envMapColor, saturate(lum * lum * lum));
-
-                #if USE_SURFACE_BLEND
-                float2 surfaceUV = TRANSFORM_TEX(i.positionWS_fog.xz, _SurfaceMap);
-                half4 surfaceColor = tex2D(_SurfaceMap, surfaceUV);
-                float surfaceBlend = saturate(dot(half3(normalWS.x, normalWS.y, normalWS.z), half3(0.0,1,0.0)));
-
-                // pow 4
-                surfaceBlend *= surfaceBlend;
-                surfaceBlend  *= surfaceBlend;
                 
-                diffuse.rgb = lerp(diffuse.rgb, surfaceColor.rgb, surfaceBlend  * _SurfaceBlendFactor);
-                #endif
-
-                //diffuse.rgb = 1;
                 half4 finalColor = LightingPBR(diffuse, ambientLight, viewDirWS, normalWS, mesmao.rrr, roughness, envMapColor);
+				#else
+				half4 finalColor = diffuse;
+                finalColor.rgb *= ambientLight;
+				#endif
 
                 #if USE_UNDERWATER
                 finalColor.rgb = lerp(finalColor.rgb, _Underwater_color * ambientLight, i.color.a);

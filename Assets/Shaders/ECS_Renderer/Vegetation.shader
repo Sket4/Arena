@@ -55,8 +55,7 @@ Shader "Arena/Vegetation"
             #pragma shader_feature __ TG_TRANSPARENT
             #pragma shader_feature TG_USE_ALPHACLIP
             #pragma multi_compile _ LIGHTMAP_ON
-            
-
+            #pragma multi_compile UG_QUALITY_LOW UG_QUALITY_MED UG_QUALITY_HIGH
             
             #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Core.hlsl"
             #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Lighting.hlsl"
@@ -172,16 +171,15 @@ Shader "Arena/Vegetation"
                 clip(diffuse.a - _Cutoff);
 #endif
             	
-            	half3 normalTS = UnpackNormal(tex2D(_BumpMap, i.uv));
-                //normalTS.xy *= 2;
-                half3 viewDirWS = GetWorldSpaceNormalizeViewDir(i.positionWS_fog.xyz);
-
+                #if defined(UG_QUALITY_MED) || defined(UG_QUALITY_HIGH)
+                half3 normalTS = UnpackNormal(tex2D(_BumpMap, i.uv));
                 half3x3 tangentToWorld = half3x3(i.tangentWS.xyz, i.bitangentWS.xyz, i.normalWS_occl.xyz); 
-
-                float3 normalWS = TransformTangentToWorld(normalTS.xyz, tangentToWorld, true);
+                half3 normalWS = TransformTangentToWorld(normalTS.xyz, tangentToWorld, true);
+                #else
+                half3 normalWS = i.normalWS_occl.xyz;
+                #endif
 
                 real3 ambientLight;
-
                 half ao =  i.normalWS_occl.w;
                 
 #if LIGHTMAP_ON
@@ -191,19 +189,28 @@ Shader "Arena/Vegetation"
                 ambientLight *= ao;
 #endif
 
+                
+
+                #if defined(UG_QUALITY_MED) || defined(UG_QUALITY_HIGH)
                 half4 mesm = tex2D(_MetallicGlossMap, i.uv);
                 mesm.rgb *= _Metallic;
 
-                
                 half lum = tg_luminance(ambientLight);
                 //return lum;
 
                 half smoothness = mesm.a * _Smoothness * lum;
                 half roughness = 1 - smoothness;
 
+                half3 viewDirWS = GetWorldSpaceNormalizeViewDir(i.positionWS_fog.xyz);
+
                 half3 envMapColor = TG_ReflectionProbe(viewDirWS, normalWS, i.instanceData.y, roughness * 4);
                 envMapColor *= ao;
+                
                 half4 finalColor = LightingPBR(diffuse, ambientLight, viewDirWS, normalWS, mesm.rgb, roughness, envMapColor);
+                #else
+                half4 finalColor = diffuse;
+                finalColor.rgb *= ambientLight;
+                #endif
                 
                 // apply fog
                 return half4(MixFog(finalColor.rgb, i.positionWS_fog.w), finalColor.a);  

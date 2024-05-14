@@ -6,10 +6,10 @@ namespace Arena.Client.UI.MainMenu
     public class GraphicsSettingsUI : TzarGames.Common.UI.UIBase
     {
         [SerializeField]
-        Toggle lowQuality = default;
+        Toggle shadows = default;
 
         [SerializeField]
-        Toggle shadows = default;
+        private TMPro.TMP_Dropdown qualityDropdown;
 
         [SerializeField]
         Toggle colorEnhance = default;
@@ -17,13 +17,12 @@ namespace Arena.Client.UI.MainMenu
         protected override void OnVisible()
         {
             base.OnVisible();
-
-            lowQuality.isOn = AppSettings.GraphicsSettings.LowQuality;
+            qualityDropdown.value = (int)AppSettings.GraphicsSettings.Quality;
         }
 
-        public void OnLowQualityChanged(bool value)
+        public void OnQualityChanged(int val)
         {
-            AppSettings.GraphicsSettings.LowQuality = value;
+            AppSettings.GraphicsSettings.Quality = (AppSettings.QualityLevels)val;
         }
     }
 }

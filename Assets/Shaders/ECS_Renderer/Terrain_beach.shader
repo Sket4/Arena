@@ -54,6 +54,7 @@ Shader "Arena/Terrain (for beach)"
             #pragma multi_compile _ DOTS_INSTANCING_ON
             #pragma shader_feature __ TG_TRANSPARENT
             #pragma shader_feature TG_USE_ALPHACLIP
+            #pragma multi_compile UG_QUALITY_LOW UG_QUALITY_MED UG_QUALITY_HIGH
             #pragma shader_feature USE_UNDERWATER
             #pragma shader_feature DIFFUSE_ALPHA_AS_SMOOTHNESS
             #pragma shader_feature USE_SURFACE_BLEND
@@ -178,7 +179,7 @@ Shader "Arena/Terrain (for beach)"
                 diffuse += tex2D(_Color3, layer3_uv) * splat.z;
 
                 // wet sand
-                diffuse += sand * splat.a * 0.5;
+                diffuse += sand * splat.a * 0.75;
 
             	
             	half3 normalTS = UnpackNormal(tex2D(_Normal1, layer1_uv)) * splat.r;
@@ -203,6 +204,10 @@ Shader "Arena/Terrain (for beach)"
                 ambientLight = TG_ComputeAmbientLight_half(normalWS);
 #endif
 
+                
+                
+                //diffuse.rgb = 1;
+                #if defined(UG_QUALITY_MED) || defined(UG_QUALITY_HIGH)
                 half4 Sm_AO_HGHT = tex2D(_SAH1, layer1_uv) * splat.r;
                 half4 Sm_AO_HGHT_sand = tex2D(_SAH2, layer1_uv);
                 Sm_AO_HGHT += Sm_AO_HGHT_sand * splat.g;
@@ -221,8 +226,11 @@ Shader "Arena/Terrain (for beach)"
 
                 envMapColor = lerp(remEnvMapColor, envMapColor, saturate(lum * lum * lum));
                 
-                //diffuse.rgb = 1;
                 half4 finalColor = LightingPBR(diffuse, ambientLight, viewDirWS, normalWS, 0, roughness, envMapColor);
+                #else
+                half4 finalColor = diffuse;
+                finalColor.rgb *= ambientLight;
+                #endif
 
                 // water height
                 finalColor.rgb = lerp(finalColor.rgb, _UnderwaterColor.rgb, saturate(_WaterHeight - i.positionWS_fog.y));

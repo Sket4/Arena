@@ -118,6 +118,7 @@ namespace Arena
             gameLoop.AddGameSystem<TriggerEventSystem>();
             gameLoop.AddGameSystem<ModifyCharacteristicOnTriggerEventSystem>();
             gameLoop.AddGameSystem<StoreSystem>();
+            gameLoop.AddGameSystemUnmanaged<WaterStateSystem>();
 
             var damageSystem = gameLoop.AddGameSystem<ApplyDamageSystem>();
             damageSystem.IsAuthority = isAuthoritative;

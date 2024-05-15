@@ -11614,7 +11614,7 @@ GameObject:
   - component: {fileID: 500915758}
   - component: {fileID: 500915759}
   - component: {fileID: 500915760}
-  - component: {fileID: 500915761}
+  - component: {fileID: 500915762}
   m_Layer: 0
   m_Name: Water mesh
   m_TagString: Untagged
@@ -11745,7 +11745,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   ConversionTargetOptions: -1
---- !u!114 &500915761
+--- !u!114 &500915762
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -11754,14 +11754,10 @@ MonoBehaviour:
   m_GameObject: {fileID: 500915752}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 09a9ab2db5186408c91a6057ed5e7256, type: 3}
+  m_Script: {fileID: 11500000, guid: e2fdba09d37330340b0852fa122a317e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   ConversionTargetOptions: -1
-  Modificators:
-  - value:
-      Value: 0.5
-      Operator: 2
 --- !u!1001 &511073766
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -32169,6 +32165,91 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 439960, guid: 49b1f412290e22d428f90f85dd6f41b8, type: 3}
   m_PrefabInstance: {fileID: 1519443771}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &1520286679
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1520286687}
+  - component: {fileID: 1520286683}
+  - component: {fileID: 1520286682}
+  - component: {fileID: 1520286681}
+  m_Layer: 0
+  m_Name: Water slow trigger
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 119
+  m_IsActive: 1
+--- !u!114 &1520286681
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1520286679}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 09a9ab2db5186408c91a6057ed5e7256, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ConversionTargetOptions: -1
+  Modificators:
+  - value:
+      Value: 0.75
+      Operator: 2
+--- !u!114 &1520286682
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1520286679}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4f6edb488579f794180a5c7d0da98419, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ConversionTargetOptions: -1
+--- !u!65 &1520286683
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1520286679}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 1
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 1657.7881, y: 0.0002065238, z: 3435.4912}
+  m_Center: {x: 88.43033, y: 0, z: 0}
+--- !u!4 &1520286687
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1520286679}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: -142.5, y: 15.5, z: 266.9}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &1533227060
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -42939,6 +43020,7 @@ SceneRoots:
   - {fileID: 91771853}
   - {fileID: 682642533}
   - {fileID: 1763472319}
+  - {fileID: 1520286687}
   - {fileID: 500915756}
   - {fileID: 150258794}
   - {fileID: 723558326}

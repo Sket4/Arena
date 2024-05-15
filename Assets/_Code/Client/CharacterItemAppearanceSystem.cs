@@ -6,11 +6,6 @@ using Unity.Mathematics;
 
 namespace Arena.Client
 {
-    public struct ArmorSetAppearanceInstance : IComponentData
-    {
-        public Entity Owner;
-    }
-
     public struct CharacterItemAppearanceState : ICleanupComponentData
     {
         public Entity Owner;
@@ -147,7 +142,7 @@ namespace Arena.Client
                 {
                     var instance = EntityManager.Instantiate(prefab);
 
-                    EntityManager.AddComponentData(instance, new ArmorSetAppearanceInstance { Owner = item.Owner });
+                    EntityManager.SetComponentData(instance, new Owner(item.Owner));
                     EntityManager.AddComponentData(itemEntity, new CharacterItemAppearanceState { Instance = instance, Owner = item.Owner });
 
                     var animation = EntityManager.GetComponentData<CharacterAnimation>(item.Owner);
@@ -258,6 +253,11 @@ namespace Arena.Client
                         //EntityManager.AddComponentData(instance, new LocalToParent());
 
                         EntityManager.AddComponentData(itemEntity, new CharacterItemAppearanceState { Instance = instance, Owner = item.Owner });
+                        
+                        if (EntityManager.HasComponent<Owner>(prefab))
+                        {
+                            EntityManager.SetComponentData(instance, new Owner(item.Owner));    
+                        }
                     }
                     catch (System.Exception ex)
                     {

@@ -14,6 +14,11 @@ namespace Arena.Client
         public Entity SoundGroupEntity;
     }
 
+    public struct FootstepSoundsShared : IComponentData
+    {
+        public Entity WaterSoundsEntity;
+    }
+
     public struct FootstepSoundsTag : IComponentData {}
 
     [UseDefaultInspector]
@@ -28,6 +33,8 @@ namespace Arena.Client
             public SoundGroupComponent SoundGroup;
         }
 
+        [SerializeField] private SoundGroupComponent WaterSounds;
+
         [SerializeField]
         FootstepSoundGroup[] Groups;
 
@@ -41,6 +48,10 @@ namespace Arena.Client
                     SoundGroupEntity = baker.GetEntity(group.SoundGroup)
                 }); 
             }
+            baker.AddComponent(new FootstepSoundsShared
+            {
+                WaterSoundsEntity = baker.GetEntity(WaterSounds)
+            });
 
             if(SetAsSingleton)
             {

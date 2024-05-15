@@ -58,6 +58,8 @@ GameObject:
   - component: {fileID: 1079357921695530094}
   - component: {fileID: 8073401150406406571}
   - component: {fileID: 6228874086320563810}
+  - component: {fileID: 8458472963038913664}
+  - component: {fileID: 5902711870150442455}
   m_Layer: 0
   m_Name: Player (Common)
   m_TagString: Untagged
@@ -969,3 +971,37 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   ConversionTargetOptions: -1
+--- !u!114 &8458472963038913664
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6502343895768782618}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ff5ee3b2ba08d9c49828ad520bb03171, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ConversionTargetOptions: -1
+--- !u!114 &5902711870150442455
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6502343895768782618}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3a8ead03c676e1b439f667a0b9403812, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ConversionTargetOptions: -1
+  Value:
+    CurrentDistance: 0
+    TraceDistance: 0
+    RaycastLayers: 0
+  traceDistance: 3
+  traceLayers:
+    serializedVersion: 2
+    m_Bits: 1

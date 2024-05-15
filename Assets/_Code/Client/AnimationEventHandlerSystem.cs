@@ -14,11 +14,12 @@ namespace Arena.Client
     [UpdateBefore(typeof(GameCommandBufferSystem))]
     public partial class AnimationEventHandlerSystem : GameSystemBase
     {
+        private static readonly int FootstepFuncHash = TzarGames.AnimationFramework.Utility.GetStableHashCode("Footstep");
+        private static readonly int WeaponSwingFuncHash = TzarGames.AnimationFramework.Utility.GetStableHashCode("WeaponSwing");
+        
         protected override void OnSystemUpdate()
         {
             UniversalCommandBuffer commands = default;
-            var footstepSoundGroupBuffers = GetBufferLookup<FootstepSoundGroupElement>(true);
-            var colliderLookup = GetComponentLookup<PhysicsCollider>(true);
             
             Entities
                 .WithoutBurst()
@@ -26,30 +27,34 @@ namespace Arena.Client
             {
                 var funcName = animEvent.Event.FunctionName.ToString();
 
-                switch(funcName)
+                if(funcName == "Footstep")
                 {
-                    case "Footstep":
-                        playFootstep(in animEvent, ref commands, ref footstepSoundGroupBuffers, in colliderLookup);
-                        break;
-
-                    case "WeaponSwing":
-                        playWeaponSwing(in animEvent, ref commands);
-                        break;
+                    playFootstep(in animEvent, ref commands);
                 }
-
+                else if (funcName == "WeaponSwing")
+                {
+                    playWeaponSwing(in animEvent, ref commands);
+                }
                 
             }).Run();
         }
 
-        unsafe void playFootstep(in AnimationEventData animEvent, ref UniversalCommandBuffer commands, ref BufferLookup<FootstepSoundGroupElement> footstepSoundGroupBuffers, in ComponentLookup<PhysicsCollider> colliderLookup)
+        unsafe void playFootstep(in AnimationEventData animEvent, ref UniversalCommandBuffer commands)
         {
-            if(EntityManager.HasComponent<DistanceToGround>(animEvent.SourceEntity) == false)
+            if(SystemAPI.HasComponent<Owner>(animEvent.SourceEntity) == false)
             {
-                Debug.LogError($"no distance on ground component for entity {animEvent.SourceEntity}");
+                Debug.LogError($"no owner component for entity {animEvent.SourceEntity}");
+                return;
+            }
+            var owner = SystemAPI.GetComponent<Owner>(animEvent.SourceEntity);
+
+            if (SystemAPI.HasComponent<DistanceToGround>(owner.Value) == false)
+            {
+                Debug.LogError($"no distance to ground component for entity {owner.Value}");
                 return;
             }
 
-            var distanceToGround = EntityManager.GetComponentData<DistanceToGround>(animEvent.SourceEntity);
+            var distanceToGround = SystemAPI.GetComponent<DistanceToGround>(owner.Value);
             
             if (distanceToGround.CurrentHit.Entity == Entity.Null)
             {
@@ -59,48 +64,69 @@ namespace Arena.Client
             initCommands(ref commands);
 
             DynamicBuffer<FootstepSoundGroupElement> footstepSounds;
+            var footstepSoundsEntity = SystemAPI.GetSingletonEntity<FootstepSoundsTag>();
+            var footstepSharedData = SystemAPI.GetComponent<FootstepSoundsShared>(footstepSoundsEntity);
+            bool isInWater = false;
+            //WaterState waterState = default;
 
-            if(footstepSoundGroupBuffers.TryGetBuffer(animEvent.SourceEntity, out footstepSounds) == false)
+            if (SystemAPI.HasComponent<WaterState>(owner.Value))
             {
-                var footstepSoundsEntity = SystemAPI.GetSingletonEntity<FootstepSoundsTag>();
-                footstepSounds = SystemAPI.GetBuffer<FootstepSoundGroupElement>(footstepSoundsEntity);
+                isInWater = SystemAPI.IsComponentEnabled<WaterState>(owner.Value);
+                //waterState = SystemAPI.GetComponent<WaterState>(owner.Value);
             }
             
             Entity targetGroupEntity = Entity.Null;
-            var currentHit = distanceToGround.CurrentHit;
 
-            if (EntityManager.HasComponent<TerrainPhysicsMaterial>(currentHit.Entity))
+            if (isInWater)
             {
-                var terrainMat = EntityManager.GetSharedComponent<TerrainPhysicsMaterial>(currentHit.Entity);
-                var traceResult = terrainMat.WorldPositionToLayer(currentHit.Position);
-                //Debug.Log($"has terrain material {currentHit.Entity}, trace: {traceResult}");
-                
-                foreach (var footstepSoundGroup in footstepSounds)
-                {
-                    if ((footstepSoundGroup.PhysicsMaterialTags & traceResult) > 0)
-                    {
-                        targetGroupEntity = footstepSoundGroup.SoundGroupEntity;
-                        break;
-                    }
-                }
+                targetGroupEntity = footstepSharedData.WaterSoundsEntity;
             }
             else
             {
-                foreach (var footstepSoundGroup in footstepSounds)
+                if(SystemAPI.HasBuffer<FootstepSoundGroupElement>(animEvent.SourceEntity))
                 {
-                    if ((footstepSoundGroup.PhysicsMaterialTags & currentHit.Material.CustomTags) > 0)
+                    footstepSounds = SystemAPI.GetBuffer<FootstepSoundGroupElement>(animEvent.SourceEntity);
+                }
+                else
+                {
+                    footstepSounds = SystemAPI.GetBuffer<FootstepSoundGroupElement>(footstepSoundsEntity);
+                }
+            
+                var currentHit = distanceToGround.CurrentHit;
+
+                if (EntityManager.HasComponent<TerrainPhysicsMaterial>(currentHit.Entity))
+                {
+                    var terrainMat = EntityManager.GetSharedComponent<TerrainPhysicsMaterial>(currentHit.Entity);
+                    var traceResult = terrainMat.WorldPositionToLayer(currentHit.Position);
+                    //Debug.Log($"has terrain material {currentHit.Entity}, trace: {traceResult}");
+                
+                    foreach (var footstepSoundGroup in footstepSounds)
                     {
-                        targetGroupEntity = footstepSoundGroup.SoundGroupEntity;
-                        break;
+                        if ((footstepSoundGroup.PhysicsMaterialTags & traceResult) > 0)
+                        {
+                            targetGroupEntity = footstepSoundGroup.SoundGroupEntity;
+                            break;
+                        }
                     }
+                }
+                else
+                {
+                    foreach (var footstepSoundGroup in footstepSounds)
+                    {
+                        if ((footstepSoundGroup.PhysicsMaterialTags & currentHit.Material.CustomTags) > 0)
+                        {
+                            targetGroupEntity = footstepSoundGroup.SoundGroupEntity;
+                            break;
+                        }
+                    }
+                }
+            
+                if (targetGroupEntity == Entity.Null)
+                {
+                    targetGroupEntity = footstepSounds[0].SoundGroupEntity;
                 }
             }
             
-
-            if (targetGroupEntity == Entity.Null)
-            {
-                targetGroupEntity = footstepSounds[0].SoundGroupEntity;
-            }
             
             var groupInstance = commands.Instantiate(0, targetGroupEntity);
             commands.AddComponent(0, groupInstance, new PlaySoundEvent());
@@ -151,15 +177,15 @@ namespace Arena.Client
 
             float3 soundPos = default;
 
-            if (SystemAPI.HasComponent<ArmorSetAppearanceInstance>(animEvent.SourceEntity))
+            if (SystemAPI.HasComponent<Owner>(animEvent.SourceEntity))
             {
-                var armorSet = SystemAPI.GetComponent<ArmorSetAppearanceInstance>(animEvent.SourceEntity);
+                var owner = SystemAPI.GetComponent<Owner>(animEvent.SourceEntity);
 
-                soundPos = SystemAPI.GetComponent<LocalToWorld>(armorSet.Owner).Position;
+                soundPos = SystemAPI.GetComponent<LocalToWorld>(owner.Value).Position;
 
-                if(SystemAPI.HasComponent<AttackVerticalOffset>(armorSet.Owner))
+                if(SystemAPI.HasComponent<AttackVerticalOffset>(owner.Value))
                 {
-                    var offset = SystemAPI.GetComponent<AttackVerticalOffset>(armorSet.Owner);
+                    var offset = SystemAPI.GetComponent<AttackVerticalOffset>(owner.Value);
                     soundPos += new Unity.Mathematics.float3(0,offset.Value,0);
                 }
             }

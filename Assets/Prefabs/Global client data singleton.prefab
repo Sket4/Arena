@@ -35,6 +35,7 @@ Transform:
   - {fileID: 7279848876461913664}
   - {fileID: 1819357010955838476}
   - {fileID: 7879874905430320914}
+  - {fileID: 2925384193861274089}
   m_Father: {fileID: 7065657368635813840}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &934362570668730787
@@ -51,6 +52,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   ConversionTargetOptions: 5
   SetAsSingleton: 1
+  WaterSounds: {fileID: 2388693127250245742}
   Groups:
   - PhysicsMaterialTags:
       Tag00: 1
@@ -226,6 +228,76 @@ MonoBehaviour:
     - {fileID: 8300000, guid: 7badfbfbd558f45199d2ceb6b87581b4, type: 3}
     - {fileID: 8300000, guid: eab25e438790c4a9d9befd46bd506c4a, type: 3}
     - {fileID: 8300000, guid: 54dd09cc7ad6e4853a4bf57212ce56e4, type: 3}
+    OptionalMixerGroup: {fileID: 24300002, guid: 71f1d2b4fccb8664bbab46ae6e36078c, type: 2}
+    Settings:
+      RandomizeVolume: 1
+      MinVolume: 0.9
+      MaxVolume: 1
+      RandomizePitch: 1
+      MinPitch: 0.9
+      MaxPitch: 1.1
+      Loop: 0
+      SpatializeBlend: 1
+      SetMinDistance: 0
+      MinDistance: 0
+      SetMaxDistance: 0
+      MaxDistance: 0
+--- !u!1 &4312766660922519981
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 2925384193861274089}
+  - component: {fileID: 2388693127250245742}
+  m_Layer: 0
+  m_Name: Water
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &2925384193861274089
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4312766660922519981}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1601659810226548845}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &2388693127250245742
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4312766660922519981}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7cdab39ac42db41ecaaa1b44e4134483, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ConversionTargetOptions: 5
+  SoundGroup:
+    Name: 
+    Clips:
+    - {fileID: 8300000, guid: 3b6a862f664a842859e0f4e95b06c87c, type: 3}
+    - {fileID: 8300000, guid: 547ec26d1d0244544a8d2660d02c5a42, type: 3}
+    - {fileID: 8300000, guid: 3006bb848e2e741fe8756f6ce0d481f2, type: 3}
+    - {fileID: 8300000, guid: 7c41d0fa020404d43a0929cdab24cddf, type: 3}
+    - {fileID: 8300000, guid: eddfccc99fcfa4297906cb847eac6792, type: 3}
+    - {fileID: 8300000, guid: 937a6b1d27f8a4892ae2546aeaf7f37a, type: 3}
+    - {fileID: 8300000, guid: 719931bc4a2514683a21f69e69a5dd2e, type: 3}
+    - {fileID: 8300000, guid: 09e2f3f67d40f441bbed15aaac7b4311, type: 3}
     OptionalMixerGroup: {fileID: 24300002, guid: 71f1d2b4fccb8664bbab46ae6e36078c, type: 2}
     Settings:
       RandomizeVolume: 1

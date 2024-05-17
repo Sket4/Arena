@@ -56,11 +56,8 @@ namespace Arena.Client
             }
             
             var textureSpace = Trace(worldPosition);
-
-            //textureSpace.x *= texture.width;
-            //textureSpace.y *= texture.height;
-
-            var pixel = texture.GetPixelBilinear(textureSpace.x, textureSpace.y);
+            
+            var pixel = texture.GetPixel((int)(textureSpace.x * texture.width), (int)(textureSpace.y * texture.height));
 
             if (pixel.r >= pixel.g 
                 && pixel.r >= pixel.b 

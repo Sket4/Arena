@@ -209,7 +209,7 @@ Shader "Arena/Vegetation"
                 half4 finalColor = LightingPBR(diffuse, ambientLight, viewDirWS, normalWS, mesm.rgb, roughness, envMapColor);
                 #else
                 half4 finalColor = diffuse;
-                finalColor.rgb *= ambientLight;
+                finalColor.rgb *= 0.075 + ambientLight;
                 #endif
                 
                 // apply fog

@@ -74,6 +74,7 @@ namespace Arena.Client
                             }
                         };
                         gameLoop.AddGameSystem<ArenaSpawnerSystem>();
+                        gameLoop.AddGameSystemUnmanaged<SpawnZoneSystem>();
                         StartCoroutine(startMatch(matchSystem, gameSceneId));
                     }
                     break;

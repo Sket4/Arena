@@ -120,16 +120,24 @@ namespace Arena
 
             if (isAnyPlayerInSpawnZone == false)
             {
-                foreach (var spawnZoneInstance in spawnedInstances)
+                for (var index = 0; index < spawnedInstances.Length; index++)
                 {
+                    var spawnZoneInstance = spawnedInstances[index];
+
+                    if (spawnZoneInstance.Value == Entity.Null)
+                    {
+                        continue;
+                    }
+                    
                     Commands.DestroyEntity(jobIndex, spawnZoneInstance.Value);
+                    
+                    spawnZoneInstance.Value = Entity.Null;
+                    spawnedInstances[index] = spawnZoneInstance;
                 }
 
                 newState = spawnZoneState;
                 newState.LastSpawnTime = 0;
                 Commands.SetComponent(jobIndex, spawnZoneEntity, newState);
-                
-                spawnedInstances.Clear();
                 
                 return;
             }

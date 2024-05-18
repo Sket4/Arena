@@ -56,7 +56,23 @@ namespace Arena.Client.Physics
                     {
                         var bone = boneArray[i];
                         
-                        var collider = SystemAPI.GetComponent<PhysicsCollider>(bone.BoneEntity).ColliderPtr;
+                        #if UNITY_EDITOR
+                        if (SystemAPI.HasComponent<PhysicsCollider>(bone.BoneEntity) == false)
+                        {
+                            Debug.LogError($"Entity {bone.BoneEntity.Index} does not have collider");
+                            continue;
+                        }
+                        #endif
+                        
+                        var colliderData = SystemAPI.GetComponent<PhysicsCollider>(bone.BoneEntity);
+                        var collider = colliderData.ColliderPtr;
+
+                        if (collider == null)
+                        {
+                            Debug.LogError($"null collider ptr on {bone.BoneEntity.Index}");
+                            continue;
+                        }
+                        
                         var mass = PhysicsMass.CreateDynamic(collider->MassProperties, bone.Mass);
                         commands.AddComponent(0, bone.BoneEntity, mass);
 
@@ -76,31 +92,8 @@ namespace Arena.Client.Physics
                         commands.SetComponent(0, bone.BoneEntity, LocalTransform.FromPositionRotation(l2w.Position, l2w.Rotation));
 
                         commands.RemoveComponent<Parent>(0, bone.BoneEntity);
-                        //commands.RemoveComponent<PropagateLocalToWorld>(0, bone.BoneEntity);
-
                         
-                        //if(HasComponent<Parent>(bone.BoneEntity))
-                        //{
-                        //    var parent = GetComponent<Parent>(bone.BoneEntity);
-
-                        //    while(parent.Value != Entity.Null)
-                        //    {
-                        //        if(HasComponent<PropagateLocalToWorld>(parent.Value))
-                        //        {
-                        //            commands.RemoveComponent<PropagateLocalToWorld>(0, parent.Value);
-                        //        }
-
-                        //        if(HasComponent<Parent>(parent.Value))
-                        //        {
-                        //            parent = GetComponent<Parent>(parent.Value);
-                        //        }
-                        //        else
-                        //        {
-                        //            break;
-                        //        }
-                        //    }
-                        //}
-                        //commands.RemoveComponent<LocalToParent>(0, bone.BoneEntity);
+                        commands.SetSharedComponentData(0, bone.BoneEntity, new PhysicsWorldIndex { Value = 0 });
 
                     }
 

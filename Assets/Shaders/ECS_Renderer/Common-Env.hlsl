@@ -150,10 +150,20 @@ half4 env_frag(v2f i) : SV_Target
 	envMapColor = lerp(remEnvMapColor, envMapColor, saturate(lum * lum * lum));
 
 	half4 finalColor = LightingPBR(diffuse, ambientLight, viewDirWS, normalWS, mesmao.rrr, roughness, envMapColor);
-		#else
-		half4 finalColor = diffuse;
+
+	#else
+
+	half4 finalColor = diffuse;
+	
+	#ifndef DOTS_INSTANCING_ON
+	Light light = GetMainLight();
+	half NoL = saturate(dot(normalWS, light.direction));
+	ambientLight += light.color * NoL;
+	#endif
+	
 	finalColor.rgb *= ambientLight;
-		#endif
+
+	#endif
 
 	#if USE_UNDERWATER
 	finalColor.rgb = lerp(finalColor.rgb, _Underwater_color * ambientLight, i.color.a);

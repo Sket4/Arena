@@ -15,8 +15,13 @@ public class SimpleAnimationClipAuthoring : IAnimationClip
     public bool Loop = false;
     public float SpeedScale = 1f;
     public bool ComputeRootmotionDeltas = false;
+    public AnimationClipBakeFlags BakeFlags;
 
     public AnimationClip GetUnityAnimationClip() => Clip;
+    public AnimationClipBakeFlags GetBakeFlags()
+    {
+        return BakeFlags;
+    }
 }
 
 [System.Serializable]

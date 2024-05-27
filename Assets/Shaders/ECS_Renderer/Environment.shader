@@ -62,6 +62,9 @@ Shader "Arena/Environment"
             // make fog work
             #pragma multi_compile_fog
             #pragma multi_compile _ DOTS_INSTANCING_ON
+            #pragma multi_compile _ _MAIN_LIGHT_SHADOWS
+            #pragma multi_compile _ _MAIN_LIGHT_SHADOWS_CASCADE
+            
             #pragma shader_feature TG_USE_ALPHACLIP
 			#pragma multi_compile UG_QUALITY_LOW UG_QUALITY_MED UG_QUALITY_HIGH
             #pragma shader_feature USE_UNDERWATER
@@ -105,5 +108,6 @@ Shader "Arena/Environment"
             
             ENDHLSL
         }
+        UsePass "Hidden/Arena/ShadowCaster/SHADOWCASTER"
     }
 }

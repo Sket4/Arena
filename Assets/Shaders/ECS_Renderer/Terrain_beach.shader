@@ -52,6 +52,9 @@ Shader "Arena/Terrain (for beach)"
             // make fog work
             #pragma multi_compile_fog
             #pragma multi_compile _ DOTS_INSTANCING_ON
+            #pragma multi_compile _ _MAIN_LIGHT_SHADOWS
+            #pragma multi_compile _ _MAIN_LIGHT_SHADOWS_CASCADE
+            
             #pragma shader_feature __ TG_TRANSPARENT
             #pragma shader_feature TG_USE_ALPHACLIP
             #pragma multi_compile UG_QUALITY_LOW UG_QUALITY_MED UG_QUALITY_HIGH
@@ -66,6 +69,7 @@ Shader "Arena/Terrain (for beach)"
             #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Core.hlsl"
             #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Lighting.hlsl"
             #include "Packages/com.tzargames.rendering/Shaders/Lighting.hlsl"
+            #include "Common.hlsl"
             
             
             struct appdata
@@ -203,6 +207,11 @@ Shader "Arena/Terrain (for beach)"
 #else
                 ambientLight = TG_ComputeAmbientLight_half(normalWS);
 #endif
+
+                float4 shadowCoord = TransformWorldToShadowCoord(i.positionWS_fog.xyz);
+	            half shadow = MainLightRealtimeShadow(shadowCoord);
+
+                ambientLight = MixLightWithRealtimeShadow(shadow, ambientLight);
 
                 
                 

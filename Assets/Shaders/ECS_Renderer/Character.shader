@@ -32,6 +32,9 @@ Shader"Arena/Character"
             // make fog work
             #pragma multi_compile_fog
             #pragma multi_compile _ DOTS_INSTANCING_ON
+            #pragma multi_compile _ _MAIN_LIGHT_SHADOWS
+            #pragma multi_compile _ _MAIN_LIGHT_SHADOWS_CASCADE
+            
             #pragma shader_feature __ USE_LIGHTING
             #pragma shader_feature __ USE_RIM
             #pragma shader_feature __ USE_DISTANCE_LIGHT
@@ -42,6 +45,7 @@ Shader"Arena/Character"
             #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Core.hlsl"
             #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Input.hlsl" 
             #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Lighting.hlsl"
+            #include "Common.hlsl"
             
 
             struct appdata
@@ -154,6 +158,11 @@ Shader"Arena/Character"
 
                 half3 lighting = TG_ComputeAmbientLight_half(normalWS);
 
+                float4 shadowCoord = TransformWorldToShadowCoord(i.positionWS.xyz);
+	            half shadow = MainLightRealtimeShadow(shadowCoord);
+                
+                lighting = MixLightWithRealtimeShadow(shadow, lighting);
+
                 // experemental specular
                 //half3 reflectDir = reflect(-normalWS, normalWS);
                 //float spec = pow(max(dot(viewDirWS, reflectDir), 0.0), 32);
@@ -177,5 +186,6 @@ Shader"Arena/Character"
             }
             ENDHLSL
         }
+        UsePass "Hidden/Arena/ShadowCaster/SHADOWCASTER-SKINNED"
     }
 }

@@ -2,6 +2,7 @@
 #define UG_INPUT_INCLUDED
 
 #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Core.hlsl"
+#include "Packages/com.unity.render-pipelines.core/ShaderLibrary/CommonMaterial.hlsl"
 
 CBUFFER_START(UnityPerMaterial)
 half4 _BaseMap_ST;

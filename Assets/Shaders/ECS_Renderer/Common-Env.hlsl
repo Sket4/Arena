@@ -1,9 +1,10 @@
-#ifndef UG_COMMON_INCLUDED
-#define UG_COMMON_INCLUDED
+#ifndef UG_COMMON_ENV_INCLUDED
+#define UG_COMMON_ENV_INCLUDED
 
 #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Core.hlsl"
 #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Lighting.hlsl"
 #include "Packages/com.tzargames.rendering/Shaders/Lighting.hlsl"
+#include "Common.hlsl"
 
 sampler2D _BaseMap;
 sampler2D _SurfaceMap;
@@ -117,8 +118,12 @@ half4 env_frag(v2f i) : SV_Target
 	ambientLight = TG_ComputeAmbientLight_half(normalWS);
 	#endif
 
+	float4 shadowCoord = TransformWorldToShadowCoord(i.positionWS_fog.xyz);
+	half shadow = MainLightRealtimeShadow(shadowCoord);
+	ambientLight = MixLightWithRealtimeShadow(shadow, ambientLight);
 
-
+	
+	
 	#if USE_SURFACE_BLEND
 	float2 surfaceUV = TRANSFORM_TEX(i.positionWS_fog.xz, _SurfaceMap);
 	half4 surfaceColor = tex2D(_SurfaceMap, surfaceUV);
@@ -156,9 +161,11 @@ half4 env_frag(v2f i) : SV_Target
 	half4 finalColor = diffuse;
 	
 	#ifndef DOTS_INSTANCING_ON
+	#ifndef LIGHTMAP_ON
 	Light light = GetMainLight();
 	half NoL = saturate(dot(normalWS, light.direction));
 	ambientLight += light.color * NoL;
+	#endif
 	#endif
 	
 	finalColor.rgb *= ambientLight;
@@ -174,5 +181,5 @@ half4 env_frag(v2f i) : SV_Target
 	return half4(MixFog(finalColor.rgb, i.positionWS_fog.w), finalColor.a);
 }
 
-#endif //UG_COMMON_INCLUDED
+#endif //UG_COMMON_ENV_INCLUDED
 

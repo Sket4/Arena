@@ -6,6 +6,7 @@ using Unity.Mathematics;
 using Unity.Physics;
 using Unity.Transforms;
 using UnityEngine;
+using Random = Unity.Mathematics.Random;
 
 namespace Arena.Client.Physics
 {
@@ -137,7 +138,9 @@ namespace Arena.Client.Physics
                     // enable physics and apply forces
                     var boneArray = ragdollBones[characterAnimation.AnimatorEntity];
 
-                    var force = deathData.Hit.Direction * 15;
+                    const float linearImpulseScale = 15;
+                    const float angularImpulseScale = 1;
+                    var random = Random.CreateFromIndex((uint)deathData.HitEntity.Index);
 
                     for (int i = 0; i < boneArray.Length; i++)
                     {
@@ -153,11 +156,37 @@ namespace Arena.Client.Physics
 
                         var vel = SystemAPI.GetComponent<PhysicsVelocity>(bone.Value);
                         var mass = SystemAPI.GetComponent<PhysicsMass>(bone.Value);
+                        var l2w = SystemAPI.GetComponent<LocalToWorld>(bone.Value);
 
-                        Unity.Physics.Extensions.PhysicsComponentExtensions.ApplyLinearImpulse(ref vel, mass, force);
+                        var distance = math.distance(l2w.Position, deathData.Hit.Position);
+                        var distanceForceScale = 1.0f - math.saturate(distance);
+
+                        var angularImpulse = random.NextFloat3(new float3(-1), new float3(1)) * angularImpulseScale;
+
+                        bool isBoneDetached = bone.IsBreakable;
+
+                        float3 linearDir;
+
+                        if (isBoneDetached)
+                        {
+                            linearDir = math.normalizesafe(deathData.Hit.Direction + math.up(), deathData.Hit.Direction);
+                        }
+                        else
+                        {
+                            linearDir = deathData.Hit.Direction;
+                        }
+                        
+                        var linearImpulse = linearDir * linearImpulseScale * distanceForceScale;
+                        
+                        Unity.Physics.Extensions.PhysicsComponentExtensions.ApplyLinearImpulse(ref vel, mass, linearImpulse);
+
+                        if (isBoneDetached)
+                        {
+                            Unity.Physics.Extensions.PhysicsComponentExtensions.ApplyAngularImpulse(ref vel, mass, angularImpulse);    
+                        }
+                        
                         commands.SetComponent(0, bone.Value, vel);
 
-                        var l2w = SystemAPI.GetComponent<LocalToWorld>(bone.Value);
                         commands.SetComponent(0, bone.Value, LocalTransform.FromPositionRotation(l2w.Position, l2w.Rotation));
 
                         commands.RemoveComponent<Parent>(0, bone.Value);
@@ -165,7 +194,7 @@ namespace Arena.Client.Physics
 
                         //Debug.DrawLine(l2w.Position, l2w.Position + math.up() * 0.1f, Color.red, 10);
 
-                        if (ragdoll.BreakOnDeath && SystemAPI.HasComponent<UnbreakableRagdollBone>(bone.Value) == false)
+                        if (isBoneDetached)
                         {
                             foreach (var chunk in jointPairs)
                             {

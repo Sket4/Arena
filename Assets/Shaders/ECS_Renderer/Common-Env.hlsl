@@ -120,7 +120,9 @@ half4 env_frag(v2f i) : SV_Target
 
 	float4 shadowCoord = TransformWorldToShadowCoord(i.positionWS_fog.xyz);
 	half shadow = MainLightRealtimeShadow(shadowCoord);
+	//return shadow;
 	ambientLight = MixLightWithRealtimeShadow(shadow, ambientLight);
+	//return half4(ambientLight,1);
 
 	
 	

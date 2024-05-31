@@ -7,7 +7,10 @@
 
 real3 MixLightWithRealtimeShadow(real realtimeShadow, real3 ambientLight)
 {
-    return  min(lerp(_SubtractiveShadowColor.xyz, 1, realtimeShadow), ambientLight);
+    real3 shadowColor = lerp(_SubtractiveShadowColor.xyz, 1, realtimeShadow);
+    real3 minLight = min(shadowColor, ambientLight);
+
+    return lerp(minLight, ambientLight, realtimeShadow);
 }
 
 #endif //UG_COMMON_INCLUDED

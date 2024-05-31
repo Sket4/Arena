@@ -132,7 +132,7 @@ Shader "Arena/Terrain (for beach)"
             { 
                 v2f o;
                 UNITY_SETUP_INSTANCE_ID(v);
-                UNITY_TRANSFER_INSTANCE_ID(v, o);
+                UNITY_TRANSFER_INSTANCE_ID(v, o); 
 
                 float3 positionOS = v.vertex;
                 float3 normalOS = v.normal;
@@ -273,18 +273,59 @@ Shader "Arena/Terrain (for beach)"
             
             #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Core.hlsl" 
             
-            
+             
             CBUFFER_START(UnityPerMaterial)
-                half4 _Layers_Roughness;
                 half4 _Layers_Tiling;
                 half _HighlightRemove;
+                half4 _UnderwaterColor;
+                half _WaterHeight;
+                half _WaterHeightFade;
             CBUFFER_END
 
             half4 _BaseColor;
             half4 _BaseMap_ST;
             half4 _EmissionColor; 
 
-            #include "Packages/com.tzargames.rendering/Shaders/MetaPass.hlsl" 
+            sampler2D _BaseMap;
+            sampler2D _SplatMap;
+            sampler2D _Color1;
+            sampler2D _Color2;
+            sampler2D _Color3;
+
+            #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/UniversalMetaPass.hlsl"
+                         
+            half4 UniversalFragmentMetaCustom(Varyings fragIn) : SV_Target
+            {
+                MetaInput metaInput;
+
+                half4 splat = tex2D(_SplatMap, fragIn.uv);
+
+                half2 layer1_uv = fragIn.uv * _Layers_Tiling.x;
+                half2 layer2_uv = fragIn.uv * _Layers_Tiling.y;
+                half2 layer3_uv = fragIn.uv * _Layers_Tiling.z;
+
+                //layer3_uv += half2(0, i.positionWS_fog.x * 0.02);
+                
+                half4 diffuse = tex2D(_Color1, layer1_uv) * splat.x;
+
+                half4 sand = tex2D(_Color2, layer2_uv); 
+                diffuse += sand * splat.y;
+                diffuse += tex2D(_Color3, layer3_uv) * splat.z;
+
+                // wet sand
+                diffuse += sand * splat.a * 0.75;
+                            
+                metaInput.Albedo = diffuse.rgb;
+                metaInput.Emission = _EmissionColor.rgb;
+                            
+                #ifdef EDITOR_VISUALIZATION
+                metaInput.VizUV = fragIn.VizUV;
+                metaInput.LightCoord = fragIn.LightCoord;
+                #endif
+
+                half4 result = UnityMetaFragment(metaInput);
+                return result;
+            }
             
             ENDHLSL
         }

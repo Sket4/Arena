@@ -14,6 +14,7 @@ namespace Arena
     [BurstCompile]
     [RequireMatchingQueriesForUpdate]
     [UpdateAfter(typeof(TransformSystemGroup))]
+    [DisableAutoCreation]
     public partial struct SpawnZoneSystem : ISystem
     {
         private SpawnZoneUpdateJob updateJob;

@@ -15,6 +15,7 @@ namespace Arena.Client
         [HideInInspector] public float FogDensity;
         [HideInInspector] public FogMode FogMode;
         [HideInInspector] public Color FogColor;
+        [HideInInspector] public Color RealtimeShadowColor;
     }
 
     public class SceneRenderSettingsComponent : ComponentDataBehaviour<SceneRenderSettings>
@@ -29,6 +30,7 @@ namespace Arena.Client
             serializedData.FogDensity = RenderSettings.fogDensity;
             serializedData.FogMode = RenderSettings.fogMode;
             serializedData.FogColor = RenderSettings.fogColor;
+            serializedData.RealtimeShadowColor = RenderSettings.subtractiveShadowColor;
             
             serializedData.SkyboxMaterial = new WeakObjectReference<Material>(RenderSettings.skybox);
         }

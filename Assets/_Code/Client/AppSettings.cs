@@ -147,6 +147,7 @@ namespace Arena
                 }
             }
 
+            [RuntimeInitializeOnLoadMethod]
             public static void Adjust()
             {
                 var quality = Quality;

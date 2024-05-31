@@ -122,17 +122,59 @@ Shader "Hidden/Arena/ShadowCaster"
             #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Core.hlsl"
             #include "Packages/com.unity.render-pipelines.core/ShaderLibrary/CommonMaterial.hlsl"
 
-CBUFFER_START(UnityPerMaterial)
-                half4 _BaseMap_ST;  
-                uint4 _SkinningData;
-                half4 _RimColor;
-                half _RimStr;
-                half _Roughness;
-                half _Metallic;
-CBUFFER_END
-            
-            sampler2D _BaseMap; 
-            #include "ShadowCasterPass.hlsl"
+            #include "Input-Character.hlsl"
+            #include "ShadowCasterPass.hlsl" 
+            ENDHLSL
+        }
+        Pass
+        {
+            Name "ShadowCaster-Skinned-Fading"
+            Tags
+            {
+                "LightMode" = "ShadowCaster"
+            }
+
+            // -------------------------------------
+            // Render State Commands
+            Cull Back
+            ZTest LEqual
+            ZWrite On
+            ColorMask 0
+
+            HLSLPROGRAM
+            #pragma target 4.5
+            #pragma exclude_renderers gles
+
+            // -------------------------------------
+            // Shader Stages
+            #pragma vertex ShadowPassVertex
+            #pragma fragment ShadowPassFragment
+
+            // -------------------------------------
+            // Material Keywords
+            #pragma shader_feature_local_fragment _GLOSSINESS_FROM_BASE_ALPHA
+
+            // -------------------------------------
+            // Unity defined keywords
+            #pragma multi_compile_fragment _ LOD_FADE_CROSSFADE
+
+            //--------------------------------------
+            // GPU Instancing
+            #pragma multi_compile_instancing
+            #pragma multi_compile _ DOTS_INSTANCING_ON
+            #include_with_pragmas "Packages/com.unity.render-pipelines.universal/ShaderLibrary/DOTS.hlsl"
+
+            // This is used during shadow map generation to differentiate between directional and punctual light shadows, as they use different formulas to apply Normal Bias
+            #pragma multi_compile_vertex _ _CASTING_PUNCTUAL_LIGHT_SHADOW
+
+            // -------------------------------------
+            // Includes
+            #define TG_SKINNING
+            #define TG_FADING
+            #define TG_USE_ALPHACLIP
+
+            #include "Input-Character.hlsl"
+            #include "ShadowCasterPass.hlsl"  
             ENDHLSL
         }
     }

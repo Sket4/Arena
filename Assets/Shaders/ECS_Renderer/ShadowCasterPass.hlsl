@@ -3,18 +3,13 @@
 
 #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Core.hlsl"
 #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Shadows.hlsl"
+#include "Packages/com.tzargames.rendering/Shaders/Lighting.hlsl"
+
 #if defined(LOD_FADE_CROSSFADE)
     #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/LODCrossFade.hlsl"
 #endif
 
 #if defined(TG_SKINNING)
-#if defined(DOTS_INSTANCING_ON)
-UNITY_DOTS_INSTANCING_START(MaterialPropertyMetadata)
-    UNITY_DOTS_INSTANCED_PROP_OVERRIDE_REQUIRED(float4, tg_AmbientCubePackedColors)
-    UNITY_DOTS_INSTANCED_PROP_OVERRIDE_REQUIRED(float4, tg_CommonInstanceData)
-    UNITY_DOTS_INSTANCED_PROP_OVERRIDE_REQUIRED(uint4, _SkinningData)
-UNITY_DOTS_INSTANCING_END(MaterialPropertyMetadata)
-#endif
 #include "Packages/com.tzargames.rendering/Shaders/Skinning.hlsl"
 #endif
 
@@ -23,6 +18,14 @@ UNITY_DOTS_INSTANCING_END(MaterialPropertyMetadata)
 // For Spot lights and Point lights, _LightPosition is used to compute the actual light direction because it is different at each shadow caster geometry vertex.
 float3 _LightDirection;
 float3 _LightPosition;
+
+#if defined TG_USE_ALPHACLIP
+sampler2D _BaseMap;
+#if defined TG_FADING
+sampler2D _FadeMap;
+#endif
+
+#endif
 
 
 struct Attributes
@@ -43,6 +46,11 @@ struct Varyings
     float4 positionCS   : SV_POSITION;
     #if defined(TG_USE_ALPHACLIP)
         float2 uv       : TEXCOORD0;
+
+    #if defined TG_FADING
+        half fade : TEXCOORD1;
+    #endif
+    
     #endif
     
     UNITY_VERTEX_INPUT_INSTANCE_ID
@@ -74,8 +82,13 @@ Varyings ShadowPassVertex(Attributes input)
 {
     Varyings output;
     UNITY_SETUP_INSTANCE_ID(input);
-    //UNITY_TRANSFER_INSTANCE_ID(input, output);
 
+    #if defined TG_FADING
+    UNITY_TRANSFER_INSTANCE_ID(input, output);
+    float4 instanceData = tg_InstanceData;
+    output.fade = instanceData.w;
+    #endif
+    
     #if defined(TG_USE_ALPHACLIP)
         output.uv = TRANSFORM_TEX(input.texcoord, _BaseMap);
     #endif
@@ -90,10 +103,17 @@ Varyings ShadowPassVertex(Attributes input)
 
 half4 ShadowPassFragment(Varyings input) : SV_TARGET
 {
-    //UNITY_SETUP_INSTANCE_ID(input);
-    
     #if defined(TG_USE_ALPHACLIP)
+    #if defined TG_FADING
+    UNITY_SETUP_INSTANCE_ID(input);
+    
+    half4 fadeColor = tex2D(_FadeMap, input.uv);
+    clip(fadeColor.r - input.fade);
+    return 0;
+    #endif
+    
     half alpha = tex2D(_BaseMap, input.uv).a * _BaseColor.a;
+    
     clip(alpha - _Cutoff);
     #endif
     

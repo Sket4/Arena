@@ -159,7 +159,7 @@ namespace Arena.Client.Physics
                         var l2w = SystemAPI.GetComponent<LocalToWorld>(bone.Value);
 
                         var distance = math.distance(l2w.Position, deathData.Hit.Position);
-                        var distanceForceScale = 1.0f - math.saturate(distance);
+                        var distanceForceScale = math.max((1.0f - math.saturate(distance)), 0.5f);
 
                         var angularImpulse = random.NextFloat3(new float3(-1), new float3(1)) * angularImpulseScale;
 
@@ -207,6 +207,7 @@ namespace Arena.Client.Physics
                                     if(pair.EntityA == bone.Value || pair.EntityB == bone.Value)
                                     {
                                         var pairEntity = chunk.GetNativeArray(entityType)[p];
+                                        //Debug.Log($"Detaching bone {i} with pair entity {pairEntity.Index}: A:{pair.EntityA.Index} and B:{pair.EntityB.Index}");
                                         commands.AddComponent(0, pairEntity, new Disabled());
                                     }
                                 }

@@ -28,6 +28,7 @@ namespace Arena.Client
                 RenderSettings.fogDensity = settings.FogDensity;
                 RenderSettings.fogStartDistance = settings.FogStartDistance;
                 RenderSettings.fogEndDistance = settings.FogEndDistance;
+                RenderSettings.subtractiveShadowColor = settings.RealtimeShadowColor;
 
                 if (settings.SkyboxMaterial.LoadingStatus == ObjectLoadingStatus.None)
                 {

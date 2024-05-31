@@ -74,6 +74,10 @@ Shader "Arena/Environment"
             #pragma multi_compile _ LIGHTMAP_ON
             #pragma multi_compile _ DIRLIGHTMAP_COMBINED
 
+            #if defined(UG_QUALITY_LOW)
+            #undef DIRLIGHTMAP_COMBINED
+            #endif
+            
             #include "Input-Env.hlsl"
             #include "Common-Env.hlsl"
 

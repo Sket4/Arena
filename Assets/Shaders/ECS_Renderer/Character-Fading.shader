@@ -47,6 +47,7 @@ Shader"Arena/Character Fading"
 
             //#define UNITY_DOTS_INSTANCED_PROP_OVERRIDE_DISABLED_BY_DEFAULT
 
+            #define TG_SKINNING;
             #define TG_FADING
             #define TG_USE_ALPHACLIP
 

@@ -38,7 +38,6 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.18028352, g: 0.22571376, b: 0.30692244, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -377,6 +376,75 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1001 &530461845
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 402216539427447191, guid: a19cab6610bee4144a505c3b32ed4b75, type: 3}
+      propertyPath: Value.SpawnRadius
+      value: 9.71
+      objectReference: {fileID: 0}
+    - target: {fileID: 1942598522712537422, guid: a19cab6610bee4144a505c3b32ed4b75, type: 3}
+      propertyPath: m_Name
+      value: Spawn zone
+      objectReference: {fileID: 0}
+    - target: {fileID: 3271772584003622911, guid: a19cab6610bee4144a505c3b32ed4b75, type: 3}
+      propertyPath: Value.Value
+      value: 15
+      objectReference: {fileID: 0}
+    - target: {fileID: 5024867123384240800, guid: a19cab6610bee4144a505c3b32ed4b75, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 9.96
+      objectReference: {fileID: 0}
+    - target: {fileID: 5024867123384240800, guid: a19cab6610bee4144a505c3b32ed4b75, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 5.39
+      objectReference: {fileID: 0}
+    - target: {fileID: 5024867123384240800, guid: a19cab6610bee4144a505c3b32ed4b75, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: -35.19
+      objectReference: {fileID: 0}
+    - target: {fileID: 5024867123384240800, guid: a19cab6610bee4144a505c3b32ed4b75, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 5024867123384240800, guid: a19cab6610bee4144a505c3b32ed4b75, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5024867123384240800, guid: a19cab6610bee4144a505c3b32ed4b75, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5024867123384240800, guid: a19cab6610bee4144a505c3b32ed4b75, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5024867123384240800, guid: a19cab6610bee4144a505c3b32ed4b75, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5024867123384240800, guid: a19cab6610bee4144a505c3b32ed4b75, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5024867123384240800, guid: a19cab6610bee4144a505c3b32ed4b75, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6013725124021118109, guid: a19cab6610bee4144a505c3b32ed4b75, type: 3}
+      propertyPath: Value.Value
+      value: 10
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: a19cab6610bee4144a505c3b32ed4b75, type: 3}
 --- !u!1 &624190508
 GameObject:
   m_ObjectHideFlags: 0
@@ -594,6 +662,10 @@ PrefabInstance:
     - target: {fileID: 8404573938136573461, guid: b7832c0f54451c2409b3bd76267241d5, type: 3}
       propertyPath: m_Name
       value: Test Playground Common Objects
+      objectReference: {fileID: 0}
+    - target: {fileID: 8404573939562025899, guid: b7832c0f54451c2409b3bd76267241d5, type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8904256969711596907, guid: b7832c0f54451c2409b3bd76267241d5, type: 3}
       propertyPath: m_Materials.Array.data[0]
@@ -3214,29 +3286,40 @@ MonoBehaviour:
     Category31: 1
   TotalMass: 100
   UseBoxColliders: 0
-  BreakOnDeath: 0
+  UseCustomCollisionFilter: 0
   boneInfos:
   - Transform: {fileID: 6979398248031588223}
+    IsBreakable: 0
     Mass: 15.625
   - Transform: {fileID: 3134905872523913472}
+    IsBreakable: 0
     Mass: 9.375
   - Transform: {fileID: 745003317248164637}
+    IsBreakable: 0
     Mass: 9.375
   - Transform: {fileID: 7230117244970640224}
+    IsBreakable: 0
     Mass: 9.375
   - Transform: {fileID: 7874969413029193644}
+    IsBreakable: 0
     Mass: 9.375
   - Transform: {fileID: 4740953139244257010}
+    IsBreakable: 0
     Mass: 15.625
   - Transform: {fileID: 4078077975832347841}
+    IsBreakable: 0
     Mass: 6.25
   - Transform: {fileID: 5396303760532618633}
+    IsBreakable: 0
     Mass: 6.25
   - Transform: {fileID: 2770237858382224922}
+    IsBreakable: 0
     Mass: 6.25
   - Transform: {fileID: 7368042573681512548}
+    IsBreakable: 0
     Mass: 6.25
   - Transform: {fileID: 2008817431521291983}
+    IsBreakable: 0
     Mass: 6.25
 --- !u!4 &5061720348448958377
 Transform:
@@ -5856,6 +5939,7 @@ SceneRoots:
   - {fileID: 1544617560}
   - {fileID: 948742904765385907}
   - {fileID: 1154994406}
+  - {fileID: 530461845}
   - {fileID: 866070213}
   - {fileID: 37386104}
   - {fileID: 1521321316}

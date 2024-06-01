@@ -2,6 +2,7 @@ Shader "Hidden/Arena/ShadowCaster"
 {
     Properties
     {
+        [KeywordEnum(One, Four)] _BoneCount ("Bone count", Integer) = 0
         [Toggle(USE_LIGHTING)]
         _UseLighting("Use lighting", float) = 0.0
         
@@ -114,6 +115,7 @@ Shader "Hidden/Arena/ShadowCaster"
 
             // This is used during shadow map generation to differentiate between directional and punctual light shadows, as they use different formulas to apply Normal Bias
             #pragma multi_compile_vertex _ _CASTING_PUNCTUAL_LIGHT_SHADOW
+            #pragma multi_compile _BONECOUNT_ONE _BONECOUNT_FOUR
 
             // -------------------------------------
             // Includes
@@ -166,6 +168,7 @@ Shader "Hidden/Arena/ShadowCaster"
 
             // This is used during shadow map generation to differentiate between directional and punctual light shadows, as they use different formulas to apply Normal Bias
             #pragma multi_compile_vertex _ _CASTING_PUNCTUAL_LIGHT_SHADOW
+            #pragma multi_compile _BONECOUNT_ONE _BONECOUNT_FOUR
 
             // -------------------------------------
             // Includes

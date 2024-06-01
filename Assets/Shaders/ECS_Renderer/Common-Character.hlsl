@@ -8,8 +8,8 @@
 
 struct appdata
 {
-    float4 vertex : POSITION;
-    float4 normal : NORMAL;
+    float3 vertex : POSITION;
+    float3 normal : NORMAL;
     float4 tangent : TANGENT;
     float2 uv : TEXCOORD0;
     
@@ -149,7 +149,7 @@ half4 frag (v2f i) : SV_Target
     #endif
 
     // apply fog
-    return half4(MixFog(finalColor, i.fogCoords), finalColor.a);
+    return half4(MixFog(finalColor.rgb, i.fogCoords), finalColor.a);
 }
 
 #endif //UG_COMMON_CHARACTER_INCLUDED

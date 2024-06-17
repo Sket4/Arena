@@ -1,0 +1,26 @@
+﻿syntax = "proto3";
+package Arena.Client.Tests;
+
+service TestService
+{
+    rpc GetToken(TokenRequest) returns (Result) {}
+	rpc Ping(PingRequest) returns (PingResult) {}
+}
+
+message TokenRequest
+{
+	string UserId = 1;
+}
+
+message Result
+{
+	string AuthToken = 1;
+}
+
+message PingRequest
+{
+}
+
+message PingResult
+{
+}

@@ -1,0 +1,79 @@
+﻿syntax = "proto3";
+package Arena.Client;
+
+import "ProtoFiles/Shared.proto";
+import "Common/SharedLib/Shared.proto";
+
+service ArenaClientService
+{
+	rpc GetGameData(GetGameDataRequest) returns (GetGameDataResult) {}
+	rpc GetCharacters(GetCharactersRequest) returns (GetCharactersResult) {}
+	rpc GetSelectedCharacter(GetSelectedCharacterRequest) returns (GetSelectedCharacterResult) {}
+	rpc CreateCharacter(CreateCharacterRequest) returns (CreateCharacterResult) {}
+	rpc DeleteCharacter(DeleteCharacterRequest) returns (DeleteCharacterResult) {}
+	rpc SelectCharacter(SelectCharacterRequest) returns (SelectCharacterResult) {}
+
+	rpc GameRoomConnection(stream TzarGames.MatchFramework.ClientRoomMessage) returns (stream TzarGames.MatchFramework.ServerRoomMessage) {}
+	rpc SafeAreaRoomConnection(stream TzarGames.MatchFramework.ClientRoomMessage) returns (stream TzarGames.MatchFramework.ServerRoomMessage) {}
+}
+
+message GetGameDataRequest
+{
+}
+
+message GetGameDataResult
+{
+	GameData Data = 1;
+}
+
+message GetCharactersRequest
+{
+}
+
+message GetCharactersResult
+{
+	repeated CharacterData Characters = 1;
+}
+
+message CreateCharacterRequest
+{
+	string Name = 1;
+	int32 Class = 2;
+}
+
+message CreateCharacterResult
+{
+	bool Success = 1;
+	CharacterData Character = 2;
+	string ErrorMessage = 3;
+}
+
+message DeleteCharacterRequest
+{
+	string Name = 1;
+}
+
+message DeleteCharacterResult
+{
+	bool Success = 1;
+}
+
+
+message SelectCharacterRequest
+{
+	string Name = 1;
+}
+
+message SelectCharacterResult
+{
+	bool Success = 1;
+}
+
+message GetSelectedCharacterRequest
+{
+}
+
+message GetSelectedCharacterResult
+{
+	CharacterData Character = 1;
+}

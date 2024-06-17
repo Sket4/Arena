@@ -1,0 +1,6 @@
+#!/bin/bash
+# Скрипт завершения сервисов для платформы Linux
+
+screen -X -S db kill
+screen -X -S auth kill
+screen -X -S front kill

@@ -1,0 +1,68 @@
+﻿syntax = "proto3";
+package Arena;
+
+import "Common/SharedLib/Shared.proto";
+
+
+message ItemData
+{
+	int64 ID = 1;
+    int32 TypeID = 2;
+	TzarGames.MatchFramework.MetaData Data = 3;
+}
+
+message ConsumableItemData
+{
+	int64 ID = 1;
+    int32 TypeID = 2;
+    int64 Count = 3;
+	TzarGames.MatchFramework.MetaData Data = 4;
+}
+
+message AbilityData
+{
+	int32 TypeID = 1;
+	TzarGames.MatchFramework.MetaData Data = 2;
+}
+
+message AbilitiesData
+{
+	repeated AbilityData Abilities = 1;
+}
+
+message ItemBagData
+{
+	repeated ItemData Items = 1;
+	repeated ConsumableItemData ConsumableItems = 2;
+}
+
+message ItemsData
+{
+	repeated ItemBagData Bags = 1;
+}
+
+message GameProgress
+{
+	int32 Stage = 1;
+}
+
+message CharacterData
+{
+	int32 ID = 1;
+
+    string Name = 2;
+	int32 Class = 3;
+	int32 XP = 4;
+
+    TzarGames.MatchFramework.MetaData Data = 5;
+	ItemsData ItemsData = 6;
+	AbilitiesData AbilityData = 7;
+	GameProgress Progress = 8;
+}
+
+message GameData
+{
+	int32 ID = 1;
+	int32 SelectedCharacterIndex = 2;
+	repeated CharacterData Characters = 3;
+}

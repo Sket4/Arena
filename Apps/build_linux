@@ -1,0 +1,13 @@
+#!/bin/bash
+# Скрипт сборки сервисов для платформы Linux
+
+dotnet publish AuthenticationServer/AuthenticationServer.csproj -c Release -o ../Builds/LinuxServers/AuthServer -r linux-x64
+chmod +x ../Builds/LinuxServers/AuthServer/AuthenticationServer
+dotnet publish DatabaseServer/DatabaseServer.csproj -c Release -o ../Builds/LinuxServers/DatabaseServer -r linux-x64
+chmod +x ../Builds/LinuxServers/DatabaseServer/DatabaseServer
+dotnet publish FrontendApp/FrontendApp.csproj -c Release -o ../Builds/LinuxServers/FrontendServer -r linux-x64
+chmod +x ../Builds/LinuxServers/FrontendServer/FrontendApp
+cp run_linux ../Builds/LinuxServers/run_linux
+chmod +x ../Builds/LinuxServers/run_linux
+cp kill_linux ../Builds/LinuxServers/kill_linux
+chmod +x ../Builds/LinuxServers/kill_linux

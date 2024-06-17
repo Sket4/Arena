@@ -1,0 +1,97 @@
+﻿syntax = "proto3";
+package Arena.Server;
+
+import "ProtoFiles/Shared.proto";
+import "Common/DatabaseClientLib/DatabaseService.proto";
+
+service GameDatabaseService
+{
+	rpc GetGameDataForAccount(GetGameDataForAccountRequest) returns (GameDataResult) {}
+    rpc CreateCharacterForAccount(CharacterCreateRequest) returns (CreateCharacterResult) {}
+	rpc DeleteCharacterForAccount(CharacterDeleteRequest) returns (CharacterDeleteResult) {}
+	rpc GetCharactersForAccount(GetCharacterRequest) returns (GetCharactersResult) {}
+    rpc GetSelectedCharacterForAccount(GetCharacterRequest) returns (GetSelectedResult) {}
+	rpc SelectCharacterForAccount(DbSelectCharacterRequest) returns (SelectResult) {}
+	rpc SaveCharacters(DbSaveCharactersRequest) returns (TzarGames.MatchFramework.Database.DatabaseResult) {}
+}
+
+enum DatabaseResultTypes
+{
+	UnknownError = 0;
+	Success = 1;
+	AlreadyCreated = 2;
+	TooMany = 3;
+	NoData = 4;
+}
+
+message GetGameDataForAccountRequest
+{
+	TzarGames.MatchFramework.Database.AccountId AccountId = 1;
+}
+
+message GameDataResult
+{
+	GameData Data = 1;
+}
+
+message CharacterCreateRequest
+{
+	TzarGames.MatchFramework.Database.AccountId AccountId = 1;
+
+	string Name = 2;
+	int32 Class = 3;
+	Arena.GameProgress Progress = 4;
+}
+
+message CharacterDeleteRequest
+{
+	TzarGames.MatchFramework.Database.AccountId AccountId = 1;
+	string CharacterName = 2;
+}
+
+message CharacterDeleteResult
+{
+	bool Success = 1;
+}
+
+message GetCharacterRequest
+{
+	TzarGames.MatchFramework.Database.AccountId AccountId = 1;
+}
+
+message CharacterResult
+{
+	CharacterData Character = 1;
+}
+
+message CreateCharacterResult
+{
+	DatabaseResultTypes Result = 1;
+	CharacterData Character = 2;
+}
+
+message GetCharactersResult
+{
+	repeated CharacterData Characters = 1;
+}
+
+message SelectResult
+{
+	bool Success = 1;
+}
+
+message GetSelectedResult
+{
+	CharacterData Character = 1;
+}
+
+message DbSelectCharacterRequest
+{
+	TzarGames.MatchFramework.Database.AccountId AccountId = 1;
+	string CharacterName = 2;
+}
+
+message DbSaveCharactersRequest
+{
+	repeated CharacterData Characters = 1;
+}

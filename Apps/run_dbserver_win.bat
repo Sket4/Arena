@@ -1,0 +1,1 @@
+dotnet run --project DatabaseServer --configuration Release --runtime win-x64 --verbosity m

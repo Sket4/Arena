@@ -1,0 +1,8 @@
+#!/bin/bash
+# Скрипт запуска сервисов для платформы Linux
+
+export GOOGLE_APPLICATION_CREDENTIALS="/home/dinar/Dev/firebase-adminsdk.json"
+
+screen -dmS db ./DatabaseServer/DatabaseServer
+screen -dmS auth ./AuthServer/AuthenticationServer
+screen -dmS front ./FrontendServer/FrontendApp

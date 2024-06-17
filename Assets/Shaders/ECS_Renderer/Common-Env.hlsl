@@ -44,11 +44,12 @@ struct v2f
 	float3 bitangentWS : TEXCOORD4;
 	float4 positionWS_fog : TEXCOORD5;
 
-	half4 color : TEXCOORD6;
+	half alpha : TEXCOORD6;
 	#if LIGHTMAP_ON
 	TG_DECLARE_LIGHTMAP_UV(7)
 #endif
 	UNITY_VERTEX_INPUT_INSTANCE_ID
+	
 };
 
 v2f env_vert (appdata v)
@@ -57,7 +58,7 @@ v2f env_vert (appdata v)
 	UNITY_SETUP_INSTANCE_ID(v);
 	UNITY_TRANSFER_INSTANCE_ID(v, o);
 
-	float3 positionOS = v.vertex;
+	float3 positionOS = v.vertex.xyz;
 	float3 normalOS = v.normal;
 	float4 tangentOS = v.tangent;
 
@@ -79,13 +80,12 @@ v2f env_vert (appdata v)
 
 	#if LIGHTMAP_ON
 	TG_TRANSFORM_LIGHTMAP_TEX(v.lightmapUV, o.lightmapUV)
-	o.color.rgb = 0;
 	#endif
 
 	#if USE_UNDERWATER
-	o.color.a = v.color.r;
+	o.alpha = v.color.r;
 	#else
-	o.color.a = 1;
+	o.alpha = 1;
 	#endif
 
 
@@ -175,7 +175,7 @@ half4 env_frag(v2f i) : SV_Target
 	#endif
 
 	#if USE_UNDERWATER
-	finalColor.rgb = lerp(finalColor.rgb, _Underwater_color * ambientLight, i.color.a);
+	finalColor.rgb = lerp(finalColor.rgb, _Underwater_color.rgb * ambientLight, i.alpha);
 	#endif
 
 

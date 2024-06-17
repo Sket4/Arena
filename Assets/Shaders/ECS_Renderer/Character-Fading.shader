@@ -6,7 +6,7 @@ Shader"Arena/Character Fading"
         _BaseMap ("Texture", 2D) = "white" {}
         _BumpMap ("Normal map", 2D) = "bump" {}
         _MeSmAO_Map("Me Sm AO map", 2D) = "white" {} 
-        //_SkinningData("SkinData", Vector) = (0, 1, 0, 0)
+        
         [Toggle(USE_RIM)]
         _UseRim("Use rim", float) = 0.0
         [Toggle(USE_DISTANCE_LIGHT)]
@@ -18,6 +18,10 @@ Shader"Arena/Character Fading"
 
         _Roughness("Roughness", Range(0,1)) = 1
         _Metallic("Metallic", Range(0,1)) = 1
+        
+        [HideInInspector] _SkinningData("SkinData", Vector) = (0, 1, 0, 0)
+        [HideInInspector] _BaseColor("Color", Color) = (1,1,1,1)
+        [HideInInspector] _Cutoff("Cutoff", Float) = 1 
     }
     SubShader
     {
@@ -56,6 +60,6 @@ Shader"Arena/Character Fading"
             
             ENDHLSL
         }
-        UsePass "Hidden/Arena/ShadowCaster/SHADOWCASTER-SKINNED-FADING"
+        UsePass "Hidden/Arena/ShadowCaster-Skinned/SHADOWCASTER-FADING"
     }
 }

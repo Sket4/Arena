@@ -11,12 +11,8 @@ CBUFFER_START(UnityPerMaterial)
     half _RimStr;
     half _Roughness;
     half _Metallic;
-
     half4 _BaseColor;
-
-    #if defined TG_USE_ALPHACLIP
     half _Cutoff;
-    #endif
 CBUFFER_END
 
 #endif //UG_INPUT_INCLUDED

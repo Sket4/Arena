@@ -74,6 +74,22 @@ namespace Arena.Client
             renderingSystem.LogInfo();
         }
         
+        #if UNITY_EDITOR
+        [ConsoleCommand]
+        public void RenderChunkBounds()
+        {
+            var system = World.GetExistingSystemManaged<EditorDebugSystem>();
+            system.RenderChunkBounds = !system.RenderChunkBounds;
+        }
+        
+        [ConsoleCommand]
+        public void RenderWorldBounds()
+        {
+            var system = World.GetExistingSystemManaged<EditorDebugSystem>();
+            system.RenderWorldBounds = !system.RenderWorldBounds;
+        }
+        #endif
+        
         [ConsoleCommand]
         public void ToggleAbilityDebugLogging()
         {
@@ -97,6 +113,17 @@ namespace Arena.Client
                 .ForEach((ref LocalTransform lt) =>
                 {
                     lt.Position = lt.Position;
+                }).Run();
+        }
+        
+        [ConsoleCommand]
+        public void TriggerRenderBoundsUpdate()
+        {
+            Entities
+                .ForEach((ref LocalRenderBounds bounds) =>
+                {
+                    bounds.Value = bounds.Value;
+                    
                 }).Run();
         }
 

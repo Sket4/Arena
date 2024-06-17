@@ -96,7 +96,7 @@ namespace Arena.Client
 
                 if (EntityManager.HasComponent<TerrainPhysicsMaterial>(currentHit.Entity))
                 {
-                    var terrainMat = EntityManager.GetSharedComponent<TerrainPhysicsMaterial>(currentHit.Entity);
+                    var terrainMat = EntityManager.GetComponentData<TerrainPhysicsMaterial>(currentHit.Entity);
                     var traceResult = terrainMat.WorldPositionToLayer(currentHit.Position);
                     //Debug.Log($"has terrain material {currentHit.Entity}, trace: {traceResult}");
                 

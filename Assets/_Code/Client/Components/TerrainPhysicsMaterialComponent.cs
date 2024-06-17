@@ -1,7 +1,9 @@
 using System;
 using TzarGames.GameCore;
+using TzarGames.Rendering;
 using Unity.Entities;
 using Unity.Entities.Content;
+using Unity.Entities.Serialization;
 using Unity.Mathematics;
 using Unity.Physics.Authoring;
 using UnityEngine;
@@ -9,7 +11,7 @@ using UnityEngine;
 namespace Arena.Client
 {
     [Serializable]
-    public struct TerrainPhysicsMaterial : ISharedComponentData, IEquatable<TerrainPhysicsMaterial>
+    public struct TerrainPhysicsMaterial : IComponentData, IEquatable<TerrainPhysicsMaterial>
     {
         public WeakObjectReference<Texture2D> LayerTextureRef;
         public byte Layer1;
@@ -98,7 +100,7 @@ namespace Arena.Client
     }
     
     [UseDefaultInspector(false)]
-    public class TerrainPhysicsMaterialComponent : SharedComponentDataBehaviour<TerrainPhysicsMaterial>
+    public class TerrainPhysicsMaterialComponent : ComponentDataBehaviour<TerrainPhysicsMaterial>
     {
         public Texture2D LayerTexture;
         public Terrain Terrain;

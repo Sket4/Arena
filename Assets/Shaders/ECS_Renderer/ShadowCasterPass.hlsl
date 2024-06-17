@@ -21,12 +21,11 @@ float3 _LightPosition;
 
 #if defined TG_USE_ALPHACLIP
 sampler2D _BaseMap;
+#endif
+
 #if defined TG_FADING
 sampler2D _FadeMap;
 #endif
-
-#endif
-
 
 struct Attributes
 {
@@ -45,12 +44,11 @@ struct Varyings
 {
     float4 positionCS   : SV_POSITION;
     #if defined(TG_USE_ALPHACLIP)
-        float2 uv       : TEXCOORD0;
+    float2 uv       : TEXCOORD0;
+    #endif
 
     #if defined TG_FADING
-        half fade : TEXCOORD1;
-    #endif
-    
+    half fade : TEXCOORD1;
     #endif
     
     UNITY_VERTEX_INPUT_INSTANCE_ID
@@ -82,6 +80,7 @@ Varyings ShadowPassVertex(Attributes input)
 {
     Varyings output;
     UNITY_SETUP_INSTANCE_ID(input);
+    UNITY_TRANSFER_INSTANCE_ID(input, output);
 
     #if defined TG_FADING
     UNITY_TRANSFER_INSTANCE_ID(input, output);
@@ -103,7 +102,6 @@ Varyings ShadowPassVertex(Attributes input)
 
 half4 ShadowPassFragment(Varyings input) : SV_TARGET
 {
-    #if defined(TG_USE_ALPHACLIP)
     #if defined TG_FADING
     UNITY_SETUP_INSTANCE_ID(input);
     
@@ -112,12 +110,11 @@ half4 ShadowPassFragment(Varyings input) : SV_TARGET
     return 0;
     #endif
     
+    #if defined(TG_USE_ALPHACLIP)
     half alpha = tex2D(_BaseMap, input.uv).a * _BaseColor.a;
-    
     clip(alpha - _Cutoff);
     #endif
     
-
     #if defined(LOD_FADE_CROSSFADE)
         LODFadeCrossFade(input.positionCS);
     #endif

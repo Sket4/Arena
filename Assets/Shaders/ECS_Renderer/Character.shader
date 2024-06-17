@@ -5,17 +5,19 @@ Shader"Arena/Character"
         [KeywordEnum(One, Four)] _BoneCount ("Bone count", Integer) = 0
         _BaseMap ("Texture", 2D) = "white" {}
         _BumpMap ("Normal map", 2D) = "bump" {}
-        _MeSmAO_Map("Me Sm AO map", 2D) = "white" {} 
-        //_SkinningData("SkinData", Vector) = (0, 1, 0, 0)
+        _MeSmAO_Map("Me Sm AO map", 2D) = "white" {}
         [Toggle(USE_RIM)]
         _UseRim("Use rim", float) = 0.0
         [Toggle(USE_DISTANCE_LIGHT)]
         _UseDistLight("Use distance light", float) = 0.0
         _RimColor("Rim color", Color) = (1,1,1,1)
         _RimStr("Rim strength", Range(0,1)) = 1
-        
         _Roughness("Roughness", Range(0,1)) = 1
         _Metallic("Metallic", Range(0,1)) = 1
+        
+        [HideInInspector] _SkinningData("SkinData", Vector) = (0, 1, 0, 0)
+        [HideInInspector] _BaseColor("Color", Color) = (1,1,1,1)
+        [HideInInspector] _Cutoff("Cutoff", Float) = 1 
     }
     SubShader
     {
@@ -49,6 +51,6 @@ Shader"Arena/Character"
             
             ENDHLSL
         }
-        UsePass "Hidden/Arena/ShadowCaster/SHADOWCASTER-SKINNED"
+        UsePass "Hidden/Arena/ShadowCaster-Skinned/SHADOWCASTER"
     }
 }

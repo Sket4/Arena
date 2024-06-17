@@ -38,10 +38,10 @@ struct v2f
 #include "Packages/com.tzargames.rendering/Shaders/Lighting.hlsl"
 #include "Packages/com.tzargames.rendering/Shaders/Skinning.hlsl"
 
-#if defined(DOTS_INSTANCING_ON)
-    UNITY_DOTS_INSTANCING_START(UserPropertyMetadata)
-    UNITY_DOTS_INSTANCING_END(UserPropertyMetadata)
-#endif
+// #if defined(DOTS_INSTANCING_ON)
+//     UNITY_DOTS_INSTANCING_START(UserPropertyMetadata)
+//     UNITY_DOTS_INSTANCING_END(UserPropertyMetadata)
+// #endif
 
 
 

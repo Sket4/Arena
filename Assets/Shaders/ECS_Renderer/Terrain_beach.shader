@@ -65,6 +65,9 @@ Shader "Arena/Terrain (for beach)"
             #pragma multi_compile _ LIGHTMAP_ON
             #pragma multi_compile _ DIRLIGHTMAP_COMBINED
 
+            #if defined(UG_QUALITY_LOW)
+            #undef DIRLIGHTMAP_COMBINED
+            #endif
             
             #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Core.hlsl"
             #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Lighting.hlsl"

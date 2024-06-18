@@ -61,7 +61,7 @@ Shader "Arena/Environment"
             #pragma fragment env_frag
             // make fog work
             #pragma multi_compile_fog
-            #pragma multi_compile _ DOTS_INSTANCING_ON
+            #include_with_pragmas "Packages/com.unity.render-pipelines.universal/ShaderLibrary/DOTS.hlsl"
             #pragma multi_compile _ _MAIN_LIGHT_SHADOWS
             #pragma multi_compile _ _MAIN_LIGHT_SHADOWS_CASCADE
             

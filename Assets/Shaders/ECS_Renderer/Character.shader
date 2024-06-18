@@ -46,6 +46,8 @@ Shader"Arena/Character"
 
             //#define UNITY_DOTS_INSTANCED_PROP_OVERRIDE_DISABLED_BY_DEFAULT
 
+            #define TG_SKINNING
+
             #include "Input-Character.hlsl"
             #include "Common-Character.hlsl" 
             

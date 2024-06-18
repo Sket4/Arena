@@ -63,9 +63,7 @@ Shader "Hidden/Arena/ShadowCaster"
 
             //--------------------------------------
             // GPU Instancing
-            #pragma multi_compile_instancing
             #pragma multi_compile _ DOTS_INSTANCING_ON
-            #include_with_pragmas "Packages/com.unity.render-pipelines.universal/ShaderLibrary/DOTS.hlsl"
 
             // This is used during shadow map generation to differentiate between directional and punctual light shadows, as they use different formulas to apply Normal Bias
             #pragma multi_compile_vertex _ _CASTING_PUNCTUAL_LIGHT_SHADOW

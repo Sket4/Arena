@@ -2,22 +2,24 @@ Shader "Hidden/Arena/ShadowCaster-Skinned"
 {
     Properties
     {
-        //[KeywordEnum(One, Four)] _BoneCount ("Bone count", Integer) = 0
+        [KeywordEnum(One, Four)] _BoneCount ("Bone count", Integer) = 0
+        _BaseMap ("Texture", 2D) = "white" {}
+        _BumpMap ("Normal map", 2D) = "bump" {}
+        _MeSmAO_Map("Me Sm AO map", 2D) = "white" {} 
         
-        [Toggle] _ZWrite("ZWrite", int) = 1
-        [Toggle(TG_USE_ALPHACLIP)] _AlphaClip("Use alpha clipping", float) = 0.0
+        [Toggle(USE_RIM)]
+        _UseRim("Use rim", float) = 0.0
+        [Toggle(USE_DISTANCE_LIGHT)]
+        _UseDistLight("Use distance light", float) = 0.0
+        _RimColor("Rim color", Color) = (1,1,1,1)
+        _RimStr("Rim strength", Range(0,1)) = 1
+        
+        _FadeMap ("Fade map", 2D) = "white" {}
 
-        [Enum(UnityEngine.Rendering.CullMode)] _Cull("Cull", int) = 2
-
-        //_BaseMap ("Main color", 2D) = "white" {}
-        //_BumpMap ("Normal map", 2D) = "bump" {}
-        //_MetallicGlossMap("Metallic/Smoothness map", 2D) = "white" {}
-        //_Metallic("Metallic", Range(0,1)) = 1.0
-    	//_Smoothness ("Smoothness", Range(0,1)) = 0.5
-        _DynamicShadowStrength("Dynamic shadow strength", Range(0,1)) = 1.0
+        _Roughness("Roughness", Range(0,1)) = 1
+        _Metallic("Metallic", Range(0,1)) = 1
         
         [HideInInspector] _SkinningData("SkinData", Vector) = (0, 1, 0, 0)
-        [HideInInspector] _BaseColor("Color", Color) = (1,1,1,1)
         [HideInInspector] _Cutoff("Cutoff", Float) = 1 
     }
     SubShader
@@ -52,10 +54,8 @@ Shader "Hidden/Arena/ShadowCaster-Skinned"
             // -------------------------------------
             // Unity defined keywords
             #pragma multi_compile_fragment _ LOD_FADE_CROSSFADE
-            #pragma multi_compile _ DOTS_INSTANCING_ON
             //--------------------------------------
             // GPU Instancing
-            #pragma multi_compile_instancing
             #include_with_pragmas "Packages/com.unity.render-pipelines.universal/ShaderLibrary/DOTS.hlsl"
 
             // This is used during shadow map generation to differentiate between directional and punctual light shadows, as they use different formulas to apply Normal Bias
@@ -99,10 +99,8 @@ Shader "Hidden/Arena/ShadowCaster-Skinned"
             // -------------------------------------
             // Unity defined keywords
             #pragma multi_compile_fragment _ LOD_FADE_CROSSFADE
-            #pragma multi_compile _ DOTS_INSTANCING_ON
             //--------------------------------------
             // GPU Instancing
-            #pragma multi_compile_instancing
             #include_with_pragmas "Packages/com.unity.render-pipelines.universal/ShaderLibrary/DOTS.hlsl"
 
             // This is used during shadow map generation to differentiate between directional and punctual light shadows, as they use different formulas to apply Normal Bias

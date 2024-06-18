@@ -3,7 +3,7 @@
 
 #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Core.hlsl"
 #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Shadows.hlsl"
-#include "Packages/com.tzargames.rendering/Shaders/Lighting.hlsl"
+#include "Packages/com.tzargames.rendering/Shaders/Input.hlsl"
 
 #if defined(LOD_FADE_CROSSFADE)
     #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/LODCrossFade.hlsl"
@@ -111,7 +111,7 @@ half4 ShadowPassFragment(Varyings input) : SV_TARGET
     #endif
     
     #if defined(TG_USE_ALPHACLIP)
-    half alpha = tex2D(_BaseMap, input.uv).a * _BaseColor.a;
+    half alpha = tex2D(_BaseMap, input.uv).a;
     clip(alpha - _Cutoff);
     #endif
     

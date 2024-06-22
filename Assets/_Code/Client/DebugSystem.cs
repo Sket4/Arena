@@ -134,6 +134,13 @@ namespace Arena.Client
             var renderingSystem = World.GetExistingSystemManaged<EditorDebugSystem>();
             renderingSystem.ShowLightProbes = !renderingSystem.ShowLightProbes;
         }
+        
+        [ConsoleCommand]
+        public void ToggleAffectedByLightProbeDebug()
+        {
+            var renderingSystem = World.GetExistingSystemManaged<EditorDebugSystem>();
+            renderingSystem.ShowAffectedByLightProbes = !renderingSystem.ShowAffectedByLightProbes;
+        }
         #endif
 
         protected override void OnUpdate()

@@ -45,8 +45,8 @@ Shader"Arena/Window"
 
             struct appdata
             {
-                float4 vertex : POSITION;
-                float4 normal : NORMAL;
+                float3 vertex : POSITION;
+                float3 normal : NORMAL;
                 float4 tangent : TANGENT;
                 float2 uv : TEXCOORD0;
                 TG_DECLARE_LIGHTMAP_UV(1)
@@ -149,7 +149,7 @@ Shader"Arena/Window"
                 half4 finalColor = LightingPBR(diffuse, lighting, viewDirWS, normalWS, _Metallic, roughness, envMapColor);
 
                 // apply fog
-                return half4(MixFog(finalColor, i.positionWS_fog.w), finalColor.a);
+                return half4(MixFog(finalColor.rgb, i.positionWS_fog.w), finalColor.a);
             }
             ENDHLSL
         }

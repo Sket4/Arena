@@ -54,8 +54,8 @@ Shader"Arena/Water"
 
             struct appdata
             {
-                float4 vertex : POSITION;
-                float4 normal : NORMAL;
+                float3 vertex : POSITION;
+                float3 normal : NORMAL;
                 half3 color : COLOR;
                 float4 tangent : TANGENT;
                 float2 uv : TEXCOORD0;
@@ -78,11 +78,7 @@ Shader"Arena/Water"
                 float4 positionWS_fog : TEXCOORD6;
 
 #if LIGHTMAP_ON
-                #if defined(UNITY_DOTS_INSTANCING_ENABLED)
-                float3 uv2 : TEXCOORD7;
-                #else
-                float2 uv2 : TEXCOORD7;
-                #endif
+                TG_DECLARE_LIGHTMAP_UV(7)
 #endif
             };
 
@@ -119,8 +115,8 @@ Shader"Arena/Water"
                 v2f o;
                 UNITY_SETUP_INSTANCE_ID(v);
 
-                float3 positionOS = v.vertex;
-                float3 normalOS = v.normal;
+                float3 positionOS = v.vertex.xyz    ;
+                float3 normalOS = v.normal.xyz;
                 float4 tangentOS = v.tangent;
 
                 VertexPositionInputs vertInputs = GetVertexPositionInputs(positionOS);    //This function calculates all the relative spaces of the objects vertices
@@ -144,7 +140,7 @@ Shader"Arena/Water"
                 o.color.ba += half2(_SinTime.w * _FoamParameters.z, _SinTime.w * _FoamParameters.w);
 
 #if LIGHTMAP_ON
-                TG_TRANSFORM_LIGHTMAP_TEX(v.uv2, o.uv2)
+                TG_TRANSFORM_LIGHTMAP_TEX(v.uv2, o.lightmapUV)
 #endif
                 
                 return o;
@@ -173,15 +169,15 @@ Shader"Arena/Water"
 
                 float2 uv1 = i.uv * _Tiling_and_speed_1.xy;
                 uv1 += _Tiling_and_speed_1.zw * _Time.y;
-                float3 normalTS = tex2D(_PackedNormalMap, uv1);
+                float3 normalTS = tex2D(_PackedNormalMap, uv1).xyz;
 
                  float2 uv2 = i.uv * _Tiling_and_speed_2.xy;
                  uv2 += _Tiling_and_speed_2.zw * _Time.y;
-                 normalTS.xy += tex2D(_PackedNormalMap, uv2);
+                 normalTS.xy += tex2D(_PackedNormalMap, uv2).xy;
                 //
                  float2 uv3 = i.uv * _Tiling_and_speed_3.xy;
                  uv3 += _Tiling_and_speed_3.zw * _Time.y;
-                 normalTS.xy += tex2D(_PackedNormalMap, uv3);
+                 normalTS.xy += tex2D(_PackedNormalMap, uv3).xy;
                 
                  normalTS.xy *= 0.333333;
 
@@ -229,7 +225,7 @@ Shader"Arena/Water"
 
                 
 #if LIGHTMAP_ON
-                half3 lighting = TG_SAMPLE_LIGHTMAP(i.uv2, i.instanceData.x, normalWS);
+                half3 lighting = TG_SAMPLE_LIGHTMAP(i.lightmapUV, i.instanceData.x, normalWS);
 #else
                 half3 lighting = half3(1,1,1);
 #endif
@@ -242,9 +238,9 @@ Shader"Arena/Water"
                 
                 // apply fog
                 #if USE_CUSTOM_FOG_COLOR
-                return half4(MixFogColor(finalColor, _CustomFogColor.rgb, i.positionWS_fog.a), finalColor.a);
+                return half4(MixFogColor(finalColor.rgb, _CustomFogColor.rgb, i.positionWS_fog.a), finalColor.a);
                 #else
-                return half4(MixFogColor(finalColor, unity_FogColor.rgb, i.positionWS_fog.a), finalColor.a);
+                return half4(MixFogColor(finalColor.rgb, unity_FogColor.rgb, i.positionWS_fog.a), finalColor.a);
                 #endif
                 
             }

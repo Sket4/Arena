@@ -1,5 +1,5 @@
-#ifndef UNIVERSAL_SHADOW_CASTER_PASS_INCLUDED
-#define UNIVERSAL_SHADOW_CASTER_PASS_INCLUDED
+#ifndef TG_SHADOW_CASTER_PASS_INCLUDED
+#define TG_SHADOW_CASTER_PASS_INCLUDED
 
 #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Core.hlsl"
 #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Shadows.hlsl"
@@ -19,11 +19,11 @@
 float3 _LightDirection;
 float3 _LightPosition;
 
-#if defined TG_USE_ALPHACLIP
+#if defined(TG_USE_ALPHACLIP)
 sampler2D _BaseMap;
 #endif
 
-#if defined TG_FADING
+#if defined(TG_FADING)
 sampler2D _FadeMap;
 #endif
 
@@ -47,11 +47,11 @@ struct Varyings
     float2 uv       : TEXCOORD0;
     #endif
 
-    #if defined TG_FADING
+    #if defined(TG_FADING)
     half fade : TEXCOORD1;
     #endif
     
-    UNITY_VERTEX_INPUT_INSTANCE_ID
+    //UNITY_VERTEX_INPUT_INSTANCE_ID
 };
 
 float4 GetShadowPositionHClip(Attributes input)
@@ -80,10 +80,9 @@ Varyings ShadowPassVertex(Attributes input)
 {
     Varyings output;
     UNITY_SETUP_INSTANCE_ID(input);
-    UNITY_TRANSFER_INSTANCE_ID(input, output);
+    //UNITY_TRANSFER_INSTANCE_ID(input, output);
 
-    #if defined TG_FADING
-    UNITY_TRANSFER_INSTANCE_ID(input, output);
+    #if defined(TG_FADING)
     float4 instanceData = tg_InstanceData;
     output.fade = instanceData.w;
     #endif
@@ -102,12 +101,11 @@ Varyings ShadowPassVertex(Attributes input)
 
 half4 ShadowPassFragment(Varyings input) : SV_TARGET
 {
-    #if defined TG_FADING
-    UNITY_SETUP_INSTANCE_ID(input);
+    //UNITY_SETUP_INSTANCE_ID(input);
     
+    #if defined(TG_FADING)
     half4 fadeColor = tex2D(_FadeMap, input.uv);
     clip(fadeColor.r - input.fade);
-    return 0;
     #endif
     
     #if defined(TG_USE_ALPHACLIP)

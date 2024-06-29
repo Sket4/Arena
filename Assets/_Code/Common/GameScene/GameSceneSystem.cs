@@ -35,32 +35,6 @@ namespace Arena.GameSceneCode
         public Entity Value;
     }
 
-#if UNITY_EDITOR
-    static class Ut
-    {
-        [UnityEditor.Callbacks.PostProcessSceneAttribute]
-        public static void OnPostprocessScene() 
-        {
-            // удаляем загрузчики саб-сцен, так как в этом проекте не используется загрузка саб сцен через эти компоненты,
-            // а также чтобы предотвратить выгрузку саб-сцен при выгрузке GO-сцены
-            var subSceneComponents = Object.FindObjectsOfType<SubScene>();
-
-            foreach (var subSceneComponent in subSceneComponents)
-            {
-                if (subSceneComponent.IsLoaded == false || Application.isPlaying == false)
-                {
-                    var type = subSceneComponent.GetType();
-                    var field = type.GetField("_AddedSceneGUID", BindingFlags.NonPublic | BindingFlags.Instance);
-                    field.SetValue(subSceneComponent, default(Unity.Entities.Hash128));
-                    Debug.Log($"Deactivating GO with subscene component, name {subSceneComponent.name}");
-                    subSceneComponent.gameObject.SetActive(false);
-                    //Object.Destroy(subSceneComponent.gameObject);
-                }
-            }
-        }
-    }
-#endif
-
     [DisableAutoCreation]
     [UpdateInGroup(typeof(InitializationSystemGroup))]
     public partial class GameSceneSystem : GameSystemBase

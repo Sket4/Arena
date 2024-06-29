@@ -108,7 +108,10 @@ half4 frag (v2f i) : SV_Target
     half4 fadeColor = tex2D(_FadeMap, i.uv);
     clip(fadeColor.r * diffuse.a - i.instanceData.w);
     #endif
-    
+
+    #if defined(TG_USE_ALPHACLIP)
+    clip(diffuse.a - _Cutoff);
+    #endif
 
     half3 normalTS = UnpackNormal(tex2D(_BumpMap, i.uv));
     half3 viewDirWS = GetWorldSpaceNormalizeViewDir(i.positionWS);

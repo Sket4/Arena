@@ -1,13 +1,22 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEditor;
 using System.IO;
 using System.Reflection;
+using System.Text;
+using Arena;
 using Arena.Client;
+using Arena.Client.Anima;
 using UniRx;
 using TzarGames.GameCore.Abilities.Editor;
 using TzarGames.GameCore.Editor.Abilities;
 using TzarGames.CodeGeneration;
+using TzarGames.Common;
+using TzarGames.GameCore.Client.Physics;
+using Unity.Mathematics;
+using Console = System.Console;
+using Object = UnityEngine.Object;
 
 public static class Tools
 {
@@ -152,6 +161,27 @@ public static class Tools
     static string getDocFilePath(string fileName)
     {
         return Path.Combine(Application.dataPath, "../Documentation/", fileName);
+    }
+
+    [ConsoleCommand]
+    static void testAvatar()
+    {
+        var avt = Selection.activeObject as Avatar;
+
+        if (avt.humanDescription.human != null)
+        {
+            foreach (var humanBone in avt.humanDescription.human)
+            {
+                Debug.Log($"Human bone name: {humanBone.boneName}, human name: {humanBone.humanName}");
+            }    
+        }
+        if (avt.humanDescription.skeleton != null)
+        {
+            foreach (var skelBone in avt.humanDescription.skeleton)
+            {
+                Debug.Log($"Skel bone name: {skelBone.name}");
+            }    
+        }
     }
     
     [InitializeOnLoadMethod]
@@ -493,6 +523,129 @@ public static class Tools
                     DestroyImmediate(r);
                 }
             }
+        }
+
+        static void dialog(string message)
+        {
+            EditorUtility.DisplayDialog("", message, "OK");
+        }
+
+        [MenuItem("Arena/Утилиты/Настройка префаба модели ArmorSet")]
+        static void setupArmorSetPrefab()
+        {
+            var sb = new StringBuilder();
+            var obj = Selection.activeGameObject;
+            
+            try
+            {
+                var retargetCmp = obj.GetComponent<RetargetComponent>();
+            
+                if (retargetCmp == null)
+                {
+                    sb.AppendLine($"нет {nameof(RetargetComponent)}");
+                    return;
+                }
+
+                if (retargetCmp.RetargetAvatar == null)
+                {
+                    sb.AppendLine($"не назначен {nameof(RetargetComponent.RetargetAvatar)}");
+                    return;
+                }
+
+                var avatar = retargetCmp.RetargetAvatar;
+            
+                setupArmorSetComponent(sb, obj, avatar, retargetCmp);
+                setupRagdoll(sb, obj, avatar, retargetCmp);
+            }
+            finally
+            {
+                dialog(sb.ToString());
+            }
+        }
+
+        static void setupRagdoll(StringBuilder sb, GameObject obj, Avatar avatar,
+            RetargetComponent retargetCmp)
+        {
+            var ragdoll = obj.GetComponent<RagdollComponent>();
+            
+            if(ragdoll.Pelvis == false) ragdoll.Pelvis = findBone(avatar, retargetCmp.RetargetRootTransform, "Hips");
+            if(ragdoll.MiddleSpine == false) ragdoll.MiddleSpine = findBone(avatar, retargetCmp.RetargetRootTransform, "Chest");
+            if(ragdoll.Head == false) ragdoll.Head = findBone(avatar, retargetCmp.RetargetRootTransform, "Head");
+            if(ragdoll.LeftHips == false) ragdoll.LeftHips = findBone(avatar, retargetCmp.RetargetRootTransform, "LeftUpperLeg");
+            if(ragdoll.LeftKnee == false) ragdoll.LeftKnee = findBone(avatar, retargetCmp.RetargetRootTransform, "LeftLowerLeg");
+            if(ragdoll.RightHips == false) ragdoll.RightHips = findBone(avatar, retargetCmp.RetargetRootTransform, "RightUpperLeg");
+            if(ragdoll.RightKnee == false) ragdoll.RightKnee = findBone(avatar, retargetCmp.RetargetRootTransform, "RightLowerLeg");
+            if(ragdoll.LeftUpperArm == false) ragdoll.LeftUpperArm = findBone(avatar, retargetCmp.RetargetRootTransform, "LeftUpperArm");
+            if(ragdoll.LeftForeArm == false) ragdoll.LeftForeArm = findBone(avatar, retargetCmp.RetargetRootTransform, "LeftLowerArm");
+            if(ragdoll.RightUpperArm == false) ragdoll.RightUpperArm = findBone(avatar, retargetCmp.RetargetRootTransform, "RightUpperArm");
+            if(ragdoll.RightForeArm == false) ragdoll.RightForeArm = findBone(avatar, retargetCmp.RetargetRootTransform, "RightLowerArm");
+        }
+
+        static void setupArmorSetComponent(StringBuilder sb, GameObject obj, Avatar avatar, RetargetComponent retargetCmp)
+        {
+            var armorSetCmp = obj.GetComponent<ArmorSetAppearanceComponent>();
+
+                Func<string, Transform> setupArmorSetBone = (string boneName) =>
+                {
+                    var bone = findBone(avatar, retargetCmp.RetargetRootTransform, boneName);
+                    if (bone)
+                    {
+                        return bone;
+                    }
+                    sb.AppendLine($"{boneName} не найден");
+                    return null;
+                };
+
+                if (armorSetCmp.LeftFoot == null)
+                {
+                    armorSetCmp.LeftFoot = setupArmorSetBone("LeftFoot");
+                }
+                if (armorSetCmp.RightFoot == null)
+                {
+                    armorSetCmp.RightFoot = setupArmorSetBone("RightFoot");
+                }
+                
+                Func<string, string, Transform> setupArmorSetSocket = (string boneName, string socketName) =>
+                {
+                    var bone = findBone(avatar, retargetCmp.RetargetRootTransform, boneName);
+                    if (bone)
+                    {
+                        var socket = new GameObject($"{boneName} {socketName}");
+                        socket.transform.SetParent(bone);
+                        socket.transform.localPosition = Vector3.zero;
+                        socket.transform.localRotation = quaternion.identity;
+                        socket.transform.localScale = Vector3.one;
+                        return socket.transform;
+                    }
+                    sb.AppendLine($"Кость {boneName} не найдена");
+                    return null;
+                };
+
+                if (armorSetCmp.RightHandWeaponSocket == false)
+                {
+                    armorSetCmp.RightHandWeaponSocket = setupArmorSetSocket("RightHand", "weapon socket");
+                }
+
+                if (armorSetCmp.LeftHandBowSocket == false)
+                {
+                    armorSetCmp.LeftHandBowSocket = setupArmorSetSocket("LeftHand", "bow socket");
+                }
+
+                sb.AppendLine("Настройка завершена");
+        }
+
+        static Transform findBone(Avatar avatar, Transform root, string boneName)
+        {
+            var bones = avatar.humanDescription.human;
+
+            foreach (var humanBone in bones)
+            {
+                if (humanBone.humanName == boneName)
+                {
+                    return RetargetComponent.FindChild(root, humanBone.boneName);
+                }
+            }
+            return null;
         }
         
         [MenuItem("Arena/Утилиты/Обработать нормали травы в OBJ файле")]

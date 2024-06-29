@@ -2,6 +2,10 @@ Shader"Arena/Character"
 {
     Properties
     {
+        [Toggle(TG_USE_ALPHACLIP)] _AlphaClip("Use alpha clipping", float) = 0.0
+        _Cutoff("Alpha Cutoff", Range(0.0, 1.0)) = 0.5
+        [Enum(UnityEngine.Rendering.CullMode)] _Cull("Cull", int) = 2
+        
         [KeywordEnum(One, Four)] _BoneCount ("Bone count", Integer) = 0
         _BaseMap ("Texture", 2D) = "white" {}
         _BumpMap ("Normal map", 2D) = "bump" {}
@@ -26,6 +30,8 @@ Shader"Arena/Character"
 
         Pass
         {
+            Cull[_Cull]
+            
             HLSLPROGRAM
             #pragma target 4.5
             #pragma require cubearray
@@ -37,7 +43,8 @@ Shader"Arena/Character"
             #pragma multi_compile _ DOTS_INSTANCING_ON
             #pragma multi_compile _ _MAIN_LIGHT_SHADOWS
             #pragma multi_compile _ _MAIN_LIGHT_SHADOWS_CASCADE
-            
+
+            #pragma shader_feature TG_USE_ALPHACLIP
             #pragma shader_feature __ USE_LIGHTING
             #pragma shader_feature __ USE_RIM
             #pragma shader_feature __ USE_DISTANCE_LIGHT

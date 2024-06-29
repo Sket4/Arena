@@ -2,6 +2,7 @@ using Unity.Entities;
 using UnityEngine;
 using System.Collections.Generic;
 using System;
+using Arena.Client.Anima;
 using TzarGames.GameCore.Client;
 using TzarGames.AnimationFramework;
 using TzarGames.GameCore;
@@ -10,6 +11,7 @@ using AnimationState = UnityEngine.AnimationState;
 [Serializable]
 public class SimpleAnimationClipAuthoring : IAnimationClip
 {
+    public string Label;
     public AnimationClip Clip;
 	public AnimationID ID;
     public bool Loop = false;
@@ -33,7 +35,7 @@ public struct AnimationIdData : IComponentData
 [DisallowMultipleComponent]
 public class SimpleAnimationAuthoring : ComponentDataBehaviourBase, IAnimationStateMachineAuthoring
 {
-    public GameObject RootMotionBone;
+    public GameObject AnimationRoot;
     public int DefaultClipIndex = 0;
     public List<SimpleAnimationClipAuthoring> Clips = new List<SimpleAnimationClipAuthoring>();
 
@@ -106,6 +108,7 @@ public class SimpleAnimationAuthoring : ComponentDataBehaviourBase, IAnimationSt
 
     public GameObject GetAnimationRootGameObject()
     {
+        if (AnimationRoot) return AnimationRoot;
         return gameObject;
     }
 
@@ -119,6 +122,11 @@ public class SimpleAnimationAuthoring : ComponentDataBehaviourBase, IAnimationSt
         }
 
         return list.ToArray();
+    }
+
+    public IRemapper GetRemapper()
+    {
+        return GetComponent<RetargetComponent>();
     }
     
     #if UNITY_EDITOR

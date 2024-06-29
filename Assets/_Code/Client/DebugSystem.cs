@@ -145,7 +145,7 @@ namespace Arena.Client
 
         protected override void OnUpdate()
         {
-        }
+        }   
     }
 }
 

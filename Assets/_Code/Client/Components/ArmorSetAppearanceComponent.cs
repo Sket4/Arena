@@ -15,31 +15,19 @@ namespace Arena.Client
 
     public class ArmorSetAppearanceComponent : ComponentDataBehaviourBase
     {
-        [SerializeField]
-        Transform rightHandWeaponSocket;
-
-        [SerializeField]
-        Transform leftHandBowSocket;
-
-        [SerializeField]
-        Transform leftFoot;
-
-        [SerializeField]
-        Transform rightFoot;
-
-        public Transform RightHandWeaponSocket => rightHandWeaponSocket;
-        public Transform LeftHandBowSocket => leftHandBowSocket;
-        public Transform LeftFooot => leftFoot;
-        public Transform RightFoot => rightFoot;
+        public Transform RightHandWeaponSocket;
+        public Transform LeftHandBowSocket;
+        public Transform LeftFoot;
+        public Transform RightFoot;
 
         protected override void PreBake<T>(T baker)
         {
             var data = new ArmorSetAppearance
             {
-                RightHandWeaponSocket = rightHandWeaponSocket != null ? baker.GetEntity(rightHandWeaponSocket) : Entity.Null,
-                LeftHandBowSocket = leftHandBowSocket != null ? baker.GetEntity(leftHandBowSocket) : Entity.Null,
-                RightFoot = rightFoot != null ? baker.GetEntity(rightFoot) : Entity.Null,
-                LeftFoot = leftFoot != null ? baker.GetEntity(leftFoot) : Entity.Null
+                RightHandWeaponSocket = RightHandWeaponSocket != null ? baker.GetEntity(RightHandWeaponSocket) : Entity.Null,
+                LeftHandBowSocket = LeftHandBowSocket != null ? baker.GetEntity(LeftHandBowSocket) : Entity.Null,
+                RightFoot = RightFoot != null ? baker.GetEntity(RightFoot) : Entity.Null,
+                LeftFoot = LeftFoot != null ? baker.GetEntity(LeftFoot) : Entity.Null
             };
             baker.AddComponent(data);
         }

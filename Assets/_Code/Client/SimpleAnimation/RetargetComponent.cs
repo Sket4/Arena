@@ -1,5 +1,3 @@
-#if UNITY_EDITOR
-
 using UnityEngine;
 using Unity.Mathematics;
 using System.Collections.Generic;
@@ -140,4 +138,3 @@ namespace Arena.Client.Anima
         }
     }
 }
-#endif

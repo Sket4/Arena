@@ -1,5 +1,65 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
+--- !u!1 &6479164485802186104
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 9061066625144627852}
+  - component: {fileID: 8531756003209829996}
+  m_Layer: 0
+  m_Name: droppable model pivot
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &9061066625144627852
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6479164485802186104}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 4972776709989920889}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &8531756003209829996
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6479164485802186104}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 034893422bc0d56409a9eda1706d81a3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ConversionTargetOptions: 5
+  Value:
+    Time: 0.5
+    Height: 1
+    RotationSpeed: 90
+    PlayingTime: 0
+    State: 0
+    StartTranslation:
+      x: 0
+      y: 0
+      z: 0
+    EndTranslation:
+      x: 0
+      y: 0
+      z: 0
+  Item: {fileID: 8073325722368909233}
 --- !u!1001 &6049405867932470873
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -8,95 +68,92 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
-    - target: {fileID: 1653125111866179104, guid: fc2f9cb6678ee2b46be78a1ea2ebb12f,
-        type: 3}
+    - target: {fileID: -1569019891857505100, guid: fc2f9cb6678ee2b46be78a1ea2ebb12f, type: 3}
+      propertyPath: ConvertTransformComponents
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1653125111866179104, guid: fc2f9cb6678ee2b46be78a1ea2ebb12f, type: 3}
       propertyPath: m_RootOrder
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 1653125111866179104, guid: fc2f9cb6678ee2b46be78a1ea2ebb12f,
-        type: 3}
+    - target: {fileID: 1653125111866179104, guid: fc2f9cb6678ee2b46be78a1ea2ebb12f, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 1653125111866179104, guid: fc2f9cb6678ee2b46be78a1ea2ebb12f,
-        type: 3}
+    - target: {fileID: 1653125111866179104, guid: fc2f9cb6678ee2b46be78a1ea2ebb12f, type: 3}
       propertyPath: m_LocalPosition.y
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 1653125111866179104, guid: fc2f9cb6678ee2b46be78a1ea2ebb12f,
-        type: 3}
+    - target: {fileID: 1653125111866179104, guid: fc2f9cb6678ee2b46be78a1ea2ebb12f, type: 3}
       propertyPath: m_LocalPosition.z
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 1653125111866179104, guid: fc2f9cb6678ee2b46be78a1ea2ebb12f,
-        type: 3}
+    - target: {fileID: 1653125111866179104, guid: fc2f9cb6678ee2b46be78a1ea2ebb12f, type: 3}
       propertyPath: m_LocalRotation.w
       value: 1
       objectReference: {fileID: 0}
-    - target: {fileID: 1653125111866179104, guid: fc2f9cb6678ee2b46be78a1ea2ebb12f,
-        type: 3}
+    - target: {fileID: 1653125111866179104, guid: fc2f9cb6678ee2b46be78a1ea2ebb12f, type: 3}
       propertyPath: m_LocalRotation.x
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 1653125111866179104, guid: fc2f9cb6678ee2b46be78a1ea2ebb12f,
-        type: 3}
+    - target: {fileID: 1653125111866179104, guid: fc2f9cb6678ee2b46be78a1ea2ebb12f, type: 3}
       propertyPath: m_LocalRotation.y
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 1653125111866179104, guid: fc2f9cb6678ee2b46be78a1ea2ebb12f,
-        type: 3}
+    - target: {fileID: 1653125111866179104, guid: fc2f9cb6678ee2b46be78a1ea2ebb12f, type: 3}
       propertyPath: m_LocalRotation.z
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 1653125111866179104, guid: fc2f9cb6678ee2b46be78a1ea2ebb12f,
-        type: 3}
+    - target: {fileID: 1653125111866179104, guid: fc2f9cb6678ee2b46be78a1ea2ebb12f, type: 3}
       propertyPath: m_LocalEulerAnglesHint.x
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 1653125111866179104, guid: fc2f9cb6678ee2b46be78a1ea2ebb12f,
-        type: 3}
+    - target: {fileID: 1653125111866179104, guid: fc2f9cb6678ee2b46be78a1ea2ebb12f, type: 3}
       propertyPath: m_LocalEulerAnglesHint.y
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 1653125111866179104, guid: fc2f9cb6678ee2b46be78a1ea2ebb12f,
-        type: 3}
+    - target: {fileID: 1653125111866179104, guid: fc2f9cb6678ee2b46be78a1ea2ebb12f, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 2592376210408722920, guid: fc2f9cb6678ee2b46be78a1ea2ebb12f,
-        type: 3}
+    - target: {fileID: 2592376210408722920, guid: fc2f9cb6678ee2b46be78a1ea2ebb12f, type: 3}
       propertyPath: m_Name
       value: Droppable Item base
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
-    m_AddedGameObjects: []
+    m_AddedGameObjects:
+    - targetCorrespondingSourceObject: {fileID: 1653125111866179104, guid: fc2f9cb6678ee2b46be78a1ea2ebb12f, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 9061066625144627852}
     m_AddedComponents:
-    - targetCorrespondingSourceObject: {fileID: 2592376210408722920, guid: fc2f9cb6678ee2b46be78a1ea2ebb12f,
-        type: 3}
+    - targetCorrespondingSourceObject: {fileID: 2592376210408722920, guid: fc2f9cb6678ee2b46be78a1ea2ebb12f, type: 3}
       insertIndex: -1
       addedObject: {fileID: -5169918807466839808}
-    - targetCorrespondingSourceObject: {fileID: 2592376210408722920, guid: fc2f9cb6678ee2b46be78a1ea2ebb12f,
-        type: 3}
+    - targetCorrespondingSourceObject: {fileID: 2592376210408722920, guid: fc2f9cb6678ee2b46be78a1ea2ebb12f, type: 3}
       insertIndex: -1
       addedObject: {fileID: 3511858661234803053}
-    - targetCorrespondingSourceObject: {fileID: 2592376210408722920, guid: fc2f9cb6678ee2b46be78a1ea2ebb12f,
-        type: 3}
+    - targetCorrespondingSourceObject: {fileID: 2592376210408722920, guid: fc2f9cb6678ee2b46be78a1ea2ebb12f, type: 3}
       insertIndex: -1
       addedObject: {fileID: 3727870595274829895}
-    - targetCorrespondingSourceObject: {fileID: 2592376210408722920, guid: fc2f9cb6678ee2b46be78a1ea2ebb12f,
-        type: 3}
+    - targetCorrespondingSourceObject: {fileID: 2592376210408722920, guid: fc2f9cb6678ee2b46be78a1ea2ebb12f, type: 3}
       insertIndex: -1
       addedObject: {fileID: 6560257031159661266}
-    - targetCorrespondingSourceObject: {fileID: 2592376210408722920, guid: fc2f9cb6678ee2b46be78a1ea2ebb12f,
-        type: 3}
+    - targetCorrespondingSourceObject: {fileID: 2592376210408722920, guid: fc2f9cb6678ee2b46be78a1ea2ebb12f, type: 3}
       insertIndex: -1
       addedObject: {fileID: 8214159887389649178}
+    - targetCorrespondingSourceObject: {fileID: 2592376210408722920, guid: fc2f9cb6678ee2b46be78a1ea2ebb12f, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 6730107069385762515}
   m_SourcePrefab: {fileID: 100100000, guid: fc2f9cb6678ee2b46be78a1ea2ebb12f, type: 3}
+--- !u!4 &4972776709989920889 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 1653125111866179104, guid: fc2f9cb6678ee2b46be78a1ea2ebb12f, type: 3}
+  m_PrefabInstance: {fileID: 6049405867932470873}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &8073325722368909233 stripped
 GameObject:
-  m_CorrespondingSourceObject: {fileID: 2592376210408722920, guid: fc2f9cb6678ee2b46be78a1ea2ebb12f,
-    type: 3}
+  m_CorrespondingSourceObject: {fileID: 2592376210408722920, guid: fc2f9cb6678ee2b46be78a1ea2ebb12f, type: 3}
   m_PrefabInstance: {fileID: 6049405867932470873}
   m_PrefabAsset: {fileID: 0}
 --- !u!114 &-5169918807466839808
@@ -339,8 +396,7 @@ MonoBehaviour:
       Name: Pickup
       Clips:
       - {fileID: 8300000, guid: 15d6cac6bb5c24d40b1d8b69351663f5, type: 3}
-      OptionalMixerGroup: {fileID: 24300002, guid: 64c795c25d71240459ab99e981490730,
-        type: 2}
+      OptionalMixerGroup: {fileID: 24300002, guid: 64c795c25d71240459ab99e981490730, type: 2}
       Settings:
         RandomizeVolume: 1
         MinVolume: 0.9
@@ -354,3 +410,241 @@ MonoBehaviour:
         MinDistance: 0
         SetMaxDistance: 0
         MaxDistance: 0
+--- !u!114 &6730107069385762515
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8073325722368909233}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 25d87a6b957a60841942c7e71e0c252f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ConversionTargetOptions: -1
+  Graph:
+    rid: 6322991396439457800
+  references:
+    version: 2
+    RefIds:
+    - rid: 6322991396439457800
+      type: {class: ScriptVizGraph, ns: TzarGames.GameCore.ScriptViz.Graph, asm: TzarGames.GameCore}
+      data:
+        sockedIdCounter: 44
+        variableIdCounter: 3
+        nodeIdCounter: 13
+        pages:
+        - ConversionTargetOptions: 7
+          variables:
+          - rid: 6322991396439457803
+          - rid: 6322991396439457806
+          nodes:
+          - rid: 6322991396439457801
+          - rid: 6322991396439457807
+          - rid: 6322991396439457808
+          - rid: 6322991396439457809
+          - rid: 6322991396439457810
+          - rid: 6322991396439457811
+          - rid: 6322991396439457827
+          - rid: 6322991396439457828
+    - rid: 6322991396439457801
+      type: {class: ItemDroppedStateChangedNode, ns: TzarGames.GameCore.ScriptViz.Graph, asm: TzarGames.GameCore}
+      data:
+        ID:
+          Value: 1
+        Position: {x: 80, y: 45.333336}
+        output:
+          ID:
+            Value: 1
+          ConnectedSocketIDs:
+          - Value: 10
+        OwnerEntity:
+          ID:
+            Value: 2
+          ConnectedSocketIDs: []
+          AuthoringValue: {fileID: 0}
+        IsDropped:
+          ID:
+            Value: 3
+          ConnectedSocketIDs:
+          - Value: 11
+          Value: 0
+    - rid: 6322991396439457803
+      type: {class: EntityVariable, ns: TzarGames.GameCore.ScriptViz.Graph, asm: TzarGames.GameCore}
+      data:
+        ID:
+          Value: 1
+        Name: droppable model pivot
+        NetSyncEnabled: 0
+        Value: {fileID: 6479164485802186104}
+    - rid: 6322991396439457806
+      type: {class: DynamicArrayVariable, ns: TzarGames.GameCore.ScriptViz.Graph, asm: TzarGames.GameCore}
+      data:
+        ID:
+          Value: 2
+        Name: _delayed_commands
+        NetSyncEnabled: 0
+    - rid: 6322991396439457807
+      type: {class: GetEntityVarCommandNode, ns: TzarGames.GameCore.ScriptViz.Graph, asm: TzarGames.GameCore}
+      data:
+        ID:
+          Value: 2
+        Position: {x: 922.6666, y: -34.666668}
+        input:
+          ID:
+            Value: 4
+          ConnectedSocketIDs:
+          - Value: 40
+        output:
+          ID:
+            Value: 5
+          ConnectedSocketIDs:
+          - Value: 26
+        getVariableId:
+          Value: 1
+        WriteOutput:
+          ID:
+            Value: 6
+          ConnectedSocketIDs:
+          - Value: 28
+          AuthoringValue: {fileID: 0}
+    - rid: 6322991396439457808
+      type: {class: BranchCommandNode, ns: TzarGames.GameCore.ScriptViz.Graph, asm: TzarGames.GameCore}
+      data:
+        ID:
+          Value: 4
+        Position: {x: 385.3333, y: 45.333336}
+        InputSocket:
+          ID:
+            Value: 10
+          ConnectedSocketIDs:
+          - Value: 1
+        IfTrueSocket:
+          ID:
+            Value: 12
+          ConnectedSocketIDs:
+          - Value: 38
+        IfFalseSocket:
+          ID:
+            Value: 13
+          ConnectedSocketIDs:
+          - Value: 41
+        ValueToCompareSocket:
+          ID:
+            Value: 11
+          ConnectedSocketIDs:
+          - Value: 3
+          Value: 0
+    - rid: 6322991396439457809
+      type: {class: ChangeDisabledStateNode, ns: TzarGames.GameCore.ScriptViz.Graph, asm: TzarGames.GameCore}
+      data:
+        ID:
+          Value: 7
+        Position: {x: 1186.6666, y: -46}
+        input:
+          ID:
+            Value: 26
+          ConnectedSocketIDs:
+          - Value: 5
+        output:
+          ID:
+            Value: 27
+          ConnectedSocketIDs: []
+        TargetEntity:
+          ID:
+            Value: 28
+          ConnectedSocketIDs:
+          - Value: 6
+          AuthoringValue: {fileID: 0}
+        Enable: 1
+        AffectChilds: 1
+    - rid: 6322991396439457810
+      type: {class: ChangeDisabledStateNode, ns: TzarGames.GameCore.ScriptViz.Graph, asm: TzarGames.GameCore}
+      data:
+        ID:
+          Value: 8
+        Position: {x: 1186.6666, y: 131.33333}
+        input:
+          ID:
+            Value: 29
+          ConnectedSocketIDs:
+          - Value: 36
+        output:
+          ID:
+            Value: 30
+          ConnectedSocketIDs: []
+        TargetEntity:
+          ID:
+            Value: 31
+          ConnectedSocketIDs:
+          - Value: 37
+          AuthoringValue: {fileID: 0}
+        Enable: 0
+        AffectChilds: 1
+    - rid: 6322991396439457811
+      type: {class: GetEntityVarCommandNode, ns: TzarGames.GameCore.ScriptViz.Graph, asm: TzarGames.GameCore}
+      data:
+        ID:
+          Value: 10
+        Position: {x: 922.6666, y: 131.33333}
+        input:
+          ID:
+            Value: 35
+          ConnectedSocketIDs:
+          - Value: 43
+        output:
+          ID:
+            Value: 36
+          ConnectedSocketIDs:
+          - Value: 29
+        getVariableId:
+          Value: 1
+        WriteOutput:
+          ID:
+            Value: 37
+          ConnectedSocketIDs:
+          - Value: 31
+          AuthoringValue: {fileID: 0}
+    - rid: 6322991396439457827
+      type: {class: DelayCommandNode, ns: TzarGames.GameCore.ScriptViz.Graph, asm: TzarGames.GameCore}
+      data:
+        ID:
+          Value: 11
+        Position: {x: 678, y: -26.666668}
+        InputCommandSocket:
+          ID:
+            Value: 38
+          ConnectedSocketIDs:
+          - Value: 12
+        DelaySocket:
+          ID:
+            Value: 39
+          ConnectedSocketIDs: []
+          Value: 0.1
+        NextCommandSocket:
+          ID:
+            Value: 40
+          ConnectedSocketIDs:
+          - Value: 4
+    - rid: 6322991396439457828
+      type: {class: DelayCommandNode, ns: TzarGames.GameCore.ScriptViz.Graph, asm: TzarGames.GameCore}
+      data:
+        ID:
+          Value: 12
+        Position: {x: 678, y: 131.33333}
+        InputCommandSocket:
+          ID:
+            Value: 41
+          ConnectedSocketIDs:
+          - Value: 13
+        DelaySocket:
+          ID:
+            Value: 42
+          ConnectedSocketIDs: []
+          Value: 0.1
+        NextCommandSocket:
+          ID:
+            Value: 43
+          ConnectedSocketIDs:
+          - Value: 35

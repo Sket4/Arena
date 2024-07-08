@@ -38,6 +38,11 @@ namespace Arena.Client
                     if(SystemAPI.HasComponent<Droppable>(dropAnimation.ItemEntity))
                     {
                         var droppable = SystemAPI.GetComponent<Droppable>(dropAnimation.ItemEntity);
+
+                        if (droppable.IsDropped == false)
+                        {
+                            return;
+                        }
                         
                         if(SystemAPI.HasComponent<DropAnimationStartPosition>(droppable.PreviousOwner))
                         {

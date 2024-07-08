@@ -41,7 +41,7 @@ namespace Arena.Client
             }
 
             // отключены по умолчанию
-            baker.AddComponent(new Disabled());
+            //baker.AddComponent(new Disabled());
         }
 
         protected override ConversionTargetOptions GetDefaultConversionOptions()

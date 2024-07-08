@@ -48,6 +48,10 @@ PrefabInstance:
       propertyPath: m_PrimitiveCenter.y
       value: 0.5
       objectReference: {fileID: 0}
+    - target: {fileID: 655816073142160395, guid: 24123f7370a893b41bbaaae4bd1791d1, type: 3}
+      propertyPath: Value.value
+      value: 2
+      objectReference: {fileID: 0}
     - target: {fileID: 1415852907774143442, guid: 24123f7370a893b41bbaaae4bd1791d1, type: 3}
       propertyPath: m_Name
       value: Chicken
@@ -55,6 +59,22 @@ PrefabInstance:
     - target: {fileID: 1415852907774143442, guid: 24123f7370a893b41bbaaae4bd1791d1, type: 3}
       propertyPath: m_Layer
       value: 10
+      objectReference: {fileID: 0}
+    - target: {fileID: 1746446296990354402, guid: 24123f7370a893b41bbaaae4bd1791d1, type: 3}
+      propertyPath: Value.IsAlive
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1746446296990354402, guid: 24123f7370a893b41bbaaae4bd1791d1, type: 3}
+      propertyPath: Value.PreviousFrameState
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 2575086017264919006, guid: 24123f7370a893b41bbaaae4bd1791d1, type: 3}
+      propertyPath: Value.RaycastLayers
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 2575086017264919006, guid: 24123f7370a893b41bbaaae4bd1791d1, type: 3}
+      propertyPath: Value.TraceDistance
+      value: 0.2
       objectReference: {fileID: 0}
     - target: {fileID: 4977076730342563756, guid: 24123f7370a893b41bbaaae4bd1791d1, type: 3}
       propertyPath: Value.HP
@@ -67,6 +87,10 @@ PrefabInstance:
     - target: {fileID: 5249493748246927101, guid: 24123f7370a893b41bbaaae4bd1791d1, type: 3}
       propertyPath: Abilities.Array.size
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6260602599034277760, guid: 24123f7370a893b41bbaaae4bd1791d1, type: 3}
+      propertyPath: Value.value
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 6728593815283415402, guid: 24123f7370a893b41bbaaae4bd1791d1, type: 3}
       propertyPath: m_LocalPosition.x
@@ -110,7 +134,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7926052176104324002, guid: 24123f7370a893b41bbaaae4bd1791d1, type: 3}
       propertyPath: Value.BaseValue
-      value: 0.5
+      value: 0.25
       objectReference: {fileID: 0}
     m_RemovedComponents:
     - {fileID: 6588861032818067441, guid: 24123f7370a893b41bbaaae4bd1791d1, type: 3}
@@ -128,9 +152,6 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 1415852907774143442, guid: 24123f7370a893b41bbaaae4bd1791d1, type: 3}
       insertIndex: -1
       addedObject: {fileID: 1807661169236031614}
-    - targetCorrespondingSourceObject: {fileID: 1415852907774143442, guid: 24123f7370a893b41bbaaae4bd1791d1, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 179212553555754906}
     - targetCorrespondingSourceObject: {fileID: 1415852907774143442, guid: 24123f7370a893b41bbaaae4bd1791d1, type: 3}
       insertIndex: -1
       addedObject: {fileID: 5777211231453699312}
@@ -168,7 +189,7 @@ MonoBehaviour:
     EnableTraceDestinationPoint: 1
     TraceVerticalOffset: 1
     TraceDistance: 5
-    TraceLayers: 0
+    TraceLayers: 1
     LastIdleStartTime: 0
     State: 0
   EnabledByDefault: 1
@@ -189,35 +210,20 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   ConversionTargetOptions: -1
   Value:
-    PendingAnimationID: 0
+    PendingAnimationID: -1
     PendingAnimationDuration: 0
     PendingAnimationTransitionTime: 0
-    CurrentAnimationID: 0
+    CurrentAnimationID: -1
     CurrentAnimationDuration: 0
-    IdleAnimID: 0
-    RunningAnimID: 0
-    DeathAnimationID: 0
-    DefaultRunningVelocity: 0
+    IdleAnimID: 2
+    RunningAnimID: 3
+    DeathAnimationID: -1
+    DefaultRunningVelocity: 1
   Animator: {fileID: 5760820182496533987}
   IdleAnimationID: {fileID: 11400000, guid: 53bed7b3c88fcbb478a5626f613a373a, type: 2}
   RunningAnimationID: {fileID: 11400000, guid: 37f59d96f0bef184ca0cc99cab343ea1, type: 2}
   DefaultRunningVelocity: 1
   DeathAnimationID: {fileID: 0}
---- !u!114 &179212553555754906
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5696890437842578519}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 45a0aa86585c07a4e952c37d68ba87d1, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  ConversionTargetOptions: -1
-  Value:
-    Delay: 5
 --- !u!114 &5777211231453699312
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1459,9 +1465,9 @@ MonoBehaviour:
     y: 0
     z: 0
   PositionInConnectedEntity:
-    x: -0.00000021451432
-    y: 0.25988257
-    z: 0.020791426
+    x: -0.07957344
+    y: -0.00006580353
+    z: 0.000000113621354
   EditAxes: 0
   EditLimits: 0
   m_Version: 1
@@ -1470,17 +1476,17 @@ MonoBehaviour:
     y: 0
     z: 0
   TwistAxisInConnectedEntity:
-    x: 0.0000026226044
-    y: -0.1728627
-    z: -0.98494595
+    x: 0.9999997
+    y: -0.00079631805
+    z: -0.0000014288503
   PerpendicularAxisLocal:
     x: 0
     y: 0
     z: 1
   PerpendicularAxisInConnectedEntity:
-    x: -1
-    y: -0.0000030398369
-    z: -0.0000022649765
+    x: 0.0000014321727
+    y: 0.000004171756
+    z: 1
   MaxConeAngle: 5
   MinPerpendicularAngle: -5
   MaxPerpendicularAngle: 90
@@ -1710,9 +1716,9 @@ MonoBehaviour:
     y: 0
     z: 0
   PositionInConnectedEntity:
-    x: 0.03469362
-    y: 0.31739694
-    z: 0.077145256
+    x: -0.065447465
+    y: -0.046906978
+    z: -0.034694135
   EditAxes: 0
   EditLimits: 0
   m_Version: 1
@@ -1721,17 +1727,17 @@ MonoBehaviour:
     y: 0
     z: 1
   TwistAxisInConnectedEntity:
-    x: -0.3379572
-    y: -0.9409734
-    z: -0.018813252
+    x: 0.18118845
+    y: 0.92355496
+    z: 0.33796018
   PerpendicularAxisLocal:
     x: 1
     y: 0
     z: 0
   PerpendicularAxisInConnectedEntity:
-    x: -0.6810801
-    y: 0.23072115
-    z: 0.6949082
+    x: -0.724332
+    y: -0.10712591
+    z: 0.681078
   MaxConeAngle: 80
   MinPerpendicularAngle: -70
   MaxPerpendicularAngle: 20
@@ -1961,27 +1967,27 @@ MonoBehaviour:
     y: 0
     z: 0
   PositionInConnectedEntity:
-    x: 0
+    x: -0.12052659
     y: 0
-    z: 0
+    z: 0.000000029802322
   EditAxes: 0
   HingeAxisLocal:
     x: 1
     y: 0
     z: 0
   HingeAxisInConnectedEntity:
-    x: 0
-    y: 0
-    z: 0
+    x: 0.3650676
+    y: 0.930981
+    z: -0.00000008844049
   EditLimits: 0
   PerpendicularAxisLocal:
     x: 0
     y: 0
     z: -1
   PerpendicularAxisInConnectedEntity:
-    x: 0
-    y: 0
-    z: 0
+    x: 0.00000011306186
+    y: -0.00000013933227
+    z: -1
   MinAngle: 0
   MaxAngle: 100
 --- !u!1 &8279242196772882600 stripped
@@ -2208,9 +2214,9 @@ MonoBehaviour:
     y: 0
     z: 0
   PositionInConnectedEntity:
-    x: 0.068235
-    y: 0.24600005
-    z: -0.057561506
+    x: -0.00000010058284
+    y: -0.00000008940697
+    z: -0.068234995
   EditAxes: 0
   EditLimits: 0
   m_Version: 1
@@ -2219,17 +2225,17 @@ MonoBehaviour:
     y: 0
     z: 0
   TwistAxisInConnectedEntity:
-    x: 0.011650801
-    y: 0.5217617
-    z: -0.85301185
+    x: 0.7494504
+    y: -0.6619581
+    z: -0.011648871
   PerpendicularAxisLocal:
     x: 0
     y: 0
     z: -1
   PerpendicularAxisInConnectedEntity:
-    x: -0.9998499
-    y: 0.017026067
-    z: -0.0032420158
+    x: 0.00023502903
+    y: -0.017328864
+    z: 0.99985003
   MaxConeAngle: 60
   MinPerpendicularAngle: -10
   MaxPerpendicularAngle: 40
@@ -2459,9 +2465,9 @@ MonoBehaviour:
     y: 0
     z: 0
   PositionInConnectedEntity:
-    x: -0.034694385
-    y: 0.3173969
-    z: 0.07714509
+    x: -0.065447494
+    y: -0.046907127
+    z: 0.034693874
   EditAxes: 0
   EditLimits: 0
   m_Version: 1
@@ -2470,17 +2476,17 @@ MonoBehaviour:
     y: 0
     z: -1
   TwistAxisInConnectedEntity:
-    x: 0.33795804
-    y: -0.9409731
-    z: -0.018811464
+    x: 0.18118827
+    y: 0.92355686
+    z: -0.33795512
   PerpendicularAxisLocal:
     x: -1
     y: 0
     z: 0
   PerpendicularAxisInConnectedEntity:
-    x: -0.6810764
-    y: -0.23072176
-    z: -0.6949118
+    x: 0.7243321
+    y: 0.10712239
+    z: 0.6810786
   MaxConeAngle: 80
   MinPerpendicularAngle: -70
   MaxPerpendicularAngle: 20
@@ -2909,8 +2915,8 @@ MonoBehaviour:
     y: 0
     z: 0
   PositionInConnectedEntity:
-    x: 0
-    y: 0
+    x: -0.09701063
+    y: 0.000000029802322
     z: 0
   EditAxes: 0
   HingeAxisLocal:
@@ -2918,18 +2924,18 @@ MonoBehaviour:
     y: -1
     z: 0
   HingeAxisInConnectedEntity:
-    x: 0
-    y: 0
-    z: 0
+    x: 0.99597496
+    y: -0.08963084
+    z: 0.00000001916148
   EditLimits: 0
   PerpendicularAxisLocal:
     x: 0
     y: 0
     z: -1
   PerpendicularAxisInConnectedEntity:
-    x: 0
-    y: 0
-    z: 0
+    x: 0.00000002294294
+    y: 0.00000004115905
+    z: -1
   MinAngle: -80
   MaxAngle: 0
 --- !u!1 &8279242196772882626 stripped
@@ -3156,9 +3162,9 @@ MonoBehaviour:
     y: 0
     z: 0
   PositionInConnectedEntity:
-    x: -0.068235
-    y: 0.246
-    z: -0.057561867
+    x: 0.00000008940697
+    y: 0.00000011920929
+    z: 0.06823501
   EditAxes: 0
   EditLimits: 0
   m_Version: 1
@@ -3167,17 +3173,17 @@ MonoBehaviour:
     y: 0
     z: 0
   TwistAxisInConnectedEntity:
-    x: -0.011646628
-    y: 0.5217618
-    z: -0.8530118
+    x: 0.7494504
+    y: -0.66195804
+    z: 0.011648577
   PerpendicularAxisLocal:
     x: 0
     y: 0
     z: -1
   PerpendicularAxisInConnectedEntity:
-    x: -0.99984986
-    y: -0.017026931
-    z: 0.0032366514
+    x: -0.0002320339
+    y: 0.017331809
+    z: 0.9998498
   MaxConeAngle: 60
   MinPerpendicularAngle: -10
   MaxPerpendicularAngle: 40
@@ -3407,9 +3413,9 @@ MonoBehaviour:
     y: 0
     z: 0
   PositionInConnectedEntity:
-    x: -0.00000078177663
-    y: 0.4067364
-    z: 0.19817899
+    x: -0.2001027
+    y: -0.11397934
+    z: -0.0000002849847
   EditAxes: 0
   EditLimits: 0
   m_Version: 1
@@ -3418,17 +3424,17 @@ MonoBehaviour:
     y: -1
     z: 0
   TwistAxisInConnectedEntity:
-    x: -0.00000029802322
-    y: 0.30636358
-    z: -0.95191455
+    x: 0.8846257
+    y: -0.46630192
+    z: 0.0000013961047
   PerpendicularAxisLocal:
     x: 0
     y: 0
     z: 1
   PerpendicularAxisInConnectedEntity:
-    x: -1
-    y: -0.0000011920929
-    z: 0
+    x: -0.0000023679029
+    y: -0.0000014981769
+    z: 1
   MaxConeAngle: 45
   MinPerpendicularAngle: -30
   MaxPerpendicularAngle: 30
@@ -3658,7 +3664,7 @@ MonoBehaviour:
     y: 0
     z: 0
   PositionInConnectedEntity:
-    x: 0
+    x: -0.09701064
     y: 0
     z: 0
   EditAxes: 0
@@ -3667,18 +3673,18 @@ MonoBehaviour:
     y: -1
     z: 0
   HingeAxisInConnectedEntity:
-    x: 0
-    y: 0
-    z: 0
+    x: 0.9959751
+    y: -0.08963084
+    z: 0.000000010053421
   EditLimits: 0
   PerpendicularAxisLocal:
     x: 0
     y: 0
     z: -1
   PerpendicularAxisInConnectedEntity:
-    x: 0
-    y: 0
-    z: 0
+    x: 0.000000010998788
+    y: 0.000000010053421
+    z: -1
   MinAngle: -80
   MaxAngle: 0
 --- !u!1 &8279242196772882648 stripped
@@ -3905,8 +3911,8 @@ MonoBehaviour:
     y: 0
     z: 0
   PositionInConnectedEntity:
-    x: 0
-    y: 0
+    x: -0.12052653
+    y: -0.000000014901161
     z: 0
   EditAxes: 0
   HingeAxisLocal:
@@ -3914,18 +3920,18 @@ MonoBehaviour:
     y: 0
     z: 0
   HingeAxisInConnectedEntity:
-    x: 0
-    y: 0
-    z: 0
+    x: -0.36506784
+    y: -0.9309809
+    z: -0.000000050941992
   EditLimits: 0
   PerpendicularAxisLocal:
     x: 0
     y: 0
     z: 1
   PerpendicularAxisInConnectedEntity:
-    x: 0
-    y: 0
-    z: 0
+    x: 0.000000100184735
+    y: -0.000000094004314
+    z: 1
   MinAngle: 0
   MaxAngle: 100
 --- !u!4 &8279242196773049514 stripped

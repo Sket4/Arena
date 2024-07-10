@@ -19441,6 +19441,183 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 400000, guid: 27bfdb9a40efac94b969eaf77cea92d9, type: 3}
   m_PrefabInstance: {fileID: 952231991}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &964793716
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 964793718}
+  - component: {fileID: 964793717}
+  m_Layer: 0
+  m_Name: _ Game logic
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &964793717
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 964793716}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 25d87a6b957a60841942c7e71e0c252f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ConversionTargetOptions: -1
+  Graph:
+    rid: 6322991442717835265
+  references:
+    version: 2
+    RefIds:
+    - rid: 6322991442717835265
+      type: {class: ScriptVizGraph, ns: TzarGames.GameCore.ScriptViz.Graph, asm: TzarGames.GameCore}
+      data:
+        sockedIdCounter: 17
+        variableIdCounter: 2
+        nodeIdCounter: 7
+        pages:
+        - ConversionTargetOptions: 7
+          variables:
+          - rid: 6322991442717835269
+          nodes:
+          - rid: 6322991442717835267
+          - rid: 6322991442717835272
+          - rid: 6322991442717835284
+          - rid: 6322991442717835286
+          - rid: 6322991445321973765
+    - rid: 6322991442717835267
+      type: {class: GameProgressLoadedEventNode, ns: Arena.ScriptViz, asm: Arena.Common}
+      data:
+        ID:
+          Value: 1
+        Position: {x: 145.33334, y: 11.333332}
+        output:
+          ID:
+            Value: 1
+          ConnectedSocketIDs:
+          - Value: 8
+        Progress:
+          ID:
+            Value: 2
+          ConnectedSocketIDs:
+          - Value: 5
+    - rid: 6322991442717835269
+      type: {class: DynamicArrayVariable, ns: TzarGames.GameCore.ScriptViz.Graph, asm: TzarGames.GameCore}
+      data:
+        ID:
+          Value: 1
+        Name: _delayed_commands
+        NetSyncEnabled: 0
+    - rid: 6322991442717835272
+      type: {class: GameProgressFlagCheckNode, ns: Arena.ScriptViz, asm: Arena.Common}
+      data:
+        ID:
+          Value: 3
+        Position: {x: 463.3333, y: 11.333332}
+        InputSocket:
+          ID:
+            Value: 8
+          ConnectedSocketIDs:
+          - Value: 1
+        FlagKey: {fileID: -2979132381119552347, guid: ba20bfc29f93e6f4e853fb3928e18642, type: 2}
+        ProgressSocket:
+          ID:
+            Value: 5
+          ConnectedSocketIDs:
+          - Value: 2
+        HasFlagSocket:
+          ID:
+            Value: 6
+          ConnectedSocketIDs:
+          - Value: 9
+        NoFlagSocket:
+          ID:
+            Value: 7
+          ConnectedSocketIDs:
+          - Value: 12
+    - rid: 6322991442717835284
+      type: {class: LogCommandNode, ns: TzarGames.GameCore.ScriptViz.Graph, asm: TzarGames.GameCore}
+      data:
+        ID:
+          Value: 4
+        Position: {x: 796, y: -48}
+        input:
+          ID:
+            Value: 9
+          ConnectedSocketIDs:
+          - Value: 6
+        output:
+          ID:
+            Value: 10
+          ConnectedSocketIDs: []
+        EntitySocket:
+          ID:
+            Value: 11
+          ConnectedSocketIDs: []
+          AuthoringValue: {fileID: 0}
+        Message: "\u0444\u043B\u0430\u0433 \u0435\u0441\u0442\u044C!"
+        LogType: 3
+    - rid: 6322991442717835286
+      type: {class: LogCommandNode, ns: TzarGames.GameCore.ScriptViz.Graph, asm: TzarGames.GameCore}
+      data:
+        ID:
+          Value: 5
+        Position: {x: 796, y: 144.66667}
+        input:
+          ID:
+            Value: 12
+          ConnectedSocketIDs:
+          - Value: 7
+        output:
+          ID:
+            Value: 13
+          ConnectedSocketIDs:
+          - Value: 15
+        EntitySocket:
+          ID:
+            Value: 14
+          ConnectedSocketIDs: []
+          AuthoringValue: {fileID: 0}
+        Message: "\u0444\u043B\u0430\u0433\u0430 \u043D\u0435\u0442!"
+        LogType: 0
+    - rid: 6322991445321973765
+      type: {class: AddGameProgressFlagCommandNode, ns: Arena.ScriptViz, asm: Arena.Common}
+      data:
+        ID:
+          Value: 6
+        Position: {x: 1110, y: 144.66667}
+        input:
+          ID:
+            Value: 15
+          ConnectedSocketIDs:
+          - Value: 13
+        output:
+          ID:
+            Value: 16
+          ConnectedSocketIDs: []
+        FlagKey: {fileID: -2979132381119552347, guid: ba20bfc29f93e6f4e853fb3928e18642, type: 2}
+--- !u!4 &964793718
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 964793716}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &965788117
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -40287,6 +40464,62 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 7470b898bec73a746b24a4142978509b, type: 3}
+--- !u!1 &2038835191
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 2038835193}
+  - component: {fileID: 2038835192}
+  m_Layer: 0
+  m_Name: Env sounds
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!167 &2038835192
+AudioReverbZone:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2038835191}
+  m_Enabled: 1
+  m_MinDistance: 1000
+  m_MaxDistance: 1000
+  m_ReverbPreset: 17
+  m_Room: -1000
+  m_RoomHF: -800
+  m_DecayTime: 1.49
+  m_DecayHFRatio: 0.67
+  m_Reflections: -2273
+  m_ReflectionsDelay: 0.007
+  m_Reverb: -1691
+  m_ReverbDelay: 0.011
+  m_HFReference: 5000
+  m_Diffusion: 50
+  m_Density: 100
+  m_LFReference: 250
+  m_RoomLF: 0
+--- !u!4 &2038835193
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2038835191}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 250, y: 0, z: 250}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &2040011721
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -44058,7 +44291,9 @@ PrefabInstance:
 SceneRoots:
   m_ObjectHideFlags: 0
   m_Roots:
+  - {fileID: 964793718}
   - {fileID: 1754249469}
+  - {fileID: 2038835193}
   - {fileID: 1294137369}
   - {fileID: 22534875}
   - {fileID: 29321886}

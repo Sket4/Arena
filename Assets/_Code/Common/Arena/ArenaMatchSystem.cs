@@ -411,9 +411,10 @@ namespace Arena.Server
                     var playerToSave = players[i];
                     var player = playerToSave.Value;
 
-                    var arenaData = em.GetComponentObject<CharacterGameProgress>(playerToSave.PlayerCharacter);
-                    arenaData.Value.Stage = internalState.CurrentStage;
-                    commands.SetComponent(playerToSave.PlayerCharacter, arenaData);
+                    var gameProgressEntity = em.GetComponentObject<CharacterGameProgressReference>(playerToSave.PlayerCharacter).Value;
+                    var gameProgress = em.GetComponentData<CharacterGameProgress>(gameProgressEntity);
+                    gameProgress.CurrentStage = internalState.CurrentStage;
+                    commands.SetComponent(gameProgressEntity, gameProgress);
 
                     var requestEntity = commands.CreateEntity();
                     commands.AddComponent(requestEntity, new PlayerDataSaveRequest
@@ -664,9 +665,9 @@ namespace Arena.Server
                     arenaSystem.getSpawnPositionForPlayer(playerSpawnPoints, out float3 spawnPos, out float cameraWorldYaw);
                     var characterData = ArenaMatchUtility.SetupPlayerCharacter(this, initData.IsLocalGame, playerPrefab.Value, spawnPos, cameraWorldYaw, player, netPlayer, ref Commands);
 
-                    if (characterData.Progress != null && maxStage < characterData.Progress.Stage)
+                    if (characterData.Progress != null && maxStage < characterData.Progress.CurrentStage)
                     {
-                        maxStage = (uint)characterData.Progress.Stage;
+                        maxStage = (uint)characterData.Progress.CurrentStage;
                     }
                 }
 

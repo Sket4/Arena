@@ -101,7 +101,8 @@ namespace Arena
             }
             data.Progress = new GameProgress
             {
-                Stage = 0
+                CurrentBaseLocation = 0,
+                CurrentStage = 0,
             };
         }
 

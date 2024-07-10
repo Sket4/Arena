@@ -43,7 +43,9 @@ message ItemsData
 
 message GameProgress
 {
-	int32 Stage = 1;
+	uint32 CurrentStage = 1;
+	int32 CurrentBaseLocation = 2;
+	repeated uint32 Flags = 3;
 }
 
 message CharacterData

@@ -38,8 +38,25 @@ namespace Arena.Server
             commands.SetComponent(entity, new UniqueID { Value = data.ID });
 
             commands.AddBuffer<InventoryElement>(entity);
+
+            var gameProgressEntity = commands.CreateEntity();
+            commands.AppendToBuffer(entity, new LinkedEntityGroup { Value = gameProgressEntity });
+            commands.SetComponent(entity, new CharacterGameProgressReference { Value = gameProgressEntity });
             
-            commands.SetComponent(entity, new CharacterGameProgress { Value = data.Progress });
+            var gameProgress = new CharacterGameProgress();
+            gameProgress.CurrentStage = data.Progress.CurrentStage;
+            gameProgress.CurrentBaseLocationID = data.Progress.CurrentBaseLocation;
+            commands.AddComponent(gameProgressEntity, gameProgress);
+
+            var gameProgressFlags = commands.AddBuffer<CharacterGameProgressFlags>(gameProgressEntity);
+            
+            foreach (var flag in data.Progress.Flags)
+            {
+                gameProgressFlags.Add(new CharacterGameProgressFlags
+                {
+                    Value = (ushort)flag
+                });
+            }
             
             var requestEntity = commands.CreateEntity();
             commands.AddComponent<InventoryTransaction>(requestEntity);

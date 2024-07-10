@@ -108,9 +108,20 @@ namespace Arena
                     data.AbilityData.Abilities.Add(serializedData);
                 }
             }
+            
+            var progressEntity = manager.GetComponentObject<CharacterGameProgressReference>(entity).Value;
+            var progress = manager.GetComponentData<CharacterGameProgress>(progressEntity);
 
-            data.Progress = manager.GetComponentObject<CharacterGameProgress>(entity).Value;
+            data.Progress.CurrentStage = progress.CurrentStage;
+            data.Progress.CurrentBaseLocation = progress.CurrentBaseLocationID;
+            
+            var progressFlags = manager.GetBuffer<CharacterGameProgressFlags>(progressEntity);
 
+            foreach (var progressFlag in progressFlags)
+            {
+                data.Progress.Flags.Add(progressFlag.Value);    
+            }
+            
             return data;
         }
     }

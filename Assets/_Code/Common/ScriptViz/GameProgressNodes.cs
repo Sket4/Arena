@@ -250,12 +250,14 @@ namespace Arena.ScriptViz
     public struct SetBaseLocationRequest : IComponentData
     {
         public int LocationID;
+        public int SpawnPointID;
     }
 
     [BurstCompile]
     struct SetBaseLocationCommand : IScriptVizCommand
     {
         public int LocationID;
+        public int SpawnPointID;
         
         [BurstCompile]
         [AOT.MonoPInvokeCallback(typeof(ScriptVizCommandRegistry.ExecuteDelegate))]
@@ -266,6 +268,7 @@ namespace Arena.ScriptViz
             var requestEntity = context.Commands.CreateEntity(context.SortIndex);
             var request = new SetBaseLocationRequest
             {
+                SpawnPointID = data->SpawnPointID,
                 LocationID = data->LocationID
             };
             context.Commands.AddComponent(context.SortIndex, requestEntity, request);
@@ -277,12 +280,14 @@ namespace Arena.ScriptViz
     public class SetBaseLocationNode : CommandNode, ICustomNodeName
     {
         public GameSceneKey GameSceneKey;
+        public SpawnPointID SpawnPointID;
         
         public override void WriteCommand(CompilerAllocator compilerAllocator, out Address commandAddress)
         {
             var cmd = new SetBaseLocationCommand
             {
-                LocationID = GameSceneKey ? GameSceneKey.Id : -1
+                LocationID = GameSceneKey ? GameSceneKey.Id : -1,
+                SpawnPointID = SpawnPointID ? SpawnPointID.Id : 0
             };
             commandAddress = compilerAllocator.WriteCommand(ref cmd);
         }

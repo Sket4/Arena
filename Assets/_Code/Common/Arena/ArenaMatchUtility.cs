@@ -46,6 +46,7 @@ namespace Arena.Server
             var gameProgress = new CharacterGameProgress();
             gameProgress.CurrentStage = data.Progress.CurrentStage;
             gameProgress.CurrentBaseLocationID = data.Progress.CurrentBaseLocation;
+            gameProgress.CurrentBaseLocationSpawnPointID = data.Progress.CurrentBaseLocationSpawnPoint;
             commands.AddComponent(gameProgressEntity, gameProgress);
 
             var gameProgressFlags = commands.AddBuffer<CharacterGameProgressFlags>(gameProgressEntity);

@@ -148,7 +148,10 @@ namespace Arena
                         commands.DestroyEntity(entityInQueryIndex, entity);
 
                         var gameProgress = SystemAPI.GetComponent<CharacterGameProgress>(progressDataEntity);
+                        
                         gameProgress.CurrentBaseLocationID = request.LocationID;
+                        gameProgress.CurrentBaseLocationSpawnPointID = request.SpawnPointID;
+                        
                         SystemAPI.SetComponent(progressDataEntity, gameProgress);
                         Debug.Log($"set base location to {request.LocationID}");
 

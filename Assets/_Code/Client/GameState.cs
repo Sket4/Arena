@@ -1437,7 +1437,7 @@ namespace Arena.Client
                 GoToBaseLocation();
             }
 
-            async Task<bool> roomConnection(bool safeArea, bool multiplayer, int gameSceneID, string matchType, CancellationToken cancellationToken)
+            async Task<bool> roomConnection(bool safeArea, bool multiplayer, int gameSceneID, int spawnPointId, string matchType, CancellationToken cancellationToken)
             {
                 AsyncDuplexStreamingCall<ClientRoomMessage, ServerRoomMessage> roomCall;
 
@@ -1454,6 +1454,7 @@ namespace Arena.Client
                 Debug.Log($"Request for game... (safeArea: {safeArea})");
                 var gameRequestMessage = RoomMessages.CreateGameRequestMessage(matchType);
                 gameRequestMessage.MetaData.IntKeyValues.Add(MetaDataKeys.SceneId, gameSceneID);
+                gameRequestMessage.MetaData.IntKeyValues.Add(MetaDataKeys.SpawnPointId, spawnPointId);
 
                 if (multiplayer)
                 {
@@ -1520,14 +1521,14 @@ namespace Arena.Client
                 return true;
             }
 
-            async Task<bool> roomConnectionWrapper(bool safeArea, bool multiplayer, int gameSceneID, string matchType, CancellationToken cancellationToken)
+            async Task<bool> roomConnectionWrapper(bool safeArea, bool multiplayer, int gameSceneID, int spawnPointId, string matchType, CancellationToken cancellationToken)
             {
                 try
                 {
                     Debug.Log("start connecting to game server");
                     GameState.IsConnectingToGameServer = true;
 
-                    var result = await roomConnection(safeArea, multiplayer, gameSceneID, matchType, cancellationToken);
+                    var result = await roomConnection(safeArea, multiplayer, gameSceneID, spawnPointId, matchType, cancellationToken);
 
                     return result;
                 }
@@ -1546,7 +1547,7 @@ namespace Arena.Client
 
             public Task<bool> StartQuest(QuestGameInfo questGameInfo)
             {
-                return roomConnectionWrapper(false, questGameInfo.Multiplayer, questGameInfo.GameSceneID.Value,
+                return roomConnectionWrapper(false, questGameInfo.Multiplayer, questGameInfo.GameSceneID.Value, questGameInfo.SpawnPointID,
                         questGameInfo.MatchType, cts.Token);
             }
 
@@ -1554,7 +1555,9 @@ namespace Arena.Client
             public Task<bool> GoToBaseLocation()
             {
                 // TODO тип матча должен проверяться на стороне сервера
-                return roomConnectionWrapper(true, false, GameState.SelectedCharacter.Progress.CurrentBaseLocation, "Town_1", cts.Token);
+                // TODO тип спаун поинта должен проверяться на стороне сервера
+                var character = GameState.SelectedCharacter;
+                return roomConnectionWrapper(true, false, character.Progress.CurrentBaseLocation, character.Progress.CurrentBaseLocationSpawnPoint, "Town_1", cts.Token);
             }
         }
 
@@ -1592,8 +1595,9 @@ namespace Arena.Client
                 {
                     matchType = "ArenaMatch";
                 }
-                
-                offlineGameInfo = new OfflineGameInfo(matchType, GameState.SelectedCharacter.Progress.CurrentBaseLocation, 0);
+
+                var character = GameState.SelectedCharacter;
+                offlineGameInfo = new OfflineGameInfo(matchType, character.Progress.CurrentBaseLocation, character.Progress.CurrentBaseLocationSpawnPoint);
                 LoadSceneAsync(GameState.localGameSceneName);
                 return Task<bool>.FromResult(true);
                 

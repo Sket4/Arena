@@ -11,5 +11,6 @@ namespace Arena
     {
         public uint CurrentStage;
         public int CurrentBaseLocationID;
+        public int CurrentBaseLocationSpawnPointID;
     }
 }

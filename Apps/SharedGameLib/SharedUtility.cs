@@ -41,6 +41,8 @@ namespace Arena
         };
 
         public static readonly int DefaultStartLocationID = 56;     // port village
+        public static readonly int DefaultStartLocationSpawnPointID = 134; // причал
+
         public static readonly int[] SafeZoneLocations = new int[]
         {
             63 // main city
@@ -81,6 +83,7 @@ namespace Arena
             data.Progress = new GameProgress
             {
                 CurrentBaseLocation = Identifiers.DefaultStartLocationID,
+                CurrentBaseLocationSpawnPoint = Identifiers.DefaultStartLocationSpawnPointID,
                 CurrentStage = 0,
             };
 

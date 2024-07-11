@@ -118,6 +118,7 @@ namespace Arena
             }
             data.Progress.CurrentStage = progress.CurrentStage;
             data.Progress.CurrentBaseLocation = progress.CurrentBaseLocationID;
+            data.Progress.CurrentBaseLocationSpawnPoint = progress.CurrentBaseLocationSpawnPointID;
             
             var progressFlags = manager.GetBuffer<CharacterGameProgressFlags>(progressEntity);
 

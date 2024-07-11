@@ -6,6 +6,7 @@ namespace Arena
     public struct SessionInitializationData : IComponentData
     {
         public int GameSceneId;
+        public int SpawnPointId;
         public bool IsLocalGame;
     }
     
@@ -13,11 +14,13 @@ namespace Arena
     {
         public int GameSceneId { get; private set; }
         public bool IsLocalGame { get; private set; }
+        public int SpawnPointId { get; private set; }
 
-        public ArenaGameSessionInfo(int gameSceneId, bool isLocalGame)
+        public ArenaGameSessionInfo(int gameSceneId, int spawnPointId, bool isLocalGame)
         {
             GameSceneId = gameSceneId;
             IsLocalGame = isLocalGame;
+            SpawnPointId = spawnPointId;
         }
         
         public override void SetupSessionEntity(EntityManager manager, Entity entity)
@@ -27,6 +30,7 @@ namespace Arena
             { 
                 GameSceneId = GameSceneId,
                 IsLocalGame = IsLocalGame,
+                SpawnPointId = SpawnPointId
             });
         }
     }

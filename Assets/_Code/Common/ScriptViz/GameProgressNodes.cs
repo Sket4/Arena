@@ -9,14 +9,6 @@ using Unity.Entities;
 
 namespace Arena.ScriptViz
 {
-    [Serializable]
-    public struct GameProgressLoadedEventData : IBufferElementData, ICommandAddressData
-    {
-        [SerializeField] private Address commandAddress;
-        public Address DataAddress;
-        public Address CommandAddress { get => commandAddress; set => commandAddress = value; }
-    }
-
     public struct GameProgressSocketData
     {
         public Entity ProgressEntity;
@@ -37,33 +29,6 @@ namespace Arena.ScriptViz
         }
     }
     
-    [Serializable]
-    [FriendlyName("Прогресс персонажа загружен")]
-    public class GameProgressLoadedEventNode : DynamicBufferEventNode<GameProgressLoadedEventData>, ICustomNodeName
-    {
-        public GameProgressSocket Progress = new();
-
-        public override void DeclareSockets(List<SocketInfo> sockets)
-        {
-            base.DeclareSockets(sockets);
-            sockets.Add(new SocketInfo(Progress, SocketType.Out, "Прогресс"));
-        }
-
-        protected override GameProgressLoadedEventData GetConvertedData(Entity entity, IGCBaker baker, ICompilerDataProvider compiler)
-        {
-            var data = base.GetConvertedData(entity, baker, compiler);
-            data.DataAddress = compiler.GetSocketAddress(Progress);
-            return data;
-        }
-
-        public string GetNodeName()
-        {
-            return "Прогресс персонажа загружен";
-        }
-
-        public override bool ShowEditableProperties => false;
-    }
-
     struct GameProgressFlagCheckCommand : IScriptVizCommand
     {
         public InputVar<GameProgressSocketData> Progress;
@@ -209,6 +174,127 @@ namespace Arena.ScriptViz
             {
                 return "Добавить флаг прогресса";    
             }
+        }
+    }
+
+    public struct GetGameProgressRequest : IComponentData
+    {
+        public Entity ScriptVizEntity;
+        public Address CommandAddress;
+        public Address DataAddress;
+    }
+    
+    [BurstCompile]
+    public struct GetGameProgressCommand : IScriptVizCommand
+    {
+        public Address OnDataLoadedCommandAddress;
+        public Address DataAddress;
+
+        [BurstCompile]
+        [AOT.MonoPInvokeCallback(typeof(ScriptVizCommandRegistry.ExecuteDelegate))]
+        public static unsafe void Exec(ref Context context, void* commandData)
+        {
+            var data = (GetGameProgressCommand*)commandData;
+            
+            if (data->OnDataLoadedCommandAddress.IsInvalid)
+            {
+                return;
+            }
+            var requestEntity = context.Commands.CreateEntity(context.SortIndex);
+            var request = new GetGameProgressRequest
+            {
+                CommandAddress = data->OnDataLoadedCommandAddress,
+                DataAddress = data->DataAddress,
+                ScriptVizEntity = context.OwnerEntity
+            };
+            context.Commands.AddComponent(context.SortIndex, requestEntity, request);
+        }
+    }
+    
+    [Serializable]
+    [FriendlyName("Загрузить прогресс персонажа")]
+    public class GetGameProgressCommandNode : Node, ICommandNode, ICustomNodeName, IPostWriteCommandNode
+    {
+        public NodeInputSocket InputSocket = new();
+        public NodeOutputSocket OnDataLoadedSocket = new();
+        public GameProgressSocket ProgressSocket = new();
+
+        public override void DeclareSockets(List<SocketInfo> sockets)
+        {
+            sockets.Add(new SocketInfo(InputSocket, SocketType.In));
+            sockets.Add(new SocketInfo(OnDataLoadedSocket, SocketType.Out, "Прогресс загружен (delay!)"));
+            sockets.Add(new SocketInfo(ProgressSocket, SocketType.Out, "Прогресс"));
+        }
+        
+        public string GetNodeName()
+        {
+            return "Загрузить прогресс персонажа";
+        }
+
+        public override bool ShowEditableProperties => false;
+        
+        public void WriteCommand(CompilerAllocator compilerAllocator, out Address commandAddress)
+        {
+            var cmd = new GetGameProgressCommand();
+            cmd.OnDataLoadedCommandAddress = compilerAllocator.GetSocketAddress(ProgressSocket);
+            commandAddress = compilerAllocator.WriteCommand(ref cmd);
+        }
+
+        public void OnPostCommandWrite(CompilerAllocator compilerAllocator, Address currentCommandAddress)
+        {
+            ref var cmd = ref compilerAllocator.GetCommandData<GetGameProgressCommand>(currentCommandAddress);
+            cmd.OnDataLoadedCommandAddress = compilerAllocator.GetFirstConnectedNodeAddress(OnDataLoadedSocket);
+        }
+    }
+
+    public struct SetBaseLocationRequest : IComponentData
+    {
+        public int LocationID;
+    }
+
+    [BurstCompile]
+    struct SetBaseLocationCommand : IScriptVizCommand
+    {
+        public int LocationID;
+        
+        [BurstCompile]
+        [AOT.MonoPInvokeCallback(typeof(ScriptVizCommandRegistry.ExecuteDelegate))]
+        public static unsafe void Exec(ref Context context, void* commandData)
+        {
+            var data = (SetBaseLocationCommand*)commandData;
+           
+            var requestEntity = context.Commands.CreateEntity(context.SortIndex);
+            var request = new SetBaseLocationRequest
+            {
+                LocationID = data->LocationID
+            };
+            context.Commands.AddComponent(context.SortIndex, requestEntity, request);
+        }
+    }
+    
+    [Serializable]
+    [FriendlyName("Установить базовую локацию")]
+    public class SetBaseLocationNode : CommandNode, ICustomNodeName
+    {
+        public GameSceneKey GameSceneKey;
+        
+        public override void WriteCommand(CompilerAllocator compilerAllocator, out Address commandAddress)
+        {
+            var cmd = new SetBaseLocationCommand
+            {
+                LocationID = GameSceneKey ? GameSceneKey.Id : -1
+            };
+            commandAddress = compilerAllocator.WriteCommand(ref cmd);
+        }
+
+        public string GetNodeName()
+        {
+            if (GameSceneKey)
+            {
+                return $"Установить локацию {GameSceneKey.name} как базовую";
+            }
+
+            return "Установить базовую локацию";
         }
     }
 }

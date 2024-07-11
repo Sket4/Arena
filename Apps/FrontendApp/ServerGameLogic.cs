@@ -10,14 +10,5 @@ namespace FrontendApp
         {
             this.dbClient = dbClient;
         }
-
-        public bool IsSafeArea(int sceneId)
-        {
-            if(sceneId == 63)
-            {
-                return true;
-            }
-            return false;
-        }
     }
 }

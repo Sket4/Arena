@@ -86,10 +86,6 @@ namespace FrontendApp
             createRequest.AccountId = userId;
             createRequest.Class = request.Class;
             createRequest.Name = request.Name;
-            createRequest.Progress = new GameProgress
-            {
-                Stage = 0
-            };
 
             var result = await dbClient.CreateCharacterForAccountAsync(createRequest);
 
@@ -193,7 +189,7 @@ namespace FrontendApp
                     var roomMetaData = new MetaData();
                     roomMetaData.IntKeyValues.Add(MetaDataKeys.SceneId, sceneId);
 
-                    if (gameLogic.IsSafeArea(sceneId))
+                    if (Arena.SharedUtility.IsSafeZoneLocation(sceneId))
                     {
                         log.Info($"requesting meetplace game server for user {UserId.Value}");
 
@@ -212,7 +208,7 @@ namespace FrontendApp
             }
         }
 
-        class GameRoomMessageHandler :ArenaRoomMessageHandler
+        class GameRoomMessageHandler : ArenaRoomMessageHandler
         {
             public GameRoomMessageHandler(AccountId userId, MatchmakingUpdateReactor marchmakingReactor, ServerGameLogic serverGameLogic) : base(userId, marchmakingReactor, serverGameLogic)
             {
@@ -233,7 +229,7 @@ namespace FrontendApp
                     var roomMetaData = new MetaData();
                     roomMetaData.IntKeyValues.Add(MetaDataKeys.SceneId, sceneId);
 
-                    if (gameLogic.IsSafeArea(sceneId) == false)
+                    if (Arena.SharedUtility.IsSafeZoneLocation(sceneId) == false)
                     {
                         if(clientMessage.MetaData.BoolKeyValues.TryGet(MetaDataKeys.MultiplayerGame, out var isMultiplayer))
                         {

@@ -24,7 +24,9 @@ namespace Arena.Server
                 return null;
             }
 
-            var matchInfo = new ArenaGameSessionInfo(sceneId, false);
+            gameRequest.MetaData.IntKeyValues.TryGet(MetaDataKeys.SpawnPointId, out int spawnPoindId);
+
+            var matchInfo = new ArenaGameSessionInfo(sceneId, spawnPoindId, false);
 
             foreach (var userId in gameRequest.UserRequests)
             {

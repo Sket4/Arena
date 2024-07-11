@@ -14,8 +14,9 @@ namespace Arena
     [UpdateInGroup(typeof(PreSimulationSystemGroup))]
     public partial class CommonEarlyGameSystem : GameSystemBase
     {
-        private EntityQuery gameProgressLoadedEventsQuery;
+        private EntityQuery getGameProgressRequestQuery;
         private EntityQuery addGameProgressFlagRequestQuery;
+        private EntityQuery setBaseLocationRequestQuery;
         
         struct NavMeshDataCleanup : ICleanupComponentData
         {
@@ -36,6 +37,17 @@ namespace Arena
                     EntityManager.RemoveComponent<NavMeshDataCleanup>(entity);
                     
                 }).Run();
+        }
+
+        Entity getMainPlayerEntity()
+        {
+            // TODO на данный момент тупо выбирается первый попавшийся игрок в качестве "главного". Сделать явное определение главного игрока и обрабатывать именно его данные прогресса
+            var registeredPlayers = SystemAPI.GetSingletonBuffer<RegisteredPlayer>();
+            if (registeredPlayers.Length == 0)
+            {
+                return Entity.Null;
+            }
+            return registeredPlayers[0].PlayerEntity;
         }
 
         protected override unsafe void OnSystemUpdate()
@@ -89,9 +101,7 @@ namespace Arena
 
             if (addGameProgressFlagRequestQuery.IsEmpty == false)
             {
-                // TODO на данный момент тупо выбирается первый попавшийся игрок в качестве "главного". Сделать явное определение главного игрока и обрабатывать именно его данные прогресса
-                var registeredPlayers = SystemAPI.GetSingletonBuffer<RegisteredPlayer>();
-                var registeredPlayerEntity = registeredPlayers[0].PlayerEntity;
+                var registeredPlayerEntity = getMainPlayerEntity();
                 var characterEntity = SystemAPI.GetComponent<ControlledCharacter>(registeredPlayerEntity).Entity;
                 var progressDataEntity = SystemAPI.GetComponent<CharacterGameProgressReference>(characterEntity).Value;
                 
@@ -121,62 +131,76 @@ namespace Arena
 
                     }).Run();    
             }
+
+            if (setBaseLocationRequestQuery.IsEmpty == false)
+            {
+                var registeredPlayerEntity = getMainPlayerEntity();
+
+                if (registeredPlayerEntity != Entity.Null)
+                {
+                    var characterEntity = SystemAPI.GetComponent<ControlledCharacter>(registeredPlayerEntity).Entity;
+                    var progressDataEntity = SystemAPI.GetComponent<CharacterGameProgressReference>(characterEntity).Value;
+                    
+                    Entities
+                        .WithStoreEntityQueryInField(ref setBaseLocationRequestQuery)
+                        .ForEach((Entity entity, int entityInQueryIndex, in SetBaseLocationRequest request) =>
+                    {
+                        commands.DestroyEntity(entityInQueryIndex, entity);
+
+                        var gameProgress = SystemAPI.GetComponent<CharacterGameProgress>(progressDataEntity);
+                        gameProgress.CurrentBaseLocationID = request.LocationID;
+                        SystemAPI.SetComponent(progressDataEntity, gameProgress);
+                        Debug.Log($"set base location to {request.LocationID}");
+
+                    }).Run();
+                }
+            }
             
 
-            if (gameProgressLoadedEventsQuery.IsEmpty == false && SystemAPI.HasSingleton<RegisteredPlayer>())
+            if (getGameProgressRequestQuery.IsEmpty == false && SystemAPI.HasSingleton<RegisteredPlayer>())
             {
-                var registeredPlayers = SystemAPI.GetSingletonBuffer<RegisteredPlayer>();
+                var registeredPlayerEntity = getMainPlayerEntity();
 
-                if (registeredPlayers.Length > 0)
+                if (registeredPlayerEntity != Entity.Null)
                 {
-                    // TODO на данный момент тупо выбирается первый попавшийся игрок в качестве "главного". Сделать явное определение главного игрока и обрабатывать именно его данные прогресса
-                    var registeredPlayerEntity = registeredPlayers[0].PlayerEntity;
-
                     if (SystemAPI.HasComponent<ControlledCharacter>(registeredPlayerEntity))
                     {
                         var characterEntity = SystemAPI.GetComponent<ControlledCharacter>(registeredPlayerEntity).Entity;
                         var progressDataEntity = SystemAPI.GetComponent<CharacterGameProgressReference>(characterEntity).Value;
                     
                         Entities
-                        .WithStoreEntityQueryInField(ref gameProgressLoadedEventsQuery)
+                        .WithStoreEntityQueryInField(ref getGameProgressRequestQuery)
                         .ForEach((
-                            int entityInQueryIndex, 
-                            ScriptVizAspect aspect,
-                            DynamicBuffer<GameProgressLoadedEventData> loadEvents) =>
+                            Entity entity,
+                            int entityInQueryIndex,
+                            GetGameProgressRequest request) =>
                         {
-                            if (loadEvents.Length == 0)
-                            {
-                                return;
-                            }
+                            commands.DestroyEntity(entityInQueryIndex, entity);
+
+                            var aspect = SystemAPI.GetAspect<ScriptVizAspect>(request.ScriptVizEntity);
                             
                             var codeBytes = SystemAPI.GetBuffer<CodeDataByte>(aspect.CodeInfo.ValueRO.CodeDataEntity);
                             var constEntityVarData = SystemAPI.GetBuffer<ConstantEntityVariableData>(aspect.CodeInfo.ValueRO.CodeDataEntity);
 
                             using (var contextHandle = new ContextDisposeHandle(codeBytes, constEntityVarData, ref aspect, ref commands, entityInQueryIndex, deltaTime))
                             {
-                                foreach (var commandData in loadEvents)
+                                if (request.DataAddress.IsValid)
                                 {
-                                    if (commandData.DataAddress.IsValid)
+                                    var flagsData =
+                                        SystemAPI.GetBuffer<CharacterGameProgressFlags>(progressDataEntity);
+                                        
+                                    var progressData = new GameProgressSocketData
                                     {
-                                        var flagsData =
-                                            SystemAPI.GetBuffer<CharacterGameProgressFlags>(progressDataEntity);
+                                        ProgressEntity = progressDataEntity,
+                                        FlagsCount = (ushort)flagsData.Length,
+                                        FlagsPointer = (System.IntPtr)flagsData.GetUnsafeReadOnlyPtr(),
+                                    };
                                         
-                                        var progressData = new GameProgressSocketData
-                                        {
-                                            ProgressEntity = progressDataEntity,
-                                            FlagsCount = (ushort)flagsData.Length,
-                                            FlagsPointer = (System.IntPtr)flagsData.GetUnsafeReadOnlyPtr(),
-                                        };
-                                        
-                                        contextHandle.Context.WriteToTemp(ref progressData, commandData.DataAddress);
-                                    }
-                                
-                                    contextHandle.Execute(commandData.CommandAddress);    
+                                    contextHandle.Context.WriteToTemp(ref progressData, request.DataAddress);
                                 }
+                                
+                                contextHandle.Execute(request.CommandAddress);  
                             }
-
-                            loadEvents.Clear();
-                            commands.RemoveComponent<GameProgressLoadedEventData>(entityInQueryIndex, aspect.Self);
                             
                         }).Run();
                     }

@@ -55,6 +55,7 @@ namespace Arena.CampaignTools
         public Entity GameSceneEntity;
     }
 
+    [UseDefaultInspector]
     public class CampaignComponent : ObjectKeyGenericComponent<CampaignKey>
     {
         public Campaign Campaign;

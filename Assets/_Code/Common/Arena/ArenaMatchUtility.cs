@@ -152,7 +152,7 @@ namespace Arena.Server
 
         public static EntityQuery CreatePlayerSpawnPointsQuery(EntityManager entityManager)
         {
-            return entityManager.CreateEntityQuery(ComponentType.ReadOnly<PlayerSpawnPoint>(), ComponentType.ReadOnly<LocalToWorld>());
+            return entityManager.CreateEntityQuery(ComponentType.ReadOnly<PlayerSpawnPoint>(), ComponentType.ReadOnly<LocalToWorld>(), ComponentType.ReadOnly<SpawnPointIdData>());
         }
 
         public static void TurnOffNetChannelsForPlayer(StateSystemBase.State state, Entity playerEntity, ref EntityCommandBuffer Commands)

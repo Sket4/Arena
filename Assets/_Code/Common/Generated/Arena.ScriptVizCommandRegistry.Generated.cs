@@ -13,6 +13,8 @@ namespace TzarGames.GameCore.Generated
 		{
 			ScriptVizCommandRegistry.RegisterCommand(typeof(Arena.ScriptViz.GameProgressFlagCheckCommand), Arena.ScriptViz.GameProgressFlagCheckCommand.Execute);
 			ScriptVizCommandRegistry.RegisterCommand(typeof(Arena.ScriptViz.AddGameProgressFlagCommand), Arena.ScriptViz.AddGameProgressFlagCommand.Execute);
+			ScriptVizCommandRegistry.RegisterCommand(typeof(Arena.ScriptViz.GetGameProgressCommand), Arena.ScriptViz.GetGameProgressCommand.Exec);
+			ScriptVizCommandRegistry.RegisterCommand(typeof(Arena.ScriptViz.SetBaseLocationCommand), Arena.ScriptViz.SetBaseLocationCommand.Exec);
 		}
 	}
 }

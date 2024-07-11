@@ -22,6 +22,7 @@ namespace Arena.Client
         CharacterClass debugCharacterClass;
 
         [SerializeField] private GameSceneKey debugGameSceneKey = default;
+        [SerializeField] private SpawnPointID debugSpawnPointID = default;
 
         protected override void Start()
         {
@@ -58,6 +59,7 @@ namespace Arena.Client
             storeSystem.DebugCharacterClass = debugCharacterClass;
 
             var gameSceneId = useDebugSettings ? debugGameSceneKey.Id : GameState.GetOfflineGameInfo().GameSceneID;
+            var spawnPointId = useDebugSettings ? debugSpawnPointID ? debugSpawnPointID.Id : 0 : GameState.GetOfflineGameInfo().SpawnPointID;
             var gameLocationType = useDebugSettings ? debugLocationType : GameState.GetOfflineGameInfo().MatchType == "Town_1" ? GameLocationType.SafeZone : GameLocationType.Arena;
             
             switch (gameLocationType)
@@ -70,18 +72,18 @@ namespace Arena.Client
                             Debug.Log("Local game match failed");
                             if (gameState != null)
                             {
-                                gameState.GoToSafeZone();
+                                gameState.GoToBaseLocation();
                             }
                         };
                         gameLoop.AddGameSystem<ArenaSpawnerSystem>();
                         gameLoop.AddGameSystemUnmanaged<SpawnZoneSystem>();
-                        StartCoroutine(startMatch(matchSystem, gameSceneId));
+                        StartCoroutine(startMatch(matchSystem, gameSceneId, spawnPointId));
                     }
                     break;
                 case GameLocationType.SafeZone:
                     {
                         var matchSystem = gameLoop.AddGameSystem<Server.SafeAreaMatchSystem>();
-                        StartCoroutine(startSafeArea(matchSystem, gameSceneId));
+                        StartCoroutine(startSafeArea(matchSystem, gameSceneId, spawnPointId));
                     }
                     break;
             }
@@ -89,9 +91,9 @@ namespace Arena.Client
             return gameLoop;
         }
 
-        IEnumerator startSafeArea(Server.SafeAreaMatchSystem matchSystem, int gameSceneId)
+        IEnumerator startSafeArea(Server.SafeAreaMatchSystem matchSystem, int gameSceneId, int spawnPointId)
         {
-            var matchInfo = new ArenaGameSessionInfo(gameSceneId, true);
+            var matchInfo = new ArenaGameSessionInfo(gameSceneId, spawnPointId, true);
             matchInfo.AllowedUserIds = new System.Collections.Generic.List<PlayerId>
             {
                 new PlayerId(1)
@@ -103,9 +105,9 @@ namespace Arena.Client
             }
         }
 
-        IEnumerator startMatch(Server.ArenaMatchSystem matchSystem, int gameSceneId)
+        IEnumerator startMatch(Server.ArenaMatchSystem matchSystem, int gameSceneId, int spawnPointId)
         {
-            var matchInfo = new ArenaGameSessionInfo(gameSceneId, true);
+            var matchInfo = new ArenaGameSessionInfo(gameSceneId, spawnPointId, true);
             matchInfo.AllowedUserIds = new System.Collections.Generic.List<PlayerId>
             {
                 new PlayerId(1)

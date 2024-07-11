@@ -98,7 +98,7 @@ namespace Arena.Server
 
             gameServer.AddGameSystem<ArenaMatchNetSystem>();
 
-            var matchInfo = new ArenaGameSessionInfo(sceneID.Id, false);
+            var matchInfo = new ArenaGameSessionInfo(sceneID.Id, 0, false);
             matchInfo.AllowedUserIds = new List<PlayerId>();
 
             Debug.Log($"Trying to create game session");

@@ -195,10 +195,26 @@ namespace Arena.Server
             }
         }
 
-        void getSpawnPositionForPlayer(NativeArray<Entity> spawnPoints, out float3 position, out float cameraWorldYaw)
+        void getSpawnPositionForPlayer(NativeArray<Entity> spawnPoints, int spawnPointId, out float3 position, out float cameraWorldYaw)
         {
-            var spawnPointEntity = spawnPoints[0];
-            cameraWorldYaw = GetComponent<PlayerSpawnPoint>(spawnPointEntity).WorldViewRotation;
+            Entity spawnPointEntity = Entity.Null;
+
+            foreach (var spawnPoint in spawnPoints)
+            {
+                var idData = EntityManager.GetComponentData<SpawnPointIdData>(spawnPoint);
+                if (idData.ID == spawnPointId)
+                {
+                    spawnPointEntity = spawnPoint;
+                    break;
+                }
+            }
+
+            if (spawnPointEntity == Entity.Null)
+            {
+                spawnPointEntity = spawnPoints[0];    
+            }
+            
+            cameraWorldYaw = EntityManager.GetComponentData<PlayerSpawnPoint>(spawnPointEntity).WorldViewRotation;
             position = EntityManager.GetComponentData<LocalToWorld>(spawnPointEntity).Position;
         }
 
@@ -411,7 +427,7 @@ namespace Arena.Server
                     var playerToSave = players[i];
                     var player = playerToSave.Value;
 
-                    var gameProgressEntity = em.GetComponentObject<CharacterGameProgressReference>(playerToSave.PlayerCharacter).Value;
+                    var gameProgressEntity = em.GetComponentData<CharacterGameProgressReference>(playerToSave.PlayerCharacter).Value;
                     var gameProgress = em.GetComponentData<CharacterGameProgress>(gameProgressEntity);
                     gameProgress.CurrentStage = internalState.CurrentStage;
                     commands.SetComponent(gameProgressEntity, gameProgress);
@@ -459,6 +475,10 @@ namespace Arena.Server
 
                 if (allSaved)
                 {
+                    var internalState = GetComponent<ArenaMatchStateData>(entity);
+                    internalState.Saved = true;
+                    SetComponent(entity, internalState);
+                    
                     var commands = Commands;
 
                     for (int i = 0; i < requests.Length; i++)
@@ -568,8 +588,9 @@ namespace Arena.Server
                 Debug.Log($"Destroying game scene entity {currentGameSceneEntity.Index}");
                 Commands.DestroyEntity(currentGameSceneEntity);
 
-                var sceneNodeRef = GetComponent<CampaignTools.GameSceneNodeEntityReference>(currentGameSceneEntity);
-                var sceneNodeType = GetComponent<CampaignTools.GameSceneNodeType>(sceneNodeRef.Value);
+                // TODO
+                //var sceneNodeRef = GetComponent<CampaignTools.GameSceneNodeEntityReference>(currentGameSceneEntity);
+                //var sceneNodeType = GetComponent<CampaignTools.GameSceneNodeType>(sceneNodeRef.Value);
 
                 var internalState = GetComponent<ArenaMatchStateData>(entity);
                 matchData.GameSceneInstance = Entity.Null;
@@ -582,28 +603,30 @@ namespace Arena.Server
                 }
                 else
                 {
-                    if(sceneNodeType.Value == CampaignTools.SceneNodeTypes.End)
-                    {
-                        // конечный узел кампании
-                        Debug.LogError("not implemented");
-                        return;
-                    }
-                    else
-                    {
-                        var sceneNodeConnections = GetBuffer<CampaignTools.GameSceneNodeConnection>(sceneNodeRef.Value);
-                        var nextGameSceneNode = sceneNodeConnections[0].Value;
-                        var nextGameScenes = GetBuffer<CampaignTools.GameSceneAssetReference>(nextGameSceneNode);
-                        var nextGameScene = nextGameScenes[0].Value;
-
-                        Debug.Log($"Loading next scene {nextGameScene}");
-                        var nextGameSceneEntity = Commands.Instantiate(nextGameScene);
-                        matchData.GameSceneInstance = nextGameSceneEntity;
-
-                        Commands.SetComponent(nextGameSceneEntity, new SceneLoadingState { Value = SceneLoadingStates.PendingStartLoading });
-                        Commands.SetComponent(nextGameSceneEntity, new SessionEntityReference { Value = entity });
-
-                        Commands.AddComponent(entity, matchData);
-                    }
+                    // TODO
+                    
+                    // if(sceneNodeType.Value == CampaignTools.SceneNodeTypes.End)
+                    // {
+                    //     // конечный узел кампании
+                    //     Debug.LogError("not implemented");
+                    //     return;
+                    // }
+                    // else
+                    // {
+                    //     var sceneNodeConnections = GetBuffer<CampaignTools.GameSceneNodeConnection>(sceneNodeRef.Value);
+                    //     var nextGameSceneNode = sceneNodeConnections[0].Value;
+                    //     var nextGameScenes = GetBuffer<CampaignTools.GameSceneAssetReference>(nextGameSceneNode);
+                    //     var nextGameScene = nextGameScenes[0].Value;
+                    //
+                    //     Debug.Log($"Loading next scene {nextGameScene}");
+                    //     var nextGameSceneEntity = Commands.Instantiate(nextGameScene);
+                    //     matchData.GameSceneInstance = nextGameSceneEntity;
+                    //
+                    //     Commands.SetComponent(nextGameSceneEntity, new SceneLoadingState { Value = SceneLoadingStates.PendingStartLoading });
+                    //     Commands.SetComponent(nextGameSceneEntity, new SessionEntityReference { Value = entity });
+                    //
+                    //     Commands.AddComponent(entity, matchData);
+                    // }
                 }
             }
 
@@ -662,7 +685,7 @@ namespace Arena.Server
                     var player = playerElement.PlayerEntity;
 
                     var netPlayer = em.GetComponentData<NetworkPlayer>(player);
-                    arenaSystem.getSpawnPositionForPlayer(playerSpawnPoints, out float3 spawnPos, out float cameraWorldYaw);
+                    arenaSystem.getSpawnPositionForPlayer(playerSpawnPoints, initData.SpawnPointId, out float3 spawnPos, out float cameraWorldYaw);
                     var characterData = ArenaMatchUtility.SetupPlayerCharacter(this, initData.IsLocalGame, playerPrefab.Value, spawnPos, cameraWorldYaw, player, netPlayer, ref Commands);
 
                     if (characterData.Progress != null && maxStage < characterData.Progress.CurrentStage)
@@ -725,6 +748,7 @@ namespace Arena.Server
                             internalState.State = ArenaMatchState.Fighting;
                             internalState.IsMatchFailed = false;
                             internalState.IsMatchComplete = false;
+                            internalState.Saved = false;
                             em.SetComponentData(entity, internalState);
 
                             //var spawnerSystem = System as ArenaMatchSystem;
@@ -751,7 +775,7 @@ namespace Arena.Server
 
                             if (IsAllPlayersDead(ref players))
                             {
-                                RestartPlayers(ref players);
+                                RestartPlayers(ref players, entity);
                             }
                         }
                         break;
@@ -786,9 +810,11 @@ namespace Arena.Server
                                     var matchData = GetComponent<SceneData>(entity);
                                     //var gameSceneDesc = GetComponent<GameSceneDescription>(matchData.GameSceneInstance);
 
-                                    var gameSceneNode = GetComponent<CampaignTools.GameSceneNodeEntityReference>(matchData.GameSceneInstance);
-                                    var gameSceneNodeType = GetComponent<CampaignTools.GameSceneNodeType>(gameSceneNode.Value);
-                                    internalState.IsNextSceneAvailable = gameSceneNodeType.Value != CampaignTools.SceneNodeTypes.End;
+                                    // TODO
+                                    //var gameSceneNode = GetComponent<CampaignTools.GameSceneNodeEntityReference>(matchData.GameSceneInstance);
+                                    //var gameSceneNodeType = GetComponent<CampaignTools.GameSceneNodeType>(gameSceneNode.Value);
+                                    //internalState.IsNextSceneAvailable = gameSceneNodeType.Value != CampaignTools.SceneNodeTypes.End;
+                                    internalState.IsNextSceneAvailable = false;
                                 }
                                 else
                                 {
@@ -886,7 +912,7 @@ namespace Arena.Server
                 return false;
             }
 
-            void RestartPlayers(ref DynamicBuffer<RegisteredPlayer> playersBuffer)
+            void RestartPlayers(ref DynamicBuffer<RegisteredPlayer> playersBuffer, Entity sessionEntity)
             {
                 var em = EntityManager;
 
@@ -898,6 +924,7 @@ namespace Arena.Server
                 var playerSpawnPoints = (System as ArenaMatchSystem).spawnPointsQuery.ToEntityArray(Allocator.Temp);
                 var databaseEntity = System.GetSingletonEntity<MainDatabaseTag>();
                 var databaseBuffer = em.GetBuffer<IdToEntity>(databaseEntity);
+                var initData = em.GetComponentData<SessionInitializationData>(sessionEntity);
 
                 for (int i = 0; i < playersBuffer.Length; i++)
                 {
@@ -918,7 +945,7 @@ namespace Arena.Server
                         
                         using (var database = databaseBuffer.ToNativeArray(Allocator.Temp))
                         {
-                            arenaSystem.getSpawnPositionForPlayer(playerSpawnPoints, out float3 spawnPos, out float cameraWorldYaw);
+                            arenaSystem.getSpawnPositionForPlayer(playerSpawnPoints, initData.SpawnPointId, out float3 spawnPos, out float cameraWorldYaw);
                             ArenaMatchUtility.CreateCharacter(playerPrefab.Value, player, spawnPos, cameraWorldYaw, database, playerData, Commands);    
                         }
                     }

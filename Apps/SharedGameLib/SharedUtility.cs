@@ -39,11 +39,18 @@ namespace Arena
                 23, // боевое лечение
             }
         };
+
+        public static readonly int DefaultStartLocationID = 56;     // port village
+        public static readonly int[] SafeZoneLocations = new int[]
+        {
+            63 // main city
+        };
     }
 
     public static class MetaDataKeys
     {
         public const string SceneId = "ARENA_SCENE_ID";
+        public const string SpawnPointId = "ARENA_SPAWNPOINT_ID";
         public const string MultiplayerGame = "ARENA_MULTIPLAYER_GAME";
     }
         
@@ -53,11 +60,29 @@ namespace Arena
         public const string ErrorKey = "error";
         public const string TokenExpiredValue = "token_expired";
 
+        public static bool IsSafeZoneLocation(int locationID)
+        {
+            foreach(var id in Identifiers.SafeZoneLocations)
+            {
+                if(id == locationID)
+                {
+                    return true;
+                }
+            }
+            return false;
+        }
+
         public static CharacterData CreateDefaultCharacterData(CharacterClass characterClass, string characterName)
         {
             var data = new CharacterData();
             data.Name = characterName;
             data.Class = (int)characterClass;
+
+            data.Progress = new GameProgress
+            {
+                CurrentBaseLocation = Identifiers.DefaultStartLocationID,
+                CurrentStage = 0,
+            };
 
             switch (characterClass)
             {
@@ -99,11 +124,6 @@ namespace Arena
             {
                 addAbility(data, abilityId);
             }
-            data.Progress = new GameProgress
-            {
-                CurrentBaseLocation = 0,
-                CurrentStage = 0,
-            };
         }
 
         static void addAbility(CharacterData data, int typeId)

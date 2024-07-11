@@ -14,7 +14,7 @@ namespace Arena
         [RemoteCall(canBeCalledFromClient: true, canBeCalledByNonOwner: true)]
         void NotifyExitingFromGame(NetMessageInfo info);
     }
-
+    
     public enum ArenaMatchState
     {
         Preparing,
@@ -28,6 +28,7 @@ namespace Arena
     public struct ArenaMatchStateData : IComponentData
     {
         public ArenaMatchState State;
+        public bool Saved;
         public ushort CurrentStage;
 
         public bool IsMatchComplete;

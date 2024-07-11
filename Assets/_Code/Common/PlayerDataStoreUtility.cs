@@ -109,9 +109,13 @@ namespace Arena
                 }
             }
             
-            var progressEntity = manager.GetComponentObject<CharacterGameProgressReference>(entity).Value;
+            var progressEntity = manager.GetComponentData<CharacterGameProgressReference>(entity).Value;
             var progress = manager.GetComponentData<CharacterGameProgress>(progressEntity);
 
+            if (data.Progress == null)
+            {
+                data.Progress = new GameProgress();
+            }
             data.Progress.CurrentStage = progress.CurrentStage;
             data.Progress.CurrentBaseLocation = progress.CurrentBaseLocationID;
             

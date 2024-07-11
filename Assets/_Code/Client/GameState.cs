@@ -22,6 +22,7 @@ namespace Arena.Client
         public string MatchType;
         public PrefabID GameSceneID;
         public bool Multiplayer;
+        public int SpawnPointID;
     }
     
     public interface IGameInterface
@@ -73,9 +74,6 @@ namespace Arena.Client
 
         [SerializeField]
         GameObject connectingUiPrefab = default;
-
-        [SerializeField] private GameSceneKey mainAreaSceneKey;
-
         
         [SerializeField] ServerAddress authServer = new ServerAddress("127.0.0.1", 30600);
         [SerializeField] ServerAddress frontendServer = new ServerAddress("127.0.0.1", 31600);
@@ -447,11 +445,13 @@ namespace Arena.Client
         {
             public string MatchType { get; private set; }
             public int GameSceneID { get; private set; }
+            public int SpawnPointID { get; private set; }
 
-            public OfflineGameInfo(string matchType, int gameSceneId)
+            public OfflineGameInfo(string matchType, int gameSceneId, int spawnPointID)
             {
                 MatchType = matchType;
                 GameSceneID = gameSceneId;
+                SpawnPointID = spawnPointID;
             }
         }
 
@@ -1434,7 +1434,7 @@ namespace Arena.Client
             {
                 base.Continue();
 
-                GoToSafeZone();
+                GoToBaseLocation();
             }
 
             async Task<bool> roomConnection(bool safeArea, bool multiplayer, int gameSceneID, string matchType, CancellationToken cancellationToken)
@@ -1551,9 +1551,10 @@ namespace Arena.Client
             }
 
             
-            public Task<bool> GoToSafeZone()
+            public Task<bool> GoToBaseLocation()
             {
-                return roomConnectionWrapper(true, false, GameState.mainAreaSceneKey.Id, "Town_1", cts.Token);
+                // TODO тип матча должен проверяться на стороне сервера
+                return roomConnectionWrapper(true, false, GameState.SelectedCharacter.Progress.CurrentBaseLocation, "Town_1", cts.Token);
             }
         }
 
@@ -1569,19 +1570,30 @@ namespace Arena.Client
             public override void Continue()
             {
                 base.Continue();
-                GoToSafeZone();
+                GotoBaseLocation();
             }
 
             public Task<bool> StartQuest(QuestGameInfo questGameInfo)
             {
-                offlineGameInfo = new OfflineGameInfo(questGameInfo.MatchType, questGameInfo.GameSceneID.Value);
+                offlineGameInfo = new OfflineGameInfo(questGameInfo.MatchType, questGameInfo.GameSceneID.Value, questGameInfo.SpawnPointID);
                 LoadSceneAsync(GameState.localGameSceneName);
                 return Task<bool>.FromResult(true);
             }
             
-            public Task<bool> GoToSafeZone()
+            public Task<bool> GotoBaseLocation()
             {
-                offlineGameInfo = new OfflineGameInfo("Town_1", GameState.mainAreaSceneKey.Id);
+                string matchType;
+                
+                if (SharedUtility.IsSafeZoneLocation(GameState.SelectedCharacter.Progress.CurrentBaseLocation))
+                {
+                    matchType = "Town_1";
+                }
+                else
+                {
+                    matchType = "ArenaMatch";
+                }
+                
+                offlineGameInfo = new OfflineGameInfo(matchType, GameState.SelectedCharacter.Progress.CurrentBaseLocation, 0);
                 LoadSceneAsync(GameState.localGameSceneName);
                 return Task<bool>.FromResult(true);
                 
@@ -1618,18 +1630,18 @@ namespace Arena.Client
 
         public void ExitFromMatch()
         {
-            GoToSafeZone();
+            GoToBaseLocation();
         }
 
-        public void GoToSafeZone()
+        public void GoToBaseLocation()
         {
             if (CurrentState is OnlineGame onlineGame)
             {
-                onlineGame.GoToSafeZone();
+                onlineGame.GoToBaseLocation();
             }
             else if(CurrentState is OfflineGame offlineGame)
             {
-                offlineGame.GoToSafeZone();
+                offlineGame.GotoBaseLocation();
             }
             else
             {

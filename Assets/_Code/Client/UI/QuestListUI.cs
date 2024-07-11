@@ -156,10 +156,18 @@ namespace Arena.Client.UI
 			using(var query = EntityManager.CreateEntityQuery(typeof(GameInterface)))
 			{
 				var gameInterface = query.GetSingleton<GameInterface>();
+
+				int spawnPointId = 0;
+
+				if (HasData<SpawnPointIdData>(quest))
+				{
+					spawnPointId = GetData<SpawnPointIdData>(quest).ID;
+				}
 				
 				var questTask = gameInterface.StartQuest(new QuestGameInfo
 				{
 					GameSceneID = GetData<QuestData>(quest).GameSceneID,
+					SpawnPointID = spawnPointId,
 					MatchType = "ArenaMatch",
 					Multiplayer = multiplayer
 				});

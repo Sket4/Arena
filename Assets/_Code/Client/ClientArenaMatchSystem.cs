@@ -27,6 +27,7 @@ namespace Arena.Client
 
         RpcDummy rpc = new RpcDummy();
         private EntityQuery gameInterfaceQuery;
+        private EntityQuery arenaMatchDataQuery;
 
         struct IsExitingFromGame : IComponentData
         {
@@ -36,6 +37,7 @@ namespace Arena.Client
         {
             base.OnCreate();
             gameInterfaceQuery = GetEntityQuery(ComponentType.ReadOnly<GameInterface>());
+            arenaMatchDataQuery = GetEntityQuery(ComponentType.ReadOnly<ArenaMatchStateData>());
         }
 
         protected override void OnSystemUpdate()
@@ -79,12 +81,41 @@ namespace Arena.Client
                 }
             }
 
-            if (callGameInterface && gameInterfaceQuery.TryGetSingleton(out GameInterface gameInterface))
+            if (callGameInterface)
             {
-                gameInterface.ExitFromMatch(); 
+                exitFromGame();
             }
         }
 
+        async void exitFromGame()
+        {
+            var waitStartTime = UnityEngine.Time.realtimeSinceStartup;
+
+            while (UnityEngine.Time.realtimeSinceStartup - waitStartTime < 3)
+            {
+                if (EntityManager.World.IsCreated == false)
+                {
+                    break;
+                }
+
+                if (arenaMatchDataQuery.HasSingleton<ArenaMatchStateData>() == false)
+                {
+                    break;
+                }
+                
+                var state = arenaMatchDataQuery.GetSingleton<ArenaMatchStateData>();
+
+                if (state.Saved)
+                {
+                    break;
+                }
+                
+                await Task.Yield();
+            }
+
+            gameInterfaceQuery.TryGetSingleton(out GameInterface gameInterface);
+            gameInterface.ExitFromMatch(); 
+        }
 
 #if UNITY_EDITOR
         [TzarGames.Common.ConsoleCommand]

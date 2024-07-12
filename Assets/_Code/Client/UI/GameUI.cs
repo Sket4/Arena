@@ -55,6 +55,11 @@ namespace Arena.Client.UI
         FadeUI fadeBackground = default;
 
         [SerializeField]
+        private DialogueUI dialogueUI = default;
+
+        public DialogueUI DialogueUI => dialogueUI;
+
+        [SerializeField]
         Arena.WorldObserver.WorldObserverUI worldObserver = default;
 
         [SerializeField] private GameObject xpManagementButton = default;
@@ -397,6 +402,28 @@ namespace Arena.Client.UI
             {
                 return true;
             }
+        }
+
+        class Dialogue : UiBaseState
+        {
+            public override void OnStateBegin(State prevState)
+            {
+                base.OnStateBegin(prevState);
+                ShowOnlyThisMenu(UI.dialogueUI);
+            }
+
+            public override void OnStateEnd(State nextState)
+            {
+                base.OnStateEnd(nextState);
+                UI.showMenu(UI.dialogueUI, false);
+            }
+        }
+
+        [ContextMenu("test dialogue")]
+        public void TestDialogue()
+        {
+            ShowDialogueWindow(true);
+            dialogueUI.ShowDialogue(default, "Здрасти", new[] { new DialogueAnswerData { Text = "Мордасти", CommandAddress = default } });
         }
 
         class WorldObserver : UiBaseState
@@ -801,6 +828,18 @@ namespace Arena.Client.UI
                 {
                     ShowPreviousStateMenu();
                 }
+            }
+        }
+
+        public void ShowDialogueWindow(bool show)
+        {
+            if (show)
+            {
+                GotoState<Dialogue>();
+            }
+            else
+            {
+                ShowGameHUD();
             }
         }
 

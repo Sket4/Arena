@@ -1,10 +1,14 @@
+using System.Collections.Generic;
 using Arena;
 using Arena.Client.UI;
+using Arena.Dialogue;
 using TzarGames.GameCore;
 using TzarGames.MatchFramework;
 using Unity.Collections;
 using Unity.Entities;
 using UnityEngine;
+using UnityEngine.Localization.Settings;
+using UnityEngine.Localization.Tables;
 
 namespace Arena.Client
 {
@@ -18,6 +22,8 @@ namespace Arena.Client
     public partial class UISystem : SystemBase
     {
         public GameObject UiPrefab { get; private set; }
+        private EntityQuery uiQuery;
+        private EntityQuery dialogueQuery;
 
         public bool TryGetSingleton<T>(out T singletonData) where T : unmanaged, IComponentData
         {
@@ -29,6 +35,8 @@ namespace Arena.Client
             base.OnCreate();
 
             UiPrefab = ClientGameSettings.Get.GameUiPrefab;
+
+            uiQuery = GetEntityQuery(ComponentType.ReadOnly<GameUI>());
 
             var simSystem = World.GetOrCreateSystemManaged<SimulationSystemGroup>();
             simSystem.AddSystemToUpdateList(World.CreateSystemManaged<FloatingLabelHitUISystem>());
@@ -77,6 +85,39 @@ namespace Arena.Client
                     ui.UpdateInventory();
 
                 }).Run();
+            
+            Entities
+                .WithStoreEntityQueryInField(ref dialogueQuery)
+                .WithoutBurst()
+                .WithStructuralChanges()
+                .ForEach((Entity entity, in DynamicBuffer<DialogueAnswer> answers, in DialogueMessage message) =>
+                {
+                    if(uiQuery.TryGetSingleton<GameUI>(out var ui) == false)
+                    {
+                        Debug.LogError("Failed to find UI entity");
+                        return;
+                    }
+                    
+                    var localizedMessage = LocalizationSettings.StringDatabase.GetLocalizedString(message.LocalizedStringID);
+
+                    var answerList = new List<DialogueAnswerData>();
+
+                    foreach (var answer in answers)
+                    {
+                        var localizedAnswer = LocalizationSettings.StringDatabase.GetLocalizedString(answer.LocalizedStringID);
+                        answerList.Add(new DialogueAnswerData
+                        {
+                            Text = localizedAnswer,
+                            CommandAddress = answer.AnswerAddress
+                        });
+                    }
+                    
+                    ui.ShowDialogueWindow(true);
+                    ui.DialogueUI.ShowDialogue(message.DialogueEntity, localizedMessage, answerList);
+                    
+                }).Run();
+            
+            EntityManager.DestroyEntity(dialogueQuery);
 
             Entities
                 .WithNone<UserInterfaceData>()

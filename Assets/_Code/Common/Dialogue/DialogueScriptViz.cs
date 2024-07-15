@@ -18,6 +18,8 @@ namespace Arena.Dialogue
     public struct DialogueMessage : IComponentData
     {
         public Entity DialogueEntity;
+        public Entity Player;
+        public Entity Companion;
         public long LocalizedStringID;
     }
     
@@ -33,6 +35,8 @@ namespace Arena.Dialogue
         public long LocalizedMessageID;
         public Address AnswersStartAddress;
         public byte AnswerCount;
+        public Address Player;
+        public Address Companion;
 
         [BurstCompile]
         [AOT.MonoPInvokeCallback(typeof(ScriptVizCommandRegistry.ExecuteDelegate))]
@@ -49,9 +53,14 @@ namespace Arena.Dialogue
             var outCount = data->AnswerCount;
 
             var dialogueRequest = context.Commands.CreateEntity(context.SortIndex);
+
+            var player = context.ReadEntityFromVariableData(data->Player);
+            var companion = context.ReadEntityFromVariableData(data->Companion);
             
             context.Commands.AddComponent(context.SortIndex, dialogueRequest, new DialogueMessage
             {
+                Player = player,
+                Companion = companion,
                 DialogueEntity = context.OwnerEntity,
                 LocalizedStringID = data->LocalizedMessageID
             });
@@ -151,17 +160,17 @@ namespace Arena.Dialogue
         }
     }
     
-    [UnityEditor.CustomPropertyDrawer(typeof(DialogueAnswerOutputSocket))]
+    [CustomPropertyDrawer(typeof(DialogueAnswerOutputSocket))]
     class DialogueAnswerOutputSocketDrawer : PropertyDrawer
     {
-        public override void OnGUI(Rect position, UnityEditor.SerializedProperty property, GUIContent label)
+        public override void OnGUI(Rect position, SerializedProperty property, GUIContent label)
         {
-            UnityEditor.EditorGUI.BeginProperty(position, label, property);
+            EditorGUI.BeginProperty(position, label, property);
             {    
                 var prop = property.FindPropertyRelative("Value");
                 UnityEditor.EditorGUI.PropertyField(position, prop, new GUIContent(""), true);
             }
-            UnityEditor.EditorGUI.EndProperty();
+            EditorGUI.EndProperty();
         }
 
         public override float GetPropertyHeight(SerializedProperty property, GUIContent label)
@@ -171,15 +180,108 @@ namespace Arena.Dialogue
         }
     }
     #endif
+
+    [BurstCompile]
+    public struct StartDialogueCommand : IScriptVizCommand
+    {
+        public InputEntityVar Player;
+        public InputEntityVar Companion;
+        public Address Player_VarAddress;
+        public Address Companion_VarAddress;
+        
+        [BurstCompile]
+        [AOT.MonoPInvokeCallback(typeof(ScriptVizCommandRegistry.ExecuteDelegate))]
+        public static unsafe void Exec(ref Context context, void* commandData)
+        {
+            var data = (StartDialogueCommand*)commandData;
+            
+            var player = data->Player.Read(ref context);
+            var companion = data->Companion.Read(ref context);
+
+            if (player == Entity.Null)
+            {
+                player = context.OwnerEntity;
+            }
+            if (companion == Entity.Null)
+            {
+                companion = context.OwnerEntity;
+            }
+            
+            context.WriteEntityVariable(player, data->Player_VarAddress);
+            context.WriteEntityVariable(companion, data->Companion_VarAddress);
+        }
+    }
+    
+    [FriendlyName("Старт диалога")]
+    public class StartDialogueNode : CommandNode, IAdditionalVariableHandler, ICustomNodeName
+    {
+        [HideInInspector] public EntitySocket Player = new();
+        [HideInInspector] public EntitySocket Companion = new();
+        private ID player_varId;
+        private ID companion_varId;
+
+        public override bool ShowEditableProperties => false;
+
+        public override void WriteCommand(CompilerAllocator compilerAllocator, out Address commandAddress)
+        {
+            var cmd = new StartDialogueCommand();
+            compilerAllocator.InitializeInputVar(ref cmd.Player, Player);
+            compilerAllocator.InitializeInputVar(ref cmd.Companion, Companion);
+            cmd.Player_VarAddress = compilerAllocator.GetVariableAddress(player_varId);
+            cmd.Companion_VarAddress = compilerAllocator.GetVariableAddress(companion_varId);
+            commandAddress = compilerAllocator.WriteCommand(ref cmd);
+        }
+
+        public const string Player_varName = "dialogue_companion_1_5686DFE1-A08F-4F74-A074-6B2B3C593DB0";
+        public const string Сompanion_varName = "dialogue_companion_2_5686DFE1-A08F-4F74-A074-6B2B3C593DB0";
+
+        public override void DeclareSockets(List<SocketInfo> sockets)
+        {
+            base.DeclareSockets(sockets);
+            sockets.Add(new SocketInfo(Player, SocketType.In, "Player"));
+            sockets.Add(new SocketInfo(Companion, SocketType.In, "Companion"));
+        }
+
+        public void AddAdditionalVariables(ScriptVizGraph.ScriptVizGraphPage page)
+        {
+            player_varId = GetOrAddCompanionVariable(Player_varName, Player.AuthoringValue, page).ID;
+            companion_varId = GetOrAddCompanionVariable(Сompanion_varName, Companion.AuthoringValue, page).ID;
+        }
+
+        public static EntityVariable GetOrAddCompanionVariable(string varName, GameObject authoringValue, ScriptVizGraph.ScriptVizGraphPage page)
+        {
+            var variable = page.GetVariableWithName(varName);
+            
+            if (variable == null)
+            {
+                variable = new EntityVariable(varName);
+                page.AddVariable(variable);
+            }
+
+            if (authoringValue != null)
+            {
+                (variable as EntityVariable).Value = authoringValue;    
+            }
+            
+            return variable as EntityVariable;
+        }
+
+        public string GetNodeName()
+        {
+            return "Старт диалога";
+        }
+    }
     
     [Serializable]
     [FriendlyName("Диалог")]
-    public class ShowDialogueNode : Node, ICommandNode, IPostWriteCommandNode, IDynamicOutSocketsNode, ICustomNodeName
+    public class ShowDialogueNode : Node, ICommandNode, IPostWriteCommandNode, IDynamicOutSocketsNode, ICustomNodeName, IAdditionalVariableHandler
     {
         public UnityEngine.Localization.LocalizedString Message;
         [HideInInspector] public NodeInputSocket InputSocket = new();
         public List<DialogueAnswerOutputSocket> AnswerOutputSockets = new();
-
+        private ID player_varId;
+        private ID companion_varId;
+        
         public override void DeclareSockets(List<SocketInfo> sockets)
         {
             sockets.Add((new SocketInfo(InputSocket, SocketType.In, "In")));
@@ -235,6 +337,10 @@ namespace Arena.Dialogue
                 cmd.AnswerCount = 0;
                 return;
             }
+
+            cmd.Player = compilerAllocator.GetVariableAddress(player_varId);
+            cmd.Companion = compilerAllocator.GetVariableAddress(companion_varId);
+            
             cmd.AnswerCount = (byte)outputList.Length;
             var answerSize = UnsafeUtility.SizeOf<DialogueAnswer>();
             cmd.AnswersStartAddress = compilerAllocator.WriteConstantDataAndGetAddress(outputList.GetUnsafeReadOnlyPtr(), outputList.Length * answerSize);
@@ -271,5 +377,11 @@ namespace Arena.Dialogue
         }
 
         public override float MinimumEditablePropertiesWidth => 350;
+        
+        public void AddAdditionalVariables(ScriptVizGraph.ScriptVizGraphPage page)
+        {
+            player_varId = StartDialogueNode.GetOrAddCompanionVariable(StartDialogueNode.Player_varName, null, page).ID;
+            companion_varId = StartDialogueNode.GetOrAddCompanionVariable(StartDialogueNode.Сompanion_varName, null, page).ID;
+        }
     }
 }

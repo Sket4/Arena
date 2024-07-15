@@ -1,14 +1,10 @@
 using System.Collections.Generic;
-using Arena;
 using Arena.Client.UI;
 using Arena.Dialogue;
 using TzarGames.GameCore;
-using TzarGames.MatchFramework;
-using Unity.Collections;
 using Unity.Entities;
 using UnityEngine;
 using UnityEngine.Localization.Settings;
-using UnityEngine.Localization.Tables;
 
 namespace Arena.Client
 {
@@ -19,6 +15,7 @@ namespace Arena.Client
     }
     
     [DisableAutoCreation]
+    [UpdateAfter(typeof(DialogueSystem))]
     public partial class UISystem : SystemBase
     {
         public GameObject UiPrefab { get; private set; }
@@ -87,6 +84,29 @@ namespace Arena.Client
                 }).Run();
             
             Entities
+                .WithoutBurst()
+                .WithStructuralChanges()
+                .WithChangeFilter<DialogueState>()
+                .ForEach((in DialogueState state) =>
+                {
+                    if (state.DialogueEntity != Entity.Null)
+                    {
+                        return;
+                    }
+                    if(uiQuery.TryGetSingleton<GameUI>(out var ui) == false)
+                    {
+                        return;
+                    }
+
+                    if (ui.DialogueUI.IsVisible)
+                    {
+                        ui.ShowDialogueWindow(false);
+                    }
+                    
+                }).Run();
+                
+            
+            Entities
                 .WithStoreEntityQueryInField(ref dialogueQuery)
                 .WithoutBurst()
                 .WithStructuralChanges()
@@ -113,7 +133,7 @@ namespace Arena.Client
                     }
                     
                     ui.ShowDialogueWindow(true);
-                    ui.DialogueUI.ShowDialogue(message.DialogueEntity, localizedMessage, answerList);
+                    ui.DialogueUI.ShowDialogue(message.Player, message.DialogueEntity, localizedMessage, answerList);
                     
                 }).Run();
             

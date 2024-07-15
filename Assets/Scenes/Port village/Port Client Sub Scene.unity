@@ -38,6 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
+  m_IndirectSpecularColor: {r: 0.23307373, g: 0.3798501, b: 0.49432325, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -18240,7 +18241,6 @@ Terrain:
   m_DetailObjectDensity: 1
   m_HeightmapPixelError: 5
   m_SplatMapDistance: 1000
-  m_HeightmapMinimumLODSimplification: 0
   m_HeightmapMaximumLOD: 0
   m_ShadowCastingMode: 2
   m_DrawHeightmap: 1
@@ -23664,7 +23664,6 @@ GameObject:
   - component: {fileID: 1162684710}
   - component: {fileID: 1162684709}
   - component: {fileID: 1162684708}
-  - component: {fileID: 1162684711}
   m_Layer: 11
   m_Name: start dialogue trigger
   m_TagString: Untagged
@@ -23721,11 +23720,11 @@ MonoBehaviour:
     - rid: 6322991461510152210
       type: {class: ScriptVizGraph, ns: TzarGames.GameCore.ScriptViz.Graph, asm: TzarGames.GameCore}
       data:
-        sockedIdCounter: 78
+        sockedIdCounter: 94
         variableIdCounter: 2
-        nodeIdCounter: 12
+        nodeIdCounter: 16
         pages:
-        - ConversionTargetOptions: 7
+        - ConversionTargetOptions: -1
           variables:
           - rid: 6322991461510152213
           nodes:
@@ -23733,6 +23732,10 @@ MonoBehaviour:
           - rid: 6322991481206341634
           - rid: 6322991481206342091
           - rid: 6322991481206342093
+          - rid: 8007337815007035405
+          - rid: 8007337815007035439
+          - rid: 8007337815007035441
+          - rid: 8007337815007035443
     - rid: 6322991461510152211
       type: {class: OnTriggerEnterEventNode, ns: TzarGames.GameCore.ScriptViz.Graph, asm: TzarGames.GameCore}
       data:
@@ -23743,11 +23746,12 @@ MonoBehaviour:
           ID:
             Value: 1
           ConnectedSocketIDs:
-          - Value: 11
+          - Value: 79
         Other:
           ID:
             Value: 2
-          ConnectedSocketIDs: []
+          ConnectedSocketIDs:
+          - Value: 83
           AuthoringValue: {fileID: 0}
     - rid: 6322991461510152213
       type: {class: DynamicArrayVariable, ns: TzarGames.GameCore.ScriptViz.Graph, asm: TzarGames.GameCore}
@@ -23761,7 +23765,7 @@ MonoBehaviour:
       data:
         ID:
           Value: 5
-        Position: {x: 224, y: 0}
+        Position: {x: 569, y: 0}
         Message:
           m_TableReference:
             m_TableCollectionName: GUID:aad91b28e51f6fc489b46b3d5b4a981a
@@ -23775,7 +23779,7 @@ MonoBehaviour:
           ID:
             Value: 11
           ConnectedSocketIDs:
-          - Value: 1
+          - Value: 80
         AnswerOutputSockets:
         - ID:
             Value: 70
@@ -23808,7 +23812,7 @@ MonoBehaviour:
       data:
         ID:
           Value: 10
-        Position: {x: 723.3333, y: -80.66667}
+        Position: {x: 1068, y: -81}
         input:
           ID:
             Value: 71
@@ -23817,7 +23821,8 @@ MonoBehaviour:
         output:
           ID:
             Value: 72
-          ConnectedSocketIDs: []
+          ConnectedSocketIDs:
+          - Value: 85
         EntitySocket:
           ID:
             Value: 73
@@ -23830,7 +23835,7 @@ MonoBehaviour:
       data:
         ID:
           Value: 11
-        Position: {x: 723.3333, y: 125.33333}
+        Position: {x: 1068, y: 125}
         input:
           ID:
             Value: 74
@@ -23846,6 +23851,124 @@ MonoBehaviour:
           ConnectedSocketIDs: []
           AuthoringValue: {fileID: 0}
         Message: "\u041F\u041E\u0428\u0415\u041B \u041D\u0410\u0425\u0423\u0419"
+        LogType: 0
+    - rid: 8007337815007035405
+      type: {class: StartDialogueNode, ns: Arena.Dialogue, asm: Arena.Common}
+      data:
+        ID:
+          Value: 12
+        Position: {x: 209, y: 0}
+        input:
+          ID:
+            Value: 79
+          ConnectedSocketIDs:
+          - Value: 1
+        output:
+          ID:
+            Value: 80
+          ConnectedSocketIDs:
+          - Value: 11
+        Player:
+          ID:
+            Value: 83
+          ConnectedSocketIDs:
+          - Value: 2
+          AuthoringValue: {fileID: 0}
+        Companion:
+          ID:
+            Value: 84
+          ConnectedSocketIDs: []
+          AuthoringValue: {fileID: 0}
+    - rid: 8007337815007035439
+      type: {class: ShowDialogueNode, ns: Arena.Dialogue, asm: Arena.Common}
+      data:
+        ID:
+          Value: 13
+        Position: {x: 1427, y: -112}
+        Message:
+          m_TableReference:
+            m_TableCollectionName: GUID:aad91b28e51f6fc489b46b3d5b4a981a
+          m_TableEntryReference:
+            m_KeyId: 1237526927892480
+            m_Key: 
+          m_FallbackState: 0
+          m_WaitForCompletion: 0
+          m_LocalVariables: []
+        InputSocket:
+          ID:
+            Value: 85
+          ConnectedSocketIDs:
+          - Value: 72
+        AnswerOutputSockets:
+        - ID:
+            Value: 86
+          ConnectedSocketIDs:
+          - Value: 88
+          Value:
+            m_TableReference:
+              m_TableCollectionName: GUID:aad91b28e51f6fc489b46b3d5b4a981a
+            m_TableEntryReference:
+              m_KeyId: 1237865483722752
+              m_Key: 
+            m_FallbackState: 0
+            m_WaitForCompletion: 0
+            m_LocalVariables: []
+        - ID:
+            Value: 87
+          ConnectedSocketIDs:
+          - Value: 91
+          Value:
+            m_TableReference:
+              m_TableCollectionName: GUID:aad91b28e51f6fc489b46b3d5b4a981a
+            m_TableEntryReference:
+              m_KeyId: 1238012502466560
+              m_Key: 
+            m_FallbackState: 0
+            m_WaitForCompletion: 0
+            m_LocalVariables: []
+    - rid: 8007337815007035441
+      type: {class: LogCommandNode, ns: TzarGames.GameCore.ScriptViz.Graph, asm: TzarGames.GameCore}
+      data:
+        ID:
+          Value: 14
+        Position: {x: 1845, y: -112}
+        input:
+          ID:
+            Value: 88
+          ConnectedSocketIDs:
+          - Value: 86
+        output:
+          ID:
+            Value: 89
+          ConnectedSocketIDs: []
+        EntitySocket:
+          ID:
+            Value: 90
+          ConnectedSocketIDs: []
+          AuthoringValue: {fileID: 0}
+        Message: "\u0445\u043E\u0440\u043E\u0448\u043E"
+        LogType: 0
+    - rid: 8007337815007035443
+      type: {class: LogCommandNode, ns: TzarGames.GameCore.ScriptViz.Graph, asm: TzarGames.GameCore}
+      data:
+        ID:
+          Value: 15
+        Position: {x: 1845, y: 67}
+        input:
+          ID:
+            Value: 91
+          ConnectedSocketIDs:
+          - Value: 87
+        output:
+          ID:
+            Value: 92
+          ConnectedSocketIDs: []
+        EntitySocket:
+          ID:
+            Value: 93
+          ConnectedSocketIDs: []
+          AuthoringValue: {fileID: 0}
+        Message: "\u043F\u043B\u043E\u0445\u043E"
         LogType: 0
 --- !u!65 &1162684710
 BoxCollider:
@@ -23868,34 +23991,6 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 5, y: 5, z: 5}
   m_Center: {x: 0, y: 0, z: 0}
---- !u!114 &1162684711
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1162684706}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 56eb0353ae6e5124bb35b17aff880f16, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_StringReference:
-    m_TableReference:
-      m_TableCollectionName: GUID:aad91b28e51f6fc489b46b3d5b4a981a
-    m_TableEntryReference:
-      m_KeyId: 45308801024
-      m_Key: 
-    m_FallbackState: 0
-    m_WaitForCompletion: 0
-    m_LocalVariables: []
-  m_FormatArguments: []
-  m_UpdateString:
-    m_PersistentCalls:
-      m_Calls: []
-  references:
-    version: 2
-    RefIds: []
 --- !u!1001 &1166994932
 PrefabInstance:
   m_ObjectHideFlags: 0

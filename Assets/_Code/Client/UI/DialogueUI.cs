@@ -28,7 +28,7 @@ namespace Arena.Client.UI
             AnswerPrefab.SetActive(false);
         }
 
-        public void ShowDialogue(Entity dialogueEntity, string message, IEnumerable<DialogueAnswerData> answers)
+        public void ShowDialogue(Entity playerEntity, Entity dialogueEntity, string message, IEnumerable<DialogueAnswerData> answers)
         {
             MessageText.text = message;
 
@@ -62,7 +62,8 @@ namespace Arena.Client.UI
                     
                     EntityManager.SetComponentData(signalEntity, new DialogueAnswerSignal
                     {
-                        ScriptVizEntity = dialogueEntity,
+                        Player = playerEntity,
+                        DialogueEntity = dialogueEntity,
                         CommandAddress = answer.CommandAddress
                     });
                 });

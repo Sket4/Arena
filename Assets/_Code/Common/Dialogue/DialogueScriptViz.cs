@@ -46,9 +46,10 @@ namespace Arena.Dialogue
 
             if (data->AnswersStartAddress.IsInvalid)
             {
+                Debug.LogError($"answer start data is invalid for message ID: {data->LocalizedMessageID}, dialogue entity: {context.OwnerEntity.Index}");
                 return;
             }
-
+            
             var outPtr = (DialogueAnswer*)context.GetConstantDataPtr(data->AnswersStartAddress);
             var outCount = data->AnswerCount;
 
@@ -56,6 +57,8 @@ namespace Arena.Dialogue
 
             var player = context.ReadEntityFromVariableData(data->Player);
             var companion = context.ReadEntityFromVariableData(data->Companion);
+            
+            Debug.Log($"Show dialogue command for player {player.Index} and companion {companion.Index}, dialogue entity {context.OwnerEntity.Index}, message ID: {data->LocalizedMessageID}");
             
             context.Commands.AddComponent(context.SortIndex, dialogueRequest, new DialogueMessage
             {
@@ -314,16 +317,12 @@ namespace Arena.Dialogue
 
             foreach (var element in AnswerOutputSockets)
             {
-                var nodeAddr = compilerAllocator.GetFirstConnectedNodeAddress(element);
-                if(nodeAddr.IsInvalid)
-                {
-                    continue;
-                }
-
                 if (element.Value == null)
                 {
                     continue;
                 }
+                
+                var nodeAddr = compilerAllocator.GetFirstConnectedNodeAddress(element);
                 
                 outputList.Add(new DialogueAnswer
                 {

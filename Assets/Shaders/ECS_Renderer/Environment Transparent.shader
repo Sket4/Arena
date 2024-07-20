@@ -63,7 +63,6 @@ Shader "Arena/Environment Transparent"
             // make fog work
             #pragma multi_compile_fog
             #pragma multi_compile _ DOTS_INSTANCING_ON
-            #pragma shader_feature __ TG_TRANSPARENT
             #pragma shader_feature TG_USE_ALPHACLIP
 			#pragma multi_compile UG_QUALITY_LOW UG_QUALITY_MED UG_QUALITY_HIGH
             #pragma shader_feature USE_UNDERWATER
@@ -72,6 +71,8 @@ Shader "Arena/Environment Transparent"
             //#pragma multi_compile_fwdbase
             #pragma multi_compile _ LIGHTMAP_ON
             #pragma multi_compile _ DIRLIGHTMAP_COMBINED
+
+            #define TG_TRANSPARENT
 
             #include "Input-Env.hlsl"
             #include "Common-Env.hlsl"

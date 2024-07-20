@@ -123,6 +123,11 @@ namespace Arena.Dialogue
                 });
                 commands.SetComponentEnabled<DialogueUpdateState>(0, signal.Player, false);
 
+                if (signal.CommandAddress.IsInvalid)
+                {
+                    return;
+                }
+
                 var aspect = SystemAPI.GetAspect<ScriptVizAspect>(signal.DialogueEntity);
                             
                 var codeBytes = SystemAPI.GetBuffer<CodeDataByte>(aspect.CodeInfo.ValueRO.CodeDataEntity);
@@ -130,11 +135,6 @@ namespace Arena.Dialogue
 
                 using (var contextHandle = new ContextDisposeHandle(codeBytes, constEntityVarData, ref aspect, ref commands, entityInQueryIndex, deltaTime))
                 {
-                    if (signal.CommandAddress.IsInvalid)
-                    {       
-                        Debug.LogError($"invalid command address {signal.CommandAddress.Value}");
-                        return;
-                    }
                     contextHandle.Execute(signal.CommandAddress);  
                 }
 

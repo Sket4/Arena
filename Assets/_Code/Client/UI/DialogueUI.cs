@@ -30,6 +30,8 @@ namespace Arena.Client.UI
 
         public void ShowDialogue(Entity playerEntity, Entity dialogueEntity, string message, IEnumerable<DialogueAnswerData> answers)
         {
+            Debug.Log($"Show dialogue from entity {dialogueEntity}");
+            
             MessageText.text = message;
 
             foreach (Transform child in AnswerContainer)

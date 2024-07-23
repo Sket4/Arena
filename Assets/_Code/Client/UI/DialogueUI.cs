@@ -28,11 +28,23 @@ namespace Arena.Client.UI
             AnswerPrefab.SetActive(false);
         }
 
+        string replace(string original, string playerName)
+        {
+            return original.Replace("{playername}", playerName);
+        }
+
         public void ShowDialogue(Entity playerEntity, Entity dialogueEntity, string message, IEnumerable<DialogueAnswerData> answers)
         {
+            var playerName = "Dinar";
+
+            if (HasData<Name30>())
+            {
+                playerName = GetData<Name30>().Value.ToString();
+            }
+            
             Debug.Log($"Show dialogue from entity {dialogueEntity}");
             
-            MessageText.text = message;
+            MessageText.text = replace(message, playerName);
 
             foreach (Transform child in AnswerContainer)
             {
@@ -49,9 +61,9 @@ namespace Arena.Client.UI
                 answerUI.SetActive(true);
                 answerUI.transform.SetParent(AnswerContainer);
 
-                var text = Utility.FindChild(answerUI.transform, "answer text").GetComponent<TMPro.TextMeshProUGUI>();
+                var text = answerUI.GetComponent<TMPro.TextMeshProUGUI>();
                 text.enabled = true;
-                text.text = answer.Text;
+                text.text = replace(answer.Text, playerName);
                 
                 var button = answerUI.GetComponent<Button>();
                 

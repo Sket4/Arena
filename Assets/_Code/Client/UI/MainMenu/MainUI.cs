@@ -9,8 +9,10 @@ using TzarGames.GameCore;
 using TzarGames.GameCore.Client;
 using TzarGames.GameCore.ScriptViz;
 using TzarGames.MatchFramework.Client;
+using TzarGames.Rendering;
 using Unity.Entities;
 using UnityEngine;
+using UnityEngine.Events;
 
 namespace Arena.Client.UI.MainMenu
 {
@@ -44,6 +46,8 @@ namespace Arena.Client.UI.MainMenu
         UIBase currentWindow;
 
         public World SceneWorld => gameLauncher.GameLoop?.World;
+        
+        public UnityEvent OnSceneLoaded;
 
         void Start()
         {
@@ -108,6 +112,20 @@ namespace Arena.Client.UI.MainMenu
             gameLauncher.GameLoop.AddGameSystem<AnimationSystem>();
             gameLauncher.GameLoop.AddGameSystem<CharacterModelSmoothMovementSystem>();
             gameLauncher.GameLoop.AddGameSystem<MaterialRenderingSystem>(gameLauncher.GameLoop.World.GetExistingSystemManaged<PresentationSystemGroup>());
+
+            Debug.Log("start waiting for mesh and material loading");
+            var renderingSystem = gameLauncher.GameLoop.World.GetExistingSystemManaged<RenderingSystem>();
+
+            while (renderingSystem.LoadingMaterialCount > 0 || renderingSystem.LoadingMeshCount > 0)
+            {
+                yield return null;
+            }
+            
+            Debug.Log("finished waiting for mesh and material loading");
+
+            yield return null;
+            
+            OnSceneLoaded.Invoke();
         }
 
         void GameState_OnMainMenuLoaded()

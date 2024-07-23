@@ -15,7 +15,7 @@ namespace Arena.Editor
 			TGA
 		}
 		
-		[MenuItem("Arena/Утилиты/MeSmAO creator")]
+		[MenuItem("Arena/Утилиты/MeSmAO creator _F10")]
 		public static void ShowWindow()
 		{
 			DisplayWizard<MeSmAO_Creator>("Создание текстуры MeSmAO", "Создать");
@@ -25,7 +25,7 @@ namespace Arena.Editor
         public bool InvertSmoothness;
 		public Texture2D AO_Map;
 		public FileTypes FileType;
-		public bool IgnoreAlpha = false;
+		public bool IgnoreAlpha = true;
 
 		void OnWizardCreate()
 		{
@@ -66,9 +66,11 @@ namespace Arena.Editor
 				{
 					mesmPixel.a = 1;
 				}
+
+				mesmPixel = mesmPixel.linear;
 			}
 
-			var newTexture = new Texture2D(MetallicSmoothnessMap.width, MetallicSmoothnessMap.height, TextureFormat.ARGB32, true);
+			var newTexture = new Texture2D(MetallicSmoothnessMap.width, MetallicSmoothnessMap.height, TextureFormat.RGBA32, true, true);
 			
 			newTexture.SetPixels(mesmPixels);
 			newTexture.Apply();

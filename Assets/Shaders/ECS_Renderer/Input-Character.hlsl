@@ -8,7 +8,7 @@ CBUFFER_START(UnityPerMaterial)
     half4 _BaseMap_ST;
     half4 _RimColor;
     half _RimStr;
-    half _Roughness;
+    half _Smoothness;
     half _Metallic;
     //half4 _BaseColor;
 

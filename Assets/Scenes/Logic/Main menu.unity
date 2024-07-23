@@ -3703,10 +3703,10 @@ RectTransform:
   - {fileID: 358611560}
   - {fileID: 1151581981}
   - {fileID: 1064288006}
-  - {fileID: 1136293434}
   - {fileID: 1685723312}
   - {fileID: 1111419474}
   - {fileID: 403937494}
+  - {fileID: 1136293434}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
@@ -3733,6 +3733,21 @@ MonoBehaviour:
   settingsUI: {fileID: 1363171663}
   characterEditorUI: {fileID: 1685723311}
   gameLauncher: {fileID: 1559345735}
+  OnSceneLoaded:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 1408474754}
+        m_TargetAssemblyTypeName: UnityEngine.Behaviour, UnityEngine
+        m_MethodName: set_enabled
+        m_Mode: 6
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 1
+        m_CallState: 2
 --- !u!82 &280715124
 AudioSource:
   m_ObjectHideFlags: 0
@@ -7372,8 +7387,8 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 610314329}
   m_HandleRect: {fileID: 610314328}
   m_Direction: 0
-  m_Value: 1
-  m_Size: 0.9999999
+  m_Value: 0
+  m_Size: 0.99999994
   m_NumberOfSteps: 0
   m_OnValueChanged:
     m_PersistentCalls:
@@ -7598,7 +7613,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 240, y: -25}
+  m_AnchoredPosition: {x: 270, y: -25}
   m_SizeDelta: {x: 252.68, y: 100}
   m_Pivot: {x: 0.5, y: 1}
 --- !u!114 &514362370
@@ -19939,6 +19954,7 @@ GameObject:
   - component: {fileID: 1408474755}
   - component: {fileID: 1408474754}
   - component: {fileID: 1408474753}
+  - component: {fileID: 1408474757}
   m_Layer: 5
   m_Name: Fade in background
   m_TagString: Untagged
@@ -19999,7 +20015,7 @@ Animation:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1408474752}
-  m_Enabled: 1
+  m_Enabled: 0
   serializedVersion: 3
   m_Animation: {fileID: 7400000, guid: 11e58d01353269b48a124bd63ed8bd7e, type: 2}
   m_Animations:
@@ -20046,6 +20062,19 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1408474752}
   m_CullTransparentMesh: 0
+--- !u!114 &1408474757
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1408474752}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4b384baa85d91431dbc786751ab45398, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  rectTransform: {fileID: 1136293434}
 --- !u!1 &1417697227
 GameObject:
   m_ObjectHideFlags: 0

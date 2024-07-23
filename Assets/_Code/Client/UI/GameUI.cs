@@ -12,6 +12,7 @@ using TzarGames.GameCore;
 using System.Collections;
 using Arena.Client;
 using Arena;
+using UnityEngine.Events;
 
 namespace Arena.Client.UI
 {
@@ -79,6 +80,8 @@ namespace Arena.Client.UI
         [SerializeField] private LocalizedStringAsset newLevelMessage = default;
 
         private TzarGames.MultiplayerKit.Client.ClientSystem clientSystem;
+
+        [SerializeField] private UnityEvent onSceleLoaded;
 
         public PlayerCharacterUI HUD
         {
@@ -233,6 +236,7 @@ namespace Arena.Client.UI
                     UI.inventoryButton.gameObject.SetActive(true);
                 }
             }
+            
             public override void OnStateEnd(State nextState)
             {
                 base.OnStateEnd(nextState);
@@ -939,10 +943,24 @@ namespace Arena.Client.UI
             }
 			
             GotoState<Gameplay>();
+
+            StartCoroutine(startFade(manager));
+
             //hud.Character.OnCharacterDead += onPlayerCharacterDead;
             //hud.Character.OnCharacterAlive += onPlayerCharacterAlive;
             //hud.Character.OnCharacterLevelUp += CharacterOnOnCharacterLevelUp;
-		}
+        }
+
+        IEnumerator startFade(EntityManager manager)
+        {
+            var renderingSystem = manager.World.GetExistingSystemManaged<TzarGames.Rendering.RenderingSystem>();
+
+            while (renderingSystem.LoadingMaterialCount > 0 && renderingSystem.LoadingMeshCount > 0)
+            {
+                yield return null;
+            }
+            onSceleLoaded.Invoke();
+        }
 
 		//private void CharacterOnOnCharacterLevelUp(Character character)
 		//{

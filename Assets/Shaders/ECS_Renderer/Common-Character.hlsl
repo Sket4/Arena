@@ -50,7 +50,7 @@ sampler2D _BaseMap;
 sampler2D _FadeMap;
 #endif
 sampler2D _BumpMap;
-sampler2D _MeSmAO_Map;
+sampler2D _MetallicSmoothnessMap;
 
 v2f vert (appdata v)
 {
@@ -121,10 +121,11 @@ half4 frag (v2f i) : SV_Target
     float3 normalWS = TransformTangentToWorld(normalTS.xyz, tangentToWorld, true);
 
     //mesm.rgb *= _Metallic;
-    half4 mesmao = tex2D(_MeSmAO_Map, i.uv);
-    half metallic = mesmao.r * _Metallic;
+    half4 mesm = tex2D(_MetallicSmoothnessMap, i.uv);
+    half3 metallic = mesm.rgb * _Metallic;
+    mesm.a *= _Smoothness;
 
-    half roughness = (1.0 - mesmao.g) * _Roughness;
+    half roughness = 1.0 - mesm.a;
 
     half3 lighting = TG_ComputeAmbientLight_half(normalWS);
 
@@ -141,8 +142,8 @@ half4 frag (v2f i) : SV_Target
     //lighting += specular;
 
     half3 envMapColor = TG_ReflectionProbe(viewDirWS, normalWS, i.instanceData.y, roughness * 4);
-    envMapColor *= mesmao.b;
-    half4 finalColor = LightingPBR(diffuse, lighting, viewDirWS, normalWS, metallic.rrr, roughness, envMapColor);
+    //envMapColor *= metallic.a;
+    half4 finalColor = LightingPBR(diffuse, lighting, viewDirWS, normalWS, metallic, roughness, envMapColor);
 
     #if USE_RIM
     half ndotv = dot(viewDirWS, normalWS);

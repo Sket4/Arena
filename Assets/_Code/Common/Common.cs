@@ -87,7 +87,8 @@ namespace Arena
             gameLoop.AddPreSimGameSystem<LevelSystem>();
             
             if(isAuthoritative)
-            {    
+            {
+                gameLoop.AddPreSimGameSystem<TargetSystem>();
                 gameLoop.AddPreSimGameSystem<MovementAISystem>();
                 gameLoop.AddPreSimGameSystem<SpawnerSystem>();
                 gameLoop.AddPreSimGameSystem<PathMovementSystem>();

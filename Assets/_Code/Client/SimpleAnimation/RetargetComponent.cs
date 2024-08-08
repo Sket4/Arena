@@ -46,6 +46,32 @@ namespace Arena.Client.Anima
 
             var targetBones = retargetAvatar.humanDescription.human;
             
+#if UNITY_EDITOR
+            // если объект находится на сцене, то он, скорее всего, не находится в начале координат,
+            // поэтому смещаем его корень в начало координат, чтобы не ломался ретаргетинг
+            Transform modifiedRootTransform = null;
+            Vector3 prevRootPosition = default;
+            Quaternion prevRootRotation = default;
+
+            if (dstRig.gameObject.scene.IsValid())
+            {
+                if(UnityEditor.PrefabUtility.IsPartOfAnyPrefab(dstRig.gameObject))
+                {
+                    modifiedRootTransform = UnityEditor.PrefabUtility.GetOutermostPrefabInstanceRoot(dstRig.gameObject).transform;
+                }
+                else
+                {
+                    modifiedRootTransform = transform;
+                }
+
+                prevRootPosition = modifiedRootTransform.position;
+                prevRootRotation = modifiedRootTransform.rotation;
+                    
+                modifiedRootTransform.position = Vector3.zero;
+                modifiedRootTransform.rotation = quaternion.identity;
+            }
+#endif
+            
             for (var boneIter = 0; boneIter < targetBones.Length; boneIter++)
             {
                 var targetBone = targetBones[boneIter];
@@ -120,6 +146,14 @@ namespace Arena.Client.Anima
                     });
                 }
             }
+            
+            #if UNITY_EDITOR
+            if (modifiedRootTransform)
+            {
+                modifiedRootTransform.position = prevRootPosition;
+                modifiedRootTransform.rotation = prevRootRotation;    
+            }
+            #endif
             
             return new RemapData
             {

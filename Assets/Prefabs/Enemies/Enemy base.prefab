@@ -84,6 +84,9 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 1415852907774143442, guid: 24123f7370a893b41bbaaae4bd1791d1, type: 3}
       insertIndex: -1
       addedObject: {fileID: 2931668029453089402}
+    - targetCorrespondingSourceObject: {fileID: 1415852907774143442, guid: 24123f7370a893b41bbaaae4bd1791d1, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 2232529582706308508}
   m_SourcePrefab: {fileID: 100100000, guid: 24123f7370a893b41bbaaae4bd1791d1, type: 3}
 --- !u!1 &7334291140803663390 stripped
 GameObject:
@@ -181,11 +184,384 @@ MonoBehaviour:
     IdleInterval: 3
     EnableTraceDestinationPoint: 1
     TraceVerticalOffset: 2
-    TraceDistance: 2
     TraceLayers: 0
     LastIdleStartTime: 0
-    State: 0
-  EnabledByDefault: 1
+  EnabledByDefault: 0
   TraceLayers:
     serializedVersion: 2
     m_Bits: 1
+--- !u!114 &2232529582706308508
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7334291140803663390}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 25d87a6b957a60841942c7e71e0c252f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ConversionTargetOptions: -1
+  Graph:
+    rid: 4877893344000475137
+  references:
+    version: 2
+    RefIds:
+    - rid: 4877893344000475137
+      type: {class: ScriptVizGraph, ns: TzarGames.GameCore.ScriptViz.Graph, asm: TzarGames.GameCore}
+      data:
+        pages:
+        - ConversionTargetOptions: 7
+          variables:
+          - rid: 4877893344000475143
+          nodes:
+          - rid: 4877893344000475138
+          - rid: 4877893344000475139
+          - rid: 4877893344000475140
+          - rid: 4877893344000475141
+          - rid: 4877893344000475142
+          - rid: 4877893344000475152
+          - rid: 4877893344000475154
+          - rid: 4877893368165957654
+          - rid: 4877893368165957693
+          - rid: 4877893374614962179
+          - rid: 4877893374614962180
+          - rid: 4877893374614962182
+          - rid: 4877893374614962184
+          - rid: 4877893374614962185
+          - rid: 4877893374614962186
+          - rid: 4877893374614962198
+        states:
+        - id:
+            Value: 1
+          Name: "\u041F\u0430\u0442\u0440\u0443\u043B\u0438\u0440\u043E\u0432\u0430\u043D\u0438\u0435"
+        - id:
+            Value: 2
+          Name: "\u0410\u0442\u0430\u043A\u0430"
+        - id:
+            Value: 3
+          Name: "\u0421\u043C\u0435\u0440\u0442\u044C"
+        sockedIdCounter: 48
+        variableIdCounter: 2
+        nodeIdCounter: 22
+        stateIdCounter: 5
+    - rid: 4877893344000475138
+      type: {class: GoToStateNode, ns: TzarGames.GameCore.ScriptViz.Graph, asm: TzarGames.GameCore}
+      data:
+        ID:
+          Value: 1
+        Position: {x: 714.6666, y: 616}
+        input:
+          ID:
+            Value: 1
+          ConnectedSocketIDs:
+          - Value: 3
+        output:
+          ID:
+            Value: 2
+          ConnectedSocketIDs: []
+        stateID:
+          Value: 3
+    - rid: 4877893344000475139
+      type: {class: DeadEventNodeBase, ns: TzarGames.GameCore.ScriptViz.Commands, asm: TzarGames.GameCore}
+      data:
+        ID:
+          Value: 2
+        Position: {x: 592.6666, y: 616}
+        output:
+          ID:
+            Value: 3
+          ConnectedSocketIDs:
+          - Value: 1
+    - rid: 4877893344000475140
+      type: {class: StartEventNode, ns: TzarGames.GameCore.ScriptViz.Graph, asm: TzarGames.GameCore}
+      data:
+        ID:
+          Value: 3
+        Position: {x: 592.6666, y: 428}
+        output:
+          ID:
+            Value: 4
+          ConnectedSocketIDs:
+          - Value: 5
+    - rid: 4877893344000475141
+      type: {class: GoToStateNode, ns: TzarGames.GameCore.ScriptViz.Graph, asm: TzarGames.GameCore}
+      data:
+        ID:
+          Value: 4
+        Position: {x: 711.3334, y: 428}
+        input:
+          ID:
+            Value: 5
+          ConnectedSocketIDs:
+          - Value: 4
+        output:
+          ID:
+            Value: 6
+          ConnectedSocketIDs: []
+        stateID:
+          Value: 1
+    - rid: 4877893344000475142
+      type: {class: EnterStateNode, ns: TzarGames.GameCore.ScriptViz.Graph, asm: TzarGames.GameCore}
+      data:
+        ID:
+          Value: 5
+        Position: {x: 594, y: 856}
+        output:
+          ID:
+            Value: 7
+          ConnectedSocketIDs:
+          - Value: 12
+        stateID:
+          Value: 1
+    - rid: 4877893344000475143
+      type: {class: DynamicArrayVariable, ns: TzarGames.GameCore.ScriptViz.Graph, asm: TzarGames.GameCore}
+      data:
+        ID:
+          Value: 1
+        Name: _delayed_commands
+        NetSyncEnabled: 0
+    - rid: 4877893344000475152
+      type: {class: EnableFollowOnDetectNode, ns: TzarGames.GameCore.ScriptViz.Commands, asm: TzarGames.GameCore}
+      data:
+        ID:
+          Value: 6
+        Position: {x: 1054.6667, y: 832}
+        input:
+          ID:
+            Value: 8
+          ConnectedSocketIDs:
+          - Value: 13
+        output:
+          ID:
+            Value: 9
+          ConnectedSocketIDs:
+          - Value: 15
+        TargetEntity:
+          ID:
+            Value: 10
+          ConnectedSocketIDs:
+          - Value: 14
+          AuthoringValue: {fileID: 0}
+        Enable:
+          ID:
+            Value: 11
+          ConnectedSocketIDs: []
+          Value: 0
+    - rid: 4877893344000475154
+      type: {class: GetSelfNode, ns: TzarGames.GameCore.ScriptViz.Graph, asm: TzarGames.GameCore}
+      data:
+        ID:
+          Value: 7
+        Position: {x: 892.66675, y: 856}
+        input:
+          ID:
+            Value: 12
+          ConnectedSocketIDs:
+          - Value: 7
+        output:
+          ID:
+            Value: 13
+          ConnectedSocketIDs:
+          - Value: 8
+        SelfOutSocket:
+          ID:
+            Value: 14
+          ConnectedSocketIDs:
+          - Value: 10
+          - Value: 17
+          AuthoringValue: {fileID: 0}
+    - rid: 4877893368165957654
+      type: {class: EnableMoveAroundPointNode, ns: TzarGames.GameCore.ScriptViz.Commands, asm: TzarGames.GameCore}
+      data:
+        ID:
+          Value: 8
+        Position: {x: 1400, y: 934.6667}
+        input:
+          ID:
+            Value: 15
+          ConnectedSocketIDs:
+          - Value: 9
+        output:
+          ID:
+            Value: 16
+          ConnectedSocketIDs: []
+        TargetEntity:
+          ID:
+            Value: 17
+          ConnectedSocketIDs:
+          - Value: 14
+          AuthoringValue: {fileID: 0}
+        Enable:
+          ID:
+            Value: 18
+          ConnectedSocketIDs: []
+          Value: 1
+    - rid: 4877893368165957693
+      type: {class: OnTargetChangedEventNode, ns: Arena.ScriptViz, asm: Arena.Common}
+      data:
+        ID:
+          Value: 9
+        Position: {x: 590.6666, y: 1120.6666}
+        output:
+          ID:
+            Value: 19
+          ConnectedSocketIDs:
+          - Value: 28
+        TargetEntityOutSocket:
+          ID:
+            Value: 20
+          ConnectedSocketIDs:
+          - Value: 29
+          AuthoringValue: {fileID: 0}
+    - rid: 4877893374614962179
+      type: {class: GoToStateNode, ns: TzarGames.GameCore.ScriptViz.Graph, asm: TzarGames.GameCore}
+      data:
+        ID:
+          Value: 13
+        Position: {x: 1148.6667, y: 1223.3334}
+        input:
+          ID:
+            Value: 26
+          ConnectedSocketIDs:
+          - Value: 31
+        output:
+          ID:
+            Value: 27
+          ConnectedSocketIDs: []
+        stateID:
+          Value: 2
+    - rid: 4877893374614962180
+      type: {class: EntityNullCheckNode, ns: TzarGames.GameCore.ScriptViz.Graph, asm: TzarGames.GameCore}
+      data:
+        ID:
+          Value: 14
+        Position: {x: 796.66675, y: 1120.6666}
+        InputSocket:
+          ID:
+            Value: 28
+          ConnectedSocketIDs:
+          - Value: 19
+        NullSocket:
+          ID:
+            Value: 30
+          ConnectedSocketIDs:
+          - Value: 33
+        NotNullSocket:
+          ID:
+            Value: 31
+          ConnectedSocketIDs:
+          - Value: 26
+        ValueToCompareSocket:
+          ID:
+            Value: 29
+          ConnectedSocketIDs:
+          - Value: 20
+          AuthoringValue: {fileID: 0}
+    - rid: 4877893374614962182
+      type: {class: GoToStateNode, ns: TzarGames.GameCore.ScriptViz.Graph, asm: TzarGames.GameCore}
+      data:
+        ID:
+          Value: 16
+        Position: {x: 1148.6667, y: 1120.6666}
+        input:
+          ID:
+            Value: 33
+          ConnectedSocketIDs:
+          - Value: 30
+        output:
+          ID:
+            Value: 34
+          ConnectedSocketIDs: []
+        stateID:
+          Value: 1
+    - rid: 4877893374614962184
+      type: {class: EnableFollowOnDetectNode, ns: TzarGames.GameCore.ScriptViz.Commands, asm: TzarGames.GameCore}
+      data:
+        ID:
+          Value: 18
+        Position: {x: 962, y: 1418.6666}
+        input:
+          ID:
+            Value: 36
+          ConnectedSocketIDs:
+          - Value: 41
+        output:
+          ID:
+            Value: 37
+          ConnectedSocketIDs:
+          - Value: 43
+        TargetEntity:
+          ID:
+            Value: 38
+          ConnectedSocketIDs:
+          - Value: 42
+          AuthoringValue: {fileID: 0}
+        Enable:
+          ID:
+            Value: 39
+          ConnectedSocketIDs: []
+          Value: 1
+    - rid: 4877893374614962185
+      type: {class: GetSelfNode, ns: TzarGames.GameCore.ScriptViz.Graph, asm: TzarGames.GameCore}
+      data:
+        ID:
+          Value: 19
+        Position: {x: 832, y: 1418.6666}
+        input:
+          ID:
+            Value: 40
+          ConnectedSocketIDs:
+          - Value: 47
+        output:
+          ID:
+            Value: 41
+          ConnectedSocketIDs:
+          - Value: 36
+        SelfOutSocket:
+          ID:
+            Value: 42
+          ConnectedSocketIDs:
+          - Value: 45
+          - Value: 38
+          AuthoringValue: {fileID: 0}
+    - rid: 4877893374614962186
+      type: {class: EnableMoveAroundPointNode, ns: TzarGames.GameCore.ScriptViz.Commands, asm: TzarGames.GameCore}
+      data:
+        ID:
+          Value: 20
+        Position: {x: 1310, y: 1497.3334}
+        input:
+          ID:
+            Value: 43
+          ConnectedSocketIDs:
+          - Value: 37
+        output:
+          ID:
+            Value: 44
+          ConnectedSocketIDs: []
+        TargetEntity:
+          ID:
+            Value: 45
+          ConnectedSocketIDs:
+          - Value: 42
+          AuthoringValue: {fileID: 0}
+        Enable:
+          ID:
+            Value: 46
+          ConnectedSocketIDs: []
+          Value: 0
+    - rid: 4877893374614962198
+      type: {class: EnterStateNode, ns: TzarGames.GameCore.ScriptViz.Graph, asm: TzarGames.GameCore}
+      data:
+        ID:
+          Value: 21
+        Position: {x: 606.6666, y: 1418.6666}
+        output:
+          ID:
+            Value: 47
+          ConnectedSocketIDs:
+          - Value: 40
+        stateID:
+          Value: 2

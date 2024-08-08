@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using TzarGames.GameCore;
 using Unity.Entities;
+using UnityEngine;
 
 namespace Arena.CampaignTools
 {
@@ -155,6 +156,11 @@ namespace Arena.CampaignTools
                 {
                     foreach (var gameSceneRef in gameSceneRefs)
                     {
+                        if(gameSceneRef.Value == Entity.Null)
+                        {
+                            Debug.LogError("null game scene ref");
+                            continue;
+                        }
                         ecb.AddComponent(gameSceneRef.Value, new GameSceneNodeEntityReference { Value = entity });
                     }
 

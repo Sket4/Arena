@@ -126,14 +126,17 @@ namespace Arena.Client
 
             var mapping = baker.AddBuffer<TempBakingData>();
 
-            foreach (var fadingMaterial in fadingMaterials)
+            if (fadingMaterials != null)
             {
-                var data = new MaterialFadeReplacement
+                foreach (var fadingMaterial in fadingMaterials)
                 {
-                    Original = new WeakObjectReference<Material>(fadingMaterial.Original),
-                    Replacement = new WeakObjectReference<Material>(fadingMaterial.Replacement)
-                };
-                mapping.Add(new TempBakingData { replacement = data });
+                    var data = new MaterialFadeReplacement
+                    {
+                        Original = new WeakObjectReference<Material>(fadingMaterial.Original),
+                        Replacement = new WeakObjectReference<Material>(fadingMaterial.Replacement)
+                    };
+                    mapping.Add(new TempBakingData { replacement = data });
+                }    
             }
         }
         #endif

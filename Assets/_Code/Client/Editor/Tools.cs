@@ -527,7 +527,7 @@ public static class Tools
 
         static void dialog(string message)
         {
-            EditorUtility.DisplayDialog("", message, "OK");
+            EditorUtility.DisplayDialog("Сообщение", message, "OK");
         }
 
         [MenuItem("Arena/Утилиты/Настройка префаба модели ArmorSet")]
@@ -535,11 +535,11 @@ public static class Tools
         {
             var sb = new StringBuilder();
             var obj = Selection.activeGameObject;
-            
+
             try
             {
                 var retargetCmp = obj.GetComponent<RetargetComponent>();
-            
+
                 if (retargetCmp == null)
                 {
                     sb.AppendLine($"нет {nameof(RetargetComponent)}");
@@ -553,9 +553,13 @@ public static class Tools
                 }
 
                 var avatar = retargetCmp.RetargetAvatar;
-            
+
                 setupArmorSetComponent(sb, obj, avatar, retargetCmp);
                 setupRagdoll(sb, obj, avatar, retargetCmp);
+            }
+            catch (System.Exception ex)
+            {
+                dialog(ex.Message);
             }
             finally
             {
@@ -584,6 +588,12 @@ public static class Tools
         static void setupArmorSetComponent(StringBuilder sb, GameObject obj, Avatar avatar, RetargetComponent retargetCmp)
         {
             var armorSetCmp = obj.GetComponent<ArmorSetAppearanceComponent>();
+
+            if (armorSetCmp == null)
+            {
+                Debug.LogWarning($"не найден компонент {nameof(ArmorSetAppearanceComponent)}, настраиваю без него");
+                return;
+            }
 
                 Func<string, Transform> setupArmorSetBone = (string boneName) =>
                 {

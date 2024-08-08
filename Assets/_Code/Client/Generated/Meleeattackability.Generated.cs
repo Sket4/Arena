@@ -32,6 +32,8 @@ namespace TzarGames.GameCore.Abilities.Generated
 		[NativeDisableContainerSafetyRestriction]
 		public BufferTypeHandle<TzarGames.GameCore.ScriptViz.EntityVariableData> EntityVariableDataType;
 		[NativeDisableContainerSafetyRestriction]
+		public ComponentTypeHandle<TzarGames.GameCore.ScriptViz.ScriptVizState> ScriptVizStateType;
+		[NativeDisableContainerSafetyRestriction]
 		[ReadOnly] public ComponentTypeHandle<TzarGames.GameCore.ScriptViz.ScriptVizCodeInfo> ScriptVizCodeInfoType;
 		[NativeDisableContainerSafetyRestriction]
 		[ReadOnly] public ComponentTypeHandle<TzarGames.GameCore.Abilities.CopyOwnerTransformToAbilityOnUpdate> CopyOwnerTransformToAbilityOnUpdateType;
@@ -52,6 +54,10 @@ namespace TzarGames.GameCore.Abilities.Generated
 		[NativeDisableContainerSafetyRestriction]
 		public ComponentTypeHandle<TzarGames.GameCore.Abilities.MoveToTargetAbilityComponentData> MoveToTargetAbilityComponentDataType;
 		[NativeDisableContainerSafetyRestriction]
+		[ReadOnly] public ComponentTypeHandle<TzarGames.GameCore.Abilities.CopyOwnerDamageToAbility> CopyOwnerDamageToAbilityType;
+		[NativeDisableContainerSafetyRestriction]
+		public ComponentTypeHandle<TzarGames.GameCore.Damage> DamageType;
+		[NativeDisableContainerSafetyRestriction]
 		[ReadOnly] public ComponentTypeHandle<TzarGames.GameCore.Abilities.CopyOwnerTransformToAbilityOnStart> CopyOwnerTransformToAbilityOnStartType;
 		[NativeDisableContainerSafetyRestriction]
 		[ReadOnly] public ComponentTypeHandle<TzarGames.GameCore.Abilities.CopyOwnerCriticalToAbility> CopyOwnerCriticalToAbilityType;
@@ -64,10 +70,6 @@ namespace TzarGames.GameCore.Abilities.Generated
 		[NativeDisableContainerSafetyRestriction]
 		public ComponentTypeHandle<TzarGames.GameCore.MinimalRadius> MinimalRadiusType;
 		[NativeDisableContainerSafetyRestriction]
-		[ReadOnly] public ComponentTypeHandle<TzarGames.GameCore.Abilities.CopyOwnerDamageToAbility> CopyOwnerDamageToAbilityType;
-		[NativeDisableContainerSafetyRestriction]
-		public ComponentTypeHandle<TzarGames.GameCore.Damage> DamageType;
-		[NativeDisableContainerSafetyRestriction]
 		public ComponentTypeHandle<TzarGames.GameCore.Abilities.ModifyOwnerCharacteristics> ModifyOwnerCharacteristicsType;
 		[NativeDisableContainerSafetyRestriction]
 		[ReadOnly] public BufferTypeHandle<TzarGames.GameCore.Abilities.HitQueryAbilityAction> HitQueryAbilityActionType;
@@ -76,15 +78,15 @@ namespace TzarGames.GameCore.Abilities.Generated
 
 		public TzarGames.GameCore.Abilities.MoveToTargetAbilityComponentJob _MoveToTargetAbilityComponentJob;
 		public Arena.Abilities.ActionSequenceAbilityJob _ActionSequenceAbilityJob;
-		public TzarGames.GameCore.Abilities.AttackHeightJob _AttackHeightJob;
-		public TzarGames.GameCore.Abilities.DurationJob _DurationJob;
-		public TzarGames.GameCore.Abilities.ModifyOwnerCharacteristicsJob _ModifyOwnerCharacteristicsJob;
-		public TzarGames.GameCore.Abilities.CopyOwnerTransformToAbilityOnStartJob _CopyOwnerTransformToAbilityOnStartJob;
-		public TzarGames.GameCore.Abilities.CopyOwnerCriticalToAbilityJob _CopyOwnerCriticalToAbilityJob;
-		public TzarGames.GameCore.Abilities.CopyOwnerRadiusToAbilityJob _CopyOwnerRadiusToAbilityJob;
 		public TzarGames.GameCore.Abilities.ConvertRotationToDirectionJob _ConvertRotationToDirectionJob;
 		public TzarGames.GameCore.Abilities.CopyOwnerDamageToAbilityJob _CopyOwnerDamageToAbilityJob;
+		public TzarGames.GameCore.Abilities.CopyOwnerTransformToAbilityOnStartJob _CopyOwnerTransformToAbilityOnStartJob;
 		public TzarGames.GameCore.Abilities.CopyOwnerTransformToAbilityOnUpdateJob _CopyOwnerTransformToAbilityOnUpdateJob;
+		public TzarGames.GameCore.Abilities.DurationJob _DurationJob;
+		public TzarGames.GameCore.Abilities.ModifyOwnerCharacteristicsJob _ModifyOwnerCharacteristicsJob;
+		public TzarGames.GameCore.Abilities.CopyOwnerCriticalToAbilityJob _CopyOwnerCriticalToAbilityJob;
+		public TzarGames.GameCore.Abilities.CopyOwnerRadiusToAbilityJob _CopyOwnerRadiusToAbilityJob;
+		public TzarGames.GameCore.Abilities.AttackHeightJob _AttackHeightJob;
 		public TzarGames.GameCore.Abilities.AbilityCylinderHitActionJob _AbilityCylinderHitActionJob;
 		public Arena.Abilities.ScriptVizSequenceActionJob _ScriptVizSequenceActionJob;
 		public TzarGames.GameCore.Abilities.ScriptVizAbilityJob _ScriptVizAbilityJob;
@@ -99,6 +101,7 @@ namespace TzarGames.GameCore.Abilities.Generated
 			var AbilityOwnerArray = chunk.GetNativeArray(ref AbilityOwnerType);
 			var VariableDataByteAccessor = chunk.GetBufferAccessor(ref VariableDataByteType);
 			var EntityVariableDataAccessor = chunk.GetBufferAccessor(ref EntityVariableDataType);
+			var ScriptVizStateArray = chunk.GetNativeArray(ref ScriptVizStateType);
 			var ScriptVizCodeInfoArray = chunk.GetNativeArray(ref ScriptVizCodeInfoType);
 			var CopyOwnerTransformToAbilityOnUpdateArray = chunk.GetNativeArray(ref CopyOwnerTransformToAbilityOnUpdateType);
 			var LocalTransformArray = chunk.GetNativeArray(ref LocalTransformType);
@@ -109,14 +112,14 @@ namespace TzarGames.GameCore.Abilities.Generated
 			var DirectionArray = chunk.GetNativeArray(ref DirectionType);
 			var RadiusArray = chunk.GetNativeArray(ref RadiusType);
 			var MoveToTargetAbilityComponentDataArray = chunk.GetNativeArray(ref MoveToTargetAbilityComponentDataType);
+			var CopyOwnerDamageToAbilityArray = chunk.GetNativeArray(ref CopyOwnerDamageToAbilityType);
+			var DamageArray = chunk.GetNativeArray(ref DamageType);
 			var CopyOwnerTransformToAbilityOnStartArray = chunk.GetNativeArray(ref CopyOwnerTransformToAbilityOnStartType);
 			var CopyOwnerCriticalToAbilityArray = chunk.GetNativeArray(ref CopyOwnerCriticalToAbilityType);
 			var CriticalDamageMultiplierArray = chunk.GetNativeArray(ref CriticalDamageMultiplierType);
 			var CriticalDamageChanceArray = chunk.GetNativeArray(ref CriticalDamageChanceType);
 			var CopyOwnerRadiusToAbilityArray = chunk.GetNativeArray(ref CopyOwnerRadiusToAbilityType);
 			var MinimalRadiusArray = chunk.GetNativeArray(ref MinimalRadiusType);
-			var CopyOwnerDamageToAbilityArray = chunk.GetNativeArray(ref CopyOwnerDamageToAbilityType);
-			var DamageArray = chunk.GetNativeArray(ref DamageType);
 			var ModifyOwnerCharacteristicsArray = chunk.GetNativeArray(ref ModifyOwnerCharacteristicsType);
 			var HitQueryAbilityActionAccessor = chunk.GetBufferAccessor(ref HitQueryAbilityActionType);
 			var ActionSequenceAbilityEventNodeDataAccessor = chunk.GetBufferAccessor(ref ActionSequenceAbilityEventNodeDataType);
@@ -164,6 +167,8 @@ namespace TzarGames.GameCore.Abilities.Generated
 				};
 				var _VariableDataByteBuffer = VariableDataByteAccessor[c];
 				var _EntityVariableDataBuffer = EntityVariableDataAccessor[c];
+				var _ScriptVizStateRef = new RefRW<TzarGames.GameCore.ScriptViz.ScriptVizState>(ScriptVizStateArray, c);
+				ref var _ScriptVizState = ref _ScriptVizStateRef.ValueRW;
 				var _ScriptVizCodeInfo = ScriptVizCodeInfoArray[c];
 				float deltaTime;
 				if(DeltaTimeFromEntity.HasComponent(_AbilityOwner.Value))
@@ -178,7 +183,7 @@ namespace TzarGames.GameCore.Abilities.Generated
 				if(_AbilityState.Value == AbilityStates.Idle)
 				{
 					_DurationJob.OnIdleUpdate(ref _Duration);
-					_ScriptVizAbilityJob.OnIdleUpdate(abilityEntity, unfilteredChunkIndex, in _AbilityOwner, Commands, in abilityInterface, ref _VariableDataByteBuffer, ref _EntityVariableDataBuffer, in _ScriptVizCodeInfo, deltaTime);
+					_ScriptVizAbilityJob.OnIdleUpdate(abilityEntity, unfilteredChunkIndex, in _AbilityOwner, Commands, in abilityInterface, ref _VariableDataByteBuffer, ref _EntityVariableDataBuffer, ref _ScriptVizState, in _ScriptVizCodeInfo, deltaTime);
 				}
 
 				var _ActionSequenceSharedDataRef = new RefRW<Arena.Abilities.ActionSequenceSharedData>(ActionSequenceSharedDataArray, c);
@@ -202,12 +207,16 @@ namespace TzarGames.GameCore.Abilities.Generated
 				callWrapper.abilityEntity = abilityEntity;
 				callWrapper._VariableDataByteBuffer = _VariableDataByteBuffer;
 				callWrapper._EntityVariableDataBuffer = _EntityVariableDataBuffer;
+				callWrapper._ScriptVizStateRef = _ScriptVizStateRef;
 				callWrapper._ActionSequenceAbilityEventNodeDataBuffer = _ActionSequenceAbilityEventNodeDataBuffer;
 				callWrapper._ScriptVizCodeInfo = _ScriptVizCodeInfo;
 				callWrapper._ActionSequenceSharedDataRef = _ActionSequenceSharedDataRef;
 				callWrapper._DurationRef = _DurationRef;
 				callWrapper.deltaTime = deltaTime;
 				ref var actionCaller = ref Unity.Collections.LowLevel.Unsafe.UnsafeUtility.As<ActionCallWrapper, ActionCaller>(ref callWrapper);
+				var _CopyOwnerDamageToAbility = CopyOwnerDamageToAbilityArray[c];
+				var _DamageRef = new RefRW<TzarGames.GameCore.Damage>(DamageArray, c);
+				ref var _Damage = ref _DamageRef.ValueRW;
 				var _CopyOwnerTransformToAbilityOnStart = CopyOwnerTransformToAbilityOnStartArray[c];
 				var _CopyOwnerCriticalToAbility = CopyOwnerCriticalToAbilityArray[c];
 				var _CriticalDamageMultiplierRef = new RefRW<TzarGames.GameCore.CriticalDamageMultiplier>(CriticalDamageMultiplierArray, c);
@@ -219,9 +228,6 @@ namespace TzarGames.GameCore.Abilities.Generated
 				ref var _Radius = ref _RadiusRef.ValueRW;
 				var _MinimalRadiusRef = new RefRW<TzarGames.GameCore.MinimalRadius>(MinimalRadiusArray, c);
 				ref var _MinimalRadius = ref _MinimalRadiusRef.ValueRW;
-				var _CopyOwnerDamageToAbility = CopyOwnerDamageToAbilityArray[c];
-				var _DamageRef = new RefRW<TzarGames.GameCore.Damage>(DamageArray, c);
-				ref var _Damage = ref _DamageRef.ValueRW;
 				var _AddOwnerAttackVerticalOffsetAsTranslation = AddOwnerAttackVerticalOffsetAsTranslationArray[c];
 				var _ConvertRotationToDirection = ConvertRotationToDirectionArray[c];
 				var _DirectionRef = new RefRW<TzarGames.GameCore.Direction>(DirectionArray, c);
@@ -237,15 +243,15 @@ namespace TzarGames.GameCore.Abilities.Generated
 				{
 					_DurationJob.OnStarted(ref _Duration);
 					_ActionSequenceAbilityJob.OnStarted(ref _Duration, ref _ActionSequenceSharedData, ref _AbilitySequenceActionBuffer, ref actionCaller);
+					_CopyOwnerDamageToAbilityJob.OnStarted(in _AbilityOwner, in _CopyOwnerDamageToAbility, ref _Damage);
 					_CopyOwnerTransformToAbilityOnStartJob.OnStarted(in _AbilityOwner, in _CopyOwnerTransformToAbilityOnStart, ref _LocalTransform);
 					_CopyOwnerCriticalToAbilityJob.OnStarted(in _AbilityOwner, in _CopyOwnerCriticalToAbility, ref _CriticalDamageMultiplier, ref _CriticalDamageChance);
 					_CopyOwnerRadiusToAbilityJob.OnStarted(in _AbilityOwner, in _CopyOwnerRadiusToAbility, ref _Radius, ref _MinimalRadius);
-					_CopyOwnerDamageToAbilityJob.OnStarted(in _AbilityOwner, in _CopyOwnerDamageToAbility, ref _Damage);
 					_AttackHeightJob.OnStarted(in _AbilityOwner, ref _LocalTransform, in _AddOwnerAttackVerticalOffsetAsTranslation);
 					_ConvertRotationToDirectionJob.OnStarted(in _ConvertRotationToDirection, in _LocalTransform, ref _Direction);
 					_MoveToTargetAbilityComponentJob.OnStarted(in _AbilityOwner, Commands, unfilteredChunkIndex, ref _MoveToTargetAbilityComponentData);
 					_ModifyOwnerCharacteristicsJob.OnStarted(in _AbilityOwner, unfilteredChunkIndex, ref _ModifyOwnerCharacteristics, Commands);
-					_ScriptVizAbilityJob.OnStarted(abilityEntity, in _AbilityOwner, unfilteredChunkIndex, Commands, in abilityInterface, ref _VariableDataByteBuffer, ref _EntityVariableDataBuffer, in _ScriptVizCodeInfo, deltaTime);
+					_ScriptVizAbilityJob.OnStarted(abilityEntity, in _AbilityOwner, unfilteredChunkIndex, Commands, in abilityInterface, ref _VariableDataByteBuffer, ref _EntityVariableDataBuffer, ref _ScriptVizState, in _ScriptVizCodeInfo, deltaTime);
 
 					if (_AbilityState.Value == AbilityStates.WaitingForValidation || _AbilityState.Value == AbilityStates.ValidatedAndWaitingForStart)
 					{
@@ -266,13 +272,13 @@ namespace TzarGames.GameCore.Abilities.Generated
 				if(_AbilityState.Value == AbilityStates.Running)
 				{
 					AbilityControl _abilityControl = default;
-					_DurationJob.OnUpdate(deltaTime, ref _Duration, ref _abilityControl);
 					_CopyOwnerTransformToAbilityOnUpdateJob.OnUpdate(in _AbilityOwner, in _CopyOwnerTransformToAbilityOnUpdate, ref _LocalTransform);
+					_DurationJob.OnUpdate(deltaTime, ref _Duration, ref _abilityControl);
 					_AttackHeightJob.OnUpdate(in _AbilityOwner, ref _LocalTransform, in _AddOwnerAttackVerticalOffsetAsTranslation);
 					_ActionSequenceAbilityJob.OnUpdate(in _AbilityOwner, in _AbilityID, ref actionCaller, ref _ActionSequenceSharedData, ref _abilityControl, ref _Duration, ref _AbilitySequenceActionBuffer);
 					_ConvertRotationToDirectionJob.OnUpdate(in _ConvertRotationToDirection, in _LocalTransform, ref _Direction);
 					_MoveToTargetAbilityComponentJob.OnUpdate(in _AbilityOwner, in _LocalTransform, in _Radius, ref _MoveToTargetAbilityComponentData, unfilteredChunkIndex, Commands);
-					_ScriptVizAbilityJob.OnUpdate(abilityEntity, unfilteredChunkIndex, in _AbilityOwner, Commands, abilityInterface, ref _VariableDataByteBuffer, ref _EntityVariableDataBuffer, in _ScriptVizCodeInfo, deltaTime);
+					_ScriptVizAbilityJob.OnUpdate(abilityEntity, unfilteredChunkIndex, in _AbilityOwner, Commands, abilityInterface, ref _VariableDataByteBuffer, ref _EntityVariableDataBuffer, ref _ScriptVizState, in _ScriptVizCodeInfo, deltaTime);
 
 					if(_abilityControl.StopRequest)
 					{
@@ -287,7 +293,7 @@ namespace TzarGames.GameCore.Abilities.Generated
 					_MoveToTargetAbilityComponentJob.OnStopped(in _AbilityOwner, Commands, unfilteredChunkIndex);
 					_DurationJob.OnStopped(ref _Duration);
 					_ModifyOwnerCharacteristicsJob.OnStopped(in _AbilityOwner, unfilteredChunkIndex, ref _ModifyOwnerCharacteristics, Commands);
-					_ScriptVizAbilityJob.OnStopped(abilityEntity, unfilteredChunkIndex, in _AbilityOwner, Commands, in abilityInterface, ref _VariableDataByteBuffer, ref _EntityVariableDataBuffer, in _ScriptVizCodeInfo, deltaTime);
+					_ScriptVizAbilityJob.OnStopped(abilityEntity, unfilteredChunkIndex, in _AbilityOwner, Commands, in abilityInterface, ref _VariableDataByteBuffer, ref _EntityVariableDataBuffer, ref _ScriptVizState, in _ScriptVizCodeInfo, deltaTime);
 
 					_AbilityState.Value = AbilityStates.Idle;
 					AbilityStateArray[c] = _AbilityState;
@@ -313,6 +319,7 @@ namespace TzarGames.GameCore.Abilities.Generated
 			public Entity abilityEntity;
 			public DynamicBuffer<TzarGames.GameCore.ScriptViz.VariableDataByte> _VariableDataByteBuffer;
 			public DynamicBuffer<TzarGames.GameCore.ScriptViz.EntityVariableData> _EntityVariableDataBuffer;
+			public RefRW<TzarGames.GameCore.ScriptViz.ScriptVizState> _ScriptVizStateRef;
 			public DynamicBuffer<Arena.Abilities.ActionSequenceAbilityEventNodeData> _ActionSequenceAbilityEventNodeDataBuffer;
 			public TzarGames.GameCore.ScriptViz.ScriptVizCodeInfo _ScriptVizCodeInfo;
 			public RefRW<Arena.Abilities.ActionSequenceSharedData> _ActionSequenceSharedDataRef;
@@ -339,7 +346,7 @@ namespace TzarGames.GameCore.Abilities.Generated
 				{
 					if(_ActionSequenceAbilityEventNodeData.CallerId == callerId && _ActionSequenceAbilityEventNodeData.ActionId == actionId)
 					{
-						caller._ScriptVizSequenceActionJob.Execute(caller.abilityEntity, caller.unfilteredChunkIndex, in caller._AbilityOwner, caller.Commands, ref caller._VariableDataByteBuffer, ref caller._EntityVariableDataBuffer, in _ActionSequenceAbilityEventNodeData, in caller._ScriptVizCodeInfo, in caller._ActionSequenceSharedDataRef.ValueRW, in caller._DurationRef.ValueRW, caller.deltaTime);
+						caller._ScriptVizSequenceActionJob.Execute(caller.abilityEntity, caller.unfilteredChunkIndex, in caller._AbilityOwner, caller.Commands, ref caller._VariableDataByteBuffer, ref caller._EntityVariableDataBuffer, ref caller._ScriptVizStateRef.ValueRW, in _ActionSequenceAbilityEventNodeData, in caller._ScriptVizCodeInfo, in caller._ActionSequenceSharedDataRef.ValueRW, in caller._DurationRef.ValueRW, caller.deltaTime);
 						break;
 					}
 				}
@@ -386,6 +393,7 @@ namespace TzarGames.GameCore.Abilities.Generated
 					ComponentType.ReadOnly<TzarGames.GameCore.Abilities.AbilityOwner>(),
 					ComponentType.ReadWrite<TzarGames.GameCore.ScriptViz.VariableDataByte>(),
 					ComponentType.ReadWrite<TzarGames.GameCore.ScriptViz.EntityVariableData>(),
+					ComponentType.ReadWrite<TzarGames.GameCore.ScriptViz.ScriptVizState>(),
 					ComponentType.ReadOnly<TzarGames.GameCore.ScriptViz.ScriptVizCodeInfo>(),
 					ComponentType.ReadOnly<TzarGames.GameCore.Abilities.CopyOwnerTransformToAbilityOnUpdate>(),
 					ComponentType.ReadWrite<Unity.Transforms.LocalTransform>(),
@@ -396,14 +404,14 @@ namespace TzarGames.GameCore.Abilities.Generated
 					ComponentType.ReadWrite<TzarGames.GameCore.Direction>(),
 					ComponentType.ReadWrite<TzarGames.GameCore.Radius>(),
 					ComponentType.ReadWrite<TzarGames.GameCore.Abilities.MoveToTargetAbilityComponentData>(),
+					ComponentType.ReadOnly<TzarGames.GameCore.Abilities.CopyOwnerDamageToAbility>(),
+					ComponentType.ReadWrite<TzarGames.GameCore.Damage>(),
 					ComponentType.ReadOnly<TzarGames.GameCore.Abilities.CopyOwnerTransformToAbilityOnStart>(),
 					ComponentType.ReadOnly<TzarGames.GameCore.Abilities.CopyOwnerCriticalToAbility>(),
 					ComponentType.ReadWrite<TzarGames.GameCore.CriticalDamageMultiplier>(),
 					ComponentType.ReadWrite<TzarGames.GameCore.CriticalDamageChance>(),
 					ComponentType.ReadOnly<TzarGames.GameCore.Abilities.CopyOwnerRadiusToAbility>(),
 					ComponentType.ReadWrite<TzarGames.GameCore.MinimalRadius>(),
-					ComponentType.ReadOnly<TzarGames.GameCore.Abilities.CopyOwnerDamageToAbility>(),
-					ComponentType.ReadWrite<TzarGames.GameCore.Damage>(),
 					ComponentType.ReadWrite<TzarGames.GameCore.Abilities.ModifyOwnerCharacteristics>(),
 					ComponentType.ReadOnly<TzarGames.GameCore.Abilities.HitQueryAbilityAction>(),
 					ComponentType.ReadOnly<Arena.Abilities.ActionSequenceAbilityEventNodeData>(),
@@ -436,6 +444,7 @@ namespace TzarGames.GameCore.Abilities.Generated
 			job.AbilityOwnerType = state.GetComponentTypeHandle<TzarGames.GameCore.Abilities.AbilityOwner>(true);
 			job.VariableDataByteType = state.GetBufferTypeHandle<TzarGames.GameCore.ScriptViz.VariableDataByte>();
 			job.EntityVariableDataType = state.GetBufferTypeHandle<TzarGames.GameCore.ScriptViz.EntityVariableData>();
+			job.ScriptVizStateType = state.GetComponentTypeHandle<TzarGames.GameCore.ScriptViz.ScriptVizState>();
 			job.ScriptVizCodeInfoType = state.GetComponentTypeHandle<TzarGames.GameCore.ScriptViz.ScriptVizCodeInfo>(true);
 			job.CopyOwnerTransformToAbilityOnUpdateType = state.GetComponentTypeHandle<TzarGames.GameCore.Abilities.CopyOwnerTransformToAbilityOnUpdate>(true);
 			job.LocalTransformType = state.GetComponentTypeHandle<Unity.Transforms.LocalTransform>();
@@ -446,14 +455,14 @@ namespace TzarGames.GameCore.Abilities.Generated
 			job.DirectionType = state.GetComponentTypeHandle<TzarGames.GameCore.Direction>();
 			job.RadiusType = state.GetComponentTypeHandle<TzarGames.GameCore.Radius>();
 			job.MoveToTargetAbilityComponentDataType = state.GetComponentTypeHandle<TzarGames.GameCore.Abilities.MoveToTargetAbilityComponentData>();
+			job.CopyOwnerDamageToAbilityType = state.GetComponentTypeHandle<TzarGames.GameCore.Abilities.CopyOwnerDamageToAbility>(true);
+			job.DamageType = state.GetComponentTypeHandle<TzarGames.GameCore.Damage>();
 			job.CopyOwnerTransformToAbilityOnStartType = state.GetComponentTypeHandle<TzarGames.GameCore.Abilities.CopyOwnerTransformToAbilityOnStart>(true);
 			job.CopyOwnerCriticalToAbilityType = state.GetComponentTypeHandle<TzarGames.GameCore.Abilities.CopyOwnerCriticalToAbility>(true);
 			job.CriticalDamageMultiplierType = state.GetComponentTypeHandle<TzarGames.GameCore.CriticalDamageMultiplier>();
 			job.CriticalDamageChanceType = state.GetComponentTypeHandle<TzarGames.GameCore.CriticalDamageChance>();
 			job.CopyOwnerRadiusToAbilityType = state.GetComponentTypeHandle<TzarGames.GameCore.Abilities.CopyOwnerRadiusToAbility>(true);
 			job.MinimalRadiusType = state.GetComponentTypeHandle<TzarGames.GameCore.MinimalRadius>();
-			job.CopyOwnerDamageToAbilityType = state.GetComponentTypeHandle<TzarGames.GameCore.Abilities.CopyOwnerDamageToAbility>(true);
-			job.DamageType = state.GetComponentTypeHandle<TzarGames.GameCore.Damage>();
 			job.ModifyOwnerCharacteristicsType = state.GetComponentTypeHandle<TzarGames.GameCore.Abilities.ModifyOwnerCharacteristics>();
 			job.HitQueryAbilityActionType = state.GetBufferTypeHandle<TzarGames.GameCore.Abilities.HitQueryAbilityAction>(true);
 			job.ActionSequenceAbilityEventNodeDataType = state.GetBufferTypeHandle<Arena.Abilities.ActionSequenceAbilityEventNodeData>(true);
@@ -465,12 +474,12 @@ namespace TzarGames.GameCore.Abilities.Generated
 			var ComponentLookupRadius = state.GetComponentLookup<TzarGames.GameCore.Radius>(true);
 			var ComponentTypeHandleRadius = state.GetComponentTypeHandle<TzarGames.GameCore.Radius>(true);
 			var ComponentLookupPlayerInput = state.GetComponentLookup<Arena.PlayerInput>(true);
-			var ComponentLookupAttackVerticalOffset = state.GetComponentLookup<TzarGames.GameCore.AttackVerticalOffset>(true);
+			var ComponentLookupDamage = state.GetComponentLookup<TzarGames.GameCore.Damage>(true);
 			var BufferLookupSpeedModificator = state.GetBufferLookup<TzarGames.GameCore.SpeedModificator>(true);
 			var ComponentLookupCriticalDamageMultiplier = state.GetComponentLookup<TzarGames.GameCore.CriticalDamageMultiplier>(true);
 			var ComponentLookupCriticalDamageChance = state.GetComponentLookup<TzarGames.GameCore.CriticalDamageChance>(true);
 			var ComponentLookupAttackRadius = state.GetComponentLookup<TzarGames.GameCore.AttackRadius>(true);
-			var ComponentLookupDamage = state.GetComponentLookup<TzarGames.GameCore.Damage>(true);
+			var ComponentLookupAttackVerticalOffset = state.GetComponentLookup<TzarGames.GameCore.AttackVerticalOffset>(true);
 			var ComponentTypeHandleAngle = state.GetComponentTypeHandle<TzarGames.GameCore.Angle>(true);
 			var ComponentTypeHandleLocalTransform = state.GetComponentTypeHandle<Unity.Transforms.LocalTransform>(true);
 			var ComponentTypeHandleMinimalRadius = state.GetComponentTypeHandle<TzarGames.GameCore.MinimalRadius>(true);
@@ -497,13 +506,16 @@ namespace TzarGames.GameCore.Abilities.Generated
 
 			job._ActionSequenceAbilityJob.PlayerInputFromEntity = ComponentLookupPlayerInput;
 
-			job._AttackHeightJob.MeleeAttackerFromEntity = ComponentLookupAttackVerticalOffset;
+
+			job._CopyOwnerDamageToAbilityJob.DamageFromEntity = ComponentLookupDamage;
+
+			job._CopyOwnerTransformToAbilityOnStartJob.TransformFromEntity = ComponentLookupLocalTransform;
+
+			job._CopyOwnerTransformToAbilityOnUpdateJob.TransformFromEntity = ComponentLookupLocalTransform;
 
 
 			job._ModifyOwnerCharacteristicsJob.SpeedModificatorFromEntity = BufferLookupSpeedModificator;
 			job._ModifyOwnerCharacteristicsJob.Initialize(ref state);
-
-			job._CopyOwnerTransformToAbilityOnStartJob.TransformFromEntity = ComponentLookupLocalTransform;
 
 			job._CopyOwnerCriticalToAbilityJob.MultiplierFromEntity = ComponentLookupCriticalDamageMultiplier;
 			job._CopyOwnerCriticalToAbilityJob.CritChanceFromEntity = ComponentLookupCriticalDamageChance;
@@ -511,10 +523,7 @@ namespace TzarGames.GameCore.Abilities.Generated
 			job._CopyOwnerRadiusToAbilityJob.AttackRadiusFromEntity = ComponentLookupAttackRadius;
 			job._CopyOwnerRadiusToAbilityJob.RadiusFromEntity = ComponentLookupRadius;
 
-
-			job._CopyOwnerDamageToAbilityJob.DamageFromEntity = ComponentLookupDamage;
-
-			job._CopyOwnerTransformToAbilityOnUpdateJob.TransformFromEntity = ComponentLookupLocalTransform;
+			job._AttackHeightJob.MeleeAttackerFromEntity = ComponentLookupAttackVerticalOffset;
 
 			job._AbilityCylinderHitActionJob.AngleType = ComponentTypeHandleAngle;
 			job._AbilityCylinderHitActionJob.TransformType = ComponentTypeHandleLocalTransform;
@@ -558,6 +567,7 @@ namespace TzarGames.GameCore.Abilities.Generated
 			job.AbilityOwnerType.Update(ref state);
 			job.VariableDataByteType.Update(ref state);
 			job.EntityVariableDataType.Update(ref state);
+			job.ScriptVizStateType.Update(ref state);
 			job.ScriptVizCodeInfoType.Update(ref state);
 			job.CopyOwnerTransformToAbilityOnUpdateType.Update(ref state);
 			job.LocalTransformType.Update(ref state);
@@ -568,14 +578,14 @@ namespace TzarGames.GameCore.Abilities.Generated
 			job.DirectionType.Update(ref state);
 			job.RadiusType.Update(ref state);
 			job.MoveToTargetAbilityComponentDataType.Update(ref state);
+			job.CopyOwnerDamageToAbilityType.Update(ref state);
+			job.DamageType.Update(ref state);
 			job.CopyOwnerTransformToAbilityOnStartType.Update(ref state);
 			job.CopyOwnerCriticalToAbilityType.Update(ref state);
 			job.CriticalDamageMultiplierType.Update(ref state);
 			job.CriticalDamageChanceType.Update(ref state);
 			job.CopyOwnerRadiusToAbilityType.Update(ref state);
 			job.MinimalRadiusType.Update(ref state);
-			job.CopyOwnerDamageToAbilityType.Update(ref state);
-			job.DamageType.Update(ref state);
 			job.ModifyOwnerCharacteristicsType.Update(ref state);
 			job.HitQueryAbilityActionType.Update(ref state);
 			job.ActionSequenceAbilityEventNodeDataType.Update(ref state);
@@ -590,12 +600,15 @@ namespace TzarGames.GameCore.Abilities.Generated
 
 			job._ActionSequenceAbilityJob.PlayerInputFromEntity.Update(ref state);
 
-			job._AttackHeightJob.MeleeAttackerFromEntity.Update(ref state);
+
+			job._CopyOwnerDamageToAbilityJob.DamageFromEntity.Update(ref state);
+
+			job._CopyOwnerTransformToAbilityOnStartJob.TransformFromEntity.Update(ref state);
+
+			job._CopyOwnerTransformToAbilityOnUpdateJob.TransformFromEntity.Update(ref state);
 
 
 			job._ModifyOwnerCharacteristicsJob.SpeedModificatorFromEntity.Update(ref state);
-
-			job._CopyOwnerTransformToAbilityOnStartJob.TransformFromEntity.Update(ref state);
 
 			job._CopyOwnerCriticalToAbilityJob.MultiplierFromEntity.Update(ref state);
 			job._CopyOwnerCriticalToAbilityJob.CritChanceFromEntity.Update(ref state);
@@ -603,10 +616,7 @@ namespace TzarGames.GameCore.Abilities.Generated
 			job._CopyOwnerRadiusToAbilityJob.AttackRadiusFromEntity.Update(ref state);
 			job._CopyOwnerRadiusToAbilityJob.RadiusFromEntity.Update(ref state);
 
-
-			job._CopyOwnerDamageToAbilityJob.DamageFromEntity.Update(ref state);
-
-			job._CopyOwnerTransformToAbilityOnUpdateJob.TransformFromEntity.Update(ref state);
+			job._AttackHeightJob.MeleeAttackerFromEntity.Update(ref state);
 
 			job._AbilityCylinderHitActionJob.AngleType.Update(ref state);
 			job._AbilityCylinderHitActionJob.TransformType.Update(ref state);

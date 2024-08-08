@@ -75,7 +75,7 @@ namespace Arena.ScriptViz
 
     [Serializable]
     [FriendlyName("Проверить наличие флага")]
-    public class GameProgressFlagCheckNode : Node, ICommandNode, ICustomNodeName, IPostWriteCommandNode
+    public class GameProgressFlagCheckNode : Node, ICommandNode, IPostWriteCommandNode
     {
         [HideInInspector] public NodeInputSocket InputSocket = new NodeInputSocket();
         
@@ -106,7 +106,7 @@ namespace Arena.ScriptViz
             sockets.Add(new SocketInfo(NoFlagSocket, SocketType.Out, "Флага нет"));
         }
 
-        public string GetNodeName()
+        public override string GetNodeName(ScriptVizGraph.ScriptVizGraphPage page)
         {
             if (FlagKey)
             {
@@ -153,7 +153,7 @@ namespace Arena.ScriptViz
     
     [Serializable]
     [FriendlyName("Добавить флаг прогресса")]
-    public class AddGameProgressFlagCommandNode : CommandNode, ICustomNodeName
+    public class AddGameProgressFlagCommandNode : CommandNode
     {
         public GameProgressFlagKey FlagKey;
         
@@ -164,7 +164,7 @@ namespace Arena.ScriptViz
             commandAddress = compilerAllocator.WriteCommand(ref cmd);
         }
 
-        public string GetNodeName()
+        public override string GetNodeName(ScriptVizGraph.ScriptVizGraphPage page)
         {
             if (FlagKey)
             {
@@ -213,7 +213,7 @@ namespace Arena.ScriptViz
     
     [Serializable]
     [FriendlyName("Загрузить прогресс персонажа")]
-    public class GetGameProgressCommandNode : Node, ICommandNode, ICustomNodeName, IPostWriteCommandNode
+    public class GetGameProgressCommandNode : Node, ICommandNode, IPostWriteCommandNode
     {
         public NodeInputSocket InputSocket = new();
         public NodeOutputSocket OnDataLoadedSocket = new();
@@ -226,7 +226,7 @@ namespace Arena.ScriptViz
             sockets.Add(new SocketInfo(ProgressSocket, SocketType.Out, "Прогресс"));
         }
         
-        public string GetNodeName()
+        public override string GetNodeName(ScriptVizGraph.ScriptVizGraphPage page)
         {
             return "Загрузить прогресс персонажа";
         }
@@ -277,7 +277,7 @@ namespace Arena.ScriptViz
     
     [Serializable]
     [FriendlyName("Установить базовую локацию")]
-    public class SetBaseLocationNode : CommandNode, ICustomNodeName
+    public class SetBaseLocationNode : CommandNode
     {
         public GameSceneKey GameSceneKey;
         public SpawnPointID SpawnPointID;
@@ -292,7 +292,7 @@ namespace Arena.ScriptViz
             commandAddress = compilerAllocator.WriteCommand(ref cmd);
         }
 
-        public string GetNodeName()
+        public override string GetNodeName(ScriptVizGraph.ScriptVizGraphPage page)
         {
             if (GameSceneKey)
             {

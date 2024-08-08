@@ -219,7 +219,7 @@ namespace Arena.Abilities
     }
     [Serializable]
     [FriendlyName("On action sequence started")]
-    public class OnActionSequenceStepEventNode : BaseAbilityEventNode<ActionSequenceAbilityEventNodeData>, ICustomNodeName
+    public class OnActionSequenceStepEventNode : BaseAbilityEventNode<ActionSequenceAbilityEventNodeData>
     {
         public IntSocket EventIdSocket = new();
         public FloatSocket DurationSocket = new();
@@ -239,7 +239,7 @@ namespace Arena.Abilities
             return result;
         }
 
-        public string GetNodeName()
+        public override string GetNodeName(ScriptVizGraph.ScriptVizGraphPage page)
         {
             return "On action sequence started";
         }
@@ -293,6 +293,7 @@ namespace Arena.Abilities
             UniversalCommandBuffer commands,
             ref DynamicBuffer<VariableDataByte> variableData,
             ref DynamicBuffer<EntityVariableData> entityVariableData,
+            ref ScriptVizState state,
             in ActionSequenceAbilityEventNodeData eventData,
             in ScriptVizCodeInfo codeInfo,
             in ActionSequenceSharedData sharedData,
@@ -304,7 +305,7 @@ namespace Arena.Abilities
             var contextData = new ScriptVizAspect.ReadOnlyData(abilityEntity, variableData, entityVariableData, codeInfo);
             var owner = abilityOwner.Value;
 
-            using (var contextHandle = new ContextDisposeHandle(codeDataBytes, constantEntityVariableDatas, ref contextData, ref commands, commandBufferIndex, deltaTime))
+            using (var contextHandle = new ContextDisposeHandle(codeDataBytes, constantEntityVariableDatas, ref state, ref contextData, ref commands, commandBufferIndex, deltaTime))
             {
                 if (eventData.AbilityOwner.IsValid)
                 {

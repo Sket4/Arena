@@ -216,7 +216,7 @@ namespace Arena.Dialogue
     }
     
     [FriendlyName("Старт диалога")]
-    public class StartDialogueNode : CommandNode, IAdditionalVariableHandler, ICustomNodeName
+    public class StartDialogueNode : CommandNode, IAdditionalVariableHandler
     {
         [HideInInspector] public EntitySocket Player = new();
         [HideInInspector] public EntitySocket Companion = new();
@@ -269,7 +269,7 @@ namespace Arena.Dialogue
             return variable as EntityVariable;
         }
 
-        public string GetNodeName()
+        public override string GetNodeName(ScriptVizGraph.ScriptVizGraphPage page)
         {
             return "Старт диалога";
         }
@@ -277,7 +277,7 @@ namespace Arena.Dialogue
     
     [Serializable]
     [FriendlyName("Диалог")]
-    public class ShowDialogueNode : Node, ICommandNode, IPostWriteCommandNode, IDynamicOutSocketsNode, ICustomNodeName, IAdditionalVariableHandler
+    public class ShowDialogueNode : Node, ICommandNode, IPostWriteCommandNode, IDynamicOutSocketsNode, IAdditionalVariableHandler
     {
         public UnityEngine.Localization.LocalizedString Message;
         [HideInInspector] public NodeInputSocket InputSocket = new();
@@ -362,7 +362,7 @@ namespace Arena.Dialogue
             AnswerOutputSockets.Remove(s);
         }
 
-        public string GetNodeName()
+        public override string GetNodeName(ScriptVizGraph.ScriptVizGraphPage page)
         {
             if(Message == null)
                 return "Диалог";

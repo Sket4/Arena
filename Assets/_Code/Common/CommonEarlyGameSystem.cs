@@ -1,6 +1,7 @@
 using Arena.ScriptViz;
 using TzarGames.GameCore;
 using TzarGames.GameCore.ScriptViz;
+using TzarGames.GameCore.ScriptViz.Commands;
 using TzarGames.MatchFramework.Server;
 using Unity.Collections;
 using Unity.Collections.LowLevel.Unsafe;
@@ -65,6 +66,7 @@ namespace Arena
                     DynamicBuffer<ScriptViz.DeadEventData> deathEvents,
                     DynamicBuffer<VariableDataByte> variableData,
                     DynamicBuffer<EntityVariableData> entityVars,
+                    ref ScriptVizState state,
                     in LivingState livingState, 
                     in ScriptVizCodeInfo codeDataInfo) =>
                 {
@@ -86,6 +88,7 @@ namespace Arena
                                 ref variableData, 
                                 constantEntityData.AsNativeArray(), 
                                 entityVars.AsNativeArray(),
+                                ref state,
                                 stackMemory.GetUnsafePtr(), 
                                 ref commands, 
                                 entityInQueryIndex, 
@@ -97,6 +100,36 @@ namespace Arena
                         }
                     }
 
+                }).Run();
+            
+            Entities
+                .ForEach((Entity entity, ScriptVizAspect aspect, in DynamicBuffer<OnTargetChangedEventCommand> events, in Target target, in TargetChangedEventPreviousTarget prevTarget) =>
+                {
+                    int sortKey = 0;
+                    
+                    if (target.Value == prevTarget.Value)
+                    {
+                        return;
+                    }
+                    commands.SetComponent(sortKey, entity, new TargetChangedEventPreviousTarget { Value = target.Value });
+                    
+                    var codeData = SystemAPI.GetBuffer<CodeDataByte>(aspect.CodeInfo.ValueRO.CodeDataEntity);
+                    var constantEntityData = SystemAPI.GetBuffer<ConstantEntityVariableData>(aspect.CodeInfo.ValueRO.CodeDataEntity);
+
+                    using (var handle = new ContextDisposeHandle(codeData, constantEntityData, ref aspect, ref commands, sortKey, deltaTime))
+                    {
+                        var context = handle.Context;
+                        
+                        foreach (var evt in events)
+                        {
+                            if (evt.TargetEntityOutputAddress.IsValid)
+                            {
+                                context.WriteToTemp(target.Value, evt.TargetEntityOutputAddress);
+                            }
+                            Extensions.ExecuteCode(ref context, evt.CommandAddress);
+                        }    
+                    }
+                    
                 }).Run();
 
             if (addGameProgressFlagRequestQuery.IsEmpty == false)

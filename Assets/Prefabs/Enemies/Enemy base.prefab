@@ -1,5 +1,36 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
+--- !u!1 &2416206249817907093
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 7713241195416142276}
+  m_Layer: 0
+  m_Name: Attack movement speed modificator owner
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &7713241195416142276
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2416206249817907093}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 3102549359064695974}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &8533965433696517580
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -67,7 +98,10 @@ PrefabInstance:
     m_RemovedComponents:
     - {fileID: -5917597110751680457, guid: 24123f7370a893b41bbaaae4bd1791d1, type: 3}
     m_RemovedGameObjects: []
-    m_AddedGameObjects: []
+    m_AddedGameObjects:
+    - targetCorrespondingSourceObject: {fileID: 6728593815283415402, guid: 24123f7370a893b41bbaaae4bd1791d1, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 7713241195416142276}
     m_AddedComponents:
     - targetCorrespondingSourceObject: {fileID: 1415852907774143442, guid: 24123f7370a893b41bbaaae4bd1791d1, type: 3}
       insertIndex: -1
@@ -88,6 +122,11 @@ PrefabInstance:
       insertIndex: -1
       addedObject: {fileID: 2232529582706308508}
   m_SourcePrefab: {fileID: 100100000, guid: 24123f7370a893b41bbaaae4bd1791d1, type: 3}
+--- !u!4 &3102549359064695974 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 6728593815283415402, guid: 24123f7370a893b41bbaaae4bd1791d1, type: 3}
+  m_PrefabInstance: {fileID: 8533965433696517580}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &7334291140803663390 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 1415852907774143442, guid: 24123f7370a893b41bbaaae4bd1791d1, type: 3}
@@ -215,13 +254,13 @@ MonoBehaviour:
         - ConversionTargetOptions: 7
           variables:
           - rid: 4877893344000475143
+          - rid: 4877893400282267653
           nodes:
           - rid: 4877893344000475138
           - rid: 4877893344000475139
           - rid: 4877893344000475140
           - rid: 4877893344000475141
           - rid: 4877893344000475142
-          - rid: 4877893344000475152
           - rid: 4877893344000475154
           - rid: 4877893368165957654
           - rid: 4877893368165957693
@@ -230,8 +269,17 @@ MonoBehaviour:
           - rid: 4877893374614962182
           - rid: 4877893374614962184
           - rid: 4877893374614962185
-          - rid: 4877893374614962186
           - rid: 4877893374614962198
+          - rid: 4877893400282267651
+          - rid: 4877893400282267654
+          - rid: 4877893400282267657
+          - rid: 4877893400282267658
+          - rid: 4877893400282267659
+          - rid: 4877893400282267660
+          - rid: 4877893400282267661
+          - rid: 4877893400282267662
+          - rid: 4877893400282267663
+          - rid: 4877893400282267664
         states:
         - id:
             Value: 1
@@ -242,9 +290,9 @@ MonoBehaviour:
         - id:
             Value: 3
           Name: "\u0421\u043C\u0435\u0440\u0442\u044C"
-        sockedIdCounter: 48
-        variableIdCounter: 2
-        nodeIdCounter: 22
+        sockedIdCounter: 85
+        variableIdCounter: 3
+        nodeIdCounter: 33
         stateIdCounter: 5
     - rid: 4877893344000475138
       type: {class: GoToStateNode, ns: TzarGames.GameCore.ScriptViz.Graph, asm: TzarGames.GameCore}
@@ -268,7 +316,7 @@ MonoBehaviour:
       data:
         ID:
           Value: 2
-        Position: {x: 592.6666, y: 616}
+        Position: {x: 592.6667, y: 616}
         output:
           ID:
             Value: 3
@@ -279,7 +327,7 @@ MonoBehaviour:
       data:
         ID:
           Value: 3
-        Position: {x: 592.6666, y: 428}
+        Position: {x: 592.6667, y: 428}
         output:
           ID:
             Value: 4
@@ -307,7 +355,7 @@ MonoBehaviour:
       data:
         ID:
           Value: 5
-        Position: {x: 594, y: 856}
+        Position: {x: 594, y: 791.3333}
         output:
           ID:
             Value: 7
@@ -322,39 +370,12 @@ MonoBehaviour:
           Value: 1
         Name: _delayed_commands
         NetSyncEnabled: 0
-    - rid: 4877893344000475152
-      type: {class: EnableFollowOnDetectNode, ns: TzarGames.GameCore.ScriptViz.Commands, asm: TzarGames.GameCore}
-      data:
-        ID:
-          Value: 6
-        Position: {x: 1054.6667, y: 832}
-        input:
-          ID:
-            Value: 8
-          ConnectedSocketIDs:
-          - Value: 13
-        output:
-          ID:
-            Value: 9
-          ConnectedSocketIDs:
-          - Value: 15
-        TargetEntity:
-          ID:
-            Value: 10
-          ConnectedSocketIDs:
-          - Value: 14
-          AuthoringValue: {fileID: 0}
-        Enable:
-          ID:
-            Value: 11
-          ConnectedSocketIDs: []
-          Value: 0
     - rid: 4877893344000475154
       type: {class: GetSelfNode, ns: TzarGames.GameCore.ScriptViz.Graph, asm: TzarGames.GameCore}
       data:
         ID:
           Value: 7
-        Position: {x: 892.66675, y: 856}
+        Position: {x: 892.6666, y: 791.3333}
         input:
           ID:
             Value: 12
@@ -364,12 +385,11 @@ MonoBehaviour:
           ID:
             Value: 13
           ConnectedSocketIDs:
-          - Value: 8
+          - Value: 15
         SelfOutSocket:
           ID:
             Value: 14
           ConnectedSocketIDs:
-          - Value: 10
           - Value: 17
           AuthoringValue: {fileID: 0}
     - rid: 4877893368165957654
@@ -377,12 +397,12 @@ MonoBehaviour:
       data:
         ID:
           Value: 8
-        Position: {x: 1400, y: 934.6667}
+        Position: {x: 1054, y: 767.3333}
         input:
           ID:
             Value: 15
           ConnectedSocketIDs:
-          - Value: 9
+          - Value: 13
         output:
           ID:
             Value: 16
@@ -403,7 +423,7 @@ MonoBehaviour:
       data:
         ID:
           Value: 9
-        Position: {x: 590.6666, y: 1120.6666}
+        Position: {x: 594, y: 1149.3334}
         output:
           ID:
             Value: 19
@@ -420,7 +440,7 @@ MonoBehaviour:
       data:
         ID:
           Value: 13
-        Position: {x: 1148.6667, y: 1223.3334}
+        Position: {x: 1152, y: 1252}
         input:
           ID:
             Value: 26
@@ -437,7 +457,7 @@ MonoBehaviour:
       data:
         ID:
           Value: 14
-        Position: {x: 796.66675, y: 1120.6666}
+        Position: {x: 800, y: 1149.3334}
         InputSocket:
           ID:
             Value: 28
@@ -464,7 +484,7 @@ MonoBehaviour:
       data:
         ID:
           Value: 16
-        Position: {x: 1148.6667, y: 1120.6666}
+        Position: {x: 1152, y: 1149.3334}
         input:
           ID:
             Value: 33
@@ -481,7 +501,7 @@ MonoBehaviour:
       data:
         ID:
           Value: 18
-        Position: {x: 962, y: 1418.6666}
+        Position: {x: 1035.3334, y: 1406.6666}
         input:
           ID:
             Value: 36
@@ -491,7 +511,7 @@ MonoBehaviour:
           ID:
             Value: 37
           ConnectedSocketIDs:
-          - Value: 43
+          - Value: 54
         TargetEntity:
           ID:
             Value: 38
@@ -523,41 +543,15 @@ MonoBehaviour:
           ID:
             Value: 42
           ConnectedSocketIDs:
-          - Value: 45
+          - Value: 50
           - Value: 38
           AuthoringValue: {fileID: 0}
-    - rid: 4877893374614962186
-      type: {class: EnableMoveAroundPointNode, ns: TzarGames.GameCore.ScriptViz.Commands, asm: TzarGames.GameCore}
-      data:
-        ID:
-          Value: 20
-        Position: {x: 1310, y: 1497.3334}
-        input:
-          ID:
-            Value: 43
-          ConnectedSocketIDs:
-          - Value: 37
-        output:
-          ID:
-            Value: 44
-          ConnectedSocketIDs: []
-        TargetEntity:
-          ID:
-            Value: 45
-          ConnectedSocketIDs:
-          - Value: 42
-          AuthoringValue: {fileID: 0}
-        Enable:
-          ID:
-            Value: 46
-          ConnectedSocketIDs: []
-          Value: 0
     - rid: 4877893374614962198
       type: {class: EnterStateNode, ns: TzarGames.GameCore.ScriptViz.Graph, asm: TzarGames.GameCore}
       data:
         ID:
           Value: 21
-        Position: {x: 606.6666, y: 1418.6666}
+        Position: {x: 606.6667, y: 1418.6666}
         output:
           ID:
             Value: 47
@@ -565,3 +559,259 @@ MonoBehaviour:
           - Value: 40
         stateID:
           Value: 2
+    - rid: 4877893400282267651
+      type: {class: AddOrRemoveSpeedModificator, ns: TzarGames.GameCore.ScriptViz.Commands, asm: TzarGames.GameCore}
+      data:
+        ID:
+          Value: 22
+        Position: {x: 2106, y: 1497.3334}
+        input:
+          ID:
+            Value: 48
+          ConnectedSocketIDs:
+          - Value: 55
+        output:
+          ID:
+            Value: 49
+          ConnectedSocketIDs: []
+        TargetEntitySocket:
+          ID:
+            Value: 50
+          ConnectedSocketIDs:
+          - Value: 42
+          AuthoringValue: {fileID: 0}
+        OwnerEntitySocket:
+          ID:
+            Value: 51
+          ConnectedSocketIDs: []
+          AuthoringValue: {fileID: 2416206249817907093}
+        ModificatorValueSocket:
+          ID:
+            Value: 52
+          ConnectedSocketIDs:
+          - Value: 56
+          Value: 0
+        AddSocket:
+          ID:
+            Value: 53
+          ConnectedSocketIDs: []
+          Value: 1
+        Operator: 2
+    - rid: 4877893400282267653
+      type: {class: FloatVariable, ns: TzarGames.GameCore.ScriptViz.Graph, asm: TzarGames.GameCore}
+      data:
+        ID:
+          Value: 2
+        Name: Attack movement speed multiplier
+        NetSyncEnabled: 0
+        Value: 2
+    - rid: 4877893400282267654
+      type: {class: GetFloatVarCommandNode, ns: TzarGames.GameCore.ScriptViz.Graph, asm: TzarGames.GameCore}
+      data:
+        ID:
+          Value: 23
+        Position: {x: 1636, y: 1418.6666}
+        input:
+          ID:
+            Value: 54
+          ConnectedSocketIDs:
+          - Value: 37
+        output:
+          ID:
+            Value: 55
+          ConnectedSocketIDs:
+          - Value: 48
+        getVariableId:
+          Value: 2
+        WriteOutput:
+          ID:
+            Value: 56
+          ConnectedSocketIDs:
+          - Value: 52
+          Value: 0
+    - rid: 4877893400282267657
+      type: {class: ExitStateNode, ns: TzarGames.GameCore.ScriptViz.Graph, asm: TzarGames.GameCore}
+      data:
+        ID:
+          Value: 25
+        Position: {x: 606.6667, y: 1706.6666}
+        output:
+          ID:
+            Value: 60
+          ConnectedSocketIDs:
+          - Value: 65
+        stateID:
+          Value: 2
+    - rid: 4877893400282267658
+      type: {class: EnableFollowOnDetectNode, ns: TzarGames.GameCore.ScriptViz.Commands, asm: TzarGames.GameCore}
+      data:
+        ID:
+          Value: 26
+        Position: {x: 992, y: 1706.6666}
+        input:
+          ID:
+            Value: 61
+          ConnectedSocketIDs:
+          - Value: 66
+        output:
+          ID:
+            Value: 62
+          ConnectedSocketIDs:
+          - Value: 82
+        TargetEntity:
+          ID:
+            Value: 63
+          ConnectedSocketIDs:
+          - Value: 67
+          AuthoringValue: {fileID: 0}
+        Enable:
+          ID:
+            Value: 64
+          ConnectedSocketIDs: []
+          Value: 0
+    - rid: 4877893400282267659
+      type: {class: GetSelfNode, ns: TzarGames.GameCore.ScriptViz.Graph, asm: TzarGames.GameCore}
+      data:
+        ID:
+          Value: 27
+        Position: {x: 848.6666, y: 1706.6666}
+        input:
+          ID:
+            Value: 65
+          ConnectedSocketIDs:
+          - Value: 60
+        output:
+          ID:
+            Value: 66
+          ConnectedSocketIDs:
+          - Value: 61
+        SelfOutSocket:
+          ID:
+            Value: 67
+          ConnectedSocketIDs:
+          - Value: 78
+          - Value: 63
+          AuthoringValue: {fileID: 0}
+    - rid: 4877893400282267660
+      type: {class: ExitStateNode, ns: TzarGames.GameCore.ScriptViz.Graph, asm: TzarGames.GameCore}
+      data:
+        ID:
+          Value: 28
+        Position: {x: 590.6667, y: 918}
+        output:
+          ID:
+            Value: 68
+          ConnectedSocketIDs:
+          - Value: 69
+        stateID:
+          Value: 1
+    - rid: 4877893400282267661
+      type: {class: GetSelfNode, ns: TzarGames.GameCore.ScriptViz.Graph, asm: TzarGames.GameCore}
+      data:
+        ID:
+          Value: 29
+        Position: {x: 892.6666, y: 945.3333}
+        input:
+          ID:
+            Value: 69
+          ConnectedSocketIDs:
+          - Value: 68
+        output:
+          ID:
+            Value: 70
+          ConnectedSocketIDs:
+          - Value: 72
+        SelfOutSocket:
+          ID:
+            Value: 71
+          ConnectedSocketIDs:
+          - Value: 74
+          AuthoringValue: {fileID: 0}
+    - rid: 4877893400282267662
+      type: {class: EnableMoveAroundPointNode, ns: TzarGames.GameCore.ScriptViz.Commands, asm: TzarGames.GameCore}
+      data:
+        ID:
+          Value: 30
+        Position: {x: 1054, y: 933.3333}
+        input:
+          ID:
+            Value: 72
+          ConnectedSocketIDs:
+          - Value: 70
+        output:
+          ID:
+            Value: 73
+          ConnectedSocketIDs: []
+        TargetEntity:
+          ID:
+            Value: 74
+          ConnectedSocketIDs:
+          - Value: 71
+          AuthoringValue: {fileID: 0}
+        Enable:
+          ID:
+            Value: 75
+          ConnectedSocketIDs: []
+          Value: 0
+    - rid: 4877893400282267663
+      type: {class: AddOrRemoveSpeedModificator, ns: TzarGames.GameCore.ScriptViz.Commands, asm: TzarGames.GameCore}
+      data:
+        ID:
+          Value: 31
+        Position: {x: 1710.6666, y: 1759.3334}
+        input:
+          ID:
+            Value: 76
+          ConnectedSocketIDs:
+          - Value: 83
+        output:
+          ID:
+            Value: 77
+          ConnectedSocketIDs: []
+        TargetEntitySocket:
+          ID:
+            Value: 78
+          ConnectedSocketIDs:
+          - Value: 67
+          AuthoringValue: {fileID: 0}
+        OwnerEntitySocket:
+          ID:
+            Value: 79
+          ConnectedSocketIDs: []
+          AuthoringValue: {fileID: 2416206249817907093}
+        ModificatorValueSocket:
+          ID:
+            Value: 80
+          ConnectedSocketIDs:
+          - Value: 84
+          Value: 0
+        AddSocket:
+          ID:
+            Value: 81
+          ConnectedSocketIDs: []
+          Value: 0
+        Operator: 1
+    - rid: 4877893400282267664
+      type: {class: GetFloatVarCommandNode, ns: TzarGames.GameCore.ScriptViz.Graph, asm: TzarGames.GameCore}
+      data:
+        ID:
+          Value: 32
+        Position: {x: 1367.3334, y: 1711.3334}
+        input:
+          ID:
+            Value: 82
+          ConnectedSocketIDs:
+          - Value: 62
+        output:
+          ID:
+            Value: 83
+          ConnectedSocketIDs:
+          - Value: 76
+        getVariableId:
+          Value: 2
+        WriteOutput:
+          ID:
+            Value: 84
+          ConnectedSocketIDs:
+          - Value: 80
+          Value: 0

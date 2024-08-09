@@ -40,6 +40,7 @@ namespace TzarGames.GameCore.Generated
 			ScriptVizCommandRegistry.RegisterCommand(typeof(TzarGames.GameCore.ScriptViz.Graph.RandomFloatCommand), TzarGames.GameCore.ScriptViz.Graph.RandomFloatCommand.Exec);
 			ScriptVizCommandRegistry.RegisterCommand(typeof(TzarGames.GameCore.ScriptViz.Graph.GoToStateAction), TzarGames.GameCore.ScriptViz.Graph.GoToStateAction.Exec);
 			ScriptVizCommandRegistry.RegisterCommand(typeof(TzarGames.GameCore.ScriptViz.Commands.GoToPositionCommand), TzarGames.GameCore.ScriptViz.Commands.GoToPositionCommand.Execute);
+			ScriptVizCommandRegistry.RegisterCommand(typeof(TzarGames.GameCore.ScriptViz.Commands.AddOrRemoveModificatorCommand<TzarGames.GameCore.SpeedModificator,TzarGames.GameCore.SpeedModificatorChangeRequest>), TzarGames.GameCore.ScriptViz.Commands.AddOrRemoveModificatorCommand<TzarGames.GameCore.SpeedModificator,TzarGames.GameCore.SpeedModificatorChangeRequest>.Execute);
 			ScriptVizCommandRegistry.RegisterCommand(typeof(TzarGames.GameCore.ScriptViz.SetComponentEnabledCommand<TzarGames.GameCore.MoveAroundPoint>), TzarGames.GameCore.ScriptViz.SetComponentEnabledCommand<TzarGames.GameCore.MoveAroundPoint>.Exec);
 			ScriptVizCommandRegistry.RegisterCommand(typeof(TzarGames.GameCore.ScriptViz.SetComponentEnabledCommand<TzarGames.GameCore.FollowTarget>), TzarGames.GameCore.ScriptViz.SetComponentEnabledCommand<TzarGames.GameCore.FollowTarget>.Exec);
 		}

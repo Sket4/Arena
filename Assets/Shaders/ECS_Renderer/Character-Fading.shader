@@ -16,7 +16,7 @@ Shader"Arena/Character Fading"
         
         _FadeMap ("Fade map", 2D) = "white" {}
 
-        _Roughness("Roughness", Range(0,1)) = 1
+        _Smoothness("Smoothness", Range(0,1)) = 1
         _Metallic("Metallic", Range(0,1)) = 1
         
         [HideInInspector] _SkinningData("SkinData", Vector) = (0, 1, 0, 0)

@@ -51,9 +51,9 @@ namespace TzarGames.GameCore.Abilities.Generated
 		[ReadOnly] public BufferTypeHandle<TzarGames.GameCore.Abilities.HealthActionData> HealthActionDataType;
 
 		public TzarGames.GameCore.Abilities.InstantiateAbilityComponentJob _InstantiateAbilityComponentJob;
-		public TzarGames.GameCore.Abilities.CopyOwnerTransformToAbilityOnStartJob _CopyOwnerTransformToAbilityOnStartJob;
-		public TzarGames.GameCore.Abilities.SetTargetAbilityJob _SetTargetAbilityJob;
 		public TzarGames.GameCore.Abilities.DurationJob _DurationJob;
+		public TzarGames.GameCore.Abilities.SetTargetAbilityJob _SetTargetAbilityJob;
+		public TzarGames.GameCore.Abilities.CopyOwnerTransformToAbilityOnStartJob _CopyOwnerTransformToAbilityOnStartJob;
 		public TzarGames.GameCore.Abilities.AbilityCooldownJob _AbilityCooldownJob;
 		public TzarGames.GameCore.Abilities.TimerEventAbilityComponentJob _TimerEventAbilityComponentJob;
 		public TzarGames.GameCore.Abilities.HealthAbilityActionJob _HealthAbilityActionJob;
@@ -357,14 +357,14 @@ namespace TzarGames.GameCore.Abilities.Generated
 			job.TargetType = state.GetComponentTypeHandle<TzarGames.GameCore.Target>();
 			job.HealthActionDataType = state.GetBufferTypeHandle<TzarGames.GameCore.Abilities.HealthActionData>(true);
 
-			var ComponentLookupLocalTransform = state.GetComponentLookup<Unity.Transforms.LocalTransform>(true);
 			var ComponentLookupTarget = state.GetComponentLookup<TzarGames.GameCore.Target>(true);
+			var ComponentLookupLocalTransform = state.GetComponentLookup<Unity.Transforms.LocalTransform>(true);
 
 
-			job._CopyOwnerTransformToAbilityOnStartJob.TransformFromEntity = ComponentLookupLocalTransform;
 
 			job._SetTargetAbilityJob.TargetFromEntity = ComponentLookupTarget;
 
+			job._CopyOwnerTransformToAbilityOnStartJob.TransformFromEntity = ComponentLookupLocalTransform;
 
 
 
@@ -401,10 +401,10 @@ namespace TzarGames.GameCore.Abilities.Generated
 			var singleton_TzarGamesGameCoreModifyHealthSystemSingleton = SystemAPI.GetSingleton<TzarGames.GameCore.ModifyHealthSystem.Singleton>();
 
 
-			job._CopyOwnerTransformToAbilityOnStartJob.TransformFromEntity.Update(ref state);
 
 			job._SetTargetAbilityJob.TargetFromEntity.Update(ref state);
 
+			job._CopyOwnerTransformToAbilityOnStartJob.TransformFromEntity.Update(ref state);
 
 
 

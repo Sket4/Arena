@@ -239,7 +239,7 @@ namespace Arena.Abilities
             return result;
         }
 
-        public override string GetNodeName(ScriptVizGraph.ScriptVizGraphPage page)
+        public override string GetNodeName(ScriptVizGraphPage page)
         {
             return "On action sequence started";
         }
@@ -281,11 +281,6 @@ namespace Arena.Abilities
     [BurstCompile]
     public struct ScriptVizSequenceActionJob
     {
-        [ReadOnly]
-        public BufferLookup<CodeDataByte> CodeDataLookup;
-        [ReadOnly]
-        public BufferLookup<ConstantEntityVariableData> ConstantEntityDataLookup;
-        
         public void Execute(
             Entity abilityEntity,
             int commandBufferIndex,
@@ -293,19 +288,19 @@ namespace Arena.Abilities
             UniversalCommandBuffer commands,
             ref DynamicBuffer<VariableDataByte> variableData,
             ref DynamicBuffer<EntityVariableData> entityVariableData,
-            ref ScriptVizState state,
+            ref DynamicBuffer<ConstantEntityVariableData> constantEntityVariableData,
+
+        ref ScriptVizState state,
             in ActionSequenceAbilityEventNodeData eventData,
             in ScriptVizCodeInfo codeInfo,
             in ActionSequenceSharedData sharedData,
             in Duration duration,
             float deltaTime)
         {
-            var codeDataBytes = CodeDataLookup[codeInfo.CodeDataEntity];
-            var constantEntityVariableDatas = ConstantEntityDataLookup[codeInfo.CodeDataEntity];
-            var contextData = new ScriptVizAspect.ReadOnlyData(abilityEntity, variableData, entityVariableData, codeInfo);
+            var contextData = new ScriptVizAspect.ReadOnlyData(abilityEntity, variableData, entityVariableData, constantEntityVariableData, codeInfo);
             var owner = abilityOwner.Value;
 
-            using (var contextHandle = new ContextDisposeHandle(codeDataBytes, constantEntityVariableDatas, ref state, ref contextData, ref commands, commandBufferIndex, deltaTime))
+            using (var contextHandle = new ContextDisposeHandle(ref state, ref contextData, ref commands, commandBufferIndex, deltaTime))
             {
                 if (eventData.AbilityOwner.IsValid)
                 {

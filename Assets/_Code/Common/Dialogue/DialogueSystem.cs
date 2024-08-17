@@ -129,11 +129,8 @@ namespace Arena.Dialogue
                 }
 
                 var aspect = SystemAPI.GetAspect<ScriptVizAspect>(signal.DialogueEntity);
-                            
-                var codeBytes = SystemAPI.GetBuffer<CodeDataByte>(aspect.CodeInfo.ValueRO.CodeDataEntity);
-                var constEntityVarData = SystemAPI.GetBuffer<ConstantEntityVariableData>(aspect.CodeInfo.ValueRO.CodeDataEntity);
-
-                using (var contextHandle = new ContextDisposeHandle(codeBytes, constEntityVarData, ref aspect, ref commands, entityInQueryIndex, deltaTime))
+                         
+                using (var contextHandle = new ContextDisposeHandle(ref aspect, ref commands, entityInQueryIndex, deltaTime))
                 {
                     contextHandle.Execute(signal.CommandAddress);  
                 }

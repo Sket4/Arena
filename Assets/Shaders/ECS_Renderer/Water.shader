@@ -46,6 +46,7 @@ Shader"Arena/Water"
             #pragma shader_feature __ USE_CUSTOM_REFLECTIONS
             #pragma shader_feature __ USE_CUSTOM_FOG_COLOR
             #pragma multi_compile _ LIGHTMAP_ON
+            #pragma multi_compile _ DIRLIGHTMAP_COMBINED
             //#pragma multi_compile_instancing
 
             #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Core.hlsl"

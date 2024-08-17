@@ -245,13 +245,13 @@ namespace Arena.Dialogue
             sockets.Add(new SocketInfo(Companion, SocketType.In, "Companion"));
         }
 
-        public void AddAdditionalVariables(ScriptVizGraph.ScriptVizGraphPage page)
+        public void AddAdditionalVariables(ScriptVizGraphPage page)
         {
             player_varId = GetOrAddCompanionVariable(Player_varName, Player.AuthoringValue, page).ID;
             companion_varId = GetOrAddCompanionVariable(Сompanion_varName, Companion.AuthoringValue, page).ID;
         }
 
-        public static EntityVariable GetOrAddCompanionVariable(string varName, GameObject authoringValue, ScriptVizGraph.ScriptVizGraphPage page)
+        public static EntityVariable GetOrAddCompanionVariable(string varName, GameObject authoringValue, ScriptVizGraphPage page)
         {
             var variable = page.GetVariableWithName(varName);
             
@@ -269,7 +269,7 @@ namespace Arena.Dialogue
             return variable as EntityVariable;
         }
 
-        public override string GetNodeName(ScriptVizGraph.ScriptVizGraphPage page)
+        public override string GetNodeName(ScriptVizGraphPage page)
         {
             return "Старт диалога";
         }
@@ -362,7 +362,7 @@ namespace Arena.Dialogue
             AnswerOutputSockets.Remove(s);
         }
 
-        public override string GetNodeName(ScriptVizGraph.ScriptVizGraphPage page)
+        public override string GetNodeName(ScriptVizGraphPage page)
         {
             if(Message == null)
                 return "Диалог";
@@ -377,7 +377,7 @@ namespace Arena.Dialogue
 
         public override float MinimumEditablePropertiesWidth => 350;
         
-        public void AddAdditionalVariables(ScriptVizGraph.ScriptVizGraphPage page)
+        public void AddAdditionalVariables(ScriptVizGraphPage page)
         {
             player_varId = StartDialogueNode.GetOrAddCompanionVariable(StartDialogueNode.Player_varName, null, page).ID;
             companion_varId = StartDialogueNode.GetOrAddCompanionVariable(StartDialogueNode.Сompanion_varName, null, page).ID;

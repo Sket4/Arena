@@ -230,19 +230,23 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   ConversionTargetOptions: -1
-  RootMotionBone: {fileID: 0}
+  AnimationRoot: {fileID: 0}
   DefaultClipIndex: 0
   Clips:
-  - Clip: {fileID: 7400000, guid: 82b16e1df3c2e4c52869f039968e552d, type: 2}
+  - Label: 
+    Clip: {fileID: 7400000, guid: 82b16e1df3c2e4c52869f039968e552d, type: 2}
     ID: {fileID: 11400000, guid: 53bed7b3c88fcbb478a5626f613a373a, type: 2}
     Loop: 0
-    InitialSpeed: 0
+    SpeedScale: 1
     ComputeRootmotionDeltas: 0
-  - Clip: {fileID: 7400000, guid: 561c136fbfa3121438a6e9e393e1a01a, type: 2}
+    BakeFlags: 0
+  - Label: 
+    Clip: {fileID: 7400000, guid: 561c136fbfa3121438a6e9e393e1a01a, type: 2}
     ID: {fileID: 11400000, guid: be55cdcd51e83b24bbb9613cedd85585, type: 2}
     Loop: 0
-    InitialSpeed: 0
+    SpeedScale: 1
     ComputeRootmotionDeltas: 0
+    BakeFlags: 0
 --- !u!205 &5430273915808306225
 LODGroup:
   m_ObjectHideFlags: 0
@@ -271,197 +275,158 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
-    - target: {fileID: 624604784556402760, guid: 485768272c0d6144f9ae192ee2cab315,
-        type: 3}
+    - target: {fileID: 624604784556402760, guid: 485768272c0d6144f9ae192ee2cab315, type: 3}
       propertyPath: m_RootOrder
       value: 2
       objectReference: {fileID: 0}
-    - target: {fileID: 815621755564705535, guid: 485768272c0d6144f9ae192ee2cab315,
-        type: 3}
+    - target: {fileID: 815621755564705535, guid: 485768272c0d6144f9ae192ee2cab315, type: 3}
       propertyPath: m_Capsule.Axis
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 815621755564705535, guid: 485768272c0d6144f9ae192ee2cab315,
-        type: 3}
+    - target: {fileID: 815621755564705535, guid: 485768272c0d6144f9ae192ee2cab315, type: 3}
       propertyPath: m_SphereRadius
       value: 0.66699934
       objectReference: {fileID: 0}
-    - target: {fileID: 815621755564705535, guid: 485768272c0d6144f9ae192ee2cab315,
-        type: 3}
+    - target: {fileID: 815621755564705535, guid: 485768272c0d6144f9ae192ee2cab315, type: 3}
       propertyPath: m_Cylinder.Axis
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 815621755564705535, guid: 485768272c0d6144f9ae192ee2cab315,
-        type: 3}
+    - target: {fileID: 815621755564705535, guid: 485768272c0d6144f9ae192ee2cab315, type: 3}
       propertyPath: m_Capsule.Height
       value: 1.3339987
       objectReference: {fileID: 0}
-    - target: {fileID: 815621755564705535, guid: 485768272c0d6144f9ae192ee2cab315,
-        type: 3}
+    - target: {fileID: 815621755564705535, guid: 485768272c0d6144f9ae192ee2cab315, type: 3}
       propertyPath: m_Capsule.Radius
       value: 0.596701
       objectReference: {fileID: 0}
-    - target: {fileID: 815621755564705535, guid: 485768272c0d6144f9ae192ee2cab315,
-        type: 3}
+    - target: {fileID: 815621755564705535, guid: 485768272c0d6144f9ae192ee2cab315, type: 3}
       propertyPath: m_Cylinder.Height
       value: 1.3339987
       objectReference: {fileID: 0}
-    - target: {fileID: 815621755564705535, guid: 485768272c0d6144f9ae192ee2cab315,
-        type: 3}
+    - target: {fileID: 815621755564705535, guid: 485768272c0d6144f9ae192ee2cab315, type: 3}
       propertyPath: m_Cylinder.Radius
       value: 0.596701
       objectReference: {fileID: 0}
-    - target: {fileID: 815621755564705535, guid: 485768272c0d6144f9ae192ee2cab315,
-        type: 3}
+    - target: {fileID: 815621755564705535, guid: 485768272c0d6144f9ae192ee2cab315, type: 3}
       propertyPath: m_PrimitiveSize.x
       value: 1.3339987
       objectReference: {fileID: 0}
-    - target: {fileID: 815621755564705535, guid: 485768272c0d6144f9ae192ee2cab315,
-        type: 3}
+    - target: {fileID: 815621755564705535, guid: 485768272c0d6144f9ae192ee2cab315, type: 3}
       propertyPath: m_PrimitiveSize.y
       value: 1.193402
       objectReference: {fileID: 0}
-    - target: {fileID: 815621755564705535, guid: 485768272c0d6144f9ae192ee2cab315,
-        type: 3}
+    - target: {fileID: 815621755564705535, guid: 485768272c0d6144f9ae192ee2cab315, type: 3}
       propertyPath: m_PrimitiveSize.z
       value: 1.1796
       objectReference: {fileID: 0}
-    - target: {fileID: 815621755564705535, guid: 485768272c0d6144f9ae192ee2cab315,
-        type: 3}
+    - target: {fileID: 815621755564705535, guid: 485768272c0d6144f9ae192ee2cab315, type: 3}
       propertyPath: m_PrimitiveCenter.x
       value: 0.0005493164
       objectReference: {fileID: 0}
-    - target: {fileID: 815621755564705535, guid: 485768272c0d6144f9ae192ee2cab315,
-        type: 3}
+    - target: {fileID: 815621755564705535, guid: 485768272c0d6144f9ae192ee2cab315, type: 3}
       propertyPath: m_PrimitiveCenter.y
       value: 0.59355104
       objectReference: {fileID: 0}
-    - target: {fileID: 815621755564705535, guid: 485768272c0d6144f9ae192ee2cab315,
-        type: 3}
+    - target: {fileID: 815621755564705535, guid: 485768272c0d6144f9ae192ee2cab315, type: 3}
       propertyPath: m_PrimitiveOrientation.Value.x
       value: -0
       objectReference: {fileID: 0}
-    - target: {fileID: 4155078763139399962, guid: 485768272c0d6144f9ae192ee2cab315,
-        type: 3}
+    - target: {fileID: 4155078763139399962, guid: 485768272c0d6144f9ae192ee2cab315, type: 3}
       propertyPath: m_RootOrder
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 4155078763139399962, guid: 485768272c0d6144f9ae192ee2cab315,
-        type: 3}
+    - target: {fileID: 4155078763139399962, guid: 485768272c0d6144f9ae192ee2cab315, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 4155078763139399962, guid: 485768272c0d6144f9ae192ee2cab315,
-        type: 3}
+    - target: {fileID: 4155078763139399962, guid: 485768272c0d6144f9ae192ee2cab315, type: 3}
       propertyPath: m_LocalPosition.y
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 4155078763139399962, guid: 485768272c0d6144f9ae192ee2cab315,
-        type: 3}
+    - target: {fileID: 4155078763139399962, guid: 485768272c0d6144f9ae192ee2cab315, type: 3}
       propertyPath: m_LocalPosition.z
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 4155078763139399962, guid: 485768272c0d6144f9ae192ee2cab315,
-        type: 3}
+    - target: {fileID: 4155078763139399962, guid: 485768272c0d6144f9ae192ee2cab315, type: 3}
       propertyPath: m_LocalRotation.w
       value: 1
       objectReference: {fileID: 0}
-    - target: {fileID: 4155078763139399962, guid: 485768272c0d6144f9ae192ee2cab315,
-        type: 3}
+    - target: {fileID: 4155078763139399962, guid: 485768272c0d6144f9ae192ee2cab315, type: 3}
       propertyPath: m_LocalRotation.x
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 4155078763139399962, guid: 485768272c0d6144f9ae192ee2cab315,
-        type: 3}
+    - target: {fileID: 4155078763139399962, guid: 485768272c0d6144f9ae192ee2cab315, type: 3}
       propertyPath: m_LocalRotation.y
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 4155078763139399962, guid: 485768272c0d6144f9ae192ee2cab315,
-        type: 3}
+    - target: {fileID: 4155078763139399962, guid: 485768272c0d6144f9ae192ee2cab315, type: 3}
       propertyPath: m_LocalRotation.z
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 4155078763139399962, guid: 485768272c0d6144f9ae192ee2cab315,
-        type: 3}
+    - target: {fileID: 4155078763139399962, guid: 485768272c0d6144f9ae192ee2cab315, type: 3}
       propertyPath: m_LocalEulerAnglesHint.x
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 4155078763139399962, guid: 485768272c0d6144f9ae192ee2cab315,
-        type: 3}
+    - target: {fileID: 4155078763139399962, guid: 485768272c0d6144f9ae192ee2cab315, type: 3}
       propertyPath: m_LocalEulerAnglesHint.y
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 4155078763139399962, guid: 485768272c0d6144f9ae192ee2cab315,
-        type: 3}
+    - target: {fileID: 4155078763139399962, guid: 485768272c0d6144f9ae192ee2cab315, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 6381770318628851530, guid: 485768272c0d6144f9ae192ee2cab315,
-        type: 3}
+    - target: {fileID: 6381770318628851530, guid: 485768272c0d6144f9ae192ee2cab315, type: 3}
       propertyPath: ID
       value: 
-      objectReference: {fileID: -9172137730714493909, guid: 709759d6d50fadb4ab72406e658ed872,
-        type: 2}
-    - target: {fileID: 6496204040468465763, guid: 485768272c0d6144f9ae192ee2cab315,
-        type: 3}
+      objectReference: {fileID: -9172137730714493909, guid: 709759d6d50fadb4ab72406e658ed872, type: 2}
+    - target: {fileID: 6496204040468465763, guid: 485768272c0d6144f9ae192ee2cab315, type: 3}
       propertyPath: m_RootOrder
       value: 4
       objectReference: {fileID: 0}
-    - target: {fileID: 6948923908651119223, guid: 485768272c0d6144f9ae192ee2cab315,
-        type: 3}
+    - target: {fileID: 6948923908651119223, guid: 485768272c0d6144f9ae192ee2cab315, type: 3}
       propertyPath: m_RootOrder
       value: 6
       objectReference: {fileID: 0}
-    - target: {fileID: 8256018809159949564, guid: 485768272c0d6144f9ae192ee2cab315,
-        type: 3}
+    - target: {fileID: 8256018809159949564, guid: 485768272c0d6144f9ae192ee2cab315, type: 3}
       propertyPath: m_RootOrder
       value: 5
       objectReference: {fileID: 0}
-    - target: {fileID: 8606120253186823074, guid: 485768272c0d6144f9ae192ee2cab315,
-        type: 3}
+    - target: {fileID: 8606120253186823074, guid: 485768272c0d6144f9ae192ee2cab315, type: 3}
       propertyPath: m_Name
       value: Treasure chest Client
       objectReference: {fileID: 0}
-    - target: {fileID: 8692011785050071518, guid: 485768272c0d6144f9ae192ee2cab315,
-        type: 3}
+    - target: {fileID: 8692011785050071518, guid: 485768272c0d6144f9ae192ee2cab315, type: 3}
       propertyPath: m_RootOrder
       value: 3
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects:
-    - targetCorrespondingSourceObject: {fileID: 4155078763139399962, guid: 485768272c0d6144f9ae192ee2cab315,
-        type: 3}
+    - targetCorrespondingSourceObject: {fileID: 4155078763139399962, guid: 485768272c0d6144f9ae192ee2cab315, type: 3}
       insertIndex: -1
       addedObject: {fileID: 3664537938048241841}
-    - targetCorrespondingSourceObject: {fileID: 4155078763139399962, guid: 485768272c0d6144f9ae192ee2cab315,
-        type: 3}
+    - targetCorrespondingSourceObject: {fileID: 4155078763139399962, guid: 485768272c0d6144f9ae192ee2cab315, type: 3}
       insertIndex: -1
       addedObject: {fileID: 3111504124275999040}
     m_AddedComponents:
-    - targetCorrespondingSourceObject: {fileID: 8606120253186823074, guid: 485768272c0d6144f9ae192ee2cab315,
-        type: 3}
+    - targetCorrespondingSourceObject: {fileID: 8606120253186823074, guid: 485768272c0d6144f9ae192ee2cab315, type: 3}
       insertIndex: -1
       addedObject: {fileID: 1130102077676316557}
-    - targetCorrespondingSourceObject: {fileID: 8606120253186823074, guid: 485768272c0d6144f9ae192ee2cab315,
-        type: 3}
+    - targetCorrespondingSourceObject: {fileID: 8606120253186823074, guid: 485768272c0d6144f9ae192ee2cab315, type: 3}
       insertIndex: -1
       addedObject: {fileID: 7162544490776433491}
-    - targetCorrespondingSourceObject: {fileID: 8606120253186823074, guid: 485768272c0d6144f9ae192ee2cab315,
-        type: 3}
+    - targetCorrespondingSourceObject: {fileID: 8606120253186823074, guid: 485768272c0d6144f9ae192ee2cab315, type: 3}
       insertIndex: -1
       addedObject: {fileID: 8555934751979898267}
   m_SourcePrefab: {fileID: 100100000, guid: 485768272c0d6144f9ae192ee2cab315, type: 3}
 --- !u!4 &1798629892928655343 stripped
 Transform:
-  m_CorrespondingSourceObject: {fileID: 4155078763139399962, guid: 485768272c0d6144f9ae192ee2cab315,
-    type: 3}
+  m_CorrespondingSourceObject: {fileID: 4155078763139399962, guid: 485768272c0d6144f9ae192ee2cab315, type: 3}
   m_PrefabInstance: {fileID: 2404863125633945333}
   m_PrefabAsset: {fileID: 0}
 --- !u!1 &6210708530058894679 stripped
 GameObject:
-  m_CorrespondingSourceObject: {fileID: 8606120253186823074, guid: 485768272c0d6144f9ae192ee2cab315,
-    type: 3}
+  m_CorrespondingSourceObject: {fileID: 8606120253186823074, guid: 485768272c0d6144f9ae192ee2cab315, type: 3}
   m_PrefabInstance: {fileID: 2404863125633945333}
   m_PrefabAsset: {fileID: 0}
 --- !u!114 &1130102077676316557
@@ -485,22 +450,38 @@ MonoBehaviour:
     - rid: 0
       type: {class: ScriptVizGraph, ns: TzarGames.GameCore.ScriptViz.Graph, asm: TzarGames.GameCore}
       data:
-        sockedIdCounter: 10
-        variableIdCounter: 2
-        nodeIdCounter: 5
-        pages:
-        - ConversionTargetOptions: 1
-          variables:
-          - rid: 1
-          nodes:
-          - rid: 2
-          - rid: 3
-          - rid: 4
+        pages: []
+        states: []
+        layers:
+        - id: 00000000000000000000000000000000
+          pages:
+          - ID:
+              Value:
+                Value:
+                  x: 813842078
+                  y: 1335997998
+                  z: 1247796400
+                  w: 1088598928
+            ConversionTargetOptions: 1
+            variables:
+            - rid: 1
+            - rid: 4877893522593153104
+            nodes:
+            - rid: 2
+            - rid: 3
+            - rid: 4
+          states: []
+        Name: 
     - rid: 1
       type: {class: EntityVariable, ns: TzarGames.GameCore.ScriptViz.Graph, asm: TzarGames.GameCore}
       data:
         ID:
-          Value: 1
+          Value:
+            Value:
+              x: 1851810396
+              y: 1104040803
+              z: 2292070314
+              w: 3690041162
         Name: animator
         NetSyncEnabled: 0
         Value: {fileID: 5455559136692016526}
@@ -508,60 +489,144 @@ MonoBehaviour:
       type: {class: CharacterDeathEventNode, ns: Arena.ScriptViz, asm: Arena.Common}
       data:
         ID:
-          Value: 1
+          Value:
+            Value:
+              x: 972581306
+              y: 1270476161
+              z: 1761636511
+              w: 423963343
         Position: {x: 0, y: 0}
         output:
           ID:
-            Value: 1
+            Value:
+              Value:
+                x: 2840102965
+                y: 1130315407
+                z: 3062003347
+                w: 986321624
           ConnectedSocketIDs:
-          - Value: 7
+          - Value:
+              Value:
+                x: 1996122490
+                y: 1286205795
+                z: 3808947863
+                w: 2435587544
     - rid: 3
       type: {class: PlayAnimationCommandNode, ns: Arena.Client.ScriptViz, asm: Arena.Client}
       data:
         ID:
-          Value: 3
+          Value:
+            Value:
+              x: 4077577193
+              y: 1101073897
+              z: 3195526307
+              w: 1181270478
         Position: {x: 496, y: 0}
         input:
           ID:
-            Value: 4
+            Value:
+              Value:
+                x: 1600515889
+                y: 1226655090
+                z: 4044784301
+                w: 759596474
           ConnectedSocketIDs:
-          - Value: 8
+          - Value:
+              Value:
+                x: 371374175
+                y: 1084873904
+                z: 3785575861
+                w: 2157653278
         output:
           ID:
-            Value: 5
+            Value:
+              Value:
+                x: 3699966876
+                y: 1255789259
+                z: 632615562
+                w: 1339386357
           ConnectedSocketIDs: []
         TargetAnimatorSocket:
           ID:
-            Value: 6
-          ConnectedSocketIDs:
-          - Value: 9
+            Value:
+              Value:
+                x: 2169155015
+                y: 1153740402
+                z: 2519636925
+                w: 503060112
+          ConnectedSocketIDs: []
           AuthoringValue: {fileID: 0}
         AnimationID: {fileID: 11400000, guid: be55cdcd51e83b24bbb9613cedd85585, type: 2}
     - rid: 4
-      type: {class: GetEntityVarCommandNode, ns: TzarGames.GameCore.ScriptViz.Graph,
-        asm: TzarGames.GameCore}
+      type: {class: GetEntityVarCommandNode, ns: TzarGames.GameCore.ScriptViz.Graph, asm: TzarGames.GameCore}
       data:
         ID:
-          Value: 4
+          Value:
+            Value:
+              x: 158751384
+              y: 1325930384
+              z: 1524389764
+              w: 2984135194
         Position: {x: 302, y: 0}
         input:
           ID:
-            Value: 7
+            Value:
+              Value:
+                x: 1996122490
+                y: 1286205795
+                z: 3808947863
+                w: 2435587544
           ConnectedSocketIDs:
-          - Value: 1
+          - Value:
+              Value:
+                x: 2840102965
+                y: 1130315407
+                z: 3062003347
+                w: 986321624
         output:
           ID:
-            Value: 8
+            Value:
+              Value:
+                x: 371374175
+                y: 1084873904
+                z: 3785575861
+                w: 2157653278
           ConnectedSocketIDs:
-          - Value: 4
+          - Value:
+              Value:
+                x: 1600515889
+                y: 1226655090
+                z: 4044784301
+                w: 759596474
         getVariableId:
-          Value: 1
+          Value:
+            Value:
+              x: 0
+              y: 0
+              z: 0
+              w: 0
         WriteOutput:
           ID:
-            Value: 9
-          ConnectedSocketIDs:
-          - Value: 6
+            Value:
+              Value:
+                x: 181081176
+                y: 1337495826
+                z: 109641092
+                w: 346162292
+          ConnectedSocketIDs: []
           AuthoringValue: {fileID: 0}
+    - rid: 4877893522593153104
+      type: {class: DynamicArrayVariable, ns: TzarGames.GameCore.ScriptViz.Graph, asm: TzarGames.GameCore}
+      data:
+        ID:
+          Value:
+            Value:
+              x: 1529250385
+              y: 1122633226
+              z: 3720078227
+              w: 3306688627
+        Name: _delayed_commands
+        NetSyncEnabled: 0
 --- !u!114 &7162544490776433491
 MonoBehaviour:
   m_ObjectHideFlags: 0

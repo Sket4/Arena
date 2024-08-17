@@ -61,43 +61,21 @@ namespace Arena
             Entities
                 .WithChangeFilter<DeathData>()
                 .ForEach((
-                    Entity entity, 
-                    int entityInQueryIndex, 
+                    int entityInQueryIndex,
+                    ScriptVizAspect aspect,
                     DynamicBuffer<ScriptViz.DeadEventData> deathEvents,
-                    DynamicBuffer<VariableDataByte> variableData,
-                    DynamicBuffer<EntityVariableData> entityVars,
-                    ref ScriptVizState state,
-                    in LivingState livingState, 
-                    in ScriptVizCodeInfo codeDataInfo) =>
+                    in LivingState livingState) =>
                 {
                     if (livingState.WasDeadInCurrentFrame() == false)
                     {
                         return;
                     }
-                    var codeData = SystemAPI.GetBuffer<CodeDataByte>(codeDataInfo.CodeDataEntity);
-                    var constantEntityData = SystemAPI.GetBuffer<ConstantEntityVariableData>(codeDataInfo.CodeDataEntity);
-                    var codeAsset = new ScriptVizCodeAsset((byte*)codeData.GetUnsafeReadOnlyPtr());
-
-                    using (var stackMemory = new NativeArray<byte>(codeDataInfo.TempMemorySize, Allocator.Temp))
+                    
+                    var handle = new ContextDisposeHandle(ref aspect, ref commands, entityInQueryIndex, deltaTime);
+                    
+                    foreach (var deathEvent in deathEvents)
                     {
-                        foreach (var deathEvent in deathEvents)
-                        {
-                            var context = new Context(
-                                entity,
-                                codeAsset, 
-                                ref variableData, 
-                                constantEntityData.AsNativeArray(), 
-                                entityVars.AsNativeArray(),
-                                ref state,
-                                stackMemory.GetUnsafePtr(), 
-                                ref commands, 
-                                entityInQueryIndex, 
-                                deltaTime
-                                //deathEvent.CommandAddress
-                                );
-                            
-                            Extensions.ExecuteCode(ref context, deathEvent.CommandAddress);    
-                        }
+                        handle.Execute(deathEvent.CommandAddress);   
                     }
 
                 }).Run();
@@ -113,10 +91,7 @@ namespace Arena
                     }
                     commands.SetComponent(sortKey, entity, new TargetChangedEventPreviousTarget { Value = target.Value });
                     
-                    var codeData = SystemAPI.GetBuffer<CodeDataByte>(aspect.CodeInfo.ValueRO.CodeDataEntity);
-                    var constantEntityData = SystemAPI.GetBuffer<ConstantEntityVariableData>(aspect.CodeInfo.ValueRO.CodeDataEntity);
-
-                    using (var handle = new ContextDisposeHandle(codeData, constantEntityData, ref aspect, ref commands, sortKey, deltaTime))
+                    using (var handle = new ContextDisposeHandle(ref aspect, ref commands, sortKey, deltaTime))
                     {
                         var context = handle.Context;
                         
@@ -215,10 +190,7 @@ namespace Arena
 
                             var aspect = SystemAPI.GetAspect<ScriptVizAspect>(request.ScriptVizEntity);
                             
-                            var codeBytes = SystemAPI.GetBuffer<CodeDataByte>(aspect.CodeInfo.ValueRO.CodeDataEntity);
-                            var constEntityVarData = SystemAPI.GetBuffer<ConstantEntityVariableData>(aspect.CodeInfo.ValueRO.CodeDataEntity);
-
-                            using (var contextHandle = new ContextDisposeHandle(codeBytes, constEntityVarData, ref aspect, ref commands, entityInQueryIndex, deltaTime))
+                            using (var contextHandle = new ContextDisposeHandle(ref aspect, ref commands, entityInQueryIndex, deltaTime))
                             {
                                 if (request.DataAddress.IsValid)
                                 {

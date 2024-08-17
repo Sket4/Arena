@@ -36,6 +36,7 @@ Shader"Arena/Window"
             #pragma multi_compile _ DOTS_INSTANCING_ON
             #pragma shader_feature __ USE_LIGHTING
             #pragma multi_compile _ LIGHTMAP_ON
+            #pragma multi_compile _ DIRLIGHTMAP_COMBINED
             //#pragma multi_compile_instancing
 
             #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Core.hlsl"

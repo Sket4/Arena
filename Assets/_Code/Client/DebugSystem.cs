@@ -32,6 +32,17 @@ namespace Arena.Client
         }
 
         [ConsoleCommand]
+        public void LogSceneTagAndLinked()
+        {
+            Entities
+                .WithAll<SceneTag, LinkedEntityGroup>()
+                .ForEach((Entity entity) =>
+            {
+                Debug.Log($"{entity.Index}:{entity.Version}");
+            }).Run();
+        }
+
+        [ConsoleCommand]
         public void KillAllEnemiesServer()
         {
             if (World.GetExistingSystemManaged<ClientSystem>() != null)

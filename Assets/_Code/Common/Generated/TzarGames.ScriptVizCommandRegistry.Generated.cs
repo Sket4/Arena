@@ -38,6 +38,7 @@ namespace TzarGames.GameCore.Generated
 			ScriptVizCommandRegistry.RegisterCommand(typeof(TzarGames.GameCore.ScriptViz.Graph.SequenceCommand), TzarGames.GameCore.ScriptViz.Graph.SequenceCommand.Exec);
 			ScriptVizCommandRegistry.RegisterCommand(typeof(TzarGames.GameCore.ScriptViz.Graph.RandomIntCommand), TzarGames.GameCore.ScriptViz.Graph.RandomIntCommand.Exec);
 			ScriptVizCommandRegistry.RegisterCommand(typeof(TzarGames.GameCore.ScriptViz.Graph.RandomFloatCommand), TzarGames.GameCore.ScriptViz.Graph.RandomFloatCommand.Exec);
+			ScriptVizCommandRegistry.RegisterCommand(typeof(TzarGames.GameCore.ScriptViz.Graph.IsInStateCheckCommand), TzarGames.GameCore.ScriptViz.Graph.IsInStateCheckCommand.Exec);
 			ScriptVizCommandRegistry.RegisterCommand(typeof(TzarGames.GameCore.ScriptViz.Graph.GoToStateAction), TzarGames.GameCore.ScriptViz.Graph.GoToStateAction.Exec);
 			ScriptVizCommandRegistry.RegisterCommand(typeof(TzarGames.GameCore.ScriptViz.Commands.GoToPositionCommand), TzarGames.GameCore.ScriptViz.Commands.GoToPositionCommand.Execute);
 			ScriptVizCommandRegistry.RegisterCommand(typeof(TzarGames.GameCore.ScriptViz.Commands.AddOrRemoveModificatorCommand<TzarGames.GameCore.SpeedModificator,TzarGames.GameCore.SpeedModificatorChangeRequest>), TzarGames.GameCore.ScriptViz.Commands.AddOrRemoveModificatorCommand<TzarGames.GameCore.SpeedModificator,TzarGames.GameCore.SpeedModificatorChangeRequest>.Execute);

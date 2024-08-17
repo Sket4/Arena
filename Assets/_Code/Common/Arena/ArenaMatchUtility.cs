@@ -10,6 +10,7 @@ using Unity.Collections;
 using Unity.Entities;
 using Unity.Mathematics;
 using Unity.Transforms;
+using UnityEngine;
 using SceneLoadingState = Arena.GameSceneCode.SceneLoadingState;
 
 namespace Arena.Server
@@ -134,7 +135,12 @@ namespace Arena.Server
 
             if (gameSceneEntity == Entity.Null)
             {
-                UnityEngine.Debug.LogError($"Game scene entity is null");
+                UnityEngine.Debug.LogError($"Game scene entity is null (targetID: {sceneData.GameSceneId})");
+
+                foreach (var idToEntity in db)
+                {
+                    Debug.LogError($"db entry: {idToEntity.Entity.Index}, id: {idToEntity.ObjectID}");
+                }
                 return;
             }
 

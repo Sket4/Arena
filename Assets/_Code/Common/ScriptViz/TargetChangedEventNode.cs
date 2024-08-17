@@ -43,7 +43,7 @@ namespace Arena.ScriptViz
         public EntitySocket TargetEntityOutSocket = new();
         public override bool ShowEditableProperties => false;
 
-        public override string GetNodeName(ScriptVizGraph.ScriptVizGraphPage page)
+        public override string GetNodeName(ScriptVizGraphPage page)
         {
             return "On target changed";
         }

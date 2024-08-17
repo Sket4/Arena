@@ -9,6 +9,7 @@ using UnityEngine;
 
 namespace Arena.ScriptViz
 {
+    [BurstCompile]
     struct MoveOnPathCommand : IScriptVizCommand
     {
         public InputEntityVar MovementEntity;
@@ -59,7 +60,7 @@ namespace Arena.ScriptViz
             commandAddress = compilerAllocator.WriteCommand(ref cmd);
         }
 
-        public override string GetNodeName(ScriptVizGraph.ScriptVizGraphPage page)
+        public override string GetNodeName(ScriptVizGraphPage page)
         {
             return "Двигаться по пути";
         }

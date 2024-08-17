@@ -19,6 +19,11 @@ namespace Arena.Client.UI
         {
             base.UpdateCharacterStats();
 
+            if (HasData<CharacterClassData>() == false)
+            {
+                return;
+            }
+
             var characterClass = GetData<CharacterClassData>();
             
             if (characterClass.Value == CharacterClass.Knight)

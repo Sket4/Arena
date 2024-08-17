@@ -910,6 +910,11 @@ namespace Arena.Client.UI
                 return;
             }
 
+            if (HasData<LivingState>() == false)
+            {
+                return;
+            }
+
             var state = GetData<LivingState>();
 
             if (state.IsAlive == false)

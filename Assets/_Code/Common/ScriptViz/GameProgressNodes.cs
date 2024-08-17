@@ -29,6 +29,7 @@ namespace Arena.ScriptViz
         }
     }
     
+    [BurstCompile]
     struct GameProgressFlagCheckCommand : IScriptVizCommand
     {
         public InputVar<GameProgressSocketData> Progress;
@@ -106,7 +107,7 @@ namespace Arena.ScriptViz
             sockets.Add(new SocketInfo(NoFlagSocket, SocketType.Out, "Флага нет"));
         }
 
-        public override string GetNodeName(ScriptVizGraph.ScriptVizGraphPage page)
+        public override string GetNodeName(ScriptVizGraphPage page)
         {
             if (FlagKey)
             {
@@ -133,6 +134,7 @@ namespace Arena.ScriptViz
         public int FlagKey;
     }
 
+    [BurstCompile]
     struct AddGameProgressFlagCommand : IScriptVizCommand
     {
         public int FlagKey;
@@ -164,7 +166,7 @@ namespace Arena.ScriptViz
             commandAddress = compilerAllocator.WriteCommand(ref cmd);
         }
 
-        public override string GetNodeName(ScriptVizGraph.ScriptVizGraphPage page)
+        public override string GetNodeName(ScriptVizGraphPage page)
         {
             if (FlagKey)
             {
@@ -226,7 +228,7 @@ namespace Arena.ScriptViz
             sockets.Add(new SocketInfo(ProgressSocket, SocketType.Out, "Прогресс"));
         }
         
-        public override string GetNodeName(ScriptVizGraph.ScriptVizGraphPage page)
+        public override string GetNodeName(ScriptVizGraphPage page)
         {
             return "Загрузить прогресс персонажа";
         }
@@ -292,7 +294,7 @@ namespace Arena.ScriptViz
             commandAddress = compilerAllocator.WriteCommand(ref cmd);
         }
 
-        public override string GetNodeName(ScriptVizGraph.ScriptVizGraphPage page)
+        public override string GetNodeName(ScriptVizGraphPage page)
         {
             if (GameSceneKey)
             {

@@ -274,6 +274,27 @@ namespace Arena.Client
                     EntityManager.AddComponentData(characterEntity, new PlayerInput());
 
                 }).Run();
+            
+            Entities
+                .WithStructuralChanges()
+                .WithoutBurst()
+                .ForEach((Entity cameraEntity, ThirdPersonCamera camera, in CameraData cameraData, in LocalTransform transform) =>
+                {
+                    if (camera == false || camera.CachedTransform == false)
+                    {
+                        return;
+                    }
+
+                    if (EntityManager.Exists(cameraData.Target) == false
+                        || EntityManager.HasComponent<CharacterAnimation>(cameraData.Target) == false)
+                    {
+                        EntityManager.RemoveComponent<ThirdPersonCamera>(cameraEntity);
+                        Object.Destroy(camera.gameObject);
+                        EntityManager.DestroyEntity(cameraEntity);
+                        return;
+                    }
+
+                }).Run();
 
             
 
@@ -364,26 +385,17 @@ namespace Arena.Client
                 }
 
             }).Run();
-
+            
             Entities
                 .WithStructuralChanges()
                 .WithoutBurst()
-                .ForEach((Entity cameraEntity, ThirdPersonCamera camera, in CameraData cameraData, in LocalTransform transform) =>
+                .ForEach((ThirdPersonCamera camera, in LocalTransform transform) =>
                 {
-                    if (camera == null || camera.CachedTransform == null)
+                    if (camera == false || camera.CachedTransform == false)
                     {
                         return;
                     }
-
-                    if (EntityManager.Exists(cameraData.Target) == false
-                        || EntityManager.HasComponent<CharacterAnimation>(cameraData.Target) == false)
-                    {
-                        EntityManager.RemoveComponent<ThirdPersonCamera>(cameraEntity);
-                        Object.Destroy(camera.gameObject);
-                        EntityManager.DestroyEntity(cameraEntity);
-                        return;
-                    }
-
+                    
                     camera.CachedTransform.position = transform.Position;
                     camera.CachedTransform.rotation = transform.Rotation;
                     camera.DoLateUpdate();

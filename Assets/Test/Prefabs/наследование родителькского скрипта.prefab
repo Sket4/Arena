@@ -1,0 +1,527 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1 &8576708578253852040
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 3186964946788640211}
+  - component: {fileID: 2236116142628497452}
+  - component: {fileID: 5548494960336848165}
+  m_Layer: 0
+  m_Name: "\u043D\u0430\u0441\u043B\u0435\u0434\u043E\u0432\u0430\u043D\u0438\u0435
+    \u0440\u043E\u0434\u0438\u0442\u0435\u043B\u044C\u043A\u0441\u043A\u043E\u0433\u043E
+    \u0441\u043A\u0440\u0438\u043F\u0442\u0430"
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &3186964946788640211
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8576708578253852040}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &2236116142628497452
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8576708578253852040}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 25d87a6b957a60841942c7e71e0c252f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ConversionTargetOptions: -1
+  Graph:
+    rid: 4877893400282267722
+  references:
+    version: 2
+    RefIds:
+    - rid: 4877893400282267722
+      type: {class: ScriptVizGraph, ns: TzarGames.GameCore.ScriptViz.Graph, asm: TzarGames.GameCore}
+      data:
+        pages: []
+        states: []
+        layers:
+        - id: 00000000000000000000000000000000
+          pages:
+          - ID:
+              Value:
+                Value:
+                  x: 2746701341
+                  y: 1123727111
+                  z: 651713199
+                  w: 3174497314
+            ConversionTargetOptions: 7
+            variables:
+            - rid: 4877893400282267727
+            - rid: 4877893400282267728
+            nodes:
+            - rid: 4877893400282267724
+            - rid: 4877893400282267725
+          - ID:
+              Value:
+                Value:
+                  x: 3288494693
+                  y: 1076154145
+                  z: 408646569
+                  w: 268483152
+            ConversionTargetOptions: 7
+            variables: []
+            nodes:
+            - rid: 4877893508290314286
+            - rid: 4877893508290314288
+          states:
+          - id:
+              Value:
+                Value:
+                  x: 3337035206
+                  y: 1149216228
+                  z: 2326420634
+                  w: 4183092652
+            Name: Parent state
+        - id: scene
+          pages:
+          - ID:
+              Value:
+                Value:
+                  x: 4264822594
+                  y: 1341864234
+                  z: 2772197538
+                  w: 3792527124
+            ConversionTargetOptions: 7
+            variables: []
+            nodes:
+            - rid: 4877893508290314273
+            - rid: 4877893508290314275
+          - ID:
+              Value:
+                Value:
+                  x: 2350821900
+                  y: 1275524660
+                  z: 2661382060
+                  w: 2124270086
+            ConversionTargetOptions: 7
+            variables: []
+            nodes:
+            - rid: 4877893508290314296
+            - rid: 4877893508290314299
+          states: []
+    - rid: 4877893400282267724
+      type: {class: LogCommandNode, ns: TzarGames.GameCore.ScriptViz.Graph, asm: TzarGames.GameCore}
+      data:
+        ID:
+          Value:
+            Value:
+              x: 1384749468
+              y: 1257844846
+              z: 4134052516
+              w: 530033959
+        Position: {x: 666.6667, y: 540.6667}
+        input:
+          ID:
+            Value:
+              Value:
+                x: 2427979528
+                y: 1158608631
+                z: 1806940041
+                w: 2243620807
+          ConnectedSocketIDs:
+          - Value:
+              Value:
+                x: 3549591179
+                y: 1337312790
+                z: 2171341989
+                w: 2500225540
+        output:
+          ID:
+            Value:
+              Value:
+                x: 789067001
+                y: 1241077663
+                z: 465980323
+                w: 933165625
+          ConnectedSocketIDs: []
+        EntitySocket:
+          ID:
+            Value:
+              Value:
+                x: 1164264457
+                y: 1271030920
+                z: 2247583138
+                w: 860072441
+          ConnectedSocketIDs: []
+          AuthoringValue: {fileID: 0}
+        Message: Start from parent
+        LogType: 3
+    - rid: 4877893400282267725
+      type: {class: StartEventNode, ns: TzarGames.GameCore.ScriptViz.Graph, asm: TzarGames.GameCore}
+      data:
+        ID:
+          Value:
+            Value:
+              x: 3491464587
+              y: 1306816037
+              z: 200968614
+              w: 2714939262
+        Position: {x: 522.6667, y: 540.6667}
+        output:
+          ID:
+            Value:
+              Value:
+                x: 3549591179
+                y: 1337312790
+                z: 2171341989
+                w: 2500225540
+          ConnectedSocketIDs:
+          - Value:
+              Value:
+                x: 2427979528
+                y: 1158608631
+                z: 1806940041
+                w: 2243620807
+    - rid: 4877893400282267727
+      type: {class: FloatVariable, ns: TzarGames.GameCore.ScriptViz.Graph, asm: TzarGames.GameCore}
+      data:
+        ID:
+          Value:
+            Value:
+              x: 3494024947
+              y: 1080645307
+              z: 4200798859
+              w: 1418804284
+        Name: Parent variable
+        NetSyncEnabled: 0
+        Value: 0
+    - rid: 4877893400282267728
+      type: {class: DynamicArrayVariable, ns: TzarGames.GameCore.ScriptViz.Graph, asm: TzarGames.GameCore}
+      data:
+        ID:
+          Value:
+            Value:
+              x: 2486819170
+              y: 1209918958
+              z: 1021602698
+              w: 3629578933
+        Name: _delayed_commands
+        NetSyncEnabled: 0
+    - rid: 4877893508290314273
+      type: {class: StartEventNode, ns: TzarGames.GameCore.ScriptViz.Graph, asm: TzarGames.GameCore}
+      data:
+        ID:
+          Value:
+            Value:
+              x: 3887450119
+              y: 1257782497
+              z: 1874250164
+              w: 4268077539
+        Position: {x: 544, y: 534.6667}
+        output:
+          ID:
+            Value:
+              Value:
+                x: 3147641341
+                y: 1338309136
+                z: 596229255
+                w: 523444458
+          ConnectedSocketIDs:
+          - Value:
+              Value:
+                x: 2211130186
+                y: 1274161297
+                z: 1988872080
+                w: 671140031
+    - rid: 4877893508290314275
+      type: {class: LogCommandNode, ns: TzarGames.GameCore.ScriptViz.Graph, asm: TzarGames.GameCore}
+      data:
+        ID:
+          Value:
+            Value:
+              x: 2545538051
+              y: 1257052313
+              z: 4111355824
+              w: 2849195803
+        Position: {x: 669.3334, y: 534.6667}
+        input:
+          ID:
+            Value:
+              Value:
+                x: 2211130186
+                y: 1274161297
+                z: 1988872080
+                w: 671140031
+          ConnectedSocketIDs:
+          - Value:
+              Value:
+                x: 3147641341
+                y: 1338309136
+                z: 596229255
+                w: 523444458
+        output:
+          ID:
+            Value:
+              Value:
+                x: 507851463
+                y: 1267719912
+                z: 2300812728
+                w: 999344440
+          ConnectedSocketIDs: []
+        EntitySocket:
+          ID:
+            Value:
+              Value:
+                x: 265313843
+                y: 1127647874
+                z: 3698952869
+                w: 1659672974
+          ConnectedSocketIDs: []
+          AuthoringValue: {fileID: 0}
+        Message: Start from scene (applied to prefab)
+        LogType: 3
+    - rid: 4877893508290314286
+      type: {class: StartEventNode, ns: TzarGames.GameCore.ScriptViz.Graph, asm: TzarGames.GameCore}
+      data:
+        ID:
+          Value:
+            Value:
+              x: 838515642
+              y: 1283350534
+              z: 2660742551
+              w: 2647750037
+        Position: {x: 544.6666, y: 534.6667}
+        output:
+          ID:
+            Value:
+              Value:
+                x: 2064634681
+                y: 1242586788
+                z: 859164812
+                w: 3566745585
+          ConnectedSocketIDs:
+          - Value:
+              Value:
+                x: 3769711704
+                y: 1336939038
+                z: 3383263923
+                w: 3343407576
+    - rid: 4877893508290314288
+      type: {class: LogCommandNode, ns: TzarGames.GameCore.ScriptViz.Graph, asm: TzarGames.GameCore}
+      data:
+        ID:
+          Value:
+            Value:
+              x: 1214225477
+              y: 1173013445
+              z: 1955402166
+              w: 544446644
+        Position: {x: 716.6666, y: 532.6667}
+        input:
+          ID:
+            Value:
+              Value:
+                x: 3769711704
+                y: 1336939038
+                z: 3383263923
+                w: 3343407576
+          ConnectedSocketIDs:
+          - Value:
+              Value:
+                x: 2064634681
+                y: 1242586788
+                z: 859164812
+                w: 3566745585
+        output:
+          ID:
+            Value:
+              Value:
+                x: 2108809872
+                y: 1280293590
+                z: 2566490033
+                w: 1647251228
+          ConnectedSocketIDs: []
+        EntitySocket:
+          ID:
+            Value:
+              Value:
+                x: 239396220
+                y: 1089257671
+                z: 1813015459
+                w: 680001923
+          ConnectedSocketIDs: []
+          AuthoringValue: {fileID: 0}
+        Message: Start from second page
+        LogType: 3
+    - rid: 4877893508290314296
+      type: {class: StartEventNode, ns: TzarGames.GameCore.ScriptViz.Graph, asm: TzarGames.GameCore}
+      data:
+        ID:
+          Value:
+            Value:
+              x: 2499616206
+              y: 1174461282
+              z: 855260847
+              w: 854699122
+        Position: {x: 544, y: 534.6667}
+        output:
+          ID:
+            Value:
+              Value:
+                x: 3419276219
+                y: 1088014374
+                z: 3683949957
+                w: 2071354842
+          ConnectedSocketIDs:
+          - Value:
+              Value:
+                x: 3761016094
+                y: 1290487447
+                z: 1189000068
+                w: 443654031
+    - rid: 4877893508290314299
+      type: {class: LogCommandNode, ns: TzarGames.GameCore.ScriptViz.Graph, asm: TzarGames.GameCore}
+      data:
+        ID:
+          Value:
+            Value:
+              x: 2725469741
+              y: 1282149666
+              z: 3166363573
+              w: 1163676675
+        Position: {x: 668.6667, y: 534.6667}
+        input:
+          ID:
+            Value:
+              Value:
+                x: 3761016094
+                y: 1290487447
+                z: 1189000068
+                w: 443654031
+          ConnectedSocketIDs:
+          - Value:
+              Value:
+                x: 3419276219
+                y: 1088014374
+                z: 3683949957
+                w: 2071354842
+        output:
+          ID:
+            Value:
+              Value:
+                x: 3679865263
+                y: 1318574929
+                z: 759483583
+                w: 979432136
+          ConnectedSocketIDs: []
+        EntitySocket:
+          ID:
+            Value:
+              Value:
+                x: 1088434376
+                y: 1225631613
+                z: 4157050545
+                w: 3817413732
+          ConnectedSocketIDs: []
+          AuthoringValue: {fileID: 0}
+        Message: start from scene second
+        LogType: 3
+--- !u!114 &5548494960336848165
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8576708578253852040}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 32e8b7cb7859cf84cb6838a4ef045890, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ConversionTargetOptions: -1
+  Value:
+    Label:
+      utf8LengthInBytes: 0
+      bytes:
+        offset0000:
+          byte0000: 0
+          byte0001: 0
+          byte0002: 0
+          byte0003: 0
+          byte0004: 0
+          byte0005: 0
+          byte0006: 0
+          byte0007: 0
+          byte0008: 0
+          byte0009: 0
+          byte0010: 0
+          byte0011: 0
+          byte0012: 0
+          byte0013: 0
+          byte0014: 0
+          byte0015: 0
+        offset0016:
+          byte0000: 0
+          byte0001: 0
+          byte0002: 0
+          byte0003: 0
+          byte0004: 0
+          byte0005: 0
+          byte0006: 0
+          byte0007: 0
+          byte0008: 0
+          byte0009: 0
+          byte0010: 0
+          byte0011: 0
+          byte0012: 0
+          byte0013: 0
+          byte0014: 0
+          byte0015: 0
+        offset0032:
+          byte0000: 0
+          byte0001: 0
+          byte0002: 0
+          byte0003: 0
+          byte0004: 0
+          byte0005: 0
+          byte0006: 0
+          byte0007: 0
+          byte0008: 0
+          byte0009: 0
+          byte0010: 0
+          byte0011: 0
+          byte0012: 0
+          byte0013: 0
+          byte0014: 0
+          byte0015: 0
+        byte0048: 0
+        byte0049: 0
+        byte0050: 0
+        byte0051: 0
+        byte0052: 0
+        byte0053: 0
+        byte0054: 0
+        byte0055: 0
+        byte0056: 0
+        byte0057: 0
+        byte0058: 0
+        byte0059: 0
+        byte0060: 0
+        byte0061: 0
+  Label: "\u043D\u0430\u0441\u043B\u0435\u0434\u043E\u0432\u0430\u043D\u0438\u0435
+    \u0440\u043E\u0434\u0438\u0442\u0435\u043B\u044C\u043A\u0441\u043A\u043E\u0433\u043E
+    \u0441\u043A\u0440\u0438\u043F\u0442\u0430"

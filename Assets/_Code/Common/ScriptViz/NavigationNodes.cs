@@ -14,6 +14,7 @@ namespace Arena.ScriptViz
     {
         public InputEntityVar MovementEntity;
         public InputEntityVar PathEntity;
+        public InputEntityVar FollowTarget;
         
         [BurstCompile]
         [AOT.MonoPInvokeCallback(typeof(ScriptVizCommandRegistry.ExecuteDelegate))]
@@ -42,6 +43,10 @@ namespace Arena.ScriptViz
                 TargetPathEntity = pathEntity
             });
             context.Commands.SetComponentEnabled<SplinePathMovement>(context.SortIndex, mover, true);
+            context.Commands.SetComponent(context.SortIndex, mover, new SplinePathFollowTarget
+            {
+                Value = data->FollowTarget.Read(ref context)
+            });
         }
     }
     
@@ -49,14 +54,16 @@ namespace Arena.ScriptViz
     [FriendlyName("Двигаться по пути")]
     public class MoveOnPathNode : CommandNode
     {
-        public EntitySocket MovingEntitySocket;
-        public EntitySocket PathEntitySocket;
+        public EntitySocket MovingEntitySocket = new();
+        public EntitySocket PathEntitySocket = new();
+        public EntitySocket FollowTargetSocket = new();
         
         public override void WriteCommand(CompilerAllocator compilerAllocator, out Address commandAddress)
         {
             var cmd = new MoveOnPathCommand();
             compilerAllocator.InitializeInputVar(ref cmd.MovementEntity, MovingEntitySocket);
             compilerAllocator.InitializeInputVar(ref cmd.PathEntity, PathEntitySocket);
+            compilerAllocator.InitializeInputVar(ref cmd.FollowTarget, FollowTargetSocket);
             commandAddress = compilerAllocator.WriteCommand(ref cmd);
         }
 
@@ -73,6 +80,25 @@ namespace Arena.ScriptViz
             
             sockets.Add(new SocketInfo(PathEntitySocket, SocketType.In, "Путь"));
             sockets.Add(new SocketInfo(MovingEntitySocket, SocketType.In, "Двигатель (опц)"));
+            sockets.Add(new SocketInfo(FollowTargetSocket, SocketType.In, "Цель сопровождения (опц)"));
         }
+    }
+
+    [BurstCompile]
+    public struct ReachedSplineDestinationPointCommand : IBufferElementData, ICommandAddressData
+    {
+        public Address CommandAddress { get; set; }
+    }
+
+    [Serializable]
+    [FriendlyName("Достиг точки следования")]
+    public class ReachedSplineDestinationPointEventNode : DynamicBufferEventNode<ReachedSplineDestinationPointCommand>
+    {
+        public override string GetNodeName(ScriptVizGraphPage page)
+        {
+            return "Достиг точки следования";
+        }
+
+        public override bool ShowEditableProperties => false;
     }
 }

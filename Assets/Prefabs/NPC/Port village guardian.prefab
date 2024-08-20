@@ -3265,6 +3265,9 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 1415852907774143442, guid: 24123f7370a893b41bbaaae4bd1791d1, type: 3}
       insertIndex: -1
       addedObject: {fileID: 874018182312922045}
+    - targetCorrespondingSourceObject: {fileID: 1415852907774143442, guid: 24123f7370a893b41bbaaae4bd1791d1, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 7858550795108569359}
   m_SourcePrefab: {fileID: 100100000, guid: 24123f7370a893b41bbaaae4bd1791d1, type: 3}
 --- !u!1 &450671669197689465 stripped
 GameObject:
@@ -3397,6 +3400,203 @@ MonoBehaviour:
   ConversionTargetOptions: -1
   Value:
     MaxTraverseDistance: 5
+    MaxDistanceToFollowTarget: 15
+    ContinueFollowDistance: 5
+--- !u!114 &7858550795108569359
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 450671669197689465}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 25d87a6b957a60841942c7e71e0c252f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ConversionTargetOptions: -1
+  Graph:
+    rid: 4877893603581755620
+  references:
+    version: 2
+    RefIds:
+    - rid: 4877893603581755620
+      type: {class: ScriptVizGraph, ns: TzarGames.GameCore.ScriptViz.Graph, asm: TzarGames.GameCore}
+      data:
+        pages: []
+        states: []
+        layers:
+        - id: scene
+          pages: []
+          states: []
+        - id: 987a8a826031fbd4ba89605bb5a6d961
+          pages:
+          - ID:
+              Value:
+                Value:
+                  x: 427388219
+                  y: 1340950058
+                  z: 2485950120
+                  w: 2959904846
+            ConversionTargetOptions: 7
+            variables:
+            - rid: 4877893603581755629
+            nodes:
+            - rid: 4877893603581755622
+            - rid: 4877893603581755626
+            - rid: 4877893603581755628
+          states: []
+        - id: 00000000000000000000000000000000
+          pages: []
+          states: []
+        Name: 
+    - rid: 4877893603581755622
+      type: {class: ReachedSplineDestinationPointEventNode, ns: Arena.ScriptViz, asm: Arena.Common}
+      data:
+        ID:
+          Value:
+            Value:
+              x: 3044558757
+              y: 1125066248
+              z: 2383733931
+              w: 3498040999
+        Position: {x: 662.6667, y: 424}
+        output:
+          ID:
+            Value:
+              Value:
+                x: 3041410713
+                y: 1157987354
+                z: 429854599
+                w: 3615473334
+          ConnectedSocketIDs:
+          - Value:
+              Value:
+                x: 2487858652
+                y: 1151825817
+                z: 1792147607
+                w: 1753256909
+    - rid: 4877893603581755626
+      type: {class: SendMessageCommandNode, ns: TzarGames.GameCore.ScriptViz.Graph, asm: TzarGames.GameCore}
+      data:
+        ID:
+          Value:
+            Value:
+              x: 487900321
+              y: 1208286038
+              z: 3215045782
+              w: 2405003208
+        Position: {x: 920.6666, y: 424}
+        input:
+          ID:
+            Value:
+              Value:
+                x: 2487858652
+                y: 1151825817
+                z: 1792147607
+                w: 1753256909
+          ConnectedSocketIDs:
+          - Value:
+              Value:
+                x: 3041410713
+                y: 1157987354
+                z: 429854599
+                w: 3615473334
+        output:
+          ID:
+            Value:
+              Value:
+                x: 121326086
+                y: 1119645711
+                z: 3342565055
+                w: 2925835866
+          ConnectedSocketIDs:
+          - Value:
+              Value:
+                x: 2607551969
+                y: 1158738160
+                z: 2785239205
+                w: 3884377692
+        MessageSocket:
+          ID:
+            Value:
+              Value:
+                x: 2782996860
+                y: 1282454752
+                z: 2727409310
+                w: 2492546338
+          ConnectedSocketIDs: []
+          Value: guardian reached main gates
+        OptionalTarget:
+          ID:
+            Value:
+              Value:
+                x: 1538856219
+                y: 1148060603
+                z: 3874338436
+                w: 3453026187
+          ConnectedSocketIDs: []
+          AuthoringValue: {fileID: 0}
+    - rid: 4877893603581755628
+      type: {class: LogCommandNode, ns: TzarGames.GameCore.ScriptViz.Graph, asm: TzarGames.GameCore}
+      data:
+        ID:
+          Value:
+            Value:
+              x: 328074871
+              y: 1139982431
+              z: 44363194
+              w: 2368790237
+        Position: {x: 1294, y: 424}
+        input:
+          ID:
+            Value:
+              Value:
+                x: 2607551969
+                y: 1158738160
+                z: 2785239205
+                w: 3884377692
+          ConnectedSocketIDs:
+          - Value:
+              Value:
+                x: 121326086
+                y: 1119645711
+                z: 3342565055
+                w: 2925835866
+        output:
+          ID:
+            Value:
+              Value:
+                x: 2388867597
+                y: 1077695357
+                z: 4270676115
+                w: 3223714888
+          ConnectedSocketIDs: []
+        EntitySocket:
+          ID:
+            Value:
+              Value:
+                x: 291587983
+                y: 1251183242
+                z: 1247224496
+                w: 1797734082
+          ConnectedSocketIDs: []
+          AuthoringValue: {fileID: 0}
+        Message: "\u0434\u043E\u0441\u0442\u0438\u0433 \u0442\u043E\u0447\u043A\u0438
+          \u0441\u043B\u0435\u0434\u043E\u0432\u0430\u043D\u0438\u044F"
+        LogType: 3
+    - rid: 4877893603581755629
+      type: {class: DynamicArrayVariable, ns: TzarGames.GameCore.ScriptViz.Graph, asm: TzarGames.GameCore}
+      data:
+        ID:
+          Value:
+            Value:
+              x: 1727746406
+              y: 1228108007
+              z: 3706750083
+              w: 1998285193
+        Name: _delayed_commands
+        NetSyncEnabled: 0
 --- !u!4 &5226358810810187969 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 6728593815283415402, guid: 24123f7370a893b41bbaaae4bd1791d1, type: 3}

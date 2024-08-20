@@ -1,5 +1,36 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
+--- !u!1 &5019898225548412317
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 3532003048087354778}
+  m_Layer: 0
+  m_Name: Speed mod
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &3532003048087354778
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5019898225548412317}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 128829160094334703}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &6676996688390506373
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -55,6 +86,10 @@ PrefabInstance:
     - target: {fileID: -1182016951272472945, guid: 24123f7370a893b41bbaaae4bd1791d1, type: 3}
       propertyPath: m_PrimitiveCenter.y
       value: 0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 113906365057457512, guid: 24123f7370a893b41bbaaae4bd1791d1, type: 3}
+      propertyPath: Value.DetectRadius
+      value: 5
       objectReference: {fileID: 0}
     - target: {fileID: 655816073142160395, guid: 24123f7370a893b41bbaaae4bd1791d1, type: 3}
       propertyPath: Value.value
@@ -153,6 +188,9 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 6728593815283415402, guid: 24123f7370a893b41bbaaae4bd1791d1, type: 3}
       insertIndex: -1
       addedObject: {fileID: 8279242196773049514}
+    - targetCorrespondingSourceObject: {fileID: 6728593815283415402, guid: 24123f7370a893b41bbaaae4bd1791d1, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 3532003048087354778}
     m_AddedComponents:
     - targetCorrespondingSourceObject: {fileID: 1415852907774143442, guid: 24123f7370a893b41bbaaae4bd1791d1, type: 3}
       insertIndex: -1
@@ -163,6 +201,9 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 1415852907774143442, guid: 24123f7370a893b41bbaaae4bd1791d1, type: 3}
       insertIndex: -1
       addedObject: {fileID: 5777211231453699312}
+    - targetCorrespondingSourceObject: {fileID: 1415852907774143442, guid: 24123f7370a893b41bbaaae4bd1791d1, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 5301515781530212748}
   m_SourcePrefab: {fileID: 100100000, guid: 24123f7370a893b41bbaaae4bd1791d1, type: 3}
 --- !u!4 &128829160094334703 stripped
 Transform:
@@ -196,10 +237,8 @@ MonoBehaviour:
     IdleInterval: 3
     EnableTraceDestinationPoint: 1
     TraceVerticalOffset: 1
-    TraceDistance: 5
     TraceLayers: 1
     LastIdleStartTime: 0
-    State: 0
   EnabledByDefault: 1
   TraceLayers:
     serializedVersion: 2
@@ -244,6 +283,346 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c16549610bfe4458aa9389201d072bb6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &5301515781530212748
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5696890437842578519}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 25d87a6b957a60841942c7e71e0c252f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ConversionTargetOptions: -1
+  Graph:
+    rid: 4877893603581755394
+  references:
+    version: 2
+    RefIds:
+    - rid: 4877893603581755394
+      type: {class: ScriptVizGraph, ns: TzarGames.GameCore.ScriptViz.Graph, asm: TzarGames.GameCore}
+      data:
+        pages: []
+        states: []
+        layers:
+        - id: scene
+          pages: []
+          states: []
+        - id: 00000000000000000000000000000000
+          pages:
+          - ID:
+              Value:
+                Value:
+                  x: 2231638782
+                  y: 1081606160
+                  z: 671321522
+                  w: 2434889874
+            ConversionTargetOptions: 7
+            variables:
+            - rid: 4877893603581755398
+            nodes:
+            - rid: 4877893603581755395
+            - rid: 4877893603581755399
+            - rid: 4877893603581755400
+            - rid: 4877893603581755401
+          states:
+          - id:
+              Value:
+                Value:
+                  x: 1290710033
+                  y: 1260422560
+                  z: 1901447298
+                  w: 485191502
+            Name: Walking
+          - id:
+              Value:
+                Value:
+                  x: 103727437
+                  y: 1233765237
+                  z: 2549514391
+                  w: 2076929661
+            Name: Running
+        Name: 
+    - rid: 4877893603581755395
+      type: {class: OnTargetChangedEventNode, ns: Arena.ScriptViz, asm: Arena.Common}
+      data:
+        ID:
+          Value:
+            Value:
+              x: 408271721
+              y: 1199227941
+              z: 3491528368
+              w: 2798635834
+        Position: {x: 745.3334, y: 524.6667}
+        output:
+          ID:
+            Value:
+              Value:
+                x: 1888466399
+                y: 1135110990
+                z: 2918680979
+                w: 243673794
+          ConnectedSocketIDs:
+          - Value:
+              Value:
+                x: 602325074
+                y: 1099295321
+                z: 33055387
+                w: 3720694468
+        TargetEntityOutSocket:
+          ID:
+            Value:
+              Value:
+                x: 4267017860
+                y: 1247299277
+                z: 1367550648
+                w: 209013951
+          ConnectedSocketIDs:
+          - Value:
+              Value:
+                x: 3416237460
+                y: 1181275467
+                z: 370536865
+                w: 2864830831
+          AuthoringValue: {fileID: 0}
+    - rid: 4877893603581755398
+      type: {class: DynamicArrayVariable, ns: TzarGames.GameCore.ScriptViz.Graph, asm: TzarGames.GameCore}
+      data:
+        ID:
+          Value:
+            Value:
+              x: 3839289855
+              y: 1092819911
+              z: 2874280334
+              w: 1725525615
+        Name: _delayed_commands
+        NetSyncEnabled: 0
+    - rid: 4877893603581755399
+      type: {class: AddOrRemoveSpeedModificator, ns: TzarGames.GameCore.ScriptViz.Commands, asm: TzarGames.GameCore}
+      data:
+        ID:
+          Value:
+            Value:
+              x: 1894161518
+              y: 1211397463
+              z: 4291379133
+              w: 3715654330
+        Position: {x: 1400.6666, y: 673.3333}
+        input:
+          ID:
+            Value:
+              Value:
+                x: 2053456540
+                y: 1137789529
+                z: 1810727841
+                w: 1679545635
+          ConnectedSocketIDs:
+          - Value:
+              Value:
+                x: 3141019387
+                y: 1233312940
+                z: 774084771
+                w: 2018413747
+        output:
+          ID:
+            Value:
+              Value:
+                x: 3153779445
+                y: 1217150257
+                z: 277139112
+                w: 4198741926
+          ConnectedSocketIDs: []
+        TargetEntitySocket:
+          ID:
+            Value:
+              Value:
+                x: 2062151884
+                y: 1267963544
+                z: 826083255
+                w: 863264820
+          ConnectedSocketIDs: []
+          AuthoringValue: {fileID: 5696890437842578519}
+        OwnerEntitySocket:
+          ID:
+            Value:
+              Value:
+                x: 3082813783
+                y: 1208556274
+                z: 3230349709
+                w: 3364181923
+          ConnectedSocketIDs: []
+          AuthoringValue: {fileID: 5019898225548412317}
+        ModificatorValueSocket:
+          ID:
+            Value:
+              Value:
+                x: 2475609546
+                y: 1122723737
+                z: 3024893355
+                w: 3480745773
+          ConnectedSocketIDs: []
+          Value: 4
+        AddSocket:
+          ID:
+            Value:
+              Value:
+                x: 3073587168
+                y: 1227017906
+                z: 2279742853
+                w: 3604603050
+          ConnectedSocketIDs: []
+          Value: 1
+        Operator: 2
+    - rid: 4877893603581755400
+      type: {class: EntityNullCheckNode, ns: TzarGames.GameCore.ScriptViz.Graph, asm: TzarGames.GameCore}
+      data:
+        ID:
+          Value:
+            Value:
+              x: 2902861772
+              y: 1315366839
+              z: 1440422318
+              w: 2943007570
+        Position: {x: 956.6667, y: 524.6667}
+        InputSocket:
+          ID:
+            Value:
+              Value:
+                x: 602325074
+                y: 1099295321
+                z: 33055387
+                w: 3720694468
+          ConnectedSocketIDs:
+          - Value:
+              Value:
+                x: 1888466399
+                y: 1135110990
+                z: 2918680979
+                w: 243673794
+        NullSocket:
+          ID:
+            Value:
+              Value:
+                x: 4089000158
+                y: 1144078359
+                z: 3388105625
+                w: 4250539819
+          ConnectedSocketIDs:
+          - Value:
+              Value:
+                x: 2229930394
+                y: 1210796104
+                z: 1710789301
+                w: 2297414044
+        NotNullSocket:
+          ID:
+            Value:
+              Value:
+                x: 3141019387
+                y: 1233312940
+                z: 774084771
+                w: 2018413747
+          ConnectedSocketIDs:
+          - Value:
+              Value:
+                x: 2053456540
+                y: 1137789529
+                z: 1810727841
+                w: 1679545635
+        ValueToCompareSocket:
+          ID:
+            Value:
+              Value:
+                x: 3416237460
+                y: 1181275467
+                z: 370536865
+                w: 2864830831
+          ConnectedSocketIDs:
+          - Value:
+              Value:
+                x: 4267017860
+                y: 1247299277
+                z: 1367550648
+                w: 209013951
+          AuthoringValue: {fileID: 0}
+    - rid: 4877893603581755401
+      type: {class: AddOrRemoveSpeedModificator, ns: TzarGames.GameCore.ScriptViz.Commands, asm: TzarGames.GameCore}
+      data:
+        ID:
+          Value:
+            Value:
+              x: 2731446609
+              y: 1278373533
+              z: 1169698748
+              w: 721452675
+        Position: {x: 1392, y: 334.66666}
+        input:
+          ID:
+            Value:
+              Value:
+                x: 2229930394
+                y: 1210796104
+                z: 1710789301
+                w: 2297414044
+          ConnectedSocketIDs:
+          - Value:
+              Value:
+                x: 4089000158
+                y: 1144078359
+                z: 3388105625
+                w: 4250539819
+        output:
+          ID:
+            Value:
+              Value:
+                x: 3558748465
+                y: 1145169680
+                z: 687604869
+                w: 2971208476
+          ConnectedSocketIDs: []
+        TargetEntitySocket:
+          ID:
+            Value:
+              Value:
+                x: 1794723381
+                y: 1127955110
+                z: 1968429247
+                w: 204074014
+          ConnectedSocketIDs: []
+          AuthoringValue: {fileID: 5696890437842578519}
+        OwnerEntitySocket:
+          ID:
+            Value:
+              Value:
+                x: 1363278981
+                y: 1292041251
+                z: 1281688254
+                w: 3846484628
+          ConnectedSocketIDs: []
+          AuthoringValue: {fileID: 5019898225548412317}
+        ModificatorValueSocket:
+          ID:
+            Value:
+              Value:
+                x: 2413452973
+                y: 1311174172
+                z: 1866430610
+                w: 2821169866
+          ConnectedSocketIDs: []
+          Value: 0
+        AddSocket:
+          ID:
+            Value:
+              Value:
+                x: 3792790349
+                y: 1163200346
+                z: 4142757256
+                w: 4154744822
+          ConnectedSocketIDs: []
+          Value: 0
+        Operator: 2
 --- !u!1001 &7478639061998124833
 PrefabInstance:
   m_ObjectHideFlags: 0

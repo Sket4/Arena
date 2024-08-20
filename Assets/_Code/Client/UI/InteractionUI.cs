@@ -1,9 +1,14 @@
-﻿// Copyright 2012-2022 Dinar Khasanov (E-mail: lespaul@live.ru) All Rights Reserved.
-using Arena;
-using Arena.Client;
+﻿// Copyright 2012-2024 Dinar Khasanov (E-mail: lespaul@live.ru) All Rights Reserved.
+
+using System.Collections;
 using Arena.Quests;
+using Arena.ScriptViz;
 using TzarGames.GameCore;
+using TzarGames.GameCore.Items;
+using TzarGames.GameCore.ScriptViz;
+using Unity.Collections;
 using Unity.Entities;
+using Unity.Entities.Content;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -22,9 +27,13 @@ namespace Arena.Client.UI
 		
 		[SerializeField]
 		Button openTaskListButton = default;
+		
+		[SerializeField]
+		Button interactButton = default;
 
-        [SerializeField]
-        ActionDetectorUI detectorUI = default;
+		[SerializeField] private Image interactIcon;
+
+		private Entity currentInteractingEntity;
 
 		protected override void Start()
 		{
@@ -33,7 +42,6 @@ namespace Arena.Client.UI
 			ShowOpenShopButton (false);
 			ShowOpenForgeButton (false);
 			ShowTaskListButton(false);
-            ShowReadyButton(false);
 		}
 
 		public void ShowOpenShopButton(bool show)
@@ -48,15 +56,49 @@ namespace Arena.Client.UI
 		{
 			openTaskListButton.gameObject.SetActive (show);
 		}
-        public void ShowReadyButton(bool show)
+
+        IEnumerator loadSprite(Image image, WeakObjectReference<Sprite> sprite)
         {
-            readyButton.gameObject.SetActive(show);
+	        if (sprite.LoadingStatus == ObjectLoadingStatus.None)
+	        {
+		        sprite.LoadAsync();
+	        }
+
+	        while (sprite.LoadingStatus != ObjectLoadingStatus.Completed && sprite.LoadingStatus != ObjectLoadingStatus.Error)
+	        {
+		        yield return null;
+	        }
+
+	        if (sprite.LoadingStatus == ObjectLoadingStatus.Completed)
+	        {
+		        image.sprite = sprite.Result;
+	        }
         }
 
-        protected override void OnSetup(Entity ownerEntity, Entity uiEntity, EntityManager manager)
+        public void OnInteractButtonPressed()
         {
-            base.OnSetup(ownerEntity, uiEntity, manager);
-            detectorUI.SetPlayerOwner(ownerEntity);
+	        if (currentInteractingEntity != Entity.Null && EntityManager.HasComponent<InteractionEventCommand>(currentInteractingEntity))
+	        {
+		        var eventCommands = GetBuffer<InteractionEventCommand>(currentInteractingEntity);
+		        var aspect = EntityManager.GetAspect<ScriptVizAspect>(currentInteractingEntity);
+		        var ecb = new EntityCommandBuffer(Allocator.Temp);
+		        var commands = new UniversalCommandBuffer(ecb);
+		        var handle = new ContextDisposeHandle(ref aspect, ref commands, 0, Time.deltaTime);
+		        
+		        foreach (var eventCommand in eventCommands)
+		        {
+			        if (eventCommand.CommandAddress.IsInvalid)
+			        {
+				        continue;
+			        }
+			        if (eventCommand.InteractorEntityOutputAddress.IsValid)
+			        {
+						handle.Context.WriteToTemp(OwnerEntity, eventCommand.InteractorEntityOutputAddress);	       
+			        }
+			        handle.Execute(eventCommand.CommandAddress);
+		        }
+		        ecb.Playback(EntityManager);
+	        }
         }
 
         private void Update()
@@ -91,6 +133,8 @@ namespace Arena.Client.UI
                 bool isInteractingWithShop = false;
                 bool isInteractingWithForge = false;
                 bool isInteractingWithQuestHirer = false;
+                bool isInteracting = false;
+                ItemIcon icon = default;
                 
                 foreach (var overlapping in interactingObjects)
                 {
@@ -108,10 +152,27 @@ namespace Arena.Client.UI
 	                {
 		                isInteractingWithQuestHirer = true;
 	                }
+
+	                if (HasData<InteractiveObject>(overlapping.Entity))
+	                {
+		                isInteracting = true;
+
+		                if (HasData<ItemIcon>(overlapping.Entity))
+		                {
+			                currentInteractingEntity = overlapping.Entity;
+			                icon = GetData<ItemIcon>(overlapping.Entity);
+		                }
+	                }
                 }
                 openShopButton.gameObject.SetActive(isInteractingWithShop);
                 openForgeButton.gameObject.SetActive(isInteractingWithForge);
                 openTaskListButton.gameObject.SetActive(isInteractingWithQuestHirer);
+                interactButton.gameObject.SetActive(isInteracting);
+
+                if (isInteracting && icon.Sprite.IsReferenceValid)
+                {
+	                StartCoroutine(loadSprite(interactIcon, icon.Sprite));
+                }
             }
         }
     }

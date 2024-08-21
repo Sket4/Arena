@@ -234,7 +234,20 @@ namespace Arena.Client.UI
         Entity getCurrentStore()
         {
             Entity storeEntity = Entity.Null;
-            var overlappings = GetBuffer<OverlappingEntities>();
+            
+            var linkeds = GetBuffer<LinkedEntityGroup>();
+            var interactor = Entity.Null;
+			
+            foreach (var linked in linkeds)
+            {
+                if (HasData<OverlappingEntities>(linked.Value))
+                {
+                    interactor = linked.Value;
+                    break;
+                }
+            }
+            
+            var overlappings = GetBuffer<OverlappingEntities>(interactor);
             
             foreach (var overlapping in overlappings)
             {

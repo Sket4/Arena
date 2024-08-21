@@ -34,6 +34,7 @@ namespace Arena.Client.UI
 		[SerializeField] private Image interactIcon;
 
 		private Entity currentInteractingEntity;
+		private Entity interactorEntity;
 
 		protected override void Start()
 		{
@@ -42,6 +43,21 @@ namespace Arena.Client.UI
 			ShowOpenShopButton (false);
 			ShowOpenForgeButton (false);
 			ShowTaskListButton(false);
+			interactButton.gameObject.SetActive(false);
+		}
+
+		protected override void OnSetup(Entity ownerEntity, Entity uiEntity, EntityManager manager)
+		{
+			base.OnSetup(ownerEntity, uiEntity, manager);
+			var linkeds = GetBuffer<LinkedEntityGroup>();
+			foreach (var linked in linkeds)
+			{
+				if (HasData<OverlappingEntities>(linked.Value))
+				{
+					interactorEntity = linked.Value;
+					break;
+				}
+			}
 		}
 
 		public void ShowOpenShopButton(bool show)
@@ -110,7 +126,7 @@ namespace Arena.Client.UI
                 return;
             }
 
-            var playerEntity = GetData<PlayerController>(OwnerEntity).Value;
+            //var playerEntity = GetData<PlayerController>(OwnerEntity).Value;
 
 
             //if (EntityManager.HasComponent<ArenaPlayerMatchData>(playerEntity) == false)
@@ -129,7 +145,7 @@ namespace Arena.Client.UI
             {
                 //readyButton.gameObject.SetActive(true);
 
-                var interactingObjects = GetBuffer<OverlappingEntities>();
+                var interactingObjects = GetBuffer<OverlappingEntities>(interactorEntity);
                 bool isInteractingWithShop = false;
                 bool isInteractingWithForge = false;
                 bool isInteractingWithQuestHirer = false;
@@ -138,22 +154,7 @@ namespace Arena.Client.UI
                 
                 foreach (var overlapping in interactingObjects)
                 {
-	                if (HasData<StoreItems>(overlapping.Entity))
-	                {
-		                isInteractingWithShop = true;
-	                }
-
-	                if (HasData<CraftReceipts>(overlapping.Entity))
-	                {
-		                isInteractingWithForge = true;
-	                }
-
-	                if (HasData<QuestElement>(overlapping.Entity))
-	                {
-		                isInteractingWithQuestHirer = true;
-	                }
-
-	                if (HasData<InteractiveObject>(overlapping.Entity))
+	                if (HasData<InteractiveObject>(overlapping.Entity) && IsEnabled<InteractiveObject>(overlapping.Entity))
 	                {
 		                isInteracting = true;
 
@@ -162,6 +163,24 @@ namespace Arena.Client.UI
 			                currentInteractingEntity = overlapping.Entity;
 			                icon = GetData<ItemIcon>(overlapping.Entity);
 		                }
+	                }
+	                
+	                if (HasData<StoreItems>(overlapping.Entity))
+	                {
+		                isInteractingWithShop = true;
+		                isInteracting = false;
+	                }
+
+	                if (HasData<CraftReceipts>(overlapping.Entity))
+	                {
+		                isInteractingWithForge = true;
+		                isInteracting = false;
+	                }
+
+	                if (HasData<QuestElement>(overlapping.Entity))
+	                {
+		                isInteractingWithQuestHirer = true;
+		                isInteracting = false;
 	                }
                 }
                 openShopButton.gameObject.SetActive(isInteractingWithShop);

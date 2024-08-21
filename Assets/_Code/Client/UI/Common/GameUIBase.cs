@@ -22,6 +22,16 @@ namespace TzarGames.GameFramework.UI
             return EntityManager.HasComponent<T>(entity);
         }
 
+        public bool IsEnabled<T>() where T : IEnableableComponent
+        {
+            return IsEnabled<T>(OwnerEntity);
+        }
+
+        public bool IsEnabled<T>(Entity entity) where T : IEnableableComponent
+        {
+            return EntityManager.IsComponentEnabled<T>(entity);
+        }
+
         public T GetData<T>(Entity entity) where T : unmanaged, IComponentData
         {
 	        return EntityManager.GetComponentData<T>(entity);

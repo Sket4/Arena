@@ -19032,8 +19032,6 @@ MonoBehaviour:
             - rid: 658634993394778128
             - rid: 658634993394778130
             - rid: 658634993394778132
-            - rid: 658634993394778134
-            - rid: 658634993394778136
             - rid: 658634993394778148
             - rid: 658634993394778150
             - rid: 658635214597652490
@@ -19048,11 +19046,11 @@ MonoBehaviour:
             - rid: 6322991732260077960
             - rid: 6322991732260077961
             - rid: 6322991732260077962
-            - rid: 6322991732260077963
             - rid: 6322991732260077989
             - rid: 6322991732260077990
             - rid: 6322991732260078016
             - rid: 6322991732260078018
+            - rid: 4877893684534444218
           states: []
         Name: Logic
     - rid: 658634990510145542
@@ -19065,7 +19063,7 @@ MonoBehaviour:
               y: 1212874631
               z: 1297695910
               w: 891235035
-        Position: {x: 14, y: -360.66666}
+        Position: {x: -516.6667, y: 594.6667}
         output:
           ID:
             Value:
@@ -19077,10 +19075,10 @@ MonoBehaviour:
           ConnectedSocketIDs:
           - Value:
               Value:
-                x: 3718704881
-                y: 1171808024
-                z: 3904659888
-                w: 1643435042
+                x: 724933137
+                y: 1302589267
+                z: 3246877116
+                w: 2941516717
     - rid: 658634990510145549
       type: {class: DynamicArrayVariable, ns: TzarGames.GameCore.ScriptViz.Graph, asm: TzarGames.GameCore}
       data:
@@ -19264,6 +19262,12 @@ MonoBehaviour:
                 y: 1186696790
                 z: 1875650727
                 w: 4188930826
+          - Value:
+              Value:
+                x: 943178457
+                y: 1229146844
+                z: 197752255
+                w: 2728311863
         output:
           ID:
             Value:
@@ -19442,6 +19446,12 @@ MonoBehaviour:
                 y: 1166902325
                 z: 4190388143
                 w: 1895151912
+          - Value:
+              Value:
+                x: 3371692267
+                y: 1107583184
+                z: 199476879
+                w: 1145123840
         output:
           ID:
             Value:
@@ -19561,112 +19571,6 @@ MonoBehaviour:
                 w: 2520642417
         Message:
           ID: disable_archer
-    - rid: 658634993394778134
-      type: {class: SendMessageCommandNode, ns: TzarGames.GameCore.ScriptViz.Graph, asm: TzarGames.GameCore}
-      data:
-        ID:
-          Value:
-            Value:
-              x: 2276098436
-              y: 1155369937
-              z: 1467777187
-              w: 1353680584
-        Position: {x: 157.33334, y: -360.66666}
-        input:
-          ID:
-            Value:
-              Value:
-                x: 3718704881
-                y: 1171808024
-                z: 3904659888
-                w: 1643435042
-          ConnectedSocketIDs:
-          - Value:
-              Value:
-                x: 1503135612
-                y: 1285316037
-                z: 1668979850
-                w: 947392218
-        output:
-          ID:
-            Value:
-              Value:
-                x: 1618261887
-                y: 1119978219
-                z: 1482650783
-                w: 1920229614
-          ConnectedSocketIDs:
-          - Value:
-              Value:
-                x: 4043093377
-                y: 1129681458
-                z: 757875115
-                w: 1418303063
-        Message:
-          ID: disable_knight
-        OptionalTarget:
-          ID:
-            Value:
-              Value:
-                x: 39918636
-                y: 1256574939
-                z: 1902783387
-                w: 1316304633
-          ConnectedSocketIDs: []
-          AuthoringValue: {fileID: 1118001833}
-    - rid: 658634993394778136
-      type: {class: SendMessageCommandNode, ns: TzarGames.GameCore.ScriptViz.Graph, asm: TzarGames.GameCore}
-      data:
-        ID:
-          Value:
-            Value:
-              x: 1344813260
-              y: 1169380233
-              z: 594039942
-              w: 2946898424
-        Position: {x: 436, y: -360.66666}
-        input:
-          ID:
-            Value:
-              Value:
-                x: 4043093377
-                y: 1129681458
-                z: 757875115
-                w: 1418303063
-          ConnectedSocketIDs:
-          - Value:
-              Value:
-                x: 1618261887
-                y: 1119978219
-                z: 1482650783
-                w: 1920229614
-        output:
-          ID:
-            Value:
-              Value:
-                x: 4114016268
-                y: 1335007281
-                z: 3976916396
-                w: 1658250195
-          ConnectedSocketIDs:
-          - Value:
-              Value:
-                x: 2155978925
-                y: 1340597924
-                z: 242036405
-                w: 3312641010
-        Message:
-          ID: disable_archer
-        OptionalTarget:
-          ID:
-            Value:
-              Value:
-                x: 2884967789
-                y: 1282606284
-                z: 1387475355
-                w: 707258854
-          ConnectedSocketIDs: []
-          AuthoringValue: {fileID: 1118001833}
     - rid: 658634993394778148
       type: {class: MessageEventNode, ns: TzarGames.GameCore.ScriptViz.Graph, asm: TzarGames.GameCore}
       data:
@@ -19677,7 +19581,7 @@ MonoBehaviour:
               y: 1251076761
               z: 2336370857
               w: 1876306466
-        Position: {x: 18.666672, y: -122.666664}
+        Position: {x: 18.666656, y: -122.666664}
         output:
           ID:
             Value:
@@ -19705,7 +19609,7 @@ MonoBehaviour:
               y: 1290694493
               z: 3948595363
               w: 3299148421
-        Position: {x: 18.666672, y: 20.666668}
+        Position: {x: 18.666656, y: 20.666668}
         output:
           ID:
             Value:
@@ -19761,7 +19665,7 @@ MonoBehaviour:
               y: 1174800344
               z: 2438743730
               w: 1600626286
-        Position: {x: 11.333328, y: 1469.3334}
+        Position: {x: 11.3333435, y: 1469.3334}
         output:
           ID:
             Value:
@@ -19885,6 +19789,61 @@ MonoBehaviour:
           AuthoringValue: {fileID: 211298481}
         Enable: 0
         AffectChilds: 1
+    - rid: 4877893684534444218
+      type: {class: SequenceNode, ns: TzarGames.GameCore.ScriptViz.Graph, asm: TzarGames.GameCore}
+      data:
+        ID:
+          Value:
+            Value:
+              x: 1605221265
+              y: 1240238021
+              z: 2219452560
+              w: 3559997980
+        Position: {x: -396.66666, y: 594.6667}
+        InputSocket:
+          ID:
+            Value:
+              Value:
+                x: 724933137
+                y: 1302589267
+                z: 3246877116
+                w: 2941516717
+          ConnectedSocketIDs:
+          - Value:
+              Value:
+                x: 1503135612
+                y: 1285316037
+                z: 1668979850
+                w: 947392218
+        OutputSockets:
+        - ID:
+            Value:
+              Value:
+                x: 943178457
+                y: 1229146844
+                z: 197752255
+                w: 2728311863
+          ConnectedSocketIDs:
+          - Value:
+              Value:
+                x: 1177960426
+                y: 1192437516
+                z: 1249983387
+                w: 594026249
+        - ID:
+            Value:
+              Value:
+                x: 3371692267
+                y: 1107583184
+                z: 199476879
+                w: 1145123840
+          ConnectedSocketIDs:
+          - Value:
+              Value:
+                x: 525579457
+                y: 1213216266
+                z: 1985063579
+                w: 2520642417
     - rid: 6322991732260077955
       type: {class: LogCommandNode, ns: TzarGames.GameCore.ScriptViz.Graph, asm: TzarGames.GameCore}
       data:
@@ -20260,53 +20219,6 @@ MonoBehaviour:
           ConnectedSocketIDs: []
           AuthoringValue: {fileID: 0}
         Message: disable_current_character
-        LogType: 3
-    - rid: 6322991732260077963
-      type: {class: LogCommandNode, ns: TzarGames.GameCore.ScriptViz.Graph, asm: TzarGames.GameCore}
-      data:
-        ID:
-          Value:
-            Value:
-              x: 3411804998
-              y: 1141255801
-              z: 79796359
-              w: 4040674791
-        Position: {x: 729.3333, y: -360.66666}
-        input:
-          ID:
-            Value:
-              Value:
-                x: 2155978925
-                y: 1340597924
-                z: 242036405
-                w: 3312641010
-          ConnectedSocketIDs:
-          - Value:
-              Value:
-                x: 4114016268
-                y: 1335007281
-                z: 3976916396
-                w: 1658250195
-        output:
-          ID:
-            Value:
-              Value:
-                x: 4019669435
-                y: 1258954099
-                z: 3500909193
-                w: 656094943
-          ConnectedSocketIDs: []
-        EntitySocket:
-          ID:
-            Value:
-              Value:
-                x: 3246492563
-                y: 1137184401
-                z: 2316644798
-                w: 3115685060
-          ConnectedSocketIDs: []
-          AuthoringValue: {fileID: 0}
-        Message: disabling characters on start
         LogType: 3
     - rid: 6322991732260077989
       type: {class: ChangeDisabledStateNode, ns: TzarGames.GameCore.ScriptViz.Graph, asm: TzarGames.GameCore}
@@ -29630,6 +29542,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 1575795202}
     m_Modifications:
+    - target: {fileID: 80217889657726323, guid: 0123d37c2d2bcff4d8d08363dc1b9853, type: 3}
+      propertyPath: m_LocalScale.y
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 80217889657726323, guid: 0123d37c2d2bcff4d8d08363dc1b9853, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0

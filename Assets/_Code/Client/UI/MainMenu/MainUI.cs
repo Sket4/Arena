@@ -181,7 +181,16 @@ namespace Arena.Client.UI.MainMenu
 
         public void CloseSettings()
         {
-            ShowWindow(mainMenu);
+            if(needToCreateCharacter())
+            {
+                createCharacterMenu.SetCancelState(false);
+                createCharacterMenu.SetNextMenu(mainMenu);
+                ShowWindow(createCharacterMenu);
+            }
+            else
+            {
+                ShowWindow(mainMenu);    
+            }
         }
     }
 }

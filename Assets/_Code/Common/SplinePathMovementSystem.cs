@@ -44,7 +44,7 @@ namespace Arena
                         if (moveSettings.MaxDistanceToFollowTarget < distanceSq)
                         {
                             movement.IsWaitingFollowTarget = true;
-                            pathMovement.Stop();
+                            pathMovement.RequestStop();
                             return;
                         }
                         else

@@ -4,6 +4,7 @@ using System;
 using System.Threading.Tasks;
 using TzarGames.Common;
 using TzarGames.Common.UI;
+using TzarGames.GameCore;
 using TzarGames.GameCore.Client;
 using Unity.Physics;
 using Unity.Physics.Authoring;
@@ -46,7 +47,7 @@ namespace Arena.Client.UI.MainMenu
         [SerializeField] private LocalizedStringAsset knightClassName;
         [SerializeField] private LocalizedStringAsset archerClassName;
 
-        [SerializeField] private PhysicsCategoryTags selectableCharactersLayer;
+        [SerializeField] private LayerMask selectableCharactersLayer;
 
         [SerializeField] private UnityEvent onStartWaitCreate;
         [SerializeField] private UnityEvent onStopWaitCreate;
@@ -239,7 +240,7 @@ namespace Arena.Client.UI.MainMenu
                 if (utilSystem.Raycast(ray.origin, ray.origin + ray.direction * 10, new CollisionFilter
                     {
                         BelongsTo = ~0u,
-                        CollidesWith = selectableCharactersLayer.Value,
+                        CollidesWith = Utility.LayerMaskToCollidesWithMask(selectableCharactersLayer),
                         GroupIndex = 0
                     }, out RaycastHit hit))
                 {

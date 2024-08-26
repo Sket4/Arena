@@ -131,6 +131,19 @@ public struct SimpleAnimation : IComponentData
         }
         return -1;
     }
+    
+    public static int GetClipIDByIndex(DynamicBuffer<ClipIdToIndexMapping> animBuffer, int clipIndex)
+    {
+        for (int i = 0; i < animBuffer.Length; i++)
+        {
+            var anim = animBuffer[i];
+            if (anim.Index == clipIndex)
+            {
+                return anim.ID;
+            }
+        }
+        return -1;
+    }
 }
 
 [System.Serializable]

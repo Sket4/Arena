@@ -25,6 +25,10 @@ namespace Arena.Client
     [UpdateBefore(typeof(SimpleAnimationSystem))]
     public partial class AnimationSystem : GameSystemBase
     {
+        private const int IdleAnimationID = 2;
+        private const int RunningAnimationID = 3;
+        private const int WalkingAnimationID = 20;
+        
         protected override void OnSystemUpdate()
         {
             var commands = CommandBufferSystem.CreateCommandBuffer();
@@ -171,7 +175,7 @@ namespace Arena.Client
                         //Debug.Log($"Play anim {animation.CurrentAnimationID} {animation.CurrentAnimationDuration}");
                     }
 
-                    var idleAnimIndex = SimpleAnimation.GetClipIndexByID(clipIdToIndexBuffer, animation.IdleAnimID);
+                    var idleAnimIndex = SimpleAnimation.GetClipIndexByID(clipIdToIndexBuffer, IdleAnimationID);
 
                     if (animation.CurrentAnimationID != AnimationID.Invalid)
                     {
@@ -189,8 +193,6 @@ namespace Arena.Client
                                     speedScale = clipDuration / animation.CurrentAnimationDuration;
                                 }
                                 
-                                // грязный хак для решения проблемы с дерганием анимации
-                                //animator.TransitionTo(idleAnimIndex, 1, 1.0f, ref animBuffer, false, true);
                                 
                                 transitionDuration = math.min(transitionDuration, transitionDuration / speedScale);
                                 
@@ -225,11 +227,30 @@ namespace Arena.Client
 
                     if (velocity.CachedMagnitude > 0.01f)
                     {
-                        var animIndex = SimpleAnimation.GetClipIndexByID(clipIdToIndexBuffer, animation.RunningAnimID);
+                        int animID;
+                        float defaultAnimSpeed;
+
+                        if(velocity.CachedMagnitude <= animation.MaxWalkingVelocity)
+                        {
+                            animID = WalkingAnimationID;
+                            defaultAnimSpeed = animation.MaxWalkingVelocity;
+                        }
+                        else
+                        {
+                            animID = RunningAnimationID;
+                            defaultAnimSpeed = animation.DefaultRunningVelocity;
+                        }
+
+                        if (defaultAnimSpeed <= 0)
+                        {
+                            defaultAnimSpeed = 1;
+                        }
+                        
+                        var animIndex = SimpleAnimation.GetClipIndexByID(clipIdToIndexBuffer, animID);
 
                         if (animIndex != AnimationID.Invalid)
                         {
-                            var speed = velocity.CachedMagnitude / animation.DefaultRunningVelocity;
+                            var speed = velocity.CachedMagnitude / defaultAnimSpeed;
                             speed = math.max(speed, 0.1f);
 
                             //if(animator.ToClipIndex !- animIndex)
@@ -238,11 +259,11 @@ namespace Arena.Client
                             //}
 
                             animator.TransitionTo(animIndex, transitionDuration, speed, ref animBuffer, false);
-                            animator.ToClipSpeed = speed;
+                            animator.ToClipSpeed = speed;    
                         }
                         else
                         {
-                            Debug.LogError($"Failed to find animation with id {animation.RunningAnimID} in entity {animation.AnimatorEntity}");
+                            Debug.LogError($"Failed to find animation with id {RunningAnimationID} in entity {animation.AnimatorEntity}");
                         }
                     }
                     else
@@ -258,7 +279,7 @@ namespace Arena.Client
                         }
                         else
                         {
-                            Debug.LogError($"Failed to find animation with id {animation.IdleAnimID} in entity {animation.AnimatorEntity}");
+                            Debug.LogError($"Failed to find animation with id {IdleAnimationID} in entity {animation.AnimatorEntity}");
                         }
                     }
 

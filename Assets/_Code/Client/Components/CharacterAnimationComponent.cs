@@ -17,10 +17,8 @@ namespace Arena.Client
         [HideInInspector] public float CurrentAnimationDuration;
 
         public Entity AnimatorEntity;
-        public int IdleAnimID;
-        public int RunningAnimID;
-        public int DeathAnimationID;
         public float DefaultRunningVelocity;
+        public float MaxWalkingVelocity;
     }
 
 #if UNITY_EDITOR
@@ -28,25 +26,20 @@ namespace Arena.Client
     public class CharacterAnimationComponent : ComponentDataBehaviour<CharacterAnimation>
     {
         public SimpleAnimationAuthoring Animator;
-        public AnimationID IdleAnimationID;
-        public AnimationID RunningAnimationID;
         public float DefaultRunningVelocity = 1;
-
-        [Header("Optional settings")]
-        public AnimationID DeathAnimationID;
+        public float MaxWalkingVelocity = 1;
 
         protected override void Bake<K>(ref CharacterAnimation animation, K baker)
         {
             animation.CurrentAnimationID = AnimationID.Invalid;
             animation.PendingAnimationID = AnimationID.Invalid;
-            animation.IdleAnimID = IdleAnimationID != null ? IdleAnimationID.Id : AnimationID.Invalid;
-            animation.RunningAnimID = RunningAnimationID != null ? RunningAnimationID.Id : AnimationID.Invalid;
-            animation.DeathAnimationID = DeathAnimationID != null ? DeathAnimationID.Id : AnimationID.Invalid;
 
             if (Unity.Mathematics.math.abs(animation.DefaultRunningVelocity) < Unity.Mathematics.math.EPSILON)
             {
                 animation.DefaultRunningVelocity = DefaultRunningVelocity;
             }
+
+            animation.MaxWalkingVelocity = MaxWalkingVelocity;
             
             if(Animator != null)
             {

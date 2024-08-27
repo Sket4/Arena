@@ -27,6 +27,7 @@ namespace Arena.Client
                 gameLoop.AddPreSimGameSystem<CharacterControlSystem>();
                 gameLoop.AddPreSimGameSystem<PlayerCharacterTargetSystem>();
                 gameLoop.AddPreSimGameSystem<AutoAimSystem>();
+                gameLoop.AddPreSimGameSystem<ClientCommonGameplaySystem>();
 
                 gameLoop.AddGameSystem<PlaySoundSystem>(presentGroup);
                 gameLoop.AddGameSystem<HitSoundSystem>(clientGameSettings.SurfaceSoundsLibrary);

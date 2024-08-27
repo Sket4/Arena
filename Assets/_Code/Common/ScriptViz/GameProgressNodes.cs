@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using Arena.Quests;
 using TzarGames.GameCore;
 using TzarGames.GameCore.ScriptViz;
 using UnityEngine;
@@ -302,6 +303,58 @@ namespace Arena.ScriptViz
             }
 
             return "Установить базовую локацию";
+        }
+    }
+
+    public struct StartQuestRequest : IComponentData
+    {
+        public int QuestID;
+    }
+    
+    [BurstCompile]
+    struct StartQuestCommand : IScriptVizCommand
+    {
+        public int QuestID;
+        
+        [BurstCompile]
+        [AOT.MonoPInvokeCallback(typeof(ScriptVizCommandRegistry.ExecuteDelegate))]
+        public static unsafe void Exec(ref Context context, void* commandData)
+        {
+            var data = (StartQuestCommand*)commandData;
+           
+            var requestEntity = context.Commands.CreateEntity(context.SortIndex);
+            var request = new StartQuestRequest
+            {
+                QuestID = data->QuestID
+            };
+            context.Commands.AddComponent(context.SortIndex, requestEntity, request);
+            
+            Debug.Log($"Sending start quest request, quest id: {data->QuestID}");
+        }
+    }
+
+    [Serializable]
+    [FriendlyName("Начать задание")]
+    public class StartQuestNode : CommandNode
+    {
+        public QuestKey Key;
+        
+        public override void WriteCommand(CompilerAllocator compilerAllocator, out Address commandAddress)
+        {
+            var cmd = new StartQuestCommand
+            {
+                QuestID = Key ? Key.Id : -1
+            };
+            commandAddress = compilerAllocator.WriteCommand(ref cmd);
+        }
+
+        public override string GetNodeName(ScriptVizGraphPage page)
+        {
+            if (Key)
+            {
+                return $"Начать задание {Key.name}";
+            }
+            return "Начать задание (не назначено)";
         }
     }
 }

@@ -1,6 +1,8 @@
+using System.Text;
 using TzarGames.Common;
 using TzarGames.GameCore;
 using TzarGames.GameCore.Abilities;
+using TzarGames.MatchFramework;
 using TzarGames.MultiplayerKit;
 using TzarGames.MultiplayerKit.Client;
 using TzarGames.Rendering;
@@ -29,6 +31,20 @@ namespace Arena.Client
             }).Run();
 
             Debug.Log($"{result} {World.Name}");
+        }
+        [ConsoleCommand]
+        public static void GenerateEncryptKey()
+        {
+            var key = new AsymmetricEncryptionKey();
+            var bytes = key.ConvertToByteArray(true);
+            var sb = new StringBuilder();
+
+            foreach (var b in bytes)
+            {
+                sb.Append(b);
+                sb.Append(',');
+            }
+            Debug.Log(sb.ToString());
         }
 
         [ConsoleCommand]

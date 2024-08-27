@@ -38,18 +38,11 @@ namespace Arena.Client.Anima
         
         RemapData CreateRemapData(Transform srcRig, Transform dstRig, Avatar sourceAvatar, Avatar retargetAvatar)
         {
-            List<TranslationOffsetRemapInfo> translationOffsets = new();
-            List<RotationOffsetRemapInfo> rotationOffsets = new();
-
-            quaternion srcRootRotInv = math.inverse(srcRig.rotation);
-            quaternion destRootRotInv = math.inverse(dstRig.rotation);
-
-            var targetBones = retargetAvatar.humanDescription.human;
-            
 #if UNITY_EDITOR
             // если объект находится на сцене, то он, скорее всего, не находится в начале координат,
             // поэтому смещаем его корень в начало координат, чтобы не ломался ретаргетинг
             Transform modifiedRootTransform = null;
+            Transform prevParent = null;
             Vector3 prevRootPosition = default;
             Quaternion prevRootRotation = default;
 
@@ -64,6 +57,9 @@ namespace Arena.Client.Anima
                     modifiedRootTransform = transform;
                 }
 
+                prevParent = modifiedRootTransform.parent;
+                modifiedRootTransform.SetParent(null);
+
                 prevRootPosition = modifiedRootTransform.position;
                 prevRootRotation = modifiedRootTransform.rotation;
                     
@@ -71,6 +67,14 @@ namespace Arena.Client.Anima
                 modifiedRootTransform.rotation = quaternion.identity;
             }
 #endif
+            
+            quaternion destRootRotInv = math.inverse(dstRig.rotation);
+            quaternion srcRootRotInv = math.inverse(srcRig.rotation);
+            
+            List<TranslationOffsetRemapInfo> translationOffsets = new();
+            List<RotationOffsetRemapInfo> rotationOffsets = new();
+
+            var targetBones = retargetAvatar.humanDescription.human;
             
             for (var boneIter = 0; boneIter < targetBones.Length; boneIter++)
             {
@@ -150,8 +154,12 @@ namespace Arena.Client.Anima
             #if UNITY_EDITOR
             if (modifiedRootTransform)
             {
+                if (prevParent)
+                {
+                    modifiedRootTransform.SetParent(prevParent);    
+                }
                 modifiedRootTransform.position = prevRootPosition;
-                modifiedRootTransform.rotation = prevRootRotation;    
+                modifiedRootTransform.rotation = prevRootRotation;
             }
             #endif
             

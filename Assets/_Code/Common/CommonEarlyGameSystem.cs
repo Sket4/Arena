@@ -3,8 +3,6 @@ using TzarGames.GameCore;
 using TzarGames.GameCore.ScriptViz;
 using TzarGames.GameCore.ScriptViz.Commands;
 using TzarGames.MatchFramework.Server;
-using Unity.Collections;
-using Unity.Collections.LowLevel.Unsafe;
 using Unity.Entities;
 using UnityEngine;
 using UnityEngine.AI;
@@ -18,10 +16,17 @@ namespace Arena
         private EntityQuery getGameProgressRequestQuery;
         private EntityQuery addGameProgressFlagRequestQuery;
         private EntityQuery setBaseLocationRequestQuery;
+        private EntityQuery startQuestQuery;
         
         struct NavMeshDataCleanup : ICleanupComponentData
         {
             public NavMeshDataInstance NavDataInstance;
+        }
+
+        protected override void OnCreate()
+        {
+            base.OnCreate();
+            startQuestQuery = GetEntityQuery(ComponentType.ReadOnly<StartQuestRequest>());
         }
 
         protected override void OnDestroy()
@@ -106,6 +111,11 @@ namespace Arena
                     }
                     
                 }).Run();
+
+            if (startQuestQuery.IsEmpty == false)
+            {
+                EntityManager.DestroyEntity(startQuestQuery);
+            }
 
             if (addGameProgressFlagRequestQuery.IsEmpty == false)
             {

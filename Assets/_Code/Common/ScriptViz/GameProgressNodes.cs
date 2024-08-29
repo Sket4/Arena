@@ -15,6 +15,8 @@ namespace Arena.ScriptViz
         public Entity ProgressEntity;
         public IntPtr FlagsPointer;
         public ushort FlagsCount;
+        public IntPtr KeysPointer;
+        public ushort KeysCount;
     }
     
     [Serializable]
@@ -179,6 +181,154 @@ namespace Arena.ScriptViz
             }
         }
     }
+    
+    public struct SetGameProgressKeyRequest : IComponentData
+    {
+        public int Key;
+        public int Value;
+    }
+    
+    [BurstCompile]
+    struct SetGameProgressKeyCommand : IScriptVizCommand
+    {
+        public int Key;
+        public InputVar<int> Value;
+        
+        [BurstCompile]
+        [AOT.MonoPInvokeCallback(typeof(ScriptVizCommandRegistry.ExecuteDelegate))]
+        public static unsafe void Execute(ref Context context, void* commandData)
+        {
+            var data = (SetGameProgressKeyCommand*)commandData;
+            var val = data->Value.Read(ref context);
+            var entityRequest = context.Commands.CreateEntity(context.SortIndex);
+            context.Commands.AddComponent(context.SortIndex, entityRequest, new SetGameProgressKeyRequest
+            {
+                Key = data->Key,
+                Value = val
+            });
+        }
+    }
+    
+    [Serializable]
+    [FriendlyName("Записать ключ прогресса")]
+    public class SetGameProgressKeyCommandNode : CommandNode
+    {
+        public GameProgressIntKey Key;
+        [HideInInspector] public IntSocket ValueSocket = new();
+
+        public override void DeclareSockets(List<SocketInfo> sockets)
+        {
+            base.DeclareSockets(sockets);
+            sockets.Add(new SocketInfo(ValueSocket, SocketType.In, "Значение"));
+        }
+
+        public override void WriteCommand(CompilerAllocator compilerAllocator, out Address commandAddress)
+        {
+            var cmd = new SetGameProgressKeyCommand();
+            cmd.Key = Key ? Key.Id : 0;
+            compilerAllocator.InitializeInputVar(ref cmd.Value, ValueSocket);
+            commandAddress = compilerAllocator.WriteCommand(ref cmd);
+        }
+
+        public override string GetNodeName(ScriptVizGraphPage page)
+        {
+            if (Key)
+            {
+                return $"Записать ключ {Key.name}";
+            }
+            else
+            {
+                return "Записать ключ прогресса";    
+            }
+        }
+    }
+    
+    [BurstCompile]
+    struct GetProgressKeyValueCommand : IScriptVizCommand
+    {
+        public InputVar<GameProgressSocketData> Progress;
+        public int Key;
+        public Address ValueOutputAddress;
+
+        [BurstCompile]
+        [AOT.MonoPInvokeCallback(typeof(ScriptVizCommandRegistry.ExecuteDelegate))]
+        public static unsafe void Execute(ref Context context, void* commandData)
+        {
+            var data = (GetProgressKeyValueCommand*)commandData;
+
+            if (data->ValueOutputAddress.IsInvalid)
+            {
+                Debug.LogError("out address not connected");
+                return;
+            }
+            
+            var progress = data->Progress.Read(ref context);
+
+            var keys = (CharacterGameProgressKeyValue*)progress.KeysPointer;
+            int val = 0;
+            
+            for (int i = 0; i < progress.KeysCount; i++)
+            {
+                if (keys[i].Key == data->Key)
+                {
+                    val = keys[i].Value;
+                    break;
+                }
+            }
+
+            Debug.Log($"get game progress key {data->Key} value {val}");
+            context.WriteToTemp(ref val, data->ValueOutputAddress);
+        }
+    }
+    
+    [Serializable]
+    [FriendlyName("Получить значение ключа прогресса")]
+    public class GetGameProgressKeyValueNode : CommandNode, IPostWriteCommandNode
+    {
+        public GameProgressIntKey Key;
+        
+        [HideInInspector]
+        public GameProgressSocket ProgressSocket = new();
+
+        [HideInInspector] public IntSocket ValueSocket = new();
+        
+        public override void WriteCommand(CompilerAllocator compilerAllocator, out Address commandAddress)
+        {
+            var cmd = new GetProgressKeyValueCommand();
+
+            cmd.Key = Key != null ? Key.Id : 0;
+            
+            compilerAllocator.InitializeInputVar(ref cmd.Progress, ProgressSocket);
+            commandAddress = compilerAllocator.WriteCommand(ref cmd);
+        }
+
+        public override void DeclareSockets(List<SocketInfo> sockets)
+        {
+            base.DeclareSockets(sockets);
+            sockets.Add(new SocketInfo(ProgressSocket, SocketType.In, "Прогресс"));
+            sockets.Add(new SocketInfo(ValueSocket, SocketType.Out, "Значение"));
+        }
+
+        public override string GetNodeName(ScriptVizGraphPage page)
+        {
+            if (Key)
+            {
+                return $"Получить значение ключа {Key.name}";
+            }
+            else
+            {
+                return "Получить значение ключа";    
+            }
+        }
+
+        public override bool ShowEditableProperties => true;
+        
+        public void OnPostCommandWrite(CompilerAllocator compilerAllocator, Address currentCommandAddress)
+        {
+            ref var cmd = ref compilerAllocator.GetCommandData<GetProgressKeyValueCommand>(currentCommandAddress);
+            cmd.ValueOutputAddress = compilerAllocator.GetSocketAddress(ValueSocket);
+        }
+    }
 
     public struct GetGameProgressRequest : IComponentData
     {
@@ -239,7 +389,7 @@ namespace Arena.ScriptViz
         public void WriteCommand(CompilerAllocator compilerAllocator, out Address commandAddress)
         {
             var cmd = new GetGameProgressCommand();
-            cmd.OnDataLoadedCommandAddress = compilerAllocator.GetSocketAddress(ProgressSocket);
+            cmd.DataAddress = compilerAllocator.GetSocketAddress(ProgressSocket);
             commandAddress = compilerAllocator.WriteCommand(ref cmd);
         }
 

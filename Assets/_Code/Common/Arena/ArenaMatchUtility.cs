@@ -49,6 +49,7 @@ namespace Arena.Server
             gameProgress.CurrentBaseLocationID = data.Progress.CurrentBaseLocation;
             gameProgress.CurrentBaseLocationSpawnPointID = data.Progress.CurrentBaseLocationSpawnPoint;
             commands.AddComponent(gameProgressEntity, gameProgress);
+            commands.AddComponent(gameProgressEntity, new Owner(entity));
 
             var gameProgressFlags = commands.AddBuffer<CharacterGameProgressFlags>(gameProgressEntity);
             
@@ -57,6 +58,17 @@ namespace Arena.Server
                 gameProgressFlags.Add(new CharacterGameProgressFlags
                 {
                     Value = (ushort)flag
+                });
+            }
+
+            var gameProgressKeyValues = commands.AddBuffer<CharacterGameProgressKeyValue>(gameProgressEntity);
+
+            foreach (var keyValue in data.Progress.KeyValueStorage)
+            {
+                gameProgressKeyValues.Add(new CharacterGameProgressKeyValue
+                {
+                    Key = (ushort)keyValue.Key,
+                    Value = keyValue.Value
                 });
             }
             

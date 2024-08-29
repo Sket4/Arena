@@ -41,12 +41,19 @@ message ItemsData
 	repeated ItemBagData Bags = 1;
 }
 
+message GameProgressKeyValue
+{
+	int32 Key = 1;
+	int32 Value = 2;
+}
+
 message GameProgress
 {
-	uint32 CurrentStage = 1;
+	int32 CurrentStage = 1;
 	int32 CurrentBaseLocation = 2;
-	repeated uint32 Flags = 3;
+	repeated int32 Flags = 3;
 	int32 CurrentBaseLocationSpawnPoint = 4;
+	repeated GameProgressKeyValue KeyValueStorage = 5;
 }
 
 message CharacterData

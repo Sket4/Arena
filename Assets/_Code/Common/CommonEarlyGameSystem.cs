@@ -1,7 +1,9 @@
 using Arena.ScriptViz;
+using Arena.Server;
 using TzarGames.GameCore;
 using TzarGames.GameCore.ScriptViz;
 using TzarGames.GameCore.ScriptViz.Commands;
+using TzarGames.MatchFramework;
 using TzarGames.MatchFramework.Server;
 using Unity.Entities;
 using UnityEngine;
@@ -15,6 +17,7 @@ namespace Arena
     {
         private EntityQuery getGameProgressRequestQuery;
         private EntityQuery addGameProgressFlagRequestQuery;
+        private EntityQuery setGameProgressKeyValueQuery;
         private EntityQuery setBaseLocationRequestQuery;
         private EntityQuery startQuestQuery;
         
@@ -117,6 +120,61 @@ namespace Arena
                 EntityManager.DestroyEntity(startQuestQuery);
             }
 
+            if (setGameProgressKeyValueQuery.IsEmpty == false)
+            {
+                var registeredPlayerEntity = getMainPlayerEntity();
+                var characterEntity = SystemAPI.GetComponent<ControlledCharacter>(registeredPlayerEntity).Entity;
+                var progressDataEntity = SystemAPI.GetComponent<CharacterGameProgressReference>(characterEntity).Value;
+                
+                Entities
+                    .WithStoreEntityQueryInField(ref setGameProgressKeyValueQuery)
+                    .ForEach((Entity entity, int entityInQueryIndex, in SetGameProgressKeyRequest request) =>
+                {
+                    commands.DestroyEntity(entityInQueryIndex, entity);
+                    
+                    var keys = SystemAPI.GetBuffer<CharacterGameProgressKeyValue>(progressDataEntity);
+                    bool found = false;
+                    
+                    for (var index = 0; index < keys.Length; index++)
+                    {
+                        var keyValue = keys[index];
+                        if (keyValue.Key == request.Key)
+                        {
+                            keyValue.Value = request.Value;
+                            keys[index] = keyValue;
+                            found = true;
+                            Debug.Log($"set game progress key {request.Key} value: {keyValue.Value}");
+                        }
+                    }
+
+                    if (found == false)
+                    {
+                        keys.Add(new CharacterGameProgressKeyValue
+                        {
+                            Key = (ushort)request.Key,
+                            Value = request.Value
+                        });
+                    
+                        Debug.Log($"add game progress key {request.Key} value: {request.Value}");    
+                    }
+                    
+                    var owner = SystemAPI.GetComponent<Owner>(progressDataEntity);
+                    var playerEntity = SystemAPI.GetComponent<PlayerController>(owner.Value).Value;
+
+                    if (SystemAPI.HasComponent<AuthorizedUser>(playerEntity) == false)
+                    {
+                        Debug.Log("Failed to save player data on item activation, player not authorized");
+                        return;
+                    }
+                
+                    Debug.Log($"Saving data for player character {owner.Value.Index}, bcz progress data changed");
+                    var user = SystemAPI.GetComponent<AuthorizedUser>(playerEntity);
+
+                    createSavePlayerDataRequest(owner, playerEntity, user, commands);
+                    
+                }).Run();
+            }
+
             if (addGameProgressFlagRequestQuery.IsEmpty == false)
             {
                 var registeredPlayerEntity = getMainPlayerEntity();
@@ -146,6 +204,20 @@ namespace Arena
                         });
                         
                         Debug.Log($"added game progress flag {request.FlagKey}");
+
+                        var owner = SystemAPI.GetComponent<Owner>(progressDataEntity);
+                        var playerEntity = SystemAPI.GetComponent<PlayerController>(owner.Value).Value;
+
+                        if (SystemAPI.HasComponent<AuthorizedUser>(playerEntity) == false)
+                        {
+                            Debug.Log("Failed to save player data on item activation, player not authorized");
+                            return;
+                        }
+                
+                        Debug.Log($"Saving data for player character {owner.Value.Index}, bcz progress data changed");
+                        var user = SystemAPI.GetComponent<AuthorizedUser>(playerEntity);
+
+                        createSavePlayerDataRequest(owner, playerEntity, user, commands);
 
                     }).Run();    
             }
@@ -206,12 +278,17 @@ namespace Arena
                                 {
                                     var flagsData =
                                         SystemAPI.GetBuffer<CharacterGameProgressFlags>(progressDataEntity);
+
+                                    var keysData =
+                                        SystemAPI.GetBuffer<CharacterGameProgressKeyValue>(progressDataEntity);
                                         
                                     var progressData = new GameProgressSocketData
                                     {
                                         ProgressEntity = progressDataEntity,
                                         FlagsCount = (ushort)flagsData.Length,
                                         FlagsPointer = (System.IntPtr)flagsData.GetUnsafeReadOnlyPtr(),
+                                        KeysPointer = (System.IntPtr)keysData.GetUnsafeReadOnlyPtr(),
+                                        KeysCount = (ushort)keysData.Length
                                     };
                                         
                                     contextHandle.Context.WriteToTemp(ref progressData, request.DataAddress);
@@ -262,6 +339,23 @@ namespace Arena
                     commands.RemoveComponent<NavMeshDataCleanup>(0, entity);
                     
                 }).Run();
+        }
+
+        static void createSavePlayerDataRequest(Owner owner, Entity playerEntity, AuthorizedUser user, UniversalCommandBuffer commands)
+        {
+            var requestEntity = commands.CreateEntity(0);
+                
+            commands.AddComponent(0, requestEntity, new PlayerDataSaveRequest
+            {
+                Owner = Entity.Null,
+                PlayerId = user.Value,
+                State = PlayerDataRequestState.Pending
+            });
+            commands.AddComponent(0, requestEntity, new Target { Value = playerEntity });
+            commands.AddComponent(0, requestEntity, new PlayerSaveData
+            {
+                CharacterEntity = owner.Value
+            });
         }
     }
 }

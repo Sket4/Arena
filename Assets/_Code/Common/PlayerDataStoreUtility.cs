@@ -126,6 +126,16 @@ namespace Arena
             {
                 data.Progress.Flags.Add(progressFlag.Value);    
             }
+
+            var progressKV = manager.GetBuffer<CharacterGameProgressKeyValue>(progressEntity);
+            foreach (var keyValue in progressKV)
+            {
+                data.Progress.KeyValueStorage.Add(new GameProgressKeyValue
+                {
+                    Key = keyValue.Key,
+                    Value = keyValue.Value
+                });
+            }
             
             return data;
         }

@@ -6,10 +6,16 @@ namespace Arena
     {
         public ushort Value;
     }
+    
+    public struct CharacterGameProgressKeyValue : IBufferElementData
+    {
+        public ushort Key;
+        public int Value;
+    }
 
     public struct CharacterGameProgress : IComponentData
     {
-        public uint CurrentStage;
+        public int CurrentStage;
         public int CurrentBaseLocationID;
         public int CurrentBaseLocationSpawnPointID;
     }

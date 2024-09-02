@@ -49,7 +49,7 @@ namespace TzarGames.Editor.WaterMeshGenerator
 
             showGrid = EditorGUILayout.Toggle("Показывать сетку", showGrid);
 
-            WaterMeshGeneratorData newData = new WaterMeshGeneratorData();
+            var newData = new WaterMeshGeneratorData();
 
             Vector3 _center = center;
 
@@ -74,8 +74,10 @@ namespace TzarGames.Editor.WaterMeshGenerator
             newData.TraceLayers = LayerMaskField("Слои трассировки", data.TraceLayers);
 
             newData.FoamWidth = EditorGUILayout.FloatField("Длина волны", data.FoamWidth);
+            newData.DepthTraceDistance = EditorGUILayout.FloatField("Расстояние трассировки глубины", data.DepthTraceDistance);
 
             newData.ColorChannelToWrite = EditorGUILayout.IntSlider("Канал цвета", data.ColorChannelToWrite, 0, 3);
+            newData.DepthChannelToWrite = EditorGUILayout.IntSlider("Канал цвета глубины", data.DepthChannelToWrite, 0, 3);
             newData.InverseColor = EditorGUILayout.Toggle("Инверсия цвета", data.InverseColor);
 
 
@@ -129,7 +131,7 @@ namespace TzarGames.Editor.WaterMeshGenerator
                 
                 if (GUILayout.Button("2 шаг - Трассировка"))
                 {
-                    traceMeshJob(currentInfo.Mesh, data.FoamWidth, currentGameObject.transform, data.TraceLayers, data.ColorChannelToWrite, data.InverseColor);
+                    traceMeshJob(currentInfo.Mesh, data, currentGameObject.transform);
                 }
 
                 GUILayout.Space(20);
@@ -316,7 +318,7 @@ namespace TzarGames.Editor.WaterMeshGenerator
             return false;
         }
 
-        static void traceMeshJob(Mesh mesh, float foamWidth, Transform transform, LayerMask layer, int colorChannel, bool inverseColor)
+        static void traceMeshJob(Mesh mesh, WaterMeshGeneratorData info, Transform transform)
         {
             var verts = mesh.vertices;
             var colors = new Color[verts.Length];
@@ -325,8 +327,8 @@ namespace TzarGames.Editor.WaterMeshGenerator
             var rayDirs = new Vector3[raysPerVertex];
             var angleStep = 360.0f / raysPerVertex;
             float currentAngle = 0;
-            float foamWidthInv = 1.0f / foamWidth;
-            float outsideCastDist = foamWidth;
+            float foamWidthInv = 1.0f / info.FoamWidth;
+            float outsideCastDist = info.FoamWidth;
 
             //float foamWidthSq = Mathf.Sqrt((foamWidth * foamWidth) * 2.0f);
             
@@ -336,29 +338,86 @@ namespace TzarGames.Editor.WaterMeshGenerator
                 rayDirs[i] = Quaternion.AngleAxis(currentAngle, Vector3.up) * Vector3.forward;
                 //Debug.DrawRay(Vector3.zero, rayDirs[i] * 10, Color.red, 30);
             }
+            
+            // check terrains
+            var terrains = FindObjectsOfType<TerrainCollider>();
+            var indicesToCheck = new List<int>();
+
+            for (int i = 0; i < verts.Length; i++)
+            {
+                var v = verts[i];
+                var rayStart = transform.TransformPoint(v);
+                bool ignore = false;
+
+                if (terrains != null)
+                {
+                    var terrainRay = new Ray(rayStart + Vector3.up * 10000.0f, Vector3.down);
+
+                    foreach (var collider in terrains)
+                    {
+                        if (collider.Raycast(terrainRay, out var terrainHit, 20000))
+                        {
+                            if (terrainHit.point.y > rayStart.y)
+                            {
+                                ignore = true;
+                                break;
+                            }
+                        }
+                    }
+                }
+
+                if (ignore == false)
+                {
+                    indicesToCheck.Add(i);
+                }
+                else
+                {
+                    colors[i] = new Color();
+                    
+                    var color = Color.white;
+                    color[info.ColorChannelToWrite] = info.InverseColor ? 0 : 1;
+                    color[info.DepthChannelToWrite] = 0;
+                    colors[i] = color;
+                }
+            }
 
             var raycastCommands =
-                new NativeArray<RaycastCommand>(raysPerVertex * verts.Length, Allocator.TempJob);
+                new NativeArray<RaycastCommand>(raysPerVertex * indicesToCheck.Count, Allocator.TempJob);
             
-            var hits = new NativeArray<RaycastHit>(raysPerVertex * verts.Length, Allocator.TempJob);
+            var hits = new NativeArray<RaycastHit>(raysPerVertex * indicesToCheck.Count, Allocator.TempJob);
             
             var outsideRaycastCommands =
-                new NativeArray<RaycastCommand>(verts.Length * raysPerVertex, Allocator.TempJob);
+                new NativeArray<RaycastCommand>(indicesToCheck.Count * raysPerVertex, Allocator.TempJob);
             
             var outsideRaycastHits =
-                new NativeArray<RaycastHit>(verts.Length * raysPerVertex, Allocator.TempJob);
+                new NativeArray<RaycastHit>(indicesToCheck.Count * raysPerVertex, Allocator.TempJob);
+            
+            var depthRaycastCommands =
+                new NativeArray<RaycastCommand>(indicesToCheck.Count, Allocator.TempJob);
+            
+            var depthHits = new NativeArray<RaycastHit>(indicesToCheck.Count, Allocator.TempJob);
             
             try
             {
-                for (int i = 0; i < verts.Length; i++)
+                var foamWidth = info.FoamWidth;
+                var queryParams = new QueryParameters
                 {
-                    var v = verts[i];
+                    hitBackfaces = true,
+                    layerMask = info.TraceLayers,
+                    hitTriggers = QueryTriggerInteraction.Ignore,
+                    hitMultipleFaces = true
+                };
+                
+                for (int i = 0; i < indicesToCheck.Count; i++)
+                {
+                    var vertexIndex = indicesToCheck[i];
+                    var v = verts[vertexIndex];
                     var rayStart = transform.TransformPoint(v);
-
+                    
                     for (var index = 0; index < rayDirs.Length; index++)
                     {
                         var rayDir = rayDirs[index];
-                        var command = new RaycastCommand(rayStart, rayDir, foamWidth, layer);
+                        var command = new RaycastCommand(rayStart, rayDir, queryParams, foamWidth);
                         raycastCommands[i * raysPerVertex + index] = command;
                     }
 
@@ -366,32 +425,35 @@ namespace TzarGames.Editor.WaterMeshGenerator
                     for (var index = 0; index < rayDirs.Length; index++)
                     {
                         var rayDir = rayDirs[index];
-                        var command = new RaycastCommand(rayStart - rayDir * outsideCastDist, rayDir, outsideCastDist, layer);
+                        var command = new RaycastCommand(rayStart - rayDir * outsideCastDist, rayDir, queryParams, outsideCastDist);
                         outsideRaycastCommands[i * raysPerVertex + index] = command;
                     }
+                    
+                    // depth casts
+                    depthRaycastCommands[i] =
+                        new RaycastCommand(rayStart, Vector3.down, queryParams, info.DepthTraceDistance);
                 }
 
                 var handle = RaycastCommand.ScheduleBatch(raycastCommands, hits, 64);
                 var handle2 = RaycastCommand.ScheduleBatch(outsideRaycastCommands, outsideRaycastHits, 64);
+                var handle3 = RaycastCommand.ScheduleBatch(depthRaycastCommands, depthHits, 64);
+                JobHandle.CombineDependencies(handle, handle2, handle3).Complete();
                 
-                JobHandle.CombineDependencies(handle, handle2).Complete();
-                
-                
-                for (int i = 0; i < verts.Length; i++)
+                for (int i = 0; i < indicesToCheck.Count; i++)
                 {
-                    var minDist = foamWidth;
+                    var minDist = info.FoamWidth;
                     int hitCount = 0;
                     
                     for (var index = 0; index < raysPerVertex; index++)
                     {
                         var hit = hits[i * raysPerVertex + index];
-
-                        if (hit.collider == null)
+                    
+                        if (hit.collider == false)
                         {
                             continue;
                         }
                         hitCount++;
-
+                    
                         if (hit.distance < minDist)
                         {
                             minDist = hit.distance;
@@ -417,21 +479,46 @@ namespace TzarGames.Editor.WaterMeshGenerator
                                 break;
                             }
                         }
-
+                    
                         minDist = hasHit ? 1.0f : 0.0f;
-
+                    
                         // if (hasHit)
                         // {
                         //     Debug.DrawRay(verts[i], Vector3.up, Color.blue, 30);
                         // }
                     }
+                    
+                    var depthHit = depthHits[i];
+                    var depth = 1.0f;
+                    
+                    if (depthHit.collider)
+                    {
+                        depth = depthHit.distance / info.DepthTraceDistance;
+                    }
 
                     var color = Color.white;
-                    color[colorChannel] = inverseColor ? 1.0f - minDist : minDist;
-                    colors[i] = color;
+                    color[info.ColorChannelToWrite] = info.InverseColor ? 1.0f - minDist : minDist;
+                    color[info.DepthChannelToWrite] = depth;
+                    var vi = indicesToCheck[i];
+                    colors[vi] = color;
                 }
+                
+                using (var colorArray = new NativeArray<Color>(colors, Allocator.TempJob))
+                {
+                    int meshWidth = info.WidthDivisions + 1;
+                    int meshHeight = info.HeightDivisions + 1;
 
-                mesh.colors = colors;
+                    var fixHolesJob = new FixHolesJob
+                    {
+                        MeshWidth = meshWidth,
+                        MeshHeight = meshHeight,
+                        Colors = colorArray,
+                        ColorChannel = info.ColorChannelToWrite
+                    };
+                    fixHolesJob.Schedule().Complete();
+                    
+                    mesh.colors = colorArray.ToArray();
+                }
             }
             finally
             {
@@ -600,6 +687,143 @@ namespace TzarGames.Editor.WaterMeshGenerator
                         continue;
                     }
                     Result.Add(keyValue.Value);
+                }
+            }
+        }
+
+        [BurstCompile]
+        struct FixHolesJob : IJob
+        {
+            public int MeshWidth;
+            public int MeshHeight;
+            public int ColorChannel;
+
+            public NativeArray<Color> Colors;
+
+            public void Execute()
+            {
+                for (var index = 0; index < Colors.Length; index++)
+                {
+                    ExecuteForColorIndex(index);
+                }
+            }
+
+            public void ExecuteForColorIndex(int colorIndex)
+            {
+                var targetColor = Colors[colorIndex];
+
+                var c = targetColor[ColorChannel];
+
+                var x = colorIndex % MeshWidth;
+                var y = colorIndex / MeshWidth;
+
+                var isNotWhite = new bool4(false);
+                float min = float.MaxValue;
+                float avg = 0;
+                int avgCount = 0;
+                
+                // 0 - left
+                // 1 - right
+                // 2 - top
+                // 3 - bottom
+
+                if (x > 0)
+                {
+                    var otherIndex = x - 1 + MeshWidth * y;
+                    var colorOnLeft = Colors[otherIndex][ColorChannel];
+
+                    if (colorOnLeft < c)
+                    {
+                        if (min > colorOnLeft)
+                        {
+                            min = colorOnLeft;
+                        }
+                        isNotWhite[0] = true;
+                    }
+                    avg += colorOnLeft;
+                    avgCount++;
+                }
+                else
+                {
+                    isNotWhite[0] = true;
+                }
+
+                if (x < MeshWidth-1)
+                {
+                    var otherIndex = x + 1 + MeshWidth * y;
+                    var colorOnRight = Colors[otherIndex][ColorChannel];
+                    
+                    if (colorOnRight < c)
+                    {
+                        if (min > colorOnRight)
+                        {
+                            min = colorOnRight;
+                        }
+                        isNotWhite[1] = true;
+                    }
+                    avg += colorOnRight;
+                    avgCount++;
+                }
+                else
+                {
+                    isNotWhite[1] = true;
+                }
+
+                if (y > 0)
+                {
+                    var otherIndex = x + MeshWidth * (y - 1);
+                    var colorOnTop = Colors[otherIndex][ColorChannel];
+
+                    if (colorOnTop < c)
+                    {
+                        if (min > colorOnTop)
+                        {
+                            min = colorOnTop;
+                        }
+                        isNotWhite[2] = true;
+                    }
+                    avg += colorOnTop;
+                    avgCount++;
+                }
+                else
+                {
+                    isNotWhite[2] = true;
+                }
+
+                if (y < MeshHeight-1)
+                {
+                    var otherIndex = x + MeshWidth * (y + 1);
+                    var colorOnBottom = Colors[otherIndex][ColorChannel];
+
+                    if (colorOnBottom < c)
+                    {
+                        if (min > colorOnBottom)
+                        {
+                            min = colorOnBottom;
+                        }
+                        isNotWhite[3] = true;
+                    }
+                    avg += colorOnBottom;
+                    avgCount++;
+                }
+                else
+                {
+                    isNotWhite[3] = true;
+                }
+
+                if (isNotWhite.x && isNotWhite.y && isNotWhite.z && isNotWhite.w)
+                {
+                    //Debug.Log($"fixing color {colorIndex}");
+                    if (avgCount == 0)
+                    {
+                        targetColor[ColorChannel] = min;    
+                    }
+                    else
+                    {
+                        targetColor[ColorChannel] = avg / avgCount;
+                    }
+                    
+                    Colors[colorIndex] = targetColor;
                 }
             }
         }

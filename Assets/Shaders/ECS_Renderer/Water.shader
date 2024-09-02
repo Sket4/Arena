@@ -56,9 +56,10 @@ Shader"Arena/Water"
             struct appdata
             {
                 float3 vertex : POSITION;
-                float3 normal : NORMAL;
+                // полагаем, что вектор нормали у нас всегда одинаковый 
+                //float3 normal : NORMAL;
+                //float4 tangent : TANGENT;
                 half3 color : COLOR;
-                float4 tangent : TANGENT;
                 float2 uv : TEXCOORD0;
 #if LIGHTMAP_ON
                 float2 uv2 : TEXCOORD1;
@@ -71,16 +72,16 @@ Shader"Arena/Water"
                 float2 uv : TEXCOORD0;
                 nointerpolation half2 instanceData : TEXCOORD1;
                 half4 vertex : SV_POSITION;
-                half4 color : TEXCOORD2;
-                
-                float3 normalWS : TEXCOORD3;
-                float4 tangentWS : TEXCOORD4;
-                float4 bitangentWS_foamGr : TEXCOORD5;
-                float4 positionWS_fog : TEXCOORD6;
+                half3 color : TEXCOORD2;
+                half3 foamData : TEXCOORD3;
+                float4 positionWS_fog : TEXCOORD4;
 
 #if LIGHTMAP_ON
-                TG_DECLARE_LIGHTMAP_UV(7)
+                TG_DECLARE_LIGHTMAP_UV(5)
 #endif
+
+                //float3 normalWS : TEXCOORD6;
+                //float4 tangentWS : TEXCOORD7;
             };
 
             CBUFFER_START(UnityPerMaterial)
@@ -116,9 +117,9 @@ Shader"Arena/Water"
                 v2f o;
                 UNITY_SETUP_INSTANCE_ID(v);
 
-                float3 positionOS = v.vertex.xyz    ;
-                float3 normalOS = v.normal.xyz;
-                float4 tangentOS = v.tangent;
+                float3 positionOS = v.vertex.xyz;
+                //float3 normalOS = v.normal.xyz;
+                //float4 tangentOS = v.tangent;
 
                 VertexPositionInputs vertInputs = GetVertexPositionInputs(positionOS);    //This function calculates all the relative spaces of the objects vertices
                 o.vertex = vertInputs.positionCS;
@@ -129,16 +130,16 @@ Shader"Arena/Water"
                 float4 instanceData = tg_InstanceData;
                 o.instanceData = instanceData.xy;
     
-                VertexNormalInputs normalInputs = GetVertexNormalInputs(normalOS, tangentOS);
+                //VertexNormalInputs normalInputs = GetVertexNormalInputs(normalOS, tangentOS);
 
-                o.normalWS = normalInputs.normalWS;
-                o.tangentWS = float4(normalInputs.tangentWS, tangentOS.w);
-                o.bitangentWS_foamGr.xyz = normalInputs.bitangentWS;
-                o.bitangentWS_foamGr.w = v.color.g * _FoamParameters.x + _Time.x * _FoamParameters.y;
-
-                o.color.rg = v.color.rg;
-                o.color.ba = TRANSFORM_TEX(v.uv, _FoamTex);
-                o.color.ba += half2(_SinTime.w * _FoamParameters.z, _SinTime.w * _FoamParameters.w);
+                //o.normalWS = normalInputs.normalWS;
+                //o.tangentWS = float4(normalInputs.tangentWS, tangentOS.w);
+                //o.foamGr.xyz = normalInputs.bitangentWS;
+                o.foamData.r = v.color.g * _FoamParameters.x + _Time.x * _FoamParameters.y;
+                o.foamData.gb = TRANSFORM_TEX(v.uv, _FoamTex);
+                o.foamData.gb += half2(_SinTime.w * _FoamParameters.z, _SinTime.w * _FoamParameters.w);
+                
+                o.color = v.color;
 
 #if LIGHTMAP_ON
                 TG_TRANSFORM_LIGHTMAP_TEX(v.uv2, o.lightmapUV)
@@ -166,7 +167,7 @@ Shader"Arena/Water"
 
                 //half3 normalTS = UnpackNormal(tex2D(_PackedNormalMap, i.uv));
 
-                //return half4(i.color.rrr, 1);
+                //return half4(i.color.bbb, 1);
 
                 float2 uv1 = i.uv * _Tiling_and_speed_1.xy;
                 uv1 += _Tiling_and_speed_1.zw * _Time.y;
@@ -175,7 +176,7 @@ Shader"Arena/Water"
                  float2 uv2 = i.uv * _Tiling_and_speed_2.xy;
                  uv2 += _Tiling_and_speed_2.zw * _Time.y;
                  normalTS.xy += tex2D(_PackedNormalMap, uv2).xy;
-                //
+
                  float2 uv3 = i.uv * _Tiling_and_speed_3.xy;
                  uv3 += _Tiling_and_speed_3.zw * _Time.y;
                  normalTS.xy += tex2D(_PackedNormalMap, uv3).xy;
@@ -185,16 +186,17 @@ Shader"Arena/Water"
                 //NormalReconstructZ_float(normalTS.xy, normalTS);
                 normalTS = UnpackNormal(float4(normalTS,0));
 
-                NormalStrength_float(normalTS, _Normal_strength * i.positionWS_fog.a, normalTS);
-
-                normalTS = normalize(normalTS);
+                NormalStrength_float(normalTS, _Normal_strength * i.positionWS_fog.a * i.color.b, normalTS);
 
                 half3 viewDirWS = GetWorldSpaceNormalizeViewDir(i.positionWS_fog.xyz);
 
-                half3x3 tangentToWorld = half3x3(i.tangentWS.xyz, i.bitangentWS_foamGr.xyz, i.normalWS.xyz);
+                //half3x3 tangentToWorld = half3x3(i.tangentWS.xyz, i.bitangentWS_foamGr.xyz, i.normalWS.xyz);
+                //half3x3 tangentToWorld = half3x3(half3(1,0,0), half3(0,0,1), half3(0,1,0));
+                //float3 normalWS = TransformTangentToWorld(normalTS.xyz, tangentToWorld, true);
 
-                float3 normalWS = TransformTangentToWorld(normalTS.xyz, tangentToWorld, true);
-
+                float3 normalWS = normalize(float3(normalTS.x, normalTS.z, normalTS.y));
+                
+                
                 //mesm.rgb *= _Metallic;
                 float rim = saturate(dot(normalWS, viewDirWS) * _Rim_mult);
                 //rim = 1.0 - rim;
@@ -218,8 +220,8 @@ Shader"Arena/Water"
                 half4 diffuse;
                 diffuse.rgb = lerp(reflColor, _BaseColor.rgb, rim);
 
-                half foam = tex2D(_FoamGradientTex, half2(i.bitangentWS_foamGr.w, 0)).r;
-                foam *= tex2D(_FoamTex, i.color.ba).r;
+                half foam = tex2D(_FoamGradientTex, half2(i.foamData.r, 0)).r;
+                foam *= tex2D(_FoamTex, i.foamData.gb).r;
                 
                 
                 diffuse.rgb = lerp(diffuse.rgb, diffuse.rgb + foam.rrr, waterEdgeFadeInv);
@@ -233,7 +235,7 @@ Shader"Arena/Water"
 
                 diffuse.rgb *= lighting;
 
-                diffuse.a = (i.color.g + i.color.r);
+                diffuse.a = (i.color.g + i.color.r) * i.color.b;
                 
                 half4 finalColor = diffuse;
                 

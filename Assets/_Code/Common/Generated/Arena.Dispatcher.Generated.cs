@@ -54,6 +54,10 @@ namespace TzarGames.MultiplayerKit.Generated
 				{
 					commands.AddComponent(entity, new TzarGames.MultiplayerKit.Generated.XP_Sync.Tag());
 				}
+				else if (dataInfo.SerializatorID == 7)
+				{
+					commands.AddComponent(entity, new TzarGames.MultiplayerKit.Generated.AbilityID_Sync.Tag());
+				}
 				else if (dataInfo.SerializatorID == 16)
 				{
 					commands.AddComponent(entity, new TzarGames.MultiplayerKit.Generated.Health_Sync.Tag());
@@ -69,10 +73,6 @@ namespace TzarGames.MultiplayerKit.Generated
 				else if (dataInfo.SerializatorID == 5)
 				{
 					commands.AddComponent(entity, new TzarGames.MultiplayerKit.Generated.Level_Sync.Tag());
-				}
-				else if (dataInfo.SerializatorID == 7)
-				{
-					commands.AddComponent(entity, new TzarGames.MultiplayerKit.Generated.AbilityID_Sync.Tag());
 				}
 				else if (dataInfo.SerializatorID == 15)
 				{
@@ -136,6 +136,10 @@ namespace TzarGames.MultiplayerKit.Generated
 			{
 				id = 18; return true;
 			}
+			if(type == typeof(TzarGames.MultiplayerKit.Generated.AbilityID_Sync))
+			{
+				id = 7; return true;
+			}
 			if(type == typeof(TzarGames.MultiplayerKit.Generated.Health_Sync))
 			{
 				id = 16; return true;
@@ -151,10 +155,6 @@ namespace TzarGames.MultiplayerKit.Generated
 			if(type == typeof(TzarGames.MultiplayerKit.Generated.Level_Sync))
 			{
 				id = 5; return true;
-			}
-			if(type == typeof(TzarGames.MultiplayerKit.Generated.AbilityID_Sync))
-			{
-				id = 7; return true;
 			}
 			if(type == typeof(TzarGames.MultiplayerKit.Generated.LivingState_Sync))
 			{

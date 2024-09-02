@@ -35,6 +35,12 @@ namespace Arena.Editor
 			{
 				destPixels = MetallicMap.GetPixels();	
 				defaultPath = AssetDatabase.GetAssetPath(MetallicMap);
+				Color[] smoothnessPixels = null;
+
+				if (SmoothnessMap)
+				{
+					smoothnessPixels = SmoothnessMap.GetPixels();
+				}
 				
 				for (var index = 0; index < destPixels.Length; index++)
 				{
@@ -43,6 +49,11 @@ namespace Arena.Editor
 					mesmPixel.r *= MetallicScale;
 					mesmPixel.g *= MetallicScale;
 					mesmPixel.b *= MetallicScale;
+
+					if (smoothnessPixels != null)
+					{
+						mesmPixel.a = smoothnessPixels[index].r;
+					}
 
 					if (InvertSmoothness)
 					{

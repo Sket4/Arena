@@ -3057,10 +3057,12 @@ Animator:
   m_StabilizeFeet: 0
   m_WarningMessage: "\nBinding warning: Some generic clip(s) animate transforms that
     are already bound by a Humanoid avatar. These transforms can only be changed
-    by Humanoid clips.\n\tTransform 'calf_l'\n\tTransform 'foot_l'\n\tTransform 'foot_r'\n\tTransform
-    'pelvis'\n\tTransform 'calf_r'\n\tTransform 'lowerarm_l'\n\tTransform 'neck_01'\n\tTransform
-    'clavicle_l'\n\tTransform 'hand_l'\n\tTransform 'spine_02'\n\tand more ...\n\tFrom
-    animation clip 'Idle'\n\tFrom animation clip 'Idle'"
+    by Humanoid clips.\n\tTransform 'spine_02'\n\tTransform 'calf_l'\n\tTransform
+    'foot_l'\n\tTransform 'foot_r'\n\tTransform 'pelvis'\n\tTransform 'spine_03'\n\tTransform
+    'calf_r'\n\tTransform 'index_03_l'\n\tTransform 'lowerarm_l'\n\tTransform 'pinky_03_l'\n\tand
+    more ...\n\tFrom animation clip 'Idle'\n\tFrom animation clip 'Walk'\n\tFrom
+    animation clip 'Walk'\n\tFrom animation clip 'Walk'\n\tFrom animation clip 'Walk'\n\tFrom
+    animation clip 'Idle'"
   m_HasTransformHierarchy: 1
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
@@ -3091,6 +3093,13 @@ MonoBehaviour:
   - Label: Walk
     Clip: {fileID: 7400000, guid: b1eaa2151bd8d84428cbce03a038a2cd, type: 2}
     ID: {fileID: 11400000, guid: 37f59d96f0bef184ca0cc99cab343ea1, type: 2}
+    Loop: 1
+    SpeedScale: 1
+    ComputeRootmotionDeltas: 0
+    BakeFlags: -1
+  - Label: Working
+    Clip: {fileID: 7400000, guid: 16de76e1c8f2984459c36e3236c6e87e, type: 3}
+    ID: {fileID: 11400000, guid: be55cdcd51e83b24bbb9613cedd85585, type: 2}
     Loop: 1
     SpeedScale: 1
     ComputeRootmotionDeltas: 0

@@ -16,6 +16,10 @@ PrefabInstance:
       propertyPath: m_Layer
       value: 16
       objectReference: {fileID: 0}
+    - target: {fileID: 2356970912768115512, guid: 24123f7370a893b41bbaaae4bd1791d1, type: 3}
+      propertyPath: m_Radius
+      value: 0.25
+      objectReference: {fileID: 0}
     - target: {fileID: 3012611948393460952, guid: 24123f7370a893b41bbaaae4bd1791d1, type: 3}
       propertyPath: Value.ID
       value: 1
@@ -67,6 +71,8 @@ PrefabInstance:
     m_RemovedComponents:
     - {fileID: 113906365057457512, guid: 24123f7370a893b41bbaaae4bd1791d1, type: 3}
     - {fileID: 4977076730342563756, guid: 24123f7370a893b41bbaaae4bd1791d1, type: 3}
+    - {fileID: -4082344848641969966, guid: 24123f7370a893b41bbaaae4bd1791d1, type: 3}
+    - {fileID: 2498273239397044005, guid: 24123f7370a893b41bbaaae4bd1791d1, type: 3}
     m_RemovedGameObjects: []
     m_AddedGameObjects:
     - targetCorrespondingSourceObject: {fileID: 6728593815283415402, guid: 24123f7370a893b41bbaaae4bd1791d1, type: 3}
@@ -107,15 +113,11 @@ MonoBehaviour:
     PendingAnimationTransitionTime: 0
     CurrentAnimationID: 0
     CurrentAnimationDuration: 0
-    IdleAnimID: 0
-    RunningAnimID: 0
-    DeathAnimationID: 0
     DefaultRunningVelocity: 0
+    MaxWalkingVelocity: 0
   Animator: {fileID: 3683725562821488679}
-  IdleAnimationID: {fileID: 11400000, guid: 53bed7b3c88fcbb478a5626f613a373a, type: 2}
-  RunningAnimationID: {fileID: 11400000, guid: 37f59d96f0bef184ca0cc99cab343ea1, type: 2}
   DefaultRunningVelocity: 2
-  DeathAnimationID: {fileID: 0}
+  MaxWalkingVelocity: 1
 --- !u!114 &5388886677209501188
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -487,12 +489,13 @@ PrefabInstance:
       propertyPath: m_WarningMessage
       value: "\nBinding warning: Some generic clip(s) animate transforms that are
         already bound by a Humanoid avatar. These transforms can only be changed
-        by Humanoid clips.\n\tTransform 'spine_02'\n\tTransform 'calf_l'\n\tTransform
-        'foot_l'\n\tTransform 'foot_r'\n\tTransform 'pelvis'\n\tTransform 'spine_03'\n\tTransform
-        'calf_r'\n\tTransform 'index_03_l'\n\tTransform 'lowerarm_l'\n\tTransform
-        'pinky_03_l'\n\tand more ...\n\tFrom animation clip 'Idle'\n\tFrom animation
-        clip 'Walk'\n\tFrom animation clip 'Walk'\n\tFrom animation clip 'Walk'\n\tFrom
-        animation clip 'Walk'\n\tFrom animation clip 'Idle'"
+        by Humanoid clips.\n\tTransform 'ball_l'\n\tTransform 'spine_02'\n\tTransform
+        'calf_l'\n\tTransform 'foot_l'\n\tTransform 'foot_r'\n\tTransform 'ball_r'\n\tTransform
+        'pelvis'\n\tTransform 'spine_03'\n\tTransform 'calf_r'\n\tTransform 'index_03_l'\n\tand
+        more ...\n\tFrom animation clip 'Idle'\n\tFrom animation clip 'Walk'\n\tFrom
+        animation clip 'Walk'\n\tFrom animation clip 'Walk'\n\tFrom animation clip
+        'Walk'\n\tFrom animation clip 'Idle'\n\tFrom animation clip 'Sweep'\n\tFrom
+        animation clip 'Sweep'\n\tFrom animation clip 'Sweep'"
       objectReference: {fileID: 0}
     - target: {fileID: 3792401776463685638, guid: 5fd36547336f9294e8fbdc293a8332c8, type: 3}
       propertyPath: m_RootOrder
@@ -540,26 +543,34 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7189372744945970965, guid: 5fd36547336f9294e8fbdc293a8332c8, type: 3}
       propertyPath: Clips.Array.size
-      value: 2
+      value: 4
       objectReference: {fileID: 0}
     - target: {fileID: 7189372744945970965, guid: 5fd36547336f9294e8fbdc293a8332c8, type: 3}
       propertyPath: Clips.Array.data[1].ID
       value: 
+      objectReference: {fileID: 11400000, guid: 057d49522c2906c429d9241599359af3, type: 2}
+    - target: {fileID: 7189372744945970965, guid: 5fd36547336f9294e8fbdc293a8332c8, type: 3}
+      propertyPath: Clips.Array.data[3].ID
+      value: 
       objectReference: {fileID: 11400000, guid: 37f59d96f0bef184ca0cc99cab343ea1, type: 2}
     - target: {fileID: 7189372744945970965, guid: 5fd36547336f9294e8fbdc293a8332c8, type: 3}
-      propertyPath: Clips.Array.data[1].Loop
+      propertyPath: Clips.Array.data[3].Clip
+      value: 
+      objectReference: {fileID: 7400000, guid: b1eaa2151bd8d84428cbce03a038a2cd, type: 2}
+    - target: {fileID: 7189372744945970965, guid: 5fd36547336f9294e8fbdc293a8332c8, type: 3}
+      propertyPath: Clips.Array.data[3].Loop
       value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 7189372744945970965, guid: 5fd36547336f9294e8fbdc293a8332c8, type: 3}
-      propertyPath: Clips.Array.data[1].Label
-      value: Walk
+      propertyPath: Clips.Array.data[3].Label
+      value: Running
       objectReference: {fileID: 0}
     - target: {fileID: 7189372744945970965, guid: 5fd36547336f9294e8fbdc293a8332c8, type: 3}
-      propertyPath: Clips.Array.data[1].BakeFlags
+      propertyPath: Clips.Array.data[3].BakeFlags
       value: -1
       objectReference: {fileID: 0}
     - target: {fileID: 7189372744945970965, guid: 5fd36547336f9294e8fbdc293a8332c8, type: 3}
-      propertyPath: Clips.Array.data[1].SpeedScale
+      propertyPath: Clips.Array.data[3].SpeedScale
       value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []

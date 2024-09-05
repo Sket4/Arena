@@ -1,6 +1,8 @@
-﻿using TzarGames.AnimationFramework;
+﻿using Arena.Client.ScriptViz;
+using TzarGames.AnimationFramework;
 using TzarGames.GameCore;
 using TzarGames.GameCore.Client;
+using TzarGames.GameCore.ScriptViz;
 using Unity.Entities;
 using Unity.Mathematics;
 using Unity.Physics;
@@ -19,7 +21,8 @@ namespace Arena.Client
         
         protected override void OnSystemUpdate()
         {
-            UniversalCommandBuffer commands = default;
+            UniversalCommandBuffer commands = CreateUniversalCommandBuffer();
+            var deltaTime = SystemAPI.Time.DeltaTime;
             
             Entities
                 .WithoutBurst()
@@ -34,6 +37,51 @@ namespace Arena.Client
                 else if (funcName == "WeaponSwing")
                 {
                     playWeaponSwing(in animEvent, ref commands);
+                }
+                else
+                {
+                    Entity svEntity;
+
+                    if (SystemAPI.HasBuffer<AnimationEventCommand>(animEvent.SourceEntity))
+                    {
+                        svEntity = animEvent.SourceEntity;
+                    }
+                    else if (SystemAPI.HasComponent<Owner>(animEvent.SourceEntity))
+                    {
+                        var owner = SystemAPI.GetComponent<Owner>(animEvent.SourceEntity);
+
+                        if (SystemAPI.HasBuffer<AnimationEventCommand>(owner.Value))
+                        {
+                            svEntity = owner.Value;
+                        }
+                        else
+                        {
+                            svEntity = Entity.Null;
+                        }
+                    }
+                    else
+                    {
+                        svEntity = Entity.Null;
+                    }
+                    
+                    if(svEntity != Entity.Null)
+                    {
+                        var aspect = SystemAPI.GetAspect<ScriptVizAspect>(svEntity);
+                        var handle = new ContextDisposeHandle(ref aspect, ref commands, 0, deltaTime);
+                        var events = SystemAPI.GetBuffer<AnimationEventCommand>(svEntity);
+
+                        foreach (var command in events)
+                        {
+                            if (command.EventID == animEvent.Event.IntParameter)
+                            {
+                                if (command.CommandAddress.IsInvalid)
+                                {
+                                    continue;
+                                }
+                                handle.Execute(command.CommandAddress);    
+                            }
+                        }
+                    }
                 }
                 
             }).Run();

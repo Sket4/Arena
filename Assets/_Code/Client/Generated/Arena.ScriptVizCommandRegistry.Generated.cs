@@ -13,6 +13,7 @@ namespace TzarGames.GameCore.Generated
 		{
 			ScriptVizCommandRegistry.RegisterCommand(typeof(Arena.Client.ScriptViz.PlayAnimationCommand), Arena.Client.ScriptViz.PlayAnimationCommand.Exec);
 			ScriptVizCommandRegistry.RegisterCommand(typeof(Arena.Client.ScriptViz.PlayCharacterAnimationCommand), Arena.Client.ScriptViz.PlayCharacterAnimationCommand.Exec);
+			ScriptVizCommandRegistry.RegisterCommand(typeof(Arena.Client.ScriptViz.StopCharacterAnimationCommand), Arena.Client.ScriptViz.StopCharacterAnimationCommand.Exec);
 		}
 	}
 }

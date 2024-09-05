@@ -75,8 +75,8 @@ namespace TzarGames.GameCore.Abilities.Generated
 		public TzarGames.GameCore.Abilities.CopyOwnerDamageToAbilityJob _CopyOwnerDamageToAbilityJob;
 		public TzarGames.GameCore.Abilities.DurationJob _DurationJob;
 		public TzarGames.GameCore.Abilities.MoveAbilityComponentJob _MoveAbilityComponentJob;
-		public Arena.Client.Abilities.AnimationAbilityComponentStartJob _AnimationAbilityComponentStartJob;
 		public Arena.Client.Abilities.AnimationAbilityComponentStopJob _AnimationAbilityComponentStopJob;
+		public Arena.Client.Abilities.AnimationAbilityComponentStartJob _AnimationAbilityComponentStartJob;
 		public TzarGames.GameCore.HitFlagAbilityComponentJob _HitFlagAbilityComponentJob;
 
 
@@ -430,9 +430,9 @@ namespace TzarGames.GameCore.Abilities.Generated
 			job._MoveAbilityComponentJob.DistanceMoveFromEntity = ComponentLookupDistanceMove;
 			job._MoveAbilityComponentJob.TransformFromEntity = ComponentLookupLocalTransform;
 
+
 			job._AnimationAbilityComponentStartJob.StopAnimType = ComponentTypeHandleAnimationAbilityStopComponentData;
 			job._AnimationAbilityComponentStartJob.DurationType = ComponentTypeHandleDuration;
-
 
 
 			return job;
@@ -492,9 +492,9 @@ namespace TzarGames.GameCore.Abilities.Generated
 			job._MoveAbilityComponentJob.DistanceMoveFromEntity.Update(ref state);
 			job._MoveAbilityComponentJob.TransformFromEntity.Update(ref state);
 
+
 			job._AnimationAbilityComponentStartJob.StopAnimType.Update(ref state);
 			job._AnimationAbilityComponentStartJob.DurationType.Update(ref state);
-
 
 
 		}

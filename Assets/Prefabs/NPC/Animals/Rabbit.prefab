@@ -1681,9 +1681,16 @@ MonoBehaviour:
     SpeedScale: 1
     ComputeRootmotionDeltas: 0
     BakeFlags: 0
-  - Label: Walk
+  - Label: Run
     Clip: {fileID: 7400000, guid: 549ff5acae564974f81b40bbce4fce83, type: 3}
     ID: {fileID: 11400000, guid: 37f59d96f0bef184ca0cc99cab343ea1, type: 2}
+    Loop: 1
+    SpeedScale: 1
+    ComputeRootmotionDeltas: 0
+    BakeFlags: 0
+  - Label: Walk
+    Clip: {fileID: 7400000, guid: 549ff5acae564974f81b40bbce4fce83, type: 3}
+    ID: {fileID: 11400000, guid: 057d49522c2906c429d9241599359af3, type: 2}
     Loop: 1
     SpeedScale: 1
     ComputeRootmotionDeltas: 0
@@ -3459,15 +3466,11 @@ MonoBehaviour:
     PendingAnimationTransitionTime: 0
     CurrentAnimationID: 0
     CurrentAnimationDuration: 0
-    IdleAnimID: 0
-    RunningAnimID: 0
-    DeathAnimationID: 0
     DefaultRunningVelocity: 0
+    MaxWalkingVelocity: 0
   Animator: {fileID: 7520960945345712802}
-  IdleAnimationID: {fileID: 11400000, guid: 53bed7b3c88fcbb478a5626f613a373a, type: 2}
-  RunningAnimationID: {fileID: 11400000, guid: 37f59d96f0bef184ca0cc99cab343ea1, type: 2}
   DefaultRunningVelocity: 1
-  DeathAnimationID: {fileID: 0}
+  MaxWalkingVelocity: 1
 --- !u!114 &5777211231453699312
 MonoBehaviour:
   m_ObjectHideFlags: 0

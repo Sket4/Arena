@@ -1,4 +1,7 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
+using System.Collections.Generic;
+using Arena.Quests;
 using TzarGames.GameCore;
 using TzarGames.MatchFramework;
 using TzarGames.MatchFramework.Client;
@@ -24,6 +27,15 @@ namespace Arena.Client
         [SerializeField] private GameSceneKey debugGameSceneKey = default;
         [SerializeField] private SpawnPointID debugSpawnPointID = default;
 
+        [Serializable]
+        class DebugQuestEntry
+        {
+            public QuestKey QuestKey = default;
+            public QuestState State = QuestState.Active;
+        }
+        
+        [SerializeField] private DebugQuestEntry[] debugQuests;
+
         protected override void Start()
         {
             base.Start();
@@ -42,7 +54,7 @@ namespace Arena.Client
             
             var gameState = GameState.Instance;
 
-            if (gameState != null)
+            if (gameState)
             {
                 var gameInterfaceEntity = em.CreateEntity();
                 em.AddComponentObject(gameInterfaceEntity, new GameInterface(gameState));
@@ -57,6 +69,24 @@ namespace Arena.Client
 
             var storeSystem = gameLoop.World.GetExistingSystemManaged<ArenaPlayerDataLocalStoreSystem>();
             storeSystem.DebugCharacterClass = debugCharacterClass;
+
+            if (debugQuests != null && debugQuests.Length > 0)
+            {
+                var questList = new List<CharacterGameProgressQuests>();
+                foreach (var debugQuest in debugQuests)
+                {
+                    if (debugQuest == null || debugQuest.QuestKey == false)
+                    {
+                        continue;
+                    }
+                    questList.Add(new CharacterGameProgressQuests
+                    {
+                        QuestID = (ushort)debugQuest.QuestKey.Id,
+                        QuestState = debugQuest.State
+                    });
+                }
+                storeSystem.DebugQuests = questList;
+            }
 
             var gameSceneId = useDebugSettings ? debugGameSceneKey.Id : GameState.GetOfflineGameInfo().GameSceneID;
             var spawnPointId = useDebugSettings ? debugSpawnPointID ? debugSpawnPointID.Id : 0 : GameState.GetOfflineGameInfo().SpawnPointID;

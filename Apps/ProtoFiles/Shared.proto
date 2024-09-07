@@ -47,6 +47,19 @@ message GameProgressKeyValue
 	int32 Value = 2;
 }
 
+enum QuestState
+{
+	Active = 0;
+	Completed = 1;
+	Failed = 2;
+}
+
+message QuestEntry
+{
+	int32 ID = 1;
+	QuestState State = 2;
+}
+
 message GameProgress
 {
 	int32 CurrentStage = 1;
@@ -54,6 +67,7 @@ message GameProgress
 	repeated int32 Flags = 3;
 	int32 CurrentBaseLocationSpawnPoint = 4;
 	repeated GameProgressKeyValue KeyValueStorage = 5;
+	repeated QuestEntry Quests = 6;
 }
 
 message CharacterData

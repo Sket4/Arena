@@ -143,6 +143,34 @@ namespace Arena
                 return;
             }
 
+            if (spawnZoneParameters.DisableRespawn)
+            {
+                if (spawnedInstances.Length >= spawnZoneParameters.MaximumSpawnCount)
+                {
+                    bool isAllDead = true;
+
+                    foreach (var spawnZoneInstance in spawnedInstances)
+                    {
+                        if (spawnZoneInstance.Value != Entity.Null)
+                        {
+                            isAllDead = false;
+                            break;
+                        }
+                    }
+
+                    if (isAllDead)
+                    {
+                        if (spawnZoneParameters.SendMessageOnAllDead)
+                        {
+                            var messageEntity = Commands.CreateEntity(jobIndex);
+                            Commands.AddComponent(jobIndex, messageEntity, spawnZoneParameters.AllDeadMessage);
+                        }   
+                        Commands.SetComponentEnabled<SpawnZoneStateData>(jobIndex, spawnZoneEntity, false);
+                    }
+                    return;
+                }
+            }
+
             int freeSlots = spawnZoneParameters.MaximumSpawnCount - spawnedInstances.Length;
 
             if (freeSlots <= 0)

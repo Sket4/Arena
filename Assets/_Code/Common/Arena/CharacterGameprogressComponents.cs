@@ -13,6 +13,12 @@ namespace Arena
         public int Value;
     }
 
+    public struct CharacterGameProgressQuests : IBufferElementData
+    {
+        public ushort QuestID;
+        public QuestState QuestState;
+    }
+
     public struct CharacterGameProgress : IComponentData
     {
         public int CurrentStage;

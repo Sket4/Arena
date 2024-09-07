@@ -12,6 +12,11 @@ namespace Arena
         public float SpawnRadius;
         public float SpawnInterval;
         public float SpawnAfterDeathInverval;
+
+        public bool DisableRespawn;
+        public bool SendMessageOnAllDead;
+        [HideInAuthoring]
+        public Message AllDeadMessage;
         
         [HideInAuthoring]
         public uint SpawnPointTraceLayers;
@@ -20,7 +25,7 @@ namespace Arena
         public Entity Prefab;
     }
 
-    public struct SpawnZoneStateData : IComponentData
+    public struct SpawnZoneStateData : IComponentData, IEnableableComponent
     {
         public double LastSpawnTime;
     }
@@ -38,6 +43,7 @@ namespace Arena
     {
         public CharacterKey CharacterPrefabKey;
         public LayerMask SpawnPointTraceLayers;
+        public MessageAuthoring AllDeadMessage;
         
         protected override void Bake<K>(ref SpawnZoneParameters serializedData, K baker)
         {
@@ -45,6 +51,7 @@ namespace Arena
 
             serializedData.Prefab = baker.ConvertObjectKey(CharacterPrefabKey);
             serializedData.SpawnPointTraceLayers = Utility.LayerMaskToCollidesWithMask(SpawnPointTraceLayers);
+            serializedData.AllDeadMessage = AllDeadMessage;
             
             baker.AddBuffer<SpawnZoneInstance>();
             baker.AddComponent<SpawnZoneStateData>();

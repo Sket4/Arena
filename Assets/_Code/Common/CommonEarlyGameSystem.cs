@@ -20,7 +20,8 @@ namespace Arena
         private EntityQuery setGameProgressKeyValueQuery;
         private EntityQuery setBaseLocationRequestQuery;
         private EntityQuery startQuestQuery;
-        
+        private EntityQuery addGameProgressQuestRequestQuery;
+
         struct NavMeshDataCleanup : ICleanupComponentData
         {
             public NavMeshDataInstance NavDataInstance;
@@ -221,6 +222,67 @@ namespace Arena
 
                     }).Run();    
             }
+            
+            if (addGameProgressQuestRequestQuery.IsEmpty == false)
+            {
+                var registeredPlayerEntity = getMainPlayerEntity();
+                var characterEntity = SystemAPI.GetComponent<ControlledCharacter>(registeredPlayerEntity).Entity;
+                var progressDataEntity = SystemAPI.GetComponent<CharacterGameProgressReference>(characterEntity).Value;
+                
+                Entities
+                    .WithStoreEntityQueryInField(ref addGameProgressQuestRequestQuery)
+                    .ForEach((Entity entity, int entityInQueryIndex, AddGameProgressQuestRequest request) =>
+                    {
+                        commands.DestroyEntity(entityInQueryIndex, entity);
+                        
+                        var quests = SystemAPI.GetBuffer<CharacterGameProgressQuests>(progressDataEntity);
+                        int questIndex = -1;
+
+                        for (var index = 0; index < quests.Length; index++)
+                        {
+                            var quest = quests[index];
+                            
+                            if (quest.QuestID == request.QuestKey)
+                            {
+                                if (quest.QuestState == request.State)
+                                {
+                                    Debug.LogWarning($"Quest {request.QuestKey} state already equals to {request.State}");
+                                    return;
+                                }
+                                
+                                Debug.Log($"Set quest {request.QuestKey} to state {request.State}");
+                                quest.QuestState = request.State;
+                                quests[index] = quest;
+                                questIndex = index;
+                                break;
+                            }
+                        }
+
+                        if (questIndex == -1)
+                        {
+                            quests.Add(new CharacterGameProgressQuests
+                            {
+                                QuestID = (ushort)request.QuestKey
+                            });
+                            Debug.Log($"added quest {request.QuestKey} with state {request.State}");
+                        }
+                        
+                        var owner = SystemAPI.GetComponent<Owner>(progressDataEntity);
+                        var playerEntity = SystemAPI.GetComponent<PlayerController>(owner.Value).Value;
+
+                        if (SystemAPI.HasComponent<AuthorizedUser>(playerEntity) == false)
+                        {
+                            Debug.Log("Failed to save player data on item activation, player not authorized");
+                            return;
+                        }
+                
+                        Debug.Log($"Saving data for player character {owner.Value.Index}, bcz progress data changed");
+                        var user = SystemAPI.GetComponent<AuthorizedUser>(playerEntity);
+
+                        createSavePlayerDataRequest(owner, playerEntity, user, commands);
+
+                    }).Run();    
+            }
 
             if (setBaseLocationRequestQuery.IsEmpty == false)
             {
@@ -281,6 +343,9 @@ namespace Arena
 
                                     var keysData =
                                         SystemAPI.GetBuffer<CharacterGameProgressKeyValue>(progressDataEntity);
+
+                                    var questData =
+                                        SystemAPI.GetBuffer<CharacterGameProgressQuests>(progressDataEntity);
                                         
                                     var progressData = new GameProgressSocketData
                                     {
@@ -288,6 +353,8 @@ namespace Arena
                                         FlagsCount = (ushort)flagsData.Length,
                                         FlagsPointer = (System.IntPtr)flagsData.GetUnsafeReadOnlyPtr(),
                                         KeysPointer = (System.IntPtr)keysData.GetUnsafeReadOnlyPtr(),
+                                        QuestsPointer = (System.IntPtr)questData.GetUnsafeReadOnlyPtr(),
+                                        QuestCount = (ushort)questData.Length,
                                         KeysCount = (ushort)keysData.Length
                                     };
                                         

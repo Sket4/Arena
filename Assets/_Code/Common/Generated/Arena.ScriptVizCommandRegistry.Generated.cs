@@ -11,7 +11,9 @@ namespace TzarGames.GameCore.Generated
 		[RuntimeInitializeOnLoadMethod]
 		static unsafe void init()
 		{
+			ScriptVizCommandRegistry.RegisterCommand(typeof(Arena.ScriptViz.QuestActiveCheckCommand), Arena.ScriptViz.QuestActiveCheckCommand.Execute);
 			ScriptVizCommandRegistry.RegisterCommand(typeof(Arena.ScriptViz.GameProgressFlagCheckCommand), Arena.ScriptViz.GameProgressFlagCheckCommand.Execute);
+			ScriptVizCommandRegistry.RegisterCommand(typeof(Arena.ScriptViz.SetGameProgressQuestCommand), Arena.ScriptViz.SetGameProgressQuestCommand.Execute);
 			ScriptVizCommandRegistry.RegisterCommand(typeof(Arena.ScriptViz.AddGameProgressFlagCommand), Arena.ScriptViz.AddGameProgressFlagCommand.Execute);
 			ScriptVizCommandRegistry.RegisterCommand(typeof(Arena.ScriptViz.SetGameProgressKeyCommand), Arena.ScriptViz.SetGameProgressKeyCommand.Execute);
 			ScriptVizCommandRegistry.RegisterCommand(typeof(Arena.ScriptViz.GetProgressKeyValueCommand), Arena.ScriptViz.GetProgressKeyValueCommand.Execute);

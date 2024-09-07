@@ -136,6 +136,16 @@ namespace Arena
                     Value = keyValue.Value
                 });
             }
+
+            var quests = manager.GetBuffer<CharacterGameProgressQuests>(progressEntity);
+            foreach (var quest in quests)
+            {
+                data.Progress.Quests.Add(new QuestEntry
+                {
+                    ID = quest.QuestID,
+                    State = quest.QuestState
+                });
+            }
             
             return data;
         }

@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using Arena.Quests;
-using TzarGames.GameCore;
 using TzarGames.GameCore.ScriptViz;
 using UnityEngine;
 using TzarGames.GameCore.ScriptViz.Graph;
@@ -17,6 +16,8 @@ namespace Arena.ScriptViz
         public ushort FlagsCount;
         public IntPtr KeysPointer;
         public ushort KeysCount;
+        public IntPtr QuestsPointer;
+        public ushort QuestCount;
     }
     
     [Serializable]
@@ -29,6 +30,138 @@ namespace Arena.ScriptViz
         public GameProgressSocket(GameProgressSocketData defaultValue)
         {
             Value = defaultValue;
+        }
+    }
+    
+    [BurstCompile]
+    struct QuestActiveCheckCommand : IScriptVizCommand
+    {
+        public InputVar<GameProgressSocketData> Progress;
+        public int QuestID;
+        public Address QuestActiveCommandAddress;
+        public Address QuestCompleteCommandAddress;
+        public Address QuestFailedCommandAddress;
+        public Address QuestNotAddedCommandAddress;
+
+        [BurstCompile]
+        [AOT.MonoPInvokeCallback(typeof(ScriptVizCommandRegistry.ExecuteDelegate))]
+        public static unsafe void Execute(ref Context context, void* commandData)
+        {
+            var data = (QuestActiveCheckCommand*)commandData;
+            
+            var progress = data->Progress.Read(ref context);
+
+            var quests = (CharacterGameProgressQuests*)progress.QuestsPointer;
+            bool hasQuest = false;
+            QuestState state = QuestState.Failed;
+            
+            for (int i = 0; i < progress.QuestCount; i++)
+            {
+                if (quests[i].QuestID == data->QuestID)
+                {
+                    hasQuest = true;
+                    state = quests[i].QuestState;
+                    break;
+                }
+            }
+
+            if (hasQuest)
+            {
+                switch (state)
+                {
+                    case QuestState.Active:
+                        if (data->QuestActiveCommandAddress.IsValid)
+                        {
+                            Extensions.ExecuteCode(ref context, data->QuestActiveCommandAddress);    
+                        }
+                        break;
+                    case QuestState.Completed:
+                        if (data->QuestCompleteCommandAddress.IsValid)
+                        {
+                            Extensions.ExecuteCode(ref context, data->QuestCompleteCommandAddress);    
+                        }
+                        break;
+                    case QuestState.Failed:
+                        if (data->QuestFailedCommandAddress.IsValid)
+                        {
+                            Extensions.ExecuteCode(ref context, data->QuestFailedCommandAddress);    
+                        }
+                        break;
+                    default:
+                        Debug.LogError("unknown state");
+                        break;
+                }
+            }
+            else
+            {
+                if (data->QuestNotAddedCommandAddress.IsValid)
+                {
+                    Extensions.ExecuteCode(ref context, data->QuestNotAddedCommandAddress);    
+                }
+            }
+        }
+    }
+    
+    [Serializable]
+    [FriendlyName("Получить статус квеста")]
+    public class GameProgressQuestCheckNode : Node, ICommandNode, IPostWriteCommandNode
+    {
+        [HideInInspector] public NodeInputSocket InputSocket = new NodeInputSocket();
+        
+        public QuestKey QuestKey;
+        
+        [HideInInspector]
+        public GameProgressSocket ProgressSocket = new();
+        [HideInInspector]
+        public NodeOutputSocket QuestActiveSocket = new();
+        [HideInInspector]
+        public NodeOutputSocket QuestCompletedSocket = new();
+        [HideInInspector]
+        public NodeOutputSocket QuestFailedSocket = new();
+        [HideInInspector]
+        public NodeOutputSocket NoQuestSocket = new();
+        
+        public void WriteCommand(CompilerAllocator compilerAllocator, out Address commandAddress)
+        {
+            var cmd = new QuestActiveCheckCommand();
+
+            cmd.QuestID = QuestKey ? QuestKey.Id : 0;
+            
+            compilerAllocator.InitializeInputVar(ref cmd.Progress, ProgressSocket);
+            commandAddress = compilerAllocator.WriteCommand(ref cmd);
+        }
+
+        public override void DeclareSockets(List<SocketInfo> sockets)
+        {
+            sockets.Add(new SocketInfo(InputSocket, SocketType.In, "In"));
+            sockets.Add(new SocketInfo(ProgressSocket, SocketType.In, "Прогресс"));
+            sockets.Add(new SocketInfo(QuestActiveSocket, SocketType.Out, "Квест активен"));
+            sockets.Add(new SocketInfo(QuestCompletedSocket, SocketType.Out, "Квест закончен"));
+            sockets.Add(new SocketInfo(QuestFailedSocket, SocketType.Out, "Квест провален"));
+            sockets.Add(new SocketInfo(NoQuestSocket, SocketType.Out, "Квеста нет"));
+        }
+
+        public override string GetNodeName(ScriptVizGraphPage page)
+        {
+            if (QuestKey)
+            {
+                return $"Статус квеста {QuestKey.name}";
+            }
+            else
+            {
+                return "Получить статус квеста";    
+            }
+        }
+
+        public override bool ShowEditableProperties => true;
+        
+        public void OnPostCommandWrite(CompilerAllocator compilerAllocator, Address currentCommandAddress)
+        {
+            ref var cmd = ref compilerAllocator.GetCommandData<QuestActiveCheckCommand>(currentCommandAddress);
+            cmd.QuestActiveCommandAddress = compilerAllocator.GetFirstConnectedNodeAddress(QuestActiveSocket);
+            cmd.QuestCompleteCommandAddress = compilerAllocator.GetFirstConnectedNodeAddress(QuestCompletedSocket);
+            cmd.QuestFailedCommandAddress = compilerAllocator.GetFirstConnectedNodeAddress(QuestFailedSocket);
+            cmd.QuestNotAddedCommandAddress = compilerAllocator.GetFirstConnectedNodeAddress(NoQuestSocket);
         }
     }
     
@@ -96,7 +229,7 @@ namespace Arena.ScriptViz
         {
             var cmd = new GameProgressFlagCheckCommand();
 
-            cmd.Flag = FlagKey != null ? FlagKey.Id : 0;
+            cmd.Flag = FlagKey ? FlagKey.Id : 0;
             
             compilerAllocator.InitializeInputVar(ref cmd.Progress, ProgressSocket);
             commandAddress = compilerAllocator.WriteCommand(ref cmd);
@@ -131,6 +264,72 @@ namespace Arena.ScriptViz
             cmd.NoFlagCommandAddress = compilerAllocator.GetFirstConnectedNodeAddress(NoFlagSocket);
         }
     }
+    
+    public struct AddGameProgressQuestRequest : IComponentData
+    {
+        public int QuestKey;
+        public QuestState State;
+    }
+
+    [BurstCompile]
+    struct SetGameProgressQuestCommand : IScriptVizCommand
+    {
+        public int QuestKey;
+        public QuestState State;
+        
+        [BurstCompile]
+        [AOT.MonoPInvokeCallback(typeof(ScriptVizCommandRegistry.ExecuteDelegate))]
+        public static unsafe void Execute(ref Context context, void* commandData)
+        {
+            var data = (SetGameProgressQuestCommand*)commandData;
+
+            var entityRequest = context.Commands.CreateEntity(context.SortIndex);
+            context.Commands.AddComponent(context.SortIndex, entityRequest, new AddGameProgressQuestRequest
+            {
+                QuestKey = data->QuestKey,
+                State = data->State
+            });
+        }
+    }
+    
+    [Serializable]
+    [FriendlyName("Добавить / установить квест")]
+    public class AddGameProgressQuestCommandNode : CommandNode
+    {
+        public QuestKey QuestKey;
+        public QuestState State;
+        
+        public override void WriteCommand(CompilerAllocator compilerAllocator, out Address commandAddress)
+        {
+            var cmd = new SetGameProgressQuestCommand();
+            cmd.QuestKey = QuestKey ? QuestKey.Id : 0;
+            cmd.State = State;
+            commandAddress = compilerAllocator.WriteCommand(ref cmd);
+        }
+
+        public override string GetNodeName(ScriptVizGraphPage page)
+        {
+            if (QuestKey)
+            {
+                switch (State)
+                {
+                    case QuestState.Active:
+                        return $"Добавить квест {QuestKey.name}";
+                    case QuestState.Completed:
+                        return $"Закончить квест {QuestKey.name}";
+                    case QuestState.Failed:
+                        return $"Провалить квест {QuestKey.name}";
+                    default:
+                        return $"ошибка";
+                }
+            }
+            else
+            {
+                return "Добавить / установить квест";    
+            }
+        }
+    }
+
 
     public struct AddGameProgressFlagRequest : IComponentData
     {

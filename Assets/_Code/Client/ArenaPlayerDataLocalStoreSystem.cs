@@ -1,7 +1,9 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
 using Arena;
+using Arena.Quests;
 using Arena.Server;
+using JetBrains.Annotations;
 using TzarGames.GameCore;
 using TzarGames.MatchFramework;
 using TzarGames.MatchFramework.Server;
@@ -14,6 +16,7 @@ namespace Arena.Client
     public partial class ArenaPlayerDataLocalStoreSystem : PlayerDataLocalStoreBaseSystem
     {        
         public CharacterClass DebugCharacterClass = CharacterClass.Knight;
+        public IEnumerable<CharacterGameProgressQuests> DebugQuests = default;
 
         protected override void GetSaveDataFromRequestEntity(Entity requestEntity, Dictionary<string, object> data)
         {
@@ -41,6 +44,17 @@ namespace Arena.Client
             else
             {
                 data = SharedUtility.CreateDefaultCharacterData(DebugCharacterClass, "Player");
+                if (DebugQuests != null)
+                {
+                    foreach (var debugQuest in DebugQuests)
+                    {
+                        data.Progress.Quests.Add(new QuestEntry
+                        {
+                            ID = debugQuest.QuestID,
+                            State = debugQuest.QuestState,
+                        });     
+                    }
+                }
             }
             
             return Task.FromResult(data as object);

@@ -71,6 +71,13 @@ namespace Arena.Server
                     Value = keyValue.Value
                 });
             }
+
+            var gameProgressQuests = commands.AddBuffer<CharacterGameProgressQuests>(gameProgressEntity);
+
+            foreach (var quest in data.Progress.Quests)
+            {
+                gameProgressQuests.Add(new CharacterGameProgressQuests { QuestID = (ushort)quest.ID, QuestState = quest.State });
+            }
             
             var requestEntity = commands.CreateEntity();
             commands.AddComponent<InventoryTransaction>(requestEntity);

@@ -72,13 +72,20 @@ namespace Arena.Client.UI
 #if UNITY_EDITOR
         [ConsoleCommand]
 #endif
-        public NotificationEntryUI AddConstantNotification(string message)
+        public NotificationEntryUI AddConstantNotification(string message, string id = null)
         {
             if (pool == null)
             {
                 initPool();    
             }
+
+            if (string.IsNullOrEmpty(id) == false)
+            {
+                RemoveConstantNotificationById(id);    
+            }
+            
             var entry = pool.Get();
+            entry.EntryUi.ID = id;
             entry.EntryUi.Message = message;
             entry.EntryUi.gameObject.SetActive(true);
             entry.IsConstant = true;
@@ -109,6 +116,20 @@ namespace Arena.Client.UI
                     removeEntry(entryUi);
                     constantEntryUis.Remove(e);
                     pool.Set(e);
+                }
+            }
+        }
+
+        public void RemoveConstantNotificationById(string id)
+        {
+            for (int i = constantEntryUis.Count-1; i >= 0; i--)
+            {
+                var e = constantEntryUis[i];
+
+                if (e.EntryUi.ID == id)
+                {
+                    RemoveConstantNotification(e.EntryUi);
+                    break;
                 }
             }
         }

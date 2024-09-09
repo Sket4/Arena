@@ -54,6 +54,8 @@ namespace Arena.Client.UI
         [SerializeField] private NotificationUI notification = default;
         [SerializeField] private float itemTakeNotificationTime = 5;
         [SerializeField] private TextUI questInfoText = default;
+
+        public NotificationUI Notifications => notification;
         
         public TextUI QuestInfoText
         {

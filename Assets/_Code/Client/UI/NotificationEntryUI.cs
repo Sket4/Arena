@@ -15,6 +15,8 @@ namespace Arena.Client.UI
             set { text.text = value; }    
         }
 
+        public string ID { get; set; }
+
         public Sprite Icon
         {
             get

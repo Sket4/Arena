@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using Arena.Client.UI;
 using Arena.Dialogue;
+using Arena.ScriptViz;
 using TzarGames.GameCore;
 using Unity.Entities;
 using UnityEngine;
@@ -21,6 +22,8 @@ namespace Arena.Client
         public GameObject UiPrefab { get; private set; }
         private EntityQuery uiQuery;
         private EntityQuery dialogueQuery;
+        private EntityQuery messageRequestQuery;
+        private EntityQuery hideMessageRequestQuery;
 
         public bool TryGetSingleton<T>(out T singletonData) where T : unmanaged, IComponentData
         {
@@ -138,6 +141,41 @@ namespace Arena.Client
                 }).Run();
             
             EntityManager.DestroyEntity(dialogueQuery);
+
+            Entities
+                .WithoutBurst()
+                .WithStoreEntityQueryInField(ref messageRequestQuery)
+                .ForEach((in ShowMessageRequest showMessageRequest) =>
+                {
+                    if(uiQuery.TryGetSingleton<GameUI>(out var ui) == false)
+                    {
+                        Debug.LogError("Failed to find UI entity");
+                        return;
+                    }
+                    var localizedMessage = LocalizationSettings.StringDatabase.GetLocalizedString(showMessageRequest.LocalizedMessageID);
+                    ui.HUD.Notifications.AddConstantNotification(localizedMessage, showMessageRequest.ID.ToString());
+
+                })
+                .Run();
+            
+            EntityManager.DestroyEntity(messageRequestQuery);
+            
+            Entities
+                .WithoutBurst()
+                .WithStoreEntityQueryInField(ref hideMessageRequestQuery)
+                .ForEach((in HideMessageRequest showMessageRequest) =>
+                {
+                    if(uiQuery.TryGetSingleton<GameUI>(out var ui) == false)
+                    {
+                        Debug.LogError("Failed to find UI entity");
+                        return;
+                    }
+                    ui.HUD.Notifications.RemoveConstantNotificationById(showMessageRequest.MessageID.ToString());
+
+                })
+                .Run();
+            
+            EntityManager.DestroyEntity(hideMessageRequestQuery);
 
             Entities
                 .WithNone<UserInterfaceData>()

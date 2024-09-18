@@ -3208,7 +3208,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3012611948393460952, guid: 24123f7370a893b41bbaaae4bd1791d1, type: 3}
       propertyPath: Value.ID
-      value: 0
+      value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 6728593815283415402, guid: 24123f7370a893b41bbaaae4bd1791d1, type: 3}
       propertyPath: m_LocalPosition.x
@@ -3272,6 +3272,9 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 1415852907774143442, guid: 24123f7370a893b41bbaaae4bd1791d1, type: 3}
       insertIndex: -1
       addedObject: {fileID: 7858550795108569359}
+    - targetCorrespondingSourceObject: {fileID: 1415852907774143442, guid: 24123f7370a893b41bbaaae4bd1791d1, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: -8908350599075773303}
   m_SourcePrefab: {fileID: 100100000, guid: 24123f7370a893b41bbaaae4bd1791d1, type: 3}
 --- !u!1 &450671669197689465 stripped
 GameObject:
@@ -3380,15 +3383,11 @@ MonoBehaviour:
     PendingAnimationTransitionTime: 0
     CurrentAnimationID: 0
     CurrentAnimationDuration: 0
-    IdleAnimID: 0
-    RunningAnimID: 0
-    DeathAnimationID: 0
     DefaultRunningVelocity: 0
+    MaxWalkingVelocity: 0
   Animator: {fileID: 1481729965734692194}
-  IdleAnimationID: {fileID: 11400000, guid: 53bed7b3c88fcbb478a5626f613a373a, type: 2}
-  RunningAnimationID: {fileID: 11400000, guid: 37f59d96f0bef184ca0cc99cab343ea1, type: 2}
   DefaultRunningVelocity: 4
-  DeathAnimationID: {fileID: 0}
+  MaxWalkingVelocity: 1
 --- !u!114 &874018182312922045
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3601,6 +3600,22 @@ MonoBehaviour:
               w: 1998285193
         Name: _delayed_commands
         NetSyncEnabled: 0
+--- !u!114 &-8908350599075773303
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 450671669197689465}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: acb85644bae707f43821d4686dcb185f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ConversionTargetOptions: -1
+  Groups:
+  - ID: 4
+  - ID: 1
 --- !u!4 &5226358810810187969 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 6728593815283415402, guid: 24123f7370a893b41bbaaae4bd1791d1, type: 3}

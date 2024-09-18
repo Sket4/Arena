@@ -90,7 +90,9 @@ namespace Arena.Client.Physics
                         });
 
                         var l2w = SystemAPI.GetComponent<LocalToWorld>(bone.BoneEntity);
-                        commands.SetComponent(0, bone.BoneEntity, LocalTransform.FromPositionRotation(l2w.Position, l2w.Rotation));
+                        var scaleVec = TransformHelpers.Scale(l2w.Value);
+                        var scale = (scaleVec.x + scaleVec.y + scaleVec.z) / 3;
+                        commands.SetComponent(0, bone.BoneEntity, LocalTransform.FromPositionRotationScale(l2w.Position, l2w.Rotation, scale));
 
                         commands.RemoveComponent<Parent>(0, bone.BoneEntity);
                         
@@ -187,7 +189,9 @@ namespace Arena.Client.Physics
                         
                         commands.SetComponent(0, bone.Value, vel);
 
-                        commands.SetComponent(0, bone.Value, LocalTransform.FromPositionRotation(l2w.Position, l2w.Rotation));
+                        var scaleVec = TransformHelpers.Scale(l2w.Value);
+                        var scale = (scaleVec.x + scaleVec.y + scaleVec.z) / 3;
+                        commands.SetComponent(0, bone.Value, LocalTransform.FromPositionRotationScale(l2w.Position, l2w.Rotation, scale));
 
                         commands.RemoveComponent<Parent>(0, bone.Value);
                         commands.AddSharedComponentData(0, bone.Value, new PhysicsWorldIndex { Value = 0 });

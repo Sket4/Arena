@@ -13,6 +13,7 @@ namespace TzarGames.GameCore.Generated
 		{
 			ScriptVizCommandRegistry.RegisterCommand(typeof(Arena.ScriptViz.ShowMessageCommand), Arena.ScriptViz.ShowMessageCommand.Exec);
 			ScriptVizCommandRegistry.RegisterCommand(typeof(Arena.ScriptViz.HideMessageCommand), Arena.ScriptViz.HideMessageCommand.Exec);
+			ScriptVizCommandRegistry.RegisterCommand(typeof(Arena.ScriptViz.GetMainCharacterCommand), Arena.ScriptViz.GetMainCharacterCommand.Exec);
 			ScriptVizCommandRegistry.RegisterCommand(typeof(Arena.ScriptViz.QuestActiveCheckCommand), Arena.ScriptViz.QuestActiveCheckCommand.Execute);
 			ScriptVizCommandRegistry.RegisterCommand(typeof(Arena.ScriptViz.GameProgressFlagCheckCommand), Arena.ScriptViz.GameProgressFlagCheckCommand.Execute);
 			ScriptVizCommandRegistry.RegisterCommand(typeof(Arena.ScriptViz.SetGameProgressQuestCommand), Arena.ScriptViz.SetGameProgressQuestCommand.Execute);

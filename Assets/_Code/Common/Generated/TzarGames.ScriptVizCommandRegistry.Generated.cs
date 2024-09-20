@@ -23,6 +23,7 @@ namespace TzarGames.GameCore.Generated
 			ScriptVizCommandRegistry.RegisterCommand(typeof(TzarGames.GameCore.ScriptViz.SetSimpleStructVariableCommand), TzarGames.GameCore.ScriptViz.SetSimpleStructVariableCommand.Set);
 			ScriptVizCommandRegistry.RegisterCommand(typeof(TzarGames.GameCore.ScriptViz.SetSimpleStructVariableCommandFromConstant), TzarGames.GameCore.ScriptViz.SetSimpleStructVariableCommandFromConstant.Set);
 			ScriptVizCommandRegistry.RegisterCommand(typeof(TzarGames.GameCore.ScriptViz.SetEntityVariableCommand), TzarGames.GameCore.ScriptViz.SetEntityVariableCommand.Set);
+			ScriptVizCommandRegistry.RegisterCommand(typeof(TzarGames.GameCore.ScriptViz.EntityCompareCommand), TzarGames.GameCore.ScriptViz.EntityCompareCommand.Exec);
 			ScriptVizCommandRegistry.RegisterCommand(typeof(TzarGames.GameCore.ScriptViz.EntityNullCheckCommand), TzarGames.GameCore.ScriptViz.EntityNullCheckCommand.Exec);
 			ScriptVizCommandRegistry.RegisterCommand(typeof(TzarGames.GameCore.ScriptViz.InstantiateCommand), TzarGames.GameCore.ScriptViz.InstantiateCommand.Exec);
 			ScriptVizCommandRegistry.RegisterCommand(typeof(TzarGames.GameCore.ScriptViz.SetTransformCommand), TzarGames.GameCore.ScriptViz.SetTransformCommand.Exec);

@@ -17,8 +17,7 @@ namespace Arena.Client
         {   
             var presentGroup = gameLoop.World.GetExistingSystemManaged<PresentationSystemGroup>();
 
-            //gameLoop.AddGameSystem<SyncHybridTransformSystem>();
-            gameLoop.AddGameSystem<HitTargetSystem>();
+            //gameLoop.AddGameSystem<SyncHybridTransformSystem>()
 
             if (isBot == false)
             {

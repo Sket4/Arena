@@ -21,6 +21,7 @@ namespace Arena
         private EntityQuery setBaseLocationRequestQuery;
         private EntityQuery startQuestQuery;
         private EntityQuery addGameProgressQuestRequestQuery;
+        private EntityQuery getMainCharacterRequestQuery;
 
         struct NavMeshDataCleanup : ICleanupComponentData
         {
@@ -308,6 +309,42 @@ namespace Arena
                         Debug.Log($"set base location to {request.LocationID}");
 
                     }).Run();
+                }
+            }
+
+            if(getMainCharacterRequestQuery.IsEmpty == false && SystemAPI.HasSingleton<RegisteredPlayer>())
+            {
+                var registeredPlayerEntity = getMainPlayerEntity();
+
+                if(registeredPlayerEntity != Entity.Null)
+                {
+                    if (SystemAPI.HasComponent<ControlledCharacter>(registeredPlayerEntity))
+                    {
+                        var characterEntity = SystemAPI.GetComponent<ControlledCharacter>(registeredPlayerEntity).Entity;
+
+                        Entities
+                        .WithStoreEntityQueryInField(ref getMainCharacterRequestQuery)
+                        .ForEach((
+                            Entity entity,
+                            int entityInQueryIndex,
+                            GetMainCharacterRequest request) =>
+                        {
+                            commands.DestroyEntity(entityInQueryIndex, entity);
+
+                            var aspect = SystemAPI.GetAspect<ScriptVizAspect>(request.ScriptVizEntity);
+
+                            using (var contextHandle = new ContextDisposeHandle(ref aspect, ref commands, entityInQueryIndex, deltaTime))
+                            {
+                                if (request.CharacterAddress.IsValid)
+                                {
+                                    contextHandle.Context.WriteToTemp(ref characterEntity, request.CharacterAddress);
+                                }
+
+                                contextHandle.Execute(request.CommandAddress);
+                            }
+
+                        }).Run();
+                    }
                 }
             }
             

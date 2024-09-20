@@ -5,19 +5,134 @@ using Unity.Burst;
 using Unity.Burst.Intrinsics;
 using Unity.Collections;
 
+[assembly: Unity.Jobs.RegisterGenericJobType(typeof(TzarGames.MultiplayerKit.ComponentDataSync<TzarGames.MultiplayerKit.Generated.SafeZoneSyncData_DataProcessor,TzarGames.MultiplayerKit.Generated.SafeZoneSyncData_Sync.Data,TzarGames.MultiplayerKit.Generated.SafeZoneSyncData_Sync.Tag>.DeserializeJob))]
+[assembly: Unity.Jobs.RegisterGenericJobType(typeof(TzarGames.MultiplayerKit.ComponentDataSync<TzarGames.MultiplayerKit.Generated.SafeZoneSyncData_DataProcessor,TzarGames.MultiplayerKit.Generated.SafeZoneSyncData_Sync.Data,TzarGames.MultiplayerKit.Generated.SafeZoneSyncData_Sync.Tag>.SerializeJob))]
 [assembly: Unity.Jobs.RegisterGenericJobType(typeof(TzarGames.MultiplayerKit.ComponentDataSync<TzarGames.MultiplayerKit.Generated.CharacterClassData_DataProcessor,TzarGames.MultiplayerKit.Generated.CharacterClassData_Sync.Data,TzarGames.MultiplayerKit.Generated.CharacterClassData_Sync.Tag>.DeserializeJob))]
 [assembly: Unity.Jobs.RegisterGenericJobType(typeof(TzarGames.MultiplayerKit.ComponentDataSync<TzarGames.MultiplayerKit.Generated.CharacterClassData_DataProcessor,TzarGames.MultiplayerKit.Generated.CharacterClassData_Sync.Data,TzarGames.MultiplayerKit.Generated.CharacterClassData_Sync.Tag>.SerializeJob))]
 [assembly: Unity.Jobs.RegisterGenericJobType(typeof(TzarGames.MultiplayerKit.ComponentDataSync<TzarGames.MultiplayerKit.Generated.ArenaMatchStateData_DataProcessor,TzarGames.MultiplayerKit.Generated.ArenaMatchStateData_Sync.Data,TzarGames.MultiplayerKit.Generated.ArenaMatchStateData_Sync.Tag>.DeserializeJob))]
 [assembly: Unity.Jobs.RegisterGenericJobType(typeof(TzarGames.MultiplayerKit.ComponentDataSync<TzarGames.MultiplayerKit.Generated.ArenaMatchStateData_DataProcessor,TzarGames.MultiplayerKit.Generated.ArenaMatchStateData_Sync.Data,TzarGames.MultiplayerKit.Generated.ArenaMatchStateData_Sync.Tag>.SerializeJob))]
-[assembly: Unity.Jobs.RegisterGenericJobType(typeof(TzarGames.MultiplayerKit.ComponentDataSync<TzarGames.MultiplayerKit.Generated.DifficultyData_DataProcessor,TzarGames.MultiplayerKit.Generated.DifficultyData_Sync.Data,TzarGames.MultiplayerKit.Generated.DifficultyData_Sync.Tag>.DeserializeJob))]
-[assembly: Unity.Jobs.RegisterGenericJobType(typeof(TzarGames.MultiplayerKit.ComponentDataSync<TzarGames.MultiplayerKit.Generated.DifficultyData_DataProcessor,TzarGames.MultiplayerKit.Generated.DifficultyData_Sync.Data,TzarGames.MultiplayerKit.Generated.DifficultyData_Sync.Tag>.SerializeJob))]
 [assembly: Unity.Jobs.RegisterGenericJobType(typeof(TzarGames.MultiplayerKit.DynamicBufferDataSync<TzarGames.MultiplayerKit.Generated.SceneSectionState_DataProcessor,TzarGames.MultiplayerKit.Generated.SceneSectionState_Sync.Data,TzarGames.MultiplayerKit.Generated.SceneSectionState_Sync.Tag>.DeserializeJob))]
 [assembly: Unity.Jobs.RegisterGenericJobType(typeof(TzarGames.MultiplayerKit.DynamicBufferDataSync<TzarGames.MultiplayerKit.Generated.SceneSectionState_DataProcessor,TzarGames.MultiplayerKit.Generated.SceneSectionState_Sync.Data,TzarGames.MultiplayerKit.Generated.SceneSectionState_Sync.Tag>.SerializeJob))]
-[assembly: Unity.Jobs.RegisterGenericJobType(typeof(TzarGames.MultiplayerKit.ComponentDataSync<TzarGames.MultiplayerKit.Generated.SafeZoneSyncData_DataProcessor,TzarGames.MultiplayerKit.Generated.SafeZoneSyncData_Sync.Data,TzarGames.MultiplayerKit.Generated.SafeZoneSyncData_Sync.Tag>.DeserializeJob))]
-[assembly: Unity.Jobs.RegisterGenericJobType(typeof(TzarGames.MultiplayerKit.ComponentDataSync<TzarGames.MultiplayerKit.Generated.SafeZoneSyncData_DataProcessor,TzarGames.MultiplayerKit.Generated.SafeZoneSyncData_Sync.Data,TzarGames.MultiplayerKit.Generated.SafeZoneSyncData_Sync.Tag>.SerializeJob))]
+[assembly: Unity.Jobs.RegisterGenericJobType(typeof(TzarGames.MultiplayerKit.ComponentDataSync<TzarGames.MultiplayerKit.Generated.DifficultyData_DataProcessor,TzarGames.MultiplayerKit.Generated.DifficultyData_Sync.Data,TzarGames.MultiplayerKit.Generated.DifficultyData_Sync.Tag>.DeserializeJob))]
+[assembly: Unity.Jobs.RegisterGenericJobType(typeof(TzarGames.MultiplayerKit.ComponentDataSync<TzarGames.MultiplayerKit.Generated.DifficultyData_DataProcessor,TzarGames.MultiplayerKit.Generated.DifficultyData_Sync.Data,TzarGames.MultiplayerKit.Generated.DifficultyData_Sync.Tag>.SerializeJob))]
 
 namespace TzarGames.MultiplayerKit.Generated
 {
+	public struct SafeZoneSyncData_DataProcessor : INetworkIdDataProcessor
+	{
+		[ReadOnly] public ComponentLookup<Arena.Server.SafeZoneSyncData> DataFromEntity;
+		[ReadOnly] public EntityFromNetworkId EntityFromNetworkId;
+		public void Deserialize(in NetworkID networkID, in NativeArray<byte> bytes, in NetworkIdDataProcessorOptions options)
+		{
+			var data = NetworkIdDataProcessorUtility.AsStruct<SafeZoneSyncData_Sync.Data>(bytes);
+			if(EntityFromNetworkId.TryGet(networkID, out Entity entity) == false)
+			{
+				return;
+			}
+			var hasComponent = DataFromEntity.HasComponent(entity);
+			Arena.Server.SafeZoneSyncData sourceData;
+			if(hasComponent)
+			{
+				sourceData = DataFromEntity[entity];
+			}
+			else
+			{
+				sourceData = new Arena.Server.SafeZoneSyncData();
+			}
+			if (hasComponent) options.Commands.SetComponent(entity, sourceData);
+			else
+			{
+				options.Commands.AddComponent(entity, sourceData);
+			}
+		}
+	}
+	[DisableAutoCreation]
+	public partial class SafeZoneSyncData_Sync : ComponentDataSync<SafeZoneSyncData_DataProcessor, SafeZoneSyncData_Sync.Data, SafeZoneSyncData_Sync.Tag>
+	{
+		ComponentType sourceType;
+		EntityQuery applyQuery;
+		EntityQuery collectQuery;
+		#if UNITY_EDITOR
+		[UnityEditor.InitializeOnLoadMethod]
+		#endif
+		[RuntimeInitializeOnLoadMethod] static void Register()
+		{
+			DataSyncBase.RegisterDataSync(typeof(SafeZoneSyncData_Sync));
+		}
+		public override void Initialize(DataSyncSystemBase system)
+		{
+			base.Initialize(system);
+			applyQuery = system.GetEntityQueryForJob(ComponentType.ReadOnly<NetworkID>());
+			sourceType = ComponentType.ReadOnly<Arena.Server.SafeZoneSyncData>();
+			collectQuery = system.GetEntityQueryForJob(ComponentType.ReadOnly<NetworkID>(), sourceType);
+			Priority = 0;
+		}
+		public struct Data
+		{
+		}
+		public struct Tag : IComponentData
+		{
+		}
+		protected override JobHandle ScheduleCollectDataJob(SerializedDataContainer dataMap, JobHandle inputDeps)
+		{
+			var job = new CollectDataJob()
+			{
+				SourceType = system.GetComponentTypeHandle<Arena.Server.SafeZoneSyncData>(true),
+				NetworkIdType = system.GetComponentTypeHandle<NetworkID>(true),
+				DataMap = dataMap,
+				IsZeroSized = sourceType.IsZeroSized
+			};
+			return job.Schedule(collectQuery, inputDeps);
+		}
+		[BurstCompile]
+		struct CollectDataJob : IJobChunk
+		{
+			public SerializedDataContainer DataMap;
+			[ReadOnly] public ComponentTypeHandle<Arena.Server.SafeZoneSyncData> SourceType;
+			[ReadOnly] public ComponentTypeHandle<NetworkID> NetworkIdType;
+			public bool IsZeroSized;
+			public void Execute(in ArchetypeChunk chunk, int unfilteredChunkIndex, bool useEnabledMask, in v128 chunkEnabledMask)
+			{
+				var netIds = chunk.GetNativeArray(NetworkIdType);
+				NativeArray<Arena.Server.SafeZoneSyncData> sources = default;
+				if(IsZeroSized == false)
+				{
+					sources = chunk.GetNativeArray(SourceType);
+				}
+				for(int i=0; i<chunk.Count; i++)
+				{
+					var networkId = netIds[i];
+					if(networkId.IsValid == false)
+					{
+						continue;
+					}
+					var data = new Data();
+					if(IsZeroSized == false)
+					{
+						var source = sources[i];
+					}
+					DataMap.WriteStruct(networkId, ref data);
+				}
+			}
+		}
+		protected override JobHandle ScheduleRelevancyJob(SerializedDataContainer dataMap, NativeParallelMultiHashMap<int, int> relevancyMap, JobHandle inputDeps)
+		{
+			return inputDeps;
+		}
+		protected override JobHandle CreateDataProcessor(JobHandle inputDeps, out SafeZoneSyncData_DataProcessor dataProcessor)
+		{
+			dataProcessor = new SafeZoneSyncData_DataProcessor()
+			{
+				EntityFromNetworkId = new EntityFromNetworkId(system),
+				DataFromEntity = system.GetComponentLookup<Arena.Server.SafeZoneSyncData>(true)
+			};
+			return inputDeps;
+		}
+		protected override bool UseRelevancy()
+		{
+			return false;
+		}
+	}
 	public struct CharacterClassData_DataProcessor : INetworkIdDataProcessor
 	{
 		[ReadOnly] public ComponentLookup<Arena.CharacterClassData> DataFromEntity;
@@ -275,124 +390,6 @@ namespace TzarGames.MultiplayerKit.Generated
 			return false;
 		}
 	}
-	public struct DifficultyData_DataProcessor : INetworkIdDataProcessor
-	{
-		[ReadOnly] public ComponentLookup<Arena.DifficultyData> DataFromEntity;
-		[ReadOnly] public EntityFromNetworkId EntityFromNetworkId;
-		public void Deserialize(in NetworkID networkID, in NativeArray<byte> bytes, in NetworkIdDataProcessorOptions options)
-		{
-			var data = NetworkIdDataProcessorUtility.AsStruct<DifficultyData_Sync.Data>(bytes);
-			if(EntityFromNetworkId.TryGet(networkID, out Entity entity) == false)
-			{
-				return;
-			}
-			var hasComponent = DataFromEntity.HasComponent(entity);
-			Arena.DifficultyData sourceData;
-			if(hasComponent)
-			{
-				sourceData = DataFromEntity[entity];
-			}
-			else
-			{
-				sourceData = new Arena.DifficultyData();
-			}
-			sourceData.EnemyStrengthMultiplier = data.EnemyStrengthMultiplier;
-			if (hasComponent) options.Commands.SetComponent(entity, sourceData);
-			else
-			{
-				options.Commands.AddComponent(entity, sourceData);
-			}
-		}
-	}
-	[DisableAutoCreation]
-	public partial class DifficultyData_Sync : ComponentDataSync<DifficultyData_DataProcessor, DifficultyData_Sync.Data, DifficultyData_Sync.Tag>
-	{
-		ComponentType sourceType;
-		EntityQuery applyQuery;
-		EntityQuery collectQuery;
-		#if UNITY_EDITOR
-		[UnityEditor.InitializeOnLoadMethod]
-		#endif
-		[RuntimeInitializeOnLoadMethod] static void Register()
-		{
-			DataSyncBase.RegisterDataSync(typeof(DifficultyData_Sync));
-		}
-		public override void Initialize(DataSyncSystemBase system)
-		{
-			base.Initialize(system);
-			applyQuery = system.GetEntityQueryForJob(ComponentType.ReadOnly<NetworkID>());
-			sourceType = ComponentType.ReadOnly<Arena.DifficultyData>();
-			collectQuery = system.GetEntityQueryForJob(ComponentType.ReadOnly<NetworkID>(), sourceType);
-			Priority = 0;
-		}
-		public struct Data
-		{
-			public System.UInt16 EnemyStrengthMultiplier;
-		}
-		public struct Tag : IComponentData
-		{
-		}
-		protected override JobHandle ScheduleCollectDataJob(SerializedDataContainer dataMap, JobHandle inputDeps)
-		{
-			var job = new CollectDataJob()
-			{
-				SourceType = system.GetComponentTypeHandle<Arena.DifficultyData>(true),
-				NetworkIdType = system.GetComponentTypeHandle<NetworkID>(true),
-				DataMap = dataMap,
-				IsZeroSized = sourceType.IsZeroSized
-			};
-			return job.Schedule(collectQuery, inputDeps);
-		}
-		[BurstCompile]
-		struct CollectDataJob : IJobChunk
-		{
-			public SerializedDataContainer DataMap;
-			[ReadOnly] public ComponentTypeHandle<Arena.DifficultyData> SourceType;
-			[ReadOnly] public ComponentTypeHandle<NetworkID> NetworkIdType;
-			public bool IsZeroSized;
-			public void Execute(in ArchetypeChunk chunk, int unfilteredChunkIndex, bool useEnabledMask, in v128 chunkEnabledMask)
-			{
-				var netIds = chunk.GetNativeArray(NetworkIdType);
-				NativeArray<Arena.DifficultyData> sources = default;
-				if(IsZeroSized == false)
-				{
-					sources = chunk.GetNativeArray(SourceType);
-				}
-				for(int i=0; i<chunk.Count; i++)
-				{
-					var networkId = netIds[i];
-					if(networkId.IsValid == false)
-					{
-						continue;
-					}
-					var data = new Data();
-					if(IsZeroSized == false)
-					{
-						var source = sources[i];
-						data.EnemyStrengthMultiplier = source.EnemyStrengthMultiplier;
-					}
-					DataMap.WriteStruct(networkId, ref data);
-				}
-			}
-		}
-		protected override JobHandle ScheduleRelevancyJob(SerializedDataContainer dataMap, NativeParallelMultiHashMap<int, int> relevancyMap, JobHandle inputDeps)
-		{
-			return inputDeps;
-		}
-		protected override JobHandle CreateDataProcessor(JobHandle inputDeps, out DifficultyData_DataProcessor dataProcessor)
-		{
-			dataProcessor = new DifficultyData_DataProcessor()
-			{
-				EntityFromNetworkId = new EntityFromNetworkId(system),
-				DataFromEntity = system.GetComponentLookup<Arena.DifficultyData>(true)
-			};
-			return inputDeps;
-		}
-		protected override bool UseRelevancy()
-		{
-			return false;
-		}
-	}
 	public struct SceneSectionState_DataProcessor : INetworkIdDataProcessor
 	{
 		[ReadOnly] public BufferLookup<Arena.GameSceneCode.SceneSectionState> DataFromEntity;
@@ -517,27 +514,28 @@ namespace TzarGames.MultiplayerKit.Generated
 			return false;
 		}
 	}
-	public struct SafeZoneSyncData_DataProcessor : INetworkIdDataProcessor
+	public struct DifficultyData_DataProcessor : INetworkIdDataProcessor
 	{
-		[ReadOnly] public ComponentLookup<Arena.Server.SafeZoneSyncData> DataFromEntity;
+		[ReadOnly] public ComponentLookup<Arena.DifficultyData> DataFromEntity;
 		[ReadOnly] public EntityFromNetworkId EntityFromNetworkId;
 		public void Deserialize(in NetworkID networkID, in NativeArray<byte> bytes, in NetworkIdDataProcessorOptions options)
 		{
-			var data = NetworkIdDataProcessorUtility.AsStruct<SafeZoneSyncData_Sync.Data>(bytes);
+			var data = NetworkIdDataProcessorUtility.AsStruct<DifficultyData_Sync.Data>(bytes);
 			if(EntityFromNetworkId.TryGet(networkID, out Entity entity) == false)
 			{
 				return;
 			}
 			var hasComponent = DataFromEntity.HasComponent(entity);
-			Arena.Server.SafeZoneSyncData sourceData;
+			Arena.DifficultyData sourceData;
 			if(hasComponent)
 			{
 				sourceData = DataFromEntity[entity];
 			}
 			else
 			{
-				sourceData = new Arena.Server.SafeZoneSyncData();
+				sourceData = new Arena.DifficultyData();
 			}
+			sourceData.EnemyStrengthMultiplier = data.EnemyStrengthMultiplier;
 			if (hasComponent) options.Commands.SetComponent(entity, sourceData);
 			else
 			{
@@ -546,7 +544,7 @@ namespace TzarGames.MultiplayerKit.Generated
 		}
 	}
 	[DisableAutoCreation]
-	public partial class SafeZoneSyncData_Sync : ComponentDataSync<SafeZoneSyncData_DataProcessor, SafeZoneSyncData_Sync.Data, SafeZoneSyncData_Sync.Tag>
+	public partial class DifficultyData_Sync : ComponentDataSync<DifficultyData_DataProcessor, DifficultyData_Sync.Data, DifficultyData_Sync.Tag>
 	{
 		ComponentType sourceType;
 		EntityQuery applyQuery;
@@ -556,18 +554,19 @@ namespace TzarGames.MultiplayerKit.Generated
 		#endif
 		[RuntimeInitializeOnLoadMethod] static void Register()
 		{
-			DataSyncBase.RegisterDataSync(typeof(SafeZoneSyncData_Sync));
+			DataSyncBase.RegisterDataSync(typeof(DifficultyData_Sync));
 		}
 		public override void Initialize(DataSyncSystemBase system)
 		{
 			base.Initialize(system);
 			applyQuery = system.GetEntityQueryForJob(ComponentType.ReadOnly<NetworkID>());
-			sourceType = ComponentType.ReadOnly<Arena.Server.SafeZoneSyncData>();
+			sourceType = ComponentType.ReadOnly<Arena.DifficultyData>();
 			collectQuery = system.GetEntityQueryForJob(ComponentType.ReadOnly<NetworkID>(), sourceType);
 			Priority = 0;
 		}
 		public struct Data
 		{
+			public System.UInt16 EnemyStrengthMultiplier;
 		}
 		public struct Tag : IComponentData
 		{
@@ -576,7 +575,7 @@ namespace TzarGames.MultiplayerKit.Generated
 		{
 			var job = new CollectDataJob()
 			{
-				SourceType = system.GetComponentTypeHandle<Arena.Server.SafeZoneSyncData>(true),
+				SourceType = system.GetComponentTypeHandle<Arena.DifficultyData>(true),
 				NetworkIdType = system.GetComponentTypeHandle<NetworkID>(true),
 				DataMap = dataMap,
 				IsZeroSized = sourceType.IsZeroSized
@@ -587,13 +586,13 @@ namespace TzarGames.MultiplayerKit.Generated
 		struct CollectDataJob : IJobChunk
 		{
 			public SerializedDataContainer DataMap;
-			[ReadOnly] public ComponentTypeHandle<Arena.Server.SafeZoneSyncData> SourceType;
+			[ReadOnly] public ComponentTypeHandle<Arena.DifficultyData> SourceType;
 			[ReadOnly] public ComponentTypeHandle<NetworkID> NetworkIdType;
 			public bool IsZeroSized;
 			public void Execute(in ArchetypeChunk chunk, int unfilteredChunkIndex, bool useEnabledMask, in v128 chunkEnabledMask)
 			{
 				var netIds = chunk.GetNativeArray(NetworkIdType);
-				NativeArray<Arena.Server.SafeZoneSyncData> sources = default;
+				NativeArray<Arena.DifficultyData> sources = default;
 				if(IsZeroSized == false)
 				{
 					sources = chunk.GetNativeArray(SourceType);
@@ -609,6 +608,7 @@ namespace TzarGames.MultiplayerKit.Generated
 					if(IsZeroSized == false)
 					{
 						var source = sources[i];
+						data.EnemyStrengthMultiplier = source.EnemyStrengthMultiplier;
 					}
 					DataMap.WriteStruct(networkId, ref data);
 				}
@@ -618,12 +618,12 @@ namespace TzarGames.MultiplayerKit.Generated
 		{
 			return inputDeps;
 		}
-		protected override JobHandle CreateDataProcessor(JobHandle inputDeps, out SafeZoneSyncData_DataProcessor dataProcessor)
+		protected override JobHandle CreateDataProcessor(JobHandle inputDeps, out DifficultyData_DataProcessor dataProcessor)
 		{
-			dataProcessor = new SafeZoneSyncData_DataProcessor()
+			dataProcessor = new DifficultyData_DataProcessor()
 			{
 				EntityFromNetworkId = new EntityFromNetworkId(system),
-				DataFromEntity = system.GetComponentLookup<Arena.Server.SafeZoneSyncData>(true)
+				DataFromEntity = system.GetComponentLookup<Arena.DifficultyData>(true)
 			};
 			return inputDeps;
 		}

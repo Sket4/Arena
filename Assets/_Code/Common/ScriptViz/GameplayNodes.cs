@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using TzarGames.GameCore;
 using TzarGames.GameCore.ScriptViz;
 using TzarGames.GameCore.ScriptViz.Graph;
@@ -131,6 +132,76 @@ namespace Arena.ScriptViz
             {
                 return "Скрыть сообщение";
             }
+        }
+    }
+
+    public struct GetMainCharacterRequest : IComponentData
+    {
+        public Entity ScriptVizEntity;
+        public Address CommandAddress;
+        public Address CharacterAddress;
+    }
+
+    [BurstCompile]
+    public struct GetMainCharacterCommand : IScriptVizCommand
+    {
+        public Address OnCharacterLoadedCommandAddress;
+        public Address CharacterAddress;
+
+        [BurstCompile]
+        [AOT.MonoPInvokeCallback(typeof(ScriptVizCommandRegistry.ExecuteDelegate))]
+        public static unsafe void Exec(ref Context context, void* commandData)
+        {
+            var data = (GetMainCharacterCommand*)commandData;
+
+            if (data->OnCharacterLoadedCommandAddress.IsInvalid)
+            {
+                return;
+            }
+            var requestEntity = context.Commands.CreateEntity(context.SortIndex);
+            var request = new GetMainCharacterRequest
+            {
+                CommandAddress = data->OnCharacterLoadedCommandAddress,
+                CharacterAddress = data->CharacterAddress,
+                ScriptVizEntity = context.OwnerEntity
+            };
+            context.Commands.AddComponent(context.SortIndex, requestEntity, request);
+        }
+    }
+
+    [Serializable]
+    [FriendlyName("Главный персонаж")]
+    public class GetMainCharacterCommandNode : Node, ICommandNode, IPostWriteCommandNode
+    {
+        public NodeInputSocket InputSocket = new();
+        public NodeOutputSocket OnCharacterLoadedSocket = new();
+        public EntitySocket CharacterSocket = new();
+
+        public override void DeclareSockets(List<SocketInfo> sockets)
+        {
+            sockets.Add(new SocketInfo(InputSocket, SocketType.In));
+            sockets.Add(new SocketInfo(OnCharacterLoadedSocket, SocketType.Out, "Персонаж получен (delay!)"));
+            sockets.Add(new SocketInfo(CharacterSocket, SocketType.Out, "Персонаж"));
+        }
+
+        public override string GetNodeName(ScriptVizGraphPage page)
+        {
+            return "Получить главного персонажа";
+        }
+
+        public override bool ShowEditableProperties => false;
+
+        public void WriteCommand(CompilerAllocator compilerAllocator, out Address commandAddress)
+        {
+            var cmd = new GetMainCharacterCommand();
+            cmd.CharacterAddress = compilerAllocator.GetSocketAddress(CharacterSocket);
+            commandAddress = compilerAllocator.WriteCommand(ref cmd);
+        }
+
+        public void OnPostCommandWrite(CompilerAllocator compilerAllocator, Address currentCommandAddress)
+        {
+            ref var cmd = ref compilerAllocator.GetCommandData<GetMainCharacterCommand>(currentCommandAddress);
+            cmd.OnCharacterLoadedCommandAddress = compilerAllocator.GetFirstConnectedNodeAddress(OnCharacterLoadedSocket);
         }
     }
 }

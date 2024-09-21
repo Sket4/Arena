@@ -35,6 +35,7 @@ namespace Arena
     {
         public Entity Value;
         public double DestroyTime;
+        public bool WasDead;
     }
     
     [UseDefaultInspector(true)]

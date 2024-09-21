@@ -117,7 +117,7 @@ namespace Arena
                 }
             }
 
-            SpawnZoneStateData newState = default; 
+            SpawnZoneStateData newState; 
 
             if (isAnyPlayerInSpawnZone == false)
             {
@@ -151,7 +151,7 @@ namespace Arena
 
                     foreach (var spawnZoneInstance in spawnedInstances)
                     {
-                        if (spawnZoneInstance.Value != Entity.Null)
+                        if (spawnZoneInstance.WasDead == false)
                         {
                             isAllDead = false;
                             break;
@@ -166,8 +166,8 @@ namespace Arena
                             Commands.AddComponent(jobIndex, messageEntity, spawnZoneParameters.AllDeadMessage);
                         }   
                         Commands.SetComponentEnabled<SpawnZoneStateData>(jobIndex, spawnZoneEntity, false);
+                        return;
                     }
-                    return;
                 }
             }
 
@@ -180,6 +180,11 @@ namespace Arena
                 foreach (var spawnZoneInstance in spawnedInstances)
                 {
                     if (spawnZoneInstance.Value != Entity.Null)
+                    {
+                        continue;
+                    }
+
+                    if (spawnZoneInstance.WasDead && spawnZoneParameters.DisableRespawn)
                     {
                         continue;
                     }
@@ -239,58 +244,60 @@ namespace Arena
                 attemptCounter++;
             }
 
-            var prefab = spawnZoneParameters.Prefab;
-
-            if (isSpawnPointFound)
+            if (isSpawnPointFound == false)
             {
-                var instance = Commands.Instantiate(jobIndex, prefab);
-                Commands.SetComponent(jobIndex, instance, LocalTransform.FromPosition(spawnPosition));
+                return;
+            }
+            
+            var prefab = spawnZoneParameters.Prefab;
+                
+            var instance = Commands.Instantiate(jobIndex, prefab);
+            Commands.SetComponent(jobIndex, instance, LocalTransform.FromPosition(spawnPosition));
 
-                if (MoveAroundPointLookup.TryGetComponent(prefab, out var moveAroundPoint))
+            if (MoveAroundPointLookup.TryGetComponent(prefab, out var moveAroundPoint))
+            {
+                moveAroundPoint.TargetPosition = spawnZonePosition + traceRay * height.Value;
+                moveAroundPoint.AreaRadius = spawnZoneParameters.SpawnRadius;
+                moveAroundPoint.TraceVerticalOffset = height.Value;
+
+                Commands.SetComponent(jobIndex, instance, moveAroundPoint);    
+            }
+
+            int slotIndex = -1;
+
+            for (var index = 0; index < spawnedInstances.Length; index++)
+            {
+                var spawnZoneInstance = spawnedInstances[index];
+                
+                if (spawnZoneInstance.Value != Entity.Null)
                 {
-                    moveAroundPoint.TargetPosition = spawnZonePosition + traceRay * height.Value;
-                    moveAroundPoint.AreaRadius = spawnZoneParameters.SpawnRadius;
-                    moveAroundPoint.TraceVerticalOffset = height.Value;
-
-                    Commands.SetComponent(jobIndex, instance, moveAroundPoint);    
+                    continue;
                 }
 
-                int slotIndex = -1;
-
-                for (var index = 0; index < spawnedInstances.Length; index++)
+                if (CurrentTime - spawnZoneInstance.DestroyTime < spawnZoneParameters.SpawnAfterDeathInverval)
                 {
-                    var spawnZoneInstance = spawnedInstances[index];
-                    
-                    if (spawnZoneInstance.Value != Entity.Null)
-                    {
-                        continue;
-                    }
+                    continue;
+                }
+                slotIndex = index;
+                break;
+            }
 
-                    if (CurrentTime - spawnZoneInstance.DestroyTime < spawnZoneParameters.SpawnAfterDeathInverval)
-                    {
-                        continue;
-                    }
-                    slotIndex = index;
-                    break;
-                }
-
-                if (slotIndex >= 0)
+            if (slotIndex >= 0)
+            {
+                var buffer = Commands.SetBuffer<SpawnZoneInstance>(jobIndex, spawnZoneEntity);
+                buffer.AddRange(spawnedInstances.AsNativeArray());
+                
+                buffer[slotIndex] = new SpawnZoneInstance
                 {
-                    var buffer = Commands.SetBuffer<SpawnZoneInstance>(jobIndex, spawnZoneEntity);
-                    buffer.AddRange(spawnedInstances.AsNativeArray());
-                    
-                    buffer[slotIndex] = new SpawnZoneInstance
-                    {
-                        Value = instance
-                    };
-                }
-                else
+                    Value = instance
+                };
+            }
+            else
+            {
+                Commands.AppendToBuffer(jobIndex, spawnZoneEntity, new SpawnZoneInstance
                 {
-                    Commands.AppendToBuffer(jobIndex, spawnZoneEntity, new SpawnZoneInstance
-                    {
-                        Value = instance
-                    }); 
-                }
+                    Value = instance
+                }); 
             }
             
             newState = spawnZoneState;
@@ -300,7 +307,7 @@ namespace Arena
 
         void CleanupSpawnedInstances(ref DynamicBuffer<SpawnZoneInstance> spawnZoneInstances)
         {
-            for (var index = spawnZoneInstances.Length - 1; index >= 0; index--)
+            for (var index = 0; index < spawnZoneInstances.Length; index++)
             {
                 var spawnZoneInstance = spawnZoneInstances[index];
 
@@ -315,6 +322,7 @@ namespace Arena
                     {
                         spawnZoneInstance.Value = Entity.Null;
                         spawnZoneInstance.DestroyTime = CurrentTime;
+                        spawnZoneInstance.WasDead = true;
                         spawnZoneInstances[index] = spawnZoneInstance;
                     }
                 }

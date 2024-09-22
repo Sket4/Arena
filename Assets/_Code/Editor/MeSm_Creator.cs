@@ -22,6 +22,7 @@ namespace Arena.Editor
 		public Texture2D MetallicMap;
         public Texture2D SmoothnessMap;
         public bool InvertSmoothness;
+        public bool UseSmoothnessFromAlpha;
         [Range(0,1)]
         public float MetallicScale = 1;
 		public FileTypes FileType;
@@ -52,7 +53,15 @@ namespace Arena.Editor
 
 					if (smoothnessPixels != null)
 					{
-						mesmPixel.a = smoothnessPixels[index].r;
+						var smPixel = smoothnessPixels[index];
+						if (UseSmoothnessFromAlpha)
+						{
+							mesmPixel.a = smPixel.a;	
+						}
+						else
+						{
+							mesmPixel.a = smPixel.r;
+						}
 					}
 
 					if (InvertSmoothness)
@@ -71,7 +80,15 @@ namespace Arena.Editor
 				for (var index = 0; index < destPixels.Length; index++)
 				{
 					ref var mesmPixel = ref destPixels[index];
-					mesmPixel.a = destPixels[index].r;
+
+					if (UseSmoothnessFromAlpha)
+					{
+						mesmPixel.a = destPixels[index].a;	
+					}
+					else
+					{
+						mesmPixel.a = destPixels[index].r;
+					}
 					mesmPixel.r = MetallicScale;
 					mesmPixel.g = MetallicScale;
 					mesmPixel.b = MetallicScale;

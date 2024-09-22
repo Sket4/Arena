@@ -189,12 +189,13 @@ Shader"Arena/Water"
                 NormalStrength_float(normalTS, _Normal_strength * i.positionWS_fog.a * i.color.b, normalTS);
 
                 half3 viewDirWS = GetWorldSpaceNormalizeViewDir(i.positionWS_fog.xyz);
+                normalTS = normalize(normalTS);
 
                 //half3x3 tangentToWorld = half3x3(i.tangentWS.xyz, i.bitangentWS_foamGr.xyz, i.normalWS.xyz);
                 //half3x3 tangentToWorld = half3x3(half3(1,0,0), half3(0,0,1), half3(0,1,0));
                 //float3 normalWS = TransformTangentToWorld(normalTS.xyz, tangentToWorld, true);
 
-                float3 normalWS = normalize(float3(normalTS.x, normalTS.z, normalTS.y));
+                float3 normalWS = float3(normalTS.x, normalTS.z, normalTS.y);
                 
                 
                 //mesm.rgb *= _Metallic;

@@ -139,14 +139,13 @@ half4 env_frag(v2f i) : SV_Target
 	#endif
 
 	#if defined(UG_QUALITY_MED) || defined(UG_QUALITY_HIGH)
-	half4 mesmao = tex2D(_MetallicGlossMap, i.uv);
-	mesmao.r *= _Metallic;
+	half4 mesm = tex2D(_MetallicGlossMap, i.uv);
+	mesm.r *= _Metallic;
 
-	half smoothness = mesmao.g * _Smoothness;
+	half smoothness = mesm.a * _Smoothness;
 	half roughness = 1 - smoothness;
 
 	half3 envMapColor = TG_ReflectionProbe_half(viewDirWS, normalWS, i.instanceData.y,roughness * 4);
-	envMapColor *= mesmao.b;
 
 	half3 remEnvMapColor = clamp(envMapColor - 0.5, 0, 10);
 	remEnvMapColor = remEnvMapColor * _HighlightRemove;
@@ -156,7 +155,7 @@ half4 env_frag(v2f i) : SV_Target
 
 	envMapColor = lerp(remEnvMapColor, envMapColor, saturate(lum * lum * lum));
 
-	half4 finalColor = LightingPBR(diffuse, ambientLight, viewDirWS, normalWS, mesmao.rrr, roughness, envMapColor);
+	half4 finalColor = LightingPBR(diffuse, ambientLight, viewDirWS, normalWS, mesm.rrr, roughness, envMapColor);
 
 	#else
 

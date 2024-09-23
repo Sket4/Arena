@@ -1,6 +1,6 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
---- !u!1 &1826676409536032047
+--- !u!1 &689644902693780017
 GameObject:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -8,29 +8,26 @@ GameObject:
   m_PrefabAsset: {fileID: 0}
   serializedVersion: 6
   m_Component:
-  - component: {fileID: 7446665501773259358}
-  - component: {fileID: 1049457572017777329}
-  - component: {fileID: 2526029458504159045}
-  - component: {fileID: 8060221847412226091}
-  - component: {fileID: 1143478713058450109}
-  - component: {fileID: 9165710548949279330}
-  - component: {fileID: 5960088180022787156}
-  - component: {fileID: 3520311661575207830}
-  - component: {fileID: 4020422869780017884}
-  m_Layer: 0
-  m_Name: Door model
+  - component: {fileID: 3913694366280652397}
+  - component: {fileID: 4932392328477909821}
+  - component: {fileID: 2363386923690573288}
+  - component: {fileID: 8811502764111837995}
+  - component: {fileID: 7184072356461022301}
+  - component: {fileID: 8115410268176338175}
+  m_Layer: 13
+  m_Name: Collider
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!4 &7446665501773259358
+--- !u!4 &3913694366280652397
 Transform:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1826676409536032047}
+  m_GameObject: {fileID: 689644902693780017}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
@@ -39,63 +36,13 @@ Transform:
   m_Children: []
   m_Father: {fileID: 8807335389678846875}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!33 &1049457572017777329
-MeshFilter:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1826676409536032047}
-  m_Mesh: {fileID: -2069316587450464276, guid: 5a44078fbbc9be44997d453f0e1bcc44, type: 3}
---- !u!23 &2526029458504159045
-MeshRenderer:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1826676409536032047}
-  m_Enabled: 1
-  m_CastShadows: 1
-  m_ReceiveShadows: 1
-  m_DynamicOccludee: 1
-  m_StaticShadowCaster: 0
-  m_MotionVectors: 1
-  m_LightProbeUsage: 1
-  m_ReflectionProbeUsage: 1
-  m_RayTracingMode: 2
-  m_RayTraceProcedural: 0
-  m_RenderingLayerMask: 1
-  m_RendererPriority: 0
-  m_Materials:
-  - {fileID: 2100000, guid: 80f1dba628bfb8140b23f012710dddf9, type: 2}
-  m_StaticBatchInfo:
-    firstSubMesh: 0
-    subMeshCount: 0
-  m_StaticBatchRoot: {fileID: 0}
-  m_ProbeAnchor: {fileID: 0}
-  m_LightProbeVolumeOverride: {fileID: 0}
-  m_ScaleInLightmap: 1
-  m_ReceiveGI: 1
-  m_PreserveUVs: 0
-  m_IgnoreNormalsForChartDetection: 0
-  m_ImportantGI: 0
-  m_StitchLightmapSeams: 1
-  m_SelectedEditorRenderState: 3
-  m_MinimumChartSize: 4
-  m_AutoUVMaxDistance: 0.5
-  m_AutoUVMaxAngle: 89
-  m_LightmapParameters: {fileID: 0}
-  m_SortingLayerID: 0
-  m_SortingLayer: 0
-  m_SortingOrder: 0
-  m_AdditionalVertexStreams: {fileID: 0}
---- !u!65 &8060221847412226091
+--- !u!65 &4932392328477909821
 BoxCollider:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1826676409536032047}
+  m_GameObject: {fileID: 689644902693780017}
   m_Material: {fileID: 0}
   m_IncludeLayers:
     serializedVersion: 2
@@ -110,13 +57,13 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 3.3285751, y: 3.0629032, z: 0.210589}
   m_Center: {x: 0, y: 1.5552496, z: 0}
---- !u!54 &1143478713058450109
+--- !u!54 &2363386923690573288
 Rigidbody:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1826676409536032047}
+  m_GameObject: {fileID: 689644902693780017}
   serializedVersion: 4
   m_Mass: 1
   m_Drag: 0
@@ -137,13 +84,13 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 0
---- !u!114 &9165710548949279330
+--- !u!114 &8811502764111837995
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1826676409536032047}
+  m_GameObject: {fileID: 689644902693780017}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 8bd8502cc938e7b4489798c2a36db789, type: 3}
@@ -151,13 +98,13 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   ConversionTargetOptions: -1
   EnabledByDefault: 1
---- !u!114 &5960088180022787156
+--- !u!114 &7184072356461022301
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1826676409536032047}
+  m_GameObject: {fileID: 689644902693780017}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: d319e1d2cc50b42f7a9c09eace250102, type: 3}
@@ -179,13 +126,13 @@ MonoBehaviour:
           IdentifierType: 0
         GenerationType: 0
   sprite: {fileID: 21300000, guid: fc15fec5aea6a4e7c8d3af67916b7889, type: 3}
---- !u!114 &3520311661575207830
+--- !u!114 &8115410268176338175
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1826676409536032047}
+  m_GameObject: {fileID: 689644902693780017}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 25d87a6b957a60841942c7e71e0c252f, type: 3}
@@ -218,12 +165,18 @@ MonoBehaviour:
             ConversionTargetOptions: 7
             variables:
             - rid: 4958927677326622730
+            - rid: 4958927725170262056
             nodes:
             - rid: 4958927677326622726
             - rid: 4958927677326622728
             - rid: 4958927677326622735
             - rid: 4958927677326622738
             - rid: 4958927677326622739
+            - rid: 4958927725170262034
+            - rid: 4958927725170262041
+            - rid: 4958927725170262042
+            - rid: 4958927725170262054
+            - rid: 4958927725170262057
           states:
           - id:
               Value:
@@ -322,7 +275,7 @@ MonoBehaviour:
                 z: 4218398637
                 w: 4195768983
           ConnectedSocketIDs: []
-          AuthoringValue: {fileID: 0}
+          AuthoringValue: {fileID: 5504147543339970952}
         AnimationID: {fileID: 11400000, guid: be55cdcd51e83b24bbb9613cedd85585, type: 2}
     - rid: 4958927677326622730
       type: {class: DynamicArrayVariable, ns: TzarGames.GameCore.ScriptViz.Graph, asm: TzarGames.GameCore}
@@ -460,7 +413,13 @@ MonoBehaviour:
                 y: 1120350135
                 z: 2268773292
                 w: 212941292
-          ConnectedSocketIDs: []
+          ConnectedSocketIDs:
+          - Value:
+              Value:
+                x: 1694826851
+                y: 1205629859
+                z: 2782734740
+                w: 3156703582
         stateID:
           Value:
             Value:
@@ -468,46 +427,400 @@ MonoBehaviour:
               y: 1189405495
               z: 3479495851
               w: 3173334298
---- !u!114 &4020422869780017884
-MonoBehaviour:
+    - rid: 4958927725170262034
+      type: {class: ChangeDisabledStateNode, ns: TzarGames.GameCore.ScriptViz.Graph, asm: TzarGames.GameCore}
+      data:
+        ID:
+          Value:
+            Value:
+              x: 1112165425
+              y: 1329467051
+              z: 4207466671
+              w: 739044478
+        Position: {x: 1373, y: 380}
+        input:
+          ID:
+            Value:
+              Value:
+                x: 1694826851
+                y: 1205629859
+                z: 2782734740
+                w: 3156703582
+          ConnectedSocketIDs:
+          - Value:
+              Value:
+                x: 3929443929
+                y: 1120350135
+                z: 2268773292
+                w: 212941292
+        output:
+          ID:
+            Value:
+              Value:
+                x: 3026602378
+                y: 1182583864
+                z: 1477538231
+                w: 1913652542
+          ConnectedSocketIDs:
+          - Value:
+              Value:
+                x: 1584417393
+                y: 1301478614
+                z: 2840810159
+                w: 725823338
+        TargetEntity:
+          ID:
+            Value:
+              Value:
+                x: 1911162808
+                y: 1215607802
+                z: 1221931410
+                w: 1706959735
+          ConnectedSocketIDs: []
+          AuthoringValue: {fileID: 689644902693780017}
+        Enable: 0
+        AffectChilds: 0
+    - rid: 4958927725170262041
+      type: {class: StartEventNode, ns: TzarGames.GameCore.ScriptViz.Graph, asm: TzarGames.GameCore}
+      data:
+        ID:
+          Value:
+            Value:
+              x: 2252059017
+              y: 1250389946
+              z: 1331033745
+              w: 171074181
+        Position: {x: 603, y: 250}
+        output:
+          ID:
+            Value:
+              Value:
+                x: 1935936543
+                y: 1332384906
+                z: 1456075709
+                w: 921290244
+          ConnectedSocketIDs:
+          - Value:
+              Value:
+                x: 3183026625
+                y: 1101386118
+                z: 1511841171
+                w: 4018570384
+    - rid: 4958927725170262042
+      type: {class: GoToStateNode, ns: TzarGames.GameCore.ScriptViz.Graph, asm: TzarGames.GameCore}
+      data:
+        ID:
+          Value:
+            Value:
+              x: 335274024
+              y: 1202707295
+              z: 503295368
+              w: 3401900824
+        Position: {x: 726, y: 250}
+        input:
+          ID:
+            Value:
+              Value:
+                x: 3183026625
+                y: 1101386118
+                z: 1511841171
+                w: 4018570384
+          ConnectedSocketIDs:
+          - Value:
+              Value:
+                x: 1935936543
+                y: 1332384906
+                z: 1456075709
+                w: 921290244
+        output:
+          ID:
+            Value:
+              Value:
+                x: 1298646913
+                y: 1296763367
+                z: 200672439
+                w: 1528783514
+          ConnectedSocketIDs: []
+        stateID:
+          Value:
+            Value:
+              x: 401452169
+              y: 1123177962
+              z: 470410128
+              w: 3002067498
+    - rid: 4958927725170262054
+      type: {class: PlayAudioClipNode, ns: TzarGames.GameCore.ScriptViz, asm: TzarGames.GameCore.Client}
+      data:
+        ID:
+          Value:
+            Value:
+              x: 2779704708
+              y: 1298347387
+              z: 907947453
+              w: 2397625849
+        Position: {x: 1914, y: 380}
+        input:
+          ID:
+            Value:
+              Value:
+                x: 3767713798
+                y: 1118782137
+                z: 4186728620
+                w: 4275568363
+          ConnectedSocketIDs:
+          - Value:
+              Value:
+                x: 1262986717
+                y: 1182282229
+                z: 1956086147
+                w: 3196011503
+        output:
+          ID:
+            Value:
+              Value:
+                x: 1180371881
+                y: 1280932149
+                z: 1399950735
+                w: 2960654876
+          ConnectedSocketIDs: []
+        Clip:
+          ID:
+            Value:
+              Value:
+                x: 4293868021
+                y: 1204744139
+                z: 505604770
+                w: 1906539966
+          ConnectedSocketIDs:
+          - Value:
+              Value:
+                x: 1696754614
+                y: 1339884654
+                z: 3904002484
+                w: 4291267118
+          Value:
+            Value:
+              Id:
+                GlobalId:
+                  SceneObjectIdentifier0: 0
+                  SceneObjectIdentifier1: 0
+                  AssetGUID:
+                    Value:
+                      x: 0
+                      y: 0
+                      z: 0
+                      w: 0
+                  IdentifierType: 0
+                GenerationType: 0
+        InstigatorSocket:
+          ID:
+            Value:
+              Value:
+                x: 1446630107
+                y: 1082802082
+                z: 3437240207
+                w: 1871737893
+          ConnectedSocketIDs: []
+          AuthoringValue: {fileID: 5504147543339970952}
+        OutputAudioEventEntitySocket:
+          ID:
+            Value:
+              Value:
+                x: 1254814613
+                y: 1334777994
+                z: 3589113257
+                w: 767216326
+          ConnectedSocketIDs: []
+          AuthoringValue: {fileID: 0}
+        DisableAutoDestroy: 0
+        AttachToInstigator: 1
+        Settings:
+          RandomizeVolume: 0
+          MinVolume: 1
+          MaxVolume: 1
+          RandomizePitch: 0
+          MinPitch: 1
+          MaxPitch: 1
+          Loop: 0
+          SpatializeBlend: 1
+          SetMinDistance: 0
+          MinDistance: 0
+          SetMaxDistance: 0
+          MaxDistance: 0
+        AudioMixerGroup: {fileID: 24300002, guid: 64c795c25d71240459ab99e981490730, type: 2}
+    - rid: 4958927725170262056
+      type: {class: AudioClipVariable, ns: TzarGames.GameCore.ScriptViz, asm: TzarGames.GameCore.Client}
+      data:
+        ID:
+          Value:
+            Value:
+              x: 3475502364
+              y: 1119947367
+              z: 2055925170
+              w: 3831317341
+        Name: open clip
+        NetSyncEnabled: 0
+        AudioClip: {fileID: 8300000, guid: 99db94b07ca54924e8dc5eb818d7f44d, type: 3}
+    - rid: 4958927725170262057
+      type: {class: GetAudioClipReferenceVarCommandNode, ns: TzarGames.GameCore.ScriptViz, asm: TzarGames.GameCore.Client}
+      data:
+        ID:
+          Value:
+            Value:
+              x: 3462471213
+              y: 1280519897
+              z: 3760774311
+              w: 876422195
+        Position: {x: 1674, y: 380}
+        input:
+          ID:
+            Value:
+              Value:
+                x: 1584417393
+                y: 1301478614
+                z: 2840810159
+                w: 725823338
+          ConnectedSocketIDs:
+          - Value:
+              Value:
+                x: 3026602378
+                y: 1182583864
+                z: 1477538231
+                w: 1913652542
+        output:
+          ID:
+            Value:
+              Value:
+                x: 1262986717
+                y: 1182282229
+                z: 1956086147
+                w: 3196011503
+          ConnectedSocketIDs:
+          - Value:
+              Value:
+                x: 3767713798
+                y: 1118782137
+                z: 4186728620
+                w: 4275568363
+        getVariableId:
+          Value:
+            Value:
+              x: 3475502364
+              y: 1119947367
+              z: 2055925170
+              w: 3831317341
+        WriteOutput:
+          ID:
+            Value:
+              Value:
+                x: 1696754614
+                y: 1339884654
+                z: 3904002484
+                w: 4291267118
+          ConnectedSocketIDs:
+          - Value:
+              Value:
+                x: 4293868021
+                y: 1204744139
+                z: 505604770
+                w: 1906539966
+          Value:
+            Value:
+              Id:
+                GlobalId:
+                  SceneObjectIdentifier0: 0
+                  SceneObjectIdentifier1: 0
+                  AssetGUID:
+                    Value:
+                      x: 0
+                      y: 0
+                      z: 0
+                      w: 0
+                  IdentifierType: 0
+                GenerationType: 0
+--- !u!1 &1826676409536032047
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 7446665501773259358}
+  - component: {fileID: 1049457572017777329}
+  - component: {fileID: 2526029458504159045}
+  m_Layer: 13
+  m_Name: Door model
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &7446665501773259358
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1826676409536032047}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 8807335389678846875}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!33 &1049457572017777329
+MeshFilter:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1826676409536032047}
+  m_Mesh: {fileID: -2069316587450464276, guid: 5a44078fbbc9be44997d453f0e1bcc44, type: 3}
+--- !u!23 &2526029458504159045
+MeshRenderer:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1826676409536032047}
   m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e01828e936bec2d42b7aeb94a2cad330, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  ConnectedBody: {fileID: 8807335389678846875}
-  EnableCollision: 0
-  MaxImpulse:
-    x: Infinity
-    y: Infinity
-    z: Infinity
-  EditPivots: 0
-  AutoSetConnected: 1
-  PositionLocal:
-    x: 0
-    y: 0
-    z: 0
-  PositionInConnectedEntity:
-    x: 0
-    y: 0
-    z: 0
-  OrientationLocal:
-    value:
-      x: 0
-      y: 0
-      z: 0
-      w: 1
-  OrientationInConnectedEntity:
-    value:
-      x: 0
-      y: 0
-      z: 0
-      w: 1
+  m_CastShadows: 1
+  m_ReceiveShadows: 1
+  m_DynamicOccludee: 1
+  m_StaticShadowCaster: 0
+  m_MotionVectors: 1
+  m_LightProbeUsage: 1
+  m_ReflectionProbeUsage: 1
+  m_RayTracingMode: 2
+  m_RayTraceProcedural: 0
+  m_RenderingLayerMask: 1
+  m_RendererPriority: 0
+  m_Materials:
+  - {fileID: 2100000, guid: 80f1dba628bfb8140b23f012710dddf9, type: 2}
+  m_StaticBatchInfo:
+    firstSubMesh: 0
+    subMeshCount: 0
+  m_StaticBatchRoot: {fileID: 0}
+  m_ProbeAnchor: {fileID: 0}
+  m_LightProbeVolumeOverride: {fileID: 0}
+  m_ScaleInLightmap: 1
+  m_ReceiveGI: 1
+  m_PreserveUVs: 0
+  m_IgnoreNormalsForChartDetection: 0
+  m_ImportantGI: 0
+  m_StitchLightmapSeams: 1
+  m_SelectedEditorRenderState: 3
+  m_MinimumChartSize: 4
+  m_AutoUVMaxDistance: 0.5
+  m_AutoUVMaxAngle: 89
+  m_LightmapParameters: {fileID: 0}
+  m_SortingLayerID: 0
+  m_SortingLayer: 0
+  m_SortingOrder: 0
+  m_AdditionalVertexStreams: {fileID: 0}
 --- !u!1 &5504147543339970952
 GameObject:
   m_ObjectHideFlags: 0
@@ -519,6 +832,7 @@ GameObject:
   - component: {fileID: 8807335389678846875}
   - component: {fileID: 6329054662928245306}
   - component: {fileID: 8979633430204391612}
+  - component: {fileID: 5076467544314998978}
   m_Layer: 0
   m_Name: SM_door_Peak_00
   m_TagString: Untagged
@@ -540,6 +854,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 7446665501773259358}
+  - {fileID: 3913694366280652397}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!95 &6329054662928245306
@@ -582,7 +897,7 @@ MonoBehaviour:
   - Label: Closed
     Clip: {fileID: 7400000, guid: d316957bdaa58214cb67fa2efab18c14, type: 2}
     ID: {fileID: 11400000, guid: 53bed7b3c88fcbb478a5626f613a373a, type: 2}
-    Loop: 0
+    Loop: 1
     SpeedScale: 1
     ComputeRootmotionDeltas: 0
     BakeFlags: 0
@@ -593,3 +908,17 @@ MonoBehaviour:
     SpeedScale: 1
     ComputeRootmotionDeltas: 0
     BakeFlags: 0
+--- !u!114 &5076467544314998978
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5504147543339970952}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e601cf78e0340d145bc8652f1f729add, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ConversionTargetOptions: -1
+  IncludeChilds: 1

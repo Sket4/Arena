@@ -23,7 +23,7 @@ namespace Arena.Server
 
             commands.AddComponent(playerCharacter, new PlayerController { Value = playerOwner });
             commands.SetComponent(playerCharacter, new Group { ID = 1 });
-            commands.SetComponent(playerCharacter, LocalTransform.FromPosition(position));
+            commands.SetComponent(playerCharacter, LocalTransform.FromPositionRotation(position, quaternion.Euler(0,cameraWorldYaw,0)));
             commands.SetComponent(playerCharacter, new ViewDirection { Value = math.forward(quaternion.Euler(0, cameraWorldYaw, 0)) });
 
             ApplyData(playerCharacter, data, commands, database);

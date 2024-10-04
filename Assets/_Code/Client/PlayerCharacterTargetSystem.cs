@@ -125,9 +125,14 @@ namespace Arena.Client
                     {
                         maxDP = dp;
                         nextTarget = hit.Entity;
+
+                        if (nextTarget == myTarget.Value)
+                        {
+                            break;
+                        }
                     }
                 }
-
+                
                 myTarget.Value = nextTarget;
 
                 hits.Dispose();

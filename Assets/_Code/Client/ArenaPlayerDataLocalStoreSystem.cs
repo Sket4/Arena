@@ -17,6 +17,7 @@ namespace Arena.Client
     {        
         public CharacterClass DebugCharacterClass = CharacterClass.Knight;
         public IEnumerable<CharacterGameProgressQuests> DebugQuests = default;
+        public IEnumerable<CharacterGameProgressKeyValue> DebugGameProgressIntKeys = default;
 
         protected override void GetSaveDataFromRequestEntity(Entity requestEntity, Dictionary<string, object> data)
         {
@@ -53,6 +54,18 @@ namespace Arena.Client
                             ID = debugQuest.QuestID,
                             State = debugQuest.QuestState,
                         });     
+                    }
+                }
+
+                if (DebugGameProgressIntKeys != null)
+                {
+                    foreach (var kv in DebugGameProgressIntKeys)
+                    {
+                        data.Progress.KeyValueStorage.Add(new GameProgressKeyValue
+                        {
+                            Key = kv.Key,
+                            Value = kv.Value
+                        });
                     }
                 }
             }

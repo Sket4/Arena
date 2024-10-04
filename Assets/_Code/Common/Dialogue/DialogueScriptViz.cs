@@ -375,7 +375,7 @@ namespace Arena.Dialogue
             return localized.Substring(0, math.min(15, localized.Length));
         }
 
-        public override float MinimumEditablePropertiesWidth => 350;
+        public override float MinimumEditablePropertiesWidth => 400;
         
         public void AddAdditionalVariables(ScriptVizGraphPage page)
         {

@@ -209,7 +209,7 @@ namespace Arena.Client
 
             //Debug.DrawRay(soundPos, Vector3.up, Color.red, 10);
 
-            commands.SetComponent(0, groupInstance, LocalTransform.FromPosition(soundPos));
+            commands.AddComponent(0, groupInstance, LocalTransform.FromPosition(soundPos));
         }
 
         void playWeaponSwing(in AnimationEventData animEvent, ref UniversalCommandBuffer commands)
@@ -244,7 +244,7 @@ namespace Arena.Client
 
             //UnityEngine.Debug.Log($"swing pos {soundPos.Value}");
 
-            commands.SetComponent(0, groupInstance, LocalTransform.FromPosition(soundPos));
+            commands.AddComponent(0, groupInstance, LocalTransform.FromPosition(soundPos));
         }
 
         void initCommands(ref UniversalCommandBuffer commandBuffer)

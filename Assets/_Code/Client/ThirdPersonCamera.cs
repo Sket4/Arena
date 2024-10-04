@@ -3,7 +3,6 @@ using Unity.Entities;
 using Unity.Mathematics;
 using Unity.Physics;
 using Unity.Physics.Authoring;
-using Unity.Physics.Systems;
 using Unity.Transforms;
 using UnityEngine;
 using Random = UnityEngine.Random;
@@ -18,24 +17,28 @@ namespace Arena.Client
     [System.Serializable]
     public struct CameraData : IComponentData
     {
-        [System.NonSerialized] public Entity Target;
-        [System.NonSerialized] public float3 TargetPivotPositionPosition;
-        [System.NonSerialized] public float3 Forward;
+        [HideInAuthoring] public Entity Target;
+        [HideInAuthoring] public float3 TargetPivotPositionPosition;
+        [HideInAuthoring] public float3 Forward;
         public float CameraDistance;
         public float3 TargetOffset;
         public float CameraPitch;
         public float CameraYaw;
         public float MinCameraPitch;
         public float MaxCameraPitch;
-        public PhysicsCategoryTags AimPhysicsTags;
+        [HideInAuthoring]
+        public uint AimPhysicsTags;
         public float TargetPivotTraceVerticalOffset;
-        public PhysicsCategoryTags CollisionPhysicsTags;
+        [HideInAuthoring]
+        public uint CollisionPhysicsTags;
         public float CollisionTraceRadius;
         public float HorizontalViewSensitivity;
     }
 
     public class ThirdPersonCamera : MonoBehaviour
     {
+        public LayerMask AimTraceLayers;
+        public LayerMask CollisionTraceLayers;
         public CameraData Settings = new CameraData
         {
             CameraDistance = 7,
@@ -268,6 +271,9 @@ namespace Arena.Client
                     Debug.Log("Eulers " + eulers);
                     cameraData.CameraYaw = eulers.y;
 
+                    cameraData.AimPhysicsTags = Utility.LayerMaskToCollidesWithMask(createdCamera.AimTraceLayers);
+                    cameraData.CollisionPhysicsTags = Utility.LayerMaskToCollidesWithMask(createdCamera.CollisionTraceLayers);
+
                     EntityManager.SetComponentData(cameraEntity, cameraData);
 
                     EntityManager.AddComponentData(characterEntity, new AimHitPoint());
@@ -343,7 +349,7 @@ namespace Arena.Client
                 // TRACE AIM
                 var traceEnd = transform.Position + cameraData.Forward * 1000.0f;
                 var collisionFilter = CollisionFilter.Default;
-                collisionFilter.CollidesWith = cameraData.AimPhysicsTags.Value;
+                collisionFilter.CollidesWith = cameraData.AimPhysicsTags;
 
                 var raycastInput = new RaycastInput
                 {
@@ -370,7 +376,7 @@ namespace Arena.Client
                 }
 
                 collisionFilter = CollisionFilter.Default;
-                collisionFilter.CollidesWith = cameraData.CollisionPhysicsTags.Value;
+                collisionFilter.CollidesWith = cameraData.CollisionPhysicsTags;
 
                 // TRACE COLLISION
                 var traceStartPos = cameraData.TargetPivotPositionPosition + math.up() * cameraData.TargetPivotTraceVerticalOffset;

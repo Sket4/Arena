@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using Arena.Quests;
+using TzarGames.Common;
 using TzarGames.GameCore;
 using TzarGames.MatchFramework;
 using TzarGames.MatchFramework.Client;
@@ -32,9 +33,18 @@ namespace Arena.Client
         {
             public QuestKey QuestKey = default;
             public QuestState State = QuestState.Active;
+            public bool Exclude;
+        }
+        
+        [Serializable]
+        class DebugProgressIntEntry
+        {
+            public GameProgressIntKey Key = default;
+            public int Value;
         }
         
         [SerializeField] private DebugQuestEntry[] debugQuests;
+        [SerializeField] private DebugProgressIntEntry[] debugGameProgressIntegers;
 
         protected override void Start()
         {
@@ -75,7 +85,7 @@ namespace Arena.Client
                 var questList = new List<CharacterGameProgressQuests>();
                 foreach (var debugQuest in debugQuests)
                 {
-                    if (debugQuest == null || debugQuest.QuestKey == false)
+                    if (debugQuest == null || debugQuest.QuestKey == false || debugQuest.Exclude)
                     {
                         continue;
                     }
@@ -86,6 +96,25 @@ namespace Arena.Client
                     });
                 }
                 storeSystem.DebugQuests = questList;
+            }
+
+            if (debugGameProgressIntegers != null && debugGameProgressIntegers.Length > 0)
+            {
+                var kvList = new List<CharacterGameProgressKeyValue>();
+
+                foreach (var kv in debugGameProgressIntegers)
+                {
+                    if (kv == null || kv.Key == null)
+                    {
+                        continue;
+                    }
+                    kvList.Add(new CharacterGameProgressKeyValue
+                    {
+                        Key = (ushort)kv.Key.Id,
+                        Value = kv.Value
+                    });
+                }
+                storeSystem.DebugGameProgressIntKeys = kvList;
             }
 
             var gameSceneId = useDebugSettings ? debugGameSceneKey.Id : GameState.GetOfflineGameInfo().GameSceneID;

@@ -5,6 +5,7 @@ using TzarGames.GameCore.ScriptViz;
 using TzarGames.GameCore.ScriptViz.Graph;
 using Unity.Burst;
 using Unity.Entities;
+using UnityEngine;
 
 namespace Arena.ScriptViz
 {
@@ -126,7 +127,15 @@ namespace Arena.ScriptViz
         {
             if (Message != null)
             {
-                return $"Скрыть '{Message.GetLocalizedString()}'";
+                try
+                {
+                    return $"Скрыть '{Message.GetLocalizedString()}'";
+                }
+                catch (Exception e)
+                {
+                    Debug.LogException(e);
+                    return "Скрыть (ошибка)";
+                }
             }
             else
             {

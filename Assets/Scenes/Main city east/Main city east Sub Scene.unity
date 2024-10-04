@@ -7593,7 +7593,6 @@ MonoBehaviour:
             - rid: 5191230057822552556
             - rid: 5191230057822552558
             - rid: 5191230057822552560
-            - rid: 5191230057822552684
           states: []
         Name: keeper spawn trigger
     - rid: 5191230057822552546
@@ -7606,7 +7605,7 @@ MonoBehaviour:
               y: 1321407290
               z: 1251341452
               w: 3522741335
-        Position: {x: 605.3333, y: 503.3333}
+        Position: {x: 696.6667, y: 503.3333}
         output:
           ID:
             Value:
@@ -7618,10 +7617,10 @@ MonoBehaviour:
           ConnectedSocketIDs:
           - Value:
               Value:
-                x: 1953622498
-                y: 1204042370
-                z: 313359798
-                w: 4125713452
+                x: 3312008560
+                y: 1167782377
+                z: 2106244749
+                w: 350284103
         Other:
           ID:
             Value:
@@ -7777,10 +7776,10 @@ MonoBehaviour:
           ConnectedSocketIDs:
           - Value:
               Value:
-                x: 2453457224
-                y: 1077480292
-                z: 121506466
-                w: 1370662798
+                x: 3703089085
+                y: 1201076078
+                z: 680530826
+                w: 1312451510
         output:
           ID:
             Value:
@@ -8170,59 +8169,6 @@ MonoBehaviour:
               w: 1940574945
         Name: _delayed_commands
         NetSyncEnabled: 0
-    - rid: 5191230057822552684
-      type: {class: LogCommandNode, ns: TzarGames.GameCore.ScriptViz.Graph, asm: TzarGames.GameCore}
-      data:
-        ID:
-          Value:
-            Value:
-              x: 3496705937
-              y: 1155197853
-              z: 2367994547
-              w: 785772867
-        Position: {x: 758, y: 628}
-        input:
-          ID:
-            Value:
-              Value:
-                x: 1953622498
-                y: 1204042370
-                z: 313359798
-                w: 4125713452
-          ConnectedSocketIDs:
-          - Value:
-              Value:
-                x: 3703089085
-                y: 1201076078
-                z: 680530826
-                w: 1312451510
-        output:
-          ID:
-            Value:
-              Value:
-                x: 2453457224
-                y: 1077480292
-                z: 121506466
-                w: 1370662798
-          ConnectedSocketIDs:
-          - Value:
-              Value:
-                x: 3312008560
-                y: 1167782377
-                z: 2106244749
-                w: 350284103
-        EntitySocket:
-          ID:
-            Value:
-              Value:
-                x: 1232487859
-                y: 1163937692
-                z: 4124510649
-                w: 2972966305
-          ConnectedSocketIDs: []
-          AuthoringValue: {fileID: 0}
-        Message: q2e
-        LogType: 3
 --- !u!65 &397336669
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -15425,7 +15371,7 @@ MonoBehaviour:
   m_OverrideVoxelSize: 0
   m_VoxelSize: 0.16666667
   m_MinRegionArea: 2
-  m_NavMeshData: {fileID: 23800000, guid: 707fcc5a70db25f4abacd398f5be065c, type: 2}
+  m_NavMeshData: {fileID: 23800000, guid: e4bf962d69016074490072644b5a3d3a, type: 2}
   m_BuildHeightMesh: 0
 --- !u!4 &620603423
 Transform:
@@ -17416,6 +17362,8 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 691002922}
+  - component: {fileID: 691002923}
+  - component: {fileID: 691002924}
   m_Layer: 0
   m_Name: Lighthouse keeper spawn point
   m_TagString: Untagged
@@ -17438,6 +17386,103 @@ Transform:
   m_Children: []
   m_Father: {fileID: 937836413}
   m_LocalEulerAnglesHint: {x: 0, y: 90, z: 0}
+--- !u!114 &691002923
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 691002921}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e601cf78e0340d145bc8652f1f729add, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ConversionTargetOptions: -1
+  IncludeChilds: 1
+--- !u!114 &691002924
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 691002921}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 32e8b7cb7859cf84cb6838a4ef045890, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ConversionTargetOptions: -1
+  Value:
+    Label:
+      utf8LengthInBytes: 0
+      bytes:
+        offset0000:
+          byte0000: 0
+          byte0001: 0
+          byte0002: 0
+          byte0003: 0
+          byte0004: 0
+          byte0005: 0
+          byte0006: 0
+          byte0007: 0
+          byte0008: 0
+          byte0009: 0
+          byte0010: 0
+          byte0011: 0
+          byte0012: 0
+          byte0013: 0
+          byte0014: 0
+          byte0015: 0
+        offset0016:
+          byte0000: 0
+          byte0001: 0
+          byte0002: 0
+          byte0003: 0
+          byte0004: 0
+          byte0005: 0
+          byte0006: 0
+          byte0007: 0
+          byte0008: 0
+          byte0009: 0
+          byte0010: 0
+          byte0011: 0
+          byte0012: 0
+          byte0013: 0
+          byte0014: 0
+          byte0015: 0
+        offset0032:
+          byte0000: 0
+          byte0001: 0
+          byte0002: 0
+          byte0003: 0
+          byte0004: 0
+          byte0005: 0
+          byte0006: 0
+          byte0007: 0
+          byte0008: 0
+          byte0009: 0
+          byte0010: 0
+          byte0011: 0
+          byte0012: 0
+          byte0013: 0
+          byte0014: 0
+          byte0015: 0
+        byte0048: 0
+        byte0049: 0
+        byte0050: 0
+        byte0051: 0
+        byte0052: 0
+        byte0053: 0
+        byte0054: 0
+        byte0055: 0
+        byte0056: 0
+        byte0057: 0
+        byte0058: 0
+        byte0059: 0
+        byte0060: 0
+        byte0061: 0
+  Label: Lighthouse keeper spawn point
 --- !u!114 &700256736
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -35994,7 +36039,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: f99045c7cb10ece41968c24d4b379739, type: 2}
+  - {fileID: 2100000, guid: 55b4c434c20dbf8489793613e8ac6183, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0

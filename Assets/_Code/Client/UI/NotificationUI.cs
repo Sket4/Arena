@@ -136,7 +136,8 @@ namespace Arena.Client.UI
 
         void removeEntry(NotificationEntryUI entryUi)
         {
-            Destroy(entryUi.gameObject);
+            entryUi.transform.SetParent(null);
+            entryUi.gameObject.SetActive(false);
         }
 
         private void Update()

@@ -1684,6 +1684,12 @@ namespace Arena.Client
         {
             loadScene("Logic/Main menu");
         }
+        
+        [UnityEditor.MenuItem("Arena/Загрузить сцену - Город")]
+        static void loadMainArea()
+        {
+            loadScene("MainArea");
+        }
 
        /* [UnityEditor.MenuItem("Arena/Загрузить сцену - Обучение")]
         static void loadTutorial()

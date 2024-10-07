@@ -245,7 +245,7 @@ Shader "Arena/Terrain (for beach)"
                 #endif
 
                 // water height
-                finalColor.rgb = lerp(finalColor.rgb, _UnderwaterColor.rgb, saturate(_WaterHeight - i.positionWS_fog.y));
+                finalColor.rgb = lerp(finalColor.rgb, _UnderwaterColor.rgb, saturate(_WaterHeight - i.positionWS_fog.y * _WaterHeightFade));
                 
                 // apply fog
                 return half4(MixFog(finalColor.rgb, i.positionWS_fog.w), finalColor.a);

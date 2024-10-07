@@ -102,6 +102,7 @@ namespace Arena.Client
     [UseDefaultInspector(false)]
     public class TerrainPhysicsMaterialComponent : ComponentDataBehaviour<TerrainPhysicsMaterial>
     {
+        [Header("Не забудь про Rigidbody (kinematic,no gravity)")]
         public Texture2D LayerTexture;
         public Terrain Terrain;
         public CustomPhysicsMaterialTags Layer1;

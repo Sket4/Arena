@@ -17,6 +17,8 @@ Shader"Arena/Water"
         _UseLowerNormalFogByFog("Lower normal strength by fog", Float) = 1
         _Normal_strength("Normal strenght", Float) = 1
         
+        [Toggle(USE_FOG)]
+        _UseFog("Use fog", Float) = 1.0
         [Toggle(USE_CUSTOM_FOG_COLOR)]
         _UseCustomFogColor("Use custom fog color", Float) = 0.0
         _CustomFogColor("Custom fog color", Color) = (1,1,1,1)
@@ -53,6 +55,7 @@ Shader"Arena/Water"
             #pragma shader_feature __ USE_CUSTOM_FOG_COLOR
             #pragma shader_feature __ USE_THIRD_WAVE
             #pragma shader_feature __ USE_LOWER_NORMAL_FOG
+            #pragma shader_feature __ USE_FOG
             #pragma multi_compile _ LIGHTMAP_ON
             #pragma multi_compile _ DIRLIGHTMAP_COMBINED
             
@@ -82,6 +85,7 @@ Shader"Arena/Water"
                 nointerpolation half2 instanceData : TEXCOORD1;
                 half3 color : TEXCOORD2;
                 half3 foamData : TEXCOORD3;
+
                 float4 positionWS_fog : TEXCOORD4;
 
                 half3 tspace0 : TEXCOORD5;
@@ -132,10 +136,11 @@ Shader"Arena/Water"
 
                 VertexPositionInputs vertInputs = GetVertexPositionInputs(positionOS);    //This function calculates all the relative spaces of the objects vertices
                 o.vertex = vertInputs.positionCS;
-                o.positionWS_fog.xyz = vertInputs.positionWS;
-
                 o.uv = v.uv;//TRANSFORM_TEX(v.uv, _Bum);
+                
+                o.positionWS_fog.xyz = vertInputs.positionWS;
                 o.positionWS_fog.a = ComputeFogFactor(o.vertex.z);
+                
                 float4 instanceData = tg_InstanceData;
                 o.instanceData = instanceData.xy;
     
@@ -196,9 +201,6 @@ Shader"Arena/Water"
                 normalTS.xy *= 0.5;
                 #endif
                 
-
-                
-
                 //NormalReconstructZ_float(normalTS.xy, normalTS);
                 normalTS = UnpackNormal(float4(normalTS,0));
 
@@ -217,7 +219,8 @@ Shader"Arena/Water"
                 normalWS.z = dot(i.tspace2, normalTS);
 
                 //mesm.rgb *= _Metallic;
-                half3 viewDirWS = GetWorldSpaceNormalizeViewDir(i.positionWS_fog.xyz); 
+                half3 viewDirWS = GetWorldSpaceNormalizeViewDir(i.positionWS_fog.xyz);
+                
                 float rim = saturate(dot(normalWS, viewDirWS) * _Rim_mult);
                 //rim = 1.0 - rim;
 
@@ -261,10 +264,14 @@ Shader"Arena/Water"
                 half4 finalColor = diffuse;
                 
                 // apply fog
+                #if USE_FOG
                 #if USE_CUSTOM_FOG_COLOR
                 return half4(MixFogColor(finalColor.rgb, _CustomFogColor.rgb, i.positionWS_fog.a), finalColor.a);
                 #else
                 return half4(MixFogColor(finalColor.rgb, unity_FogColor.rgb, i.positionWS_fog.a), finalColor.a);
+                #endif
+                #else
+                return finalColor;
                 #endif
                 
             }

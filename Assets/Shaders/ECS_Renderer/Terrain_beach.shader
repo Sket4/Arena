@@ -224,7 +224,7 @@ Shader "Arena/Terrain (for beach)"
                 half4 Sm_AO_HGHT_sand = tex2D(_SAH2, layer1_uv);
                 Sm_AO_HGHT += Sm_AO_HGHT_sand * splat.g;
                 Sm_AO_HGHT += tex2D(_SAH3, layer1_uv) * splat.b;
-                Sm_AO_HGHT += 0.75 * splat.a;
+                Sm_AO_HGHT += 0.7 * splat.a;
                 
                 half roughness = 1.0 - Sm_AO_HGHT.r;
                 half3 envMapColor = TG_ReflectionProbe_half(viewDirWS, normalWS, i.instanceData.y,roughness * 4);

@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using Unity.Mathematics;
 using UnityEngine;
 using UnityEditor;
 
@@ -25,6 +26,7 @@ namespace Arena.Editor
         public bool UseSmoothnessFromAlpha;
         [Range(0,1)]
         public float MetallicScale = 1;
+        public float SmoothnessScale = 1;
 		public FileTypes FileType;
 
 		void OnWizardCreate()
@@ -69,6 +71,8 @@ namespace Arena.Editor
 						mesmPixel.a = 1.0f - mesmPixel.a;
 					}
 
+					mesmPixel.a = math.saturate(mesmPixel.a * SmoothnessScale);
+
 					mesmPixel = mesmPixel.linear;
 				}
 			}
@@ -97,6 +101,7 @@ namespace Arena.Editor
 					{
 						mesmPixel.a = 1.0f - mesmPixel.a;
 					}
+					mesmPixel.a = math.saturate(mesmPixel.a * SmoothnessScale);
 
 					mesmPixel = mesmPixel.linear;
 				}

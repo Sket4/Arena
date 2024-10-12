@@ -9,6 +9,31 @@ namespace Arena
         public int SpawnPointId;
         public bool IsLocalGame;
     }
+
+    public struct MazeSessionInitializationData : IComponentData
+    {
+        public uint GenerationSeed;
+    }
+
+    public class ArenaMazeGameSessionInfo : ArenaGameSessionInfo
+    {
+        public uint MazeGenerationSeed { get; private set; }
+
+        public ArenaMazeGameSessionInfo(int gameSceneId, int spawnPointId, bool isLocalGame, uint mazeGenerationSeed) : base(gameSceneId, spawnPointId, isLocalGame)
+        {
+            MazeGenerationSeed = mazeGenerationSeed;
+        }
+
+        public override void SetupSessionEntity(EntityManager manager, Entity entity)
+        {
+            base.SetupSessionEntity(manager, entity);
+
+            manager.AddComponentData(entity, new MazeSessionInitializationData
+            {
+                GenerationSeed = MazeGenerationSeed
+            });
+        }
+    }
     
     public class ArenaGameSessionInfo : GameSessionInfo
     {

@@ -1,5 +1,6 @@
 using System.Data;
 using Arena.GameSceneCode;
+using Arena.Maze;
 using TzarGames.GameCore;
 using TzarGames.MatchFramework;
 using TzarGames.MatchFramework.Server;
@@ -77,6 +78,7 @@ namespace Arena.Server
 
         private EntityQuery spawnPointsQuery;
         EntityQuery saveRequestQuery;
+        private EntityQuery mazeBuilderQuery;
         NativeArray<PlayerDataSaveRequest> collectedSaveRequests;
         NativeArray<Entity> collectedSaveRequestEntities;
 
@@ -104,6 +106,7 @@ namespace Arena.Server
             continueGameRequestedPlayers = new NativeList<Entity>(Allocator.Persistent);
             exitFromGameNotifiedPlayers = new NativeList<Entity>(Allocator.Persistent);
             spawnPointsQuery = ArenaMatchUtility.CreatePlayerSpawnPointsQuery(EntityManager);
+            mazeBuilderQuery = GetEntityQuery(ComponentType.ReadOnly<MazeWorldBuilder>());
         }
 
         protected override void OnDestroy()
@@ -238,6 +241,35 @@ namespace Arena.Server
                 if(ArenaMatchUtility.IsGameSceneLoaded(this, entity) == false)
                 {
                     return false;
+                }
+                
+                if (HasComponent<MazeSessionInitializationData>(entity))
+                {
+                    if (HasComponent<BuildMazeRequest>(entity))
+                    {
+                        var request = GetComponent<BuildMazeRequest>(entity);
+                        if (request.State != BuildMazeRequestState.Completed)
+                        {
+                            return false;
+                        }
+                    }
+                    else
+                    {
+                        Debug.Log("creating maze generation request");
+                        var initData = GetComponent<MazeSessionInitializationData>(entity);
+
+                        var buildMazeRequest = new BuildMazeRequest
+                        {
+                            Builder = (System as ArenaMatchSystem).mazeBuilderQuery.GetSingletonEntity(),
+                            Seed = initData.GenerationSeed,
+                            HorizontalCells = 10,
+                            VerticalCells = 10,
+                            StartCellCount = 1,
+                            State = BuildMazeRequestState.Pending
+                        };
+                        EntityManager.AddComponentData(entity, buildMazeRequest);
+                        return false;
+                    }
                 }
                 
                 return base.IsReadyToStartMatch(entity, players);

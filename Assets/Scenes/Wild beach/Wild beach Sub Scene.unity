@@ -5975,7 +5975,7 @@ MonoBehaviour:
             - rid: 5272189209054806150
             - rid: 5272189209054806152
           states: []
-        Name: 
+        Name: cargo quest
     - rid: 5272189209054806124
       type: {class: StartEventNode, ns: TzarGames.GameCore.ScriptViz.Graph, asm: TzarGames.GameCore}
       data:
@@ -8373,8 +8373,16 @@ PrefabInstance:
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 4202339324947866257, guid: 7019adde3ea74b444b5d35e375f0e570, type: 3}
+      propertyPath: m_Layer
+      value: 13
+      objectReference: {fileID: 0}
+    - target: {fileID: 4202339324947866257, guid: 7019adde3ea74b444b5d35e375f0e570, type: 3}
       propertyPath: m_StaticEditorFlags
       value: 2147483647
+      objectReference: {fileID: 0}
+    - target: {fileID: 4202339324947866261, guid: 7019adde3ea74b444b5d35e375f0e570, type: 3}
+      propertyPath: m_Layer
+      value: 13
       objectReference: {fileID: 0}
     - target: {fileID: 4202339324947866261, guid: 7019adde3ea74b444b5d35e375f0e570, type: 3}
       propertyPath: m_StaticEditorFlags
@@ -8383,6 +8391,10 @@ PrefabInstance:
     - target: {fileID: 4202339324947866263, guid: 7019adde3ea74b444b5d35e375f0e570, type: 3}
       propertyPath: m_Name
       value: DoorHuge01
+      objectReference: {fileID: 0}
+    - target: {fileID: 4202339324947866263, guid: 7019adde3ea74b444b5d35e375f0e570, type: 3}
+      propertyPath: m_Layer
+      value: 13
       objectReference: {fileID: 0}
     - target: {fileID: 4202339324947866263, guid: 7019adde3ea74b444b5d35e375f0e570, type: 3}
       propertyPath: m_StaticEditorFlags
@@ -8394,13 +8406,343 @@ PrefabInstance:
     - {fileID: 4202339324947866259, guid: 7019adde3ea74b444b5d35e375f0e570, type: 3}
     - {fileID: 4202339324947866271, guid: 7019adde3ea74b444b5d35e375f0e570, type: 3}
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 4202339324947866263, guid: 7019adde3ea74b444b5d35e375f0e570, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1197330067}
+    - targetCorrespondingSourceObject: {fileID: 4202339324947866263, guid: 7019adde3ea74b444b5d35e375f0e570, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1197330066}
+    - targetCorrespondingSourceObject: {fileID: 4202339324947866263, guid: 7019adde3ea74b444b5d35e375f0e570, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1197330068}
+    - targetCorrespondingSourceObject: {fileID: 4202339324947866263, guid: 7019adde3ea74b444b5d35e375f0e570, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1197330069}
   m_SourcePrefab: {fileID: 100100000, guid: 7019adde3ea74b444b5d35e375f0e570, type: 3}
 --- !u!4 &1197330064 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 4202339324947840695, guid: 7019adde3ea74b444b5d35e375f0e570, type: 3}
   m_PrefabInstance: {fileID: 1197330063}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &1197330065 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 4202339324947866263, guid: 7019adde3ea74b444b5d35e375f0e570, type: 3}
+  m_PrefabInstance: {fileID: 1197330063}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &1197330066
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1197330065}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 25d87a6b957a60841942c7e71e0c252f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ConversionTargetOptions: -1
+  Graph:
+    rid: 7591488142512226304
+  references:
+    version: 2
+    RefIds:
+    - rid: 7591488142512226304
+      type: {class: ScriptVizGraph, ns: TzarGames.GameCore.ScriptViz.Graph, asm: TzarGames.GameCore}
+      data:
+        pages: []
+        states: []
+        layers:
+        - id: scene
+          pages:
+          - ID:
+              Value:
+                Value:
+                  x: 459757324
+                  y: 1715896786
+                  z: 3324246168
+                  w: 1821670479
+            ConversionTargetOptions: 7
+            variables:
+            - rid: 7591488142512226309
+            - rid: 7591488142512226310
+            - rid: 7591488142512226311
+            nodes:
+            - rid: 7591488142512226305
+            - rid: 7591488142512226307
+            - rid: 7591488142512226308
+          states: []
+        Name: DoorHuge01
+    - rid: 7591488142512226305
+      type: {class: InteractionEventNode, ns: Arena.ScriptViz, asm: Arena.Common}
+      data:
+        ID:
+          Value:
+            Value:
+              x: 4114977476
+              y: 860192830
+              z: 231985793
+              w: 1184296560
+        Position: {x: 731, y: 266}
+        output:
+          ID:
+            Value:
+              Value:
+                x: 1234059429
+                y: 2068422957
+                z: 710908591
+                w: 1422429159
+          ConnectedSocketIDs:
+          - Value:
+              Value:
+                x: 3760331791
+                y: 1095303683
+                z: 3321332636
+                w: 3555735245
+        InteractorEntityOutSocket:
+          ID:
+            Value:
+              Value:
+                x: 1285552840
+                y: 2538374167
+                z: 4033050497
+                w: 2351708921
+          ConnectedSocketIDs:
+          - Value:
+              Value:
+                x: 1493863701
+                y: 978051129
+                z: 3125861555
+                w: 3619623029
+          AuthoringValue: {fileID: 0}
+    - rid: 7591488142512226307
+      type: {class: ShowDialogueNode, ns: Arena.Dialogue, asm: Arena.Common}
+      data:
+        ID:
+          Value:
+            Value:
+              x: 1108200917
+              y: 776413606
+              z: 3620710022
+              w: 2768179231
+        Position: {x: 1264, y: 266}
+        Message:
+          m_TableReference:
+            m_TableCollectionName: GUID:aad91b28e51f6fc489b46b3d5b4a981a
+          m_TableEntryReference:
+            m_KeyId: 33208357887139840
+            m_Key: 
+          m_FallbackState: 0
+          m_WaitForCompletion: 0
+          m_LocalVariables: []
+        InputSocket:
+          ID:
+            Value:
+              Value:
+                x: 776542559
+                y: 692692939
+                z: 1738729370
+                w: 3877451227
+          ConnectedSocketIDs:
+          - Value:
+              Value:
+                x: 1677224387
+                y: 2907426505
+                z: 909856930
+                w: 1920995823
+        AnswerOutputSockets:
+        - ID:
+            Value:
+              Value:
+                x: 187456388
+                y: 3796736240
+                z: 575173543
+                w: 374287865
+          ConnectedSocketIDs: []
+          Value:
+            m_TableReference:
+              m_TableCollectionName: GUID:aad91b28e51f6fc489b46b3d5b4a981a
+            m_TableEntryReference:
+              m_KeyId: 1237865483722752
+              m_Key: 
+            m_FallbackState: 0
+            m_WaitForCompletion: 0
+            m_LocalVariables: []
+    - rid: 7591488142512226308
+      type: {class: StartDialogueNode, ns: Arena.Dialogue, asm: Arena.Common}
+      data:
+        ID:
+          Value:
+            Value:
+              x: 2872231895
+              y: 4131790762
+              z: 1855036350
+              w: 975870251
+        Position: {x: 908, y: 266}
+        input:
+          ID:
+            Value:
+              Value:
+                x: 3760331791
+                y: 1095303683
+                z: 3321332636
+                w: 3555735245
+          ConnectedSocketIDs:
+          - Value:
+              Value:
+                x: 1234059429
+                y: 2068422957
+                z: 710908591
+                w: 1422429159
+        output:
+          ID:
+            Value:
+              Value:
+                x: 1677224387
+                y: 2907426505
+                z: 909856930
+                w: 1920995823
+          ConnectedSocketIDs:
+          - Value:
+              Value:
+                x: 776542559
+                y: 692692939
+                z: 1738729370
+                w: 3877451227
+        Player:
+          ID:
+            Value:
+              Value:
+                x: 1493863701
+                y: 978051129
+                z: 3125861555
+                w: 3619623029
+          ConnectedSocketIDs:
+          - Value:
+              Value:
+                x: 1285552840
+                y: 2538374167
+                z: 4033050497
+                w: 2351708921
+          AuthoringValue: {fileID: 0}
+        Companion:
+          ID:
+            Value:
+              Value:
+                x: 3154255697
+                y: 3964431385
+                z: 2700284052
+                w: 933710114
+          ConnectedSocketIDs: []
+          AuthoringValue: {fileID: 0}
+    - rid: 7591488142512226309
+      type: {class: DynamicArrayVariable, ns: TzarGames.GameCore.ScriptViz.Graph, asm: TzarGames.GameCore}
+      data:
+        ID:
+          Value:
+            Value:
+              x: 2299207379
+              y: 2252751220
+              z: 1573798335
+              w: 4291240293
+        Name: _delayed_commands
+        NetSyncEnabled: 0
+    - rid: 7591488142512226310
+      type: {class: EntityVariable, ns: TzarGames.GameCore.ScriptViz.Graph, asm: TzarGames.GameCore}
+      data:
+        ID:
+          Value:
+            Value:
+              x: 1082889988
+              y: 3192259417
+              z: 3054227853
+              w: 3701778057
+        Name: dialogue_companion_1_5686DFE1-A08F-4F74-A074-6B2B3C593DB0
+        NetSyncEnabled: 0
+        Value: {fileID: 0}
+    - rid: 7591488142512226311
+      type: {class: EntityVariable, ns: TzarGames.GameCore.ScriptViz.Graph, asm: TzarGames.GameCore}
+      data:
+        ID:
+          Value:
+            Value:
+              x: 3610878555
+              y: 1179453920
+              z: 4512917
+              w: 191659224
+        Name: dialogue_companion_2_5686DFE1-A08F-4F74-A074-6B2B3C593DB0
+        NetSyncEnabled: 0
+        Value: {fileID: 0}
+--- !u!114 &1197330067
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1197330065}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8bd8502cc938e7b4489798c2a36db789, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ConversionTargetOptions: -1
+  EnabledByDefault: 1
+--- !u!114 &1197330068
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1197330065}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d319e1d2cc50b42f7a9c09eace250102, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ConversionTargetOptions: 5
+  Value:
+    Sprite:
+      Id:
+        GlobalId:
+          SceneObjectIdentifier0: 0
+          SceneObjectIdentifier1: 0
+          AssetGUID:
+            Value:
+              x: 0
+              y: 0
+              z: 0
+              w: 0
+          IdentifierType: 0
+        GenerationType: 0
+  sprite: {fileID: 21300000, guid: 2aa6ab62866ce4439ab7303f7da55e51, type: 3}
+--- !u!54 &1197330069
+Rigidbody:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1197330065}
+  serializedVersion: 4
+  m_Mass: 1
+  m_Drag: 0
+  m_AngularDrag: 0.05
+  m_CenterOfMass: {x: 0, y: 0, z: 0}
+  m_InertiaTensor: {x: 1, y: 1, z: 1}
+  m_InertiaRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ImplicitCom: 1
+  m_ImplicitTensor: 1
+  m_UseGravity: 0
+  m_IsKinematic: 1
+  m_Interpolate: 0
+  m_Constraints: 0
+  m_CollisionDetection: 0
 --- !u!114 &1217307824
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -10806,7 +11148,7 @@ MonoBehaviour:
             - rid: 5272189173235187719
             - rid: 5272189173235187724
           states: []
-        Name: 
+        Name: Sun light
     - rid: 5272189173235187716
       type: {class: StartEventNode, ns: TzarGames.GameCore.ScriptViz.Graph, asm: TzarGames.GameCore}
       data:

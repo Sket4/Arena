@@ -1,12 +1,13 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using Arena.Maze;
 using Arena.Quests;
-using TzarGames.Common;
 using TzarGames.GameCore;
 using TzarGames.MatchFramework;
 using TzarGames.MatchFramework.Client;
 using UnityEngine;
+using Random = UnityEngine.Random;
 
 namespace Arena.Client
 {
@@ -21,6 +22,8 @@ namespace Arena.Client
 
         [SerializeField]
         GameLocationType debugLocationType;
+
+        [SerializeField] private bool debugGenerateMaze;
 
         [SerializeField]
         CharacterClass debugCharacterClass;
@@ -136,6 +139,8 @@ namespace Arena.Client
                         };
                         gameLoop.AddGameSystem<ArenaSpawnerSystem>();
                         gameLoop.AddGameSystemUnmanaged<SpawnZoneSystem>();
+                        gameLoop.AddGameSystem<MazeBuilderSystem>();
+                        gameLoop.AddGameSystemUnmanaged<UpdateLinkedTransformsSystem>();
                         StartCoroutine(startMatch(matchSystem, gameSceneId, spawnPointId));
                     }
                     break;
@@ -166,7 +171,18 @@ namespace Arena.Client
 
         IEnumerator startMatch(Server.ArenaMatchSystem matchSystem, int gameSceneId, int spawnPointId)
         {
-            var matchInfo = new ArenaGameSessionInfo(gameSceneId, spawnPointId, true);
+            ArenaGameSessionInfo matchInfo;
+
+            if (debugGenerateMaze)
+            {
+                var genSeed = (uint)Random.Range(0, int.MaxValue);
+                matchInfo = new ArenaMazeGameSessionInfo(gameSceneId, spawnPointId, true, genSeed);
+            }
+            else
+            {
+                matchInfo = new ArenaGameSessionInfo(gameSceneId, spawnPointId, true);
+            }
+            
             matchInfo.AllowedUserIds = new System.Collections.Generic.List<PlayerId>
             {
                 new PlayerId(1)
@@ -176,6 +192,23 @@ namespace Arena.Client
             {
                 yield return null;
             }
+        }
+
+        static void testMazeGen(GameLoopBase gameLoop)
+        {
+            var em = gameLoop.World.EntityManager;
+            
+            var request = new BuildMazeRequest
+            {
+                Seed = (uint)Random.Range(0, int.MaxValue),
+                State = BuildMazeRequestState.Pending,
+                StartCellCount = 1,
+                HorizontalCells = 10,
+                VerticalCells = 10,
+                Builder = em.CreateEntityQuery(typeof(MazeWorldBuilder)).GetSingletonEntity()
+            };
+            var requestEntity = em.CreateEntity();
+            em.AddComponentData(requestEntity, request);
         }
     }
 }

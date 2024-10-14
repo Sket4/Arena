@@ -55,6 +55,7 @@ namespace Arena.Client
                 gameLoop.AddGameSystem<CharacterModelSmoothMovementSystem>();
                 gameLoop.AddGameSystem<MusicMixerSystem>(presentGroup);
                 gameLoop.AddGameSystem<SceneRenderSettingsSystem>();
+                gameLoop.AddGameSystem<AudioSystem>(presentGroup);
             }
 
             if(isLocalGame)

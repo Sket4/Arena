@@ -204,8 +204,8 @@ namespace Arena.Client
                 Seed = (uint)Random.Range(0, int.MaxValue),
                 State = BuildMazeRequestState.Pending,
                 StartCellCount = 1,
-                HorizontalCells = 10,
-                VerticalCells = 10,
+                HorizontalCells = 3,
+                VerticalCells = 3,
                 Builder = em.CreateEntityQuery(typeof(MazeWorldBuilder)).GetSingletonEntity()
             };
             var requestEntity = em.CreateEntity();

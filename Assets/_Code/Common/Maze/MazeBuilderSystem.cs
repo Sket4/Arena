@@ -434,8 +434,9 @@ namespace Arena.Maze
             var cellSize = builderData.CellSize;
             var maze = EntityManager.GetComponentData<Maze>(mazeEntity);
             var mazeCells = GetBuffer<MazeCells>(mazeEntity);
-            
-            var lastMazeCell = GetComponent<MazeCell>(mazeCells[path[path.Count-1]].Cell);
+
+            var lastMazeCellIndex = path[path.Count - 1];
+            var lastMazeCell = GetComponent<MazeCell>(mazeCells[lastMazeCellIndex].Cell);
             maze.LastZone = lastMazeCell.ZoneId;
             EntityManager.SetComponentData(mazeEntity, maze);
             
@@ -452,6 +453,7 @@ namespace Arena.Maze
             var environmentCellprefabs = GetBuffer<EnvironmentCellPrefabs>(mazeBuilder);
 
             var startCellPrefabs = GetBuffer<StartCellPrefabs>(mazeBuilder);
+            var finishCellPrefabs = GetBuffer<FinishCellPrefabs>(mazeBuilder);
             var borderWallPrefabs = GetBuffer<BorderWallPrefabs>(mazeBuilder);
             var columnPrefabs = GetBuffer<ColumnPrefabs>(mazeBuilder);
             var borderColumnPrefabs = GetBuffer<BorderColumnPrefabs>(mazeBuilder);
@@ -501,9 +503,10 @@ namespace Arena.Maze
 
                 currentCellLocation = mazeCells[i].Position;
 
-                bool isStartCell = startCellIndex == i;
+                var isStartCell = startCellIndex == i;
+                var isLastCell = lastMazeCellIndex == i;
 
-                Entity prefabToSpawn = Entity.Null;
+                var prefabToSpawn = Entity.Null;
 
                 if(isEnvironmentCell)
                 {
@@ -515,6 +518,10 @@ namespace Arena.Maze
                 else if (isStartCell && startCellPrefabs.Length > 0)
                 {
                     prefabToSpawn = startCellPrefabs[random.NextInt(0, startCellPrefabs.Length)].Prefab;
+                }
+                else if(isLastCell && finishCellPrefabs.Length > 0)
+                {
+                    prefabToSpawn = finishCellPrefabs[random.NextInt(0, finishCellPrefabs.Length)].Prefab;
                 }
                 else
                 {
@@ -538,6 +545,17 @@ namespace Arena.Maze
                     dirToNext = math.normalize(dirToNext);
 
                     cellRotation = quaternion.LookRotation(dirToNext, math.up());
+                }
+                else if(isLastCell)
+                {
+                    var sci = path.IndexOf(lastMazeCellIndex);
+                    var prevIndex = path[sci - 1];
+                    var prevCell = mazeCells[prevIndex];
+                    var dirToPrev = prevCell.Position - currentCellLocation;
+                    dirToPrev.y = 0;
+                    dirToPrev = math.normalize(dirToPrev);
+
+                    cellRotation = quaternion.LookRotation(dirToPrev, math.up());
                 }
                 else
                 {

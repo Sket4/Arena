@@ -262,8 +262,8 @@ namespace Arena.Server
                         {
                             Builder = (System as ArenaMatchSystem).mazeBuilderQuery.GetSingletonEntity(),
                             Seed = initData.GenerationSeed,
-                            HorizontalCells = 10,
-                            VerticalCells = 10,
+                            HorizontalCells = 3,
+                            VerticalCells = 3,
                             StartCellCount = 1,
                             State = BuildMazeRequestState.Pending
                         };

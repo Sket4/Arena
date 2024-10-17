@@ -45,8 +45,6 @@ namespace Arena.Maze
     [UpdateBefore(typeof(GameCommandBufferSystem))]
     public partial class MazeBuilderSystem : GameSystemBase
     {
-        
-
         EntityArchetype cellArchetype;
 
         protected override void OnCreate()
@@ -968,6 +966,7 @@ namespace Arena.Maze
             }
 
             // туман
+            RenderSettings.fog = true;
             RenderSettings.fogColor = builderData.FogColor;
             RenderSettings.fogStartDistance = builderData.FogStart;
             RenderSettings.fogEndDistance = builderData.FogEnd;

@@ -12,6 +12,7 @@ namespace TzarGames.GameCore.Generated
 		static unsafe void init()
 		{
 			ScriptVizCommandRegistry.RegisterCommand(typeof(TzarGames.GameCore.ScriptViz.AddIntCommand), TzarGames.GameCore.ScriptViz.AddIntCommand.Add);
+			ScriptVizCommandRegistry.RegisterCommand(typeof(TzarGames.GameCore.ScriptViz.AddFloat3Command), TzarGames.GameCore.ScriptViz.AddFloat3Command.Add);
 			ScriptVizCommandRegistry.RegisterCommand(typeof(TzarGames.GameCore.ScriptViz.AddFloatCommand), TzarGames.GameCore.ScriptViz.AddFloatCommand.Add);
 			ScriptVizCommandRegistry.RegisterCommand(typeof(TzarGames.GameCore.ScriptViz.GetDeltaTimeCommand), TzarGames.GameCore.ScriptViz.GetDeltaTimeCommand.Exec);
 			ScriptVizCommandRegistry.RegisterCommand(typeof(TzarGames.GameCore.ScriptViz.DestroyCommand), TzarGames.GameCore.ScriptViz.DestroyCommand.Exec);

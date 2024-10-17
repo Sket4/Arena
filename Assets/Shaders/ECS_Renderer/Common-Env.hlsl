@@ -115,9 +115,13 @@ half4 env_frag(v2f i) : SV_Target
 	#if LIGHTMAP_ON
 	ambientLight = TG_SAMPLE_LIGHTMAP(i.lightmapUV, i.instanceData.x, normalWS);
 	#else
+	#if defined(ARENA_USE_MAIN_LIGHT) || defined(ARENA_USE_ADD_LIGHT)
+	ambientLight = 1;
+	#else
 	ambientLight = TG_ComputeAmbientLight_half(normalWS);
 	#endif
-
+	#endif
+	
 	float4 shadowCoord = TransformWorldToShadowCoord(i.positionWS_fog.xyz);
 	half shadow = MainLightRealtimeShadow(shadowCoord);
 	//return shadow;
@@ -155,20 +159,13 @@ half4 env_frag(v2f i) : SV_Target
 
 	envMapColor = lerp(remEnvMapColor, envMapColor, saturate(lum * lum * lum));
 
+	ApplyDynamicLighting(viewDirWS, normalWS, i.positionWS_fog.xyz, smoothness, ambientLight, envMapColor, true);
+
 	half4 finalColor = LightingPBR(diffuse, ambientLight, viewDirWS, normalWS, mesm.rrr, roughness, envMapColor);
 
 	#else
 
 	half4 finalColor = diffuse;
-	
-	#ifndef DOTS_INSTANCING_ON
-	#ifndef LIGHTMAP_ON
-	Light light = GetMainLight();
-	half NoL = saturate(dot(normalWS, light.direction));
-	ambientLight += light.color * NoL;
-	#endif
-	#endif
-	
 	finalColor.rgb *= ambientLight;
 
 	#endif

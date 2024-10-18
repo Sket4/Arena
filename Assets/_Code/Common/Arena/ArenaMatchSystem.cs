@@ -86,7 +86,13 @@ namespace Arena.Server
         NativeList<Entity> continueGameRequestedPlayers;
 
         // игроки, которые оповестили о выходе из матча
-        NativeList<Entity> exitFromGameNotifiedPlayers;
+        struct ExitGameRequest
+        {
+            public Entity Requester;
+            public bool FinishRequest;
+        }
+        
+        NativeList<ExitGameRequest> exitFromGameNotifiedPlayers;
 
         public NetworkIdentity NetIdentity { get; set; }
 
@@ -104,7 +110,7 @@ namespace Arena.Server
 
             saveRequestQuery = GetEntityQuery(typeof(PlayerDataSaveRequest));
             continueGameRequestedPlayers = new NativeList<Entity>(Allocator.Persistent);
-            exitFromGameNotifiedPlayers = new NativeList<Entity>(Allocator.Persistent);
+            exitFromGameNotifiedPlayers = new NativeList<ExitGameRequest>(Allocator.Persistent);
             spawnPointsQuery = ArenaMatchUtility.CreatePlayerSpawnPointsQuery(EntityManager);
             mazeBuilderQuery = GetEntityQuery(ComponentType.ReadOnly<MazeWorldBuilder>());
         }
@@ -190,12 +196,20 @@ namespace Arena.Server
             }
         }
 
-        public void NotifyExitingFromGame(NetMessageInfo info)
+        public void NotifyExitingFromGame(bool matchFinishRequest, NetMessageInfo info)
         {
-            if(exitFromGameNotifiedPlayers.Contains(info.SenderEntity) == false)
+            foreach (var entry in exitFromGameNotifiedPlayers)
             {
-                exitFromGameNotifiedPlayers.Add(info.SenderEntity);
+                if (entry.Requester == info.SenderEntity)
+                {
+                    return;
+                }
             }
+            exitFromGameNotifiedPlayers.Add(new ExitGameRequest
+            {
+                Requester = info.SenderEntity,
+                FinishRequest = matchFinishRequest
+            });
         }
 
         void getSpawnPositionForPlayer(NativeArray<Entity> spawnPoints, int spawnPointId, out float3 position, out float cameraWorldYaw)
@@ -386,7 +400,7 @@ namespace Arena.Server
                         {
                             foreach (var request in exitRequests)
                             {
-                                if (request == player.PlayerEntity)
+                                if (request.Requester == player.PlayerEntity)
                                 {
                                     hasDecision = true;
                                     break;
@@ -772,7 +786,7 @@ namespace Arena.Server
 
                 var internalState = em.GetComponentData<ArenaMatchStateData>(entity);
                 var players = em.GetBuffer<RegisteredPlayer>(entity);
-
+                
                 switch (internalState.State)
                 {
                     case ArenaMatchState.Preparing:
@@ -827,6 +841,8 @@ namespace Arena.Server
                                 success = false;
                                 isFinished = true;
                             }
+                            
+                            CheckFinishMatchRequests(players, ref isFinished);
 
                             if (isFinished)
                             {
@@ -883,6 +899,113 @@ namespace Arena.Server
                             RequestStateChange<WaitingForNextStepState>(entity);
                         }
                         break;
+                }
+            }
+
+            private void CheckFinishMatchRequests(DynamicBuffer<RegisteredPlayer> players, ref bool shouldFinish)
+            {
+                var matchSystem = System as ArenaMatchSystem;
+                var exitRequests = matchSystem.exitFromGameNotifiedPlayers;
+
+                for (var index = 0; index < exitRequests.Length; index++)
+                {
+                    var request = exitRequests[index];
+
+                    if (request.FinishRequest == false)
+                    {
+                        continue;
+                    }
+
+                    bool error = false;
+
+                    foreach (var player in players)
+                    {
+                        if (request.Requester == player.PlayerEntity)
+                        {
+                            if (HasComponent<ControlledCharacter>(player.PlayerEntity))
+                            {
+                                var characterEntity = GetComponent<ControlledCharacter>(player.PlayerEntity)
+                                    .Entity;
+
+                                if (HasBuffer<LinkedEntityGroup>(characterEntity))
+                                {
+                                    var linkeds = GetBuffer<LinkedEntityGroup>(characterEntity);
+                                    var interactorEntity = Entity.Null;
+
+                                    foreach (var linked in linkeds)
+                                    {
+                                        if (HasBuffer<OverlappingEntities>(linked.Value))
+                                        {
+                                            interactorEntity = linked.Value;
+                                            break;
+                                        }
+                                    }
+
+                                    if (interactorEntity != Entity.Null)
+                                    {
+                                        var hasExitZone = false;
+                                        
+                                        var overlappings = GetBuffer<OverlappingEntities>(interactorEntity);
+
+                                        foreach (var overlapping in overlappings)
+                                        {
+                                            if (HasComponent<ExitZone>(overlapping.Entity) == false)
+                                            {
+                                                continue;
+                                            }
+
+                                            if (HasComponent<Disabled>(overlapping.Entity))
+                                            {
+                                                continue;
+                                            }
+
+                                            hasExitZone = true;
+                                            break;
+                                        }
+
+                                        if (hasExitZone)
+                                        {
+                                            Debug.Log($"Finishing match by request from player {player.ID.Value}");
+                                            shouldFinish = true;
+                                            return;
+                                        }
+                                        else
+                                        {
+                                            Debug.LogError(
+                                                $"player {player.ID.Value} requested for finish match but his character has no overlapped exit zones");
+                                            error = true;    
+                                        }
+                                    }
+                                    else
+                                    {
+                                        Debug.LogError(
+                                            $"player {player.ID.Value} requested for finish match but his character has no linked interactors");
+                                        error = true;
+                                    }
+                                }
+                                else
+                                {
+                                    Debug.LogError(
+                                        $"player {player.ID.Value} requested for finish match but his character has no linked interactors");
+                                    error = true;
+                                }
+                            }
+                            else
+                            {
+                                Debug.LogError(
+                                    $"player {player.ID.Value} requested for finish match but has no character");
+                                error = true;
+                            }
+
+                            break;
+                        }
+                    }
+
+                    if (error)
+                    {
+                        request.FinishRequest = false;
+                        exitRequests[index] = request;
+                    }
                 }
             }
 

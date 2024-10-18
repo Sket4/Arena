@@ -12,7 +12,7 @@ namespace Arena
         [RemoteCall(canBeCalledFromClient: true, canBeCalledByNonOwner: true)]
         void RequestContinueGame(NetMessageInfo info);
         [RemoteCall(canBeCalledFromClient: true, canBeCalledByNonOwner: true)]
-        void NotifyExitingFromGame(NetMessageInfo info);
+        void NotifyExitingFromGame(bool requestMatchFinish, NetMessageInfo info);
     }
     
     public enum ArenaMatchState

@@ -90,7 +90,7 @@ namespace TzarGames.MultiplayerKit.Generated
 					{
 						var stream = new ReadStream(ref reader);
 						TzarGames.MultiplayerKit.NetMessageInfo info = new NetMessageInfo() { Sender = sender, SenderEntity = senderEntity };
-						(target as Arena.IServerArenaCommands).NotifyExitingFromGame(info);
+						(target as Arena.IServerArenaCommands).NotifyExitingFromGame(false, info);
 						return true;
 					}
 					#endif

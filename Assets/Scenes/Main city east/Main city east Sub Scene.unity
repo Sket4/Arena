@@ -8642,302 +8642,6 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 3804b407bb455b6448e91374e8d25596, type: 3}
---- !u!1 &419038961
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 419038966}
-  - component: {fileID: 419038965}
-  - component: {fileID: 419038964}
-  - component: {fileID: 419038963}
-  - component: {fileID: 419038962}
-  m_Layer: 11
-  m_Name: gate trigger
-  m_TagString: Untagged
-  m_Icon: {fileID: 2974397684917235467, guid: 0000000000000000d000000000000000, type: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!114 &419038962
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 419038961}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 32e8b7cb7859cf84cb6838a4ef045890, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  ConversionTargetOptions: -1
-  Value:
-    Label:
-      utf8LengthInBytes: 12
-      bytes:
-        offset0000:
-          byte0000: 103
-          byte0001: 97
-          byte0002: 116
-          byte0003: 101
-          byte0004: 32
-          byte0005: 116
-          byte0006: 114
-          byte0007: 105
-          byte0008: 103
-          byte0009: 103
-          byte0010: 101
-          byte0011: 114
-          byte0012: 0
-          byte0013: 0
-          byte0014: 0
-          byte0015: 0
-        offset0016:
-          byte0000: 0
-          byte0001: 0
-          byte0002: 0
-          byte0003: 0
-          byte0004: 0
-          byte0005: 0
-          byte0006: 0
-          byte0007: 0
-          byte0008: 0
-          byte0009: 0
-          byte0010: 0
-          byte0011: 0
-          byte0012: 0
-          byte0013: 0
-          byte0014: 0
-          byte0015: 0
-        offset0032:
-          byte0000: 0
-          byte0001: 0
-          byte0002: 0
-          byte0003: 0
-          byte0004: 0
-          byte0005: 0
-          byte0006: 0
-          byte0007: 0
-          byte0008: 0
-          byte0009: 0
-          byte0010: 0
-          byte0011: 0
-          byte0012: 0
-          byte0013: 0
-          byte0014: 0
-          byte0015: 0
-        byte0048: 0
-        byte0049: 0
-        byte0050: 0
-        byte0051: 0
-        byte0052: 0
-        byte0053: 0
-        byte0054: 0
-        byte0055: 0
-        byte0056: 0
-        byte0057: 0
-        byte0058: 0
-        byte0059: 0
-        byte0060: 0
-        byte0061: 0
-  Label: gate trigger
---- !u!114 &419038963
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 419038961}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 4f6edb488579f794180a5c7d0da98419, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  ConversionTargetOptions: -1
---- !u!114 &419038964
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 419038961}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 25d87a6b957a60841942c7e71e0c252f, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  ConversionTargetOptions: -1
-  Graph:
-    rid: 6322991461510152210
-  references:
-    version: 2
-    RefIds:
-    - rid: 6322991461510152210
-      type: {class: ScriptVizGraph, ns: TzarGames.GameCore.ScriptViz.Graph, asm: TzarGames.GameCore}
-      data:
-        pages: []
-        states: []
-        layers:
-        - id: scene
-          pages:
-          - ID:
-              Value:
-                Value:
-                  x: 1964415340
-                  y: 1269514004
-                  z: 2322244250
-                  w: 3358440062
-            ConversionTargetOptions: 7
-            variables:
-            - rid: 6322991461510152213
-            nodes:
-            - rid: 6322991461510152211
-            - rid: 6322991461510152241
-          states: []
-        Name: gate trigger
-    - rid: 6322991461510152211
-      type: {class: OnTriggerEnterEventNode, ns: TzarGames.GameCore.ScriptViz.Graph, asm: TzarGames.GameCore}
-      data:
-        ID:
-          Value:
-            Value:
-              x: 2195565747
-              y: 1102061953
-              z: 2917730957
-              w: 2455286402
-        Position: {x: -6, y: 0}
-        output:
-          ID:
-            Value:
-              Value:
-                x: 3212768396
-                y: 1108743854
-                z: 3340871811
-                w: 1438186601
-          ConnectedSocketIDs:
-          - Value:
-              Value:
-                x: 1330966559
-                y: 1237237774
-                z: 3280493708
-                w: 2486760178
-        Other:
-          ID:
-            Value:
-              Value:
-                x: 1598274092
-                y: 1219718115
-                z: 1699064967
-                w: 4217386810
-          ConnectedSocketIDs: []
-          AuthoringValue: {fileID: 0}
-    - rid: 6322991461510152213
-      type: {class: DynamicArrayVariable, ns: TzarGames.GameCore.ScriptViz.Graph, asm: TzarGames.GameCore}
-      data:
-        ID:
-          Value:
-            Value:
-              x: 1993825146
-              y: 1099528916
-              z: 1814192816
-              w: 228061322
-        Name: _delayed_commands
-        NetSyncEnabled: 0
-    - rid: 6322991461510152241
-      type: {class: SendMessageCommandNode, ns: TzarGames.GameCore.ScriptViz.Graph, asm: TzarGames.GameCore}
-      data:
-        ID:
-          Value:
-            Value:
-              x: 1995102816
-              y: 1242824734
-              z: 4294227367
-              w: 2763668840
-        Position: {x: 210.66666, y: 0}
-        input:
-          ID:
-            Value:
-              Value:
-                x: 1330966559
-                y: 1237237774
-                z: 3280493708
-                w: 2486760178
-          ConnectedSocketIDs:
-          - Value:
-              Value:
-                x: 3212768396
-                y: 1108743854
-                z: 3340871811
-                w: 1438186601
-        output:
-          ID:
-            Value:
-              Value:
-                x: 3463122192
-                y: 1319684371
-                z: 4052447933
-                w: 1434460795
-          ConnectedSocketIDs: []
-        MessageSocket:
-          ID:
-            Value:
-              Value:
-                x: 2411481263
-                y: 1257109076
-                z: 912724364
-                w: 3419112906
-          ConnectedSocketIDs: []
-          Value: match_finished
-        OptionalTarget:
-          ID:
-            Value:
-              Value:
-                x: 768712634
-                y: 1181100640
-                z: 4013854128
-                w: 1385404642
-          ConnectedSocketIDs: []
-          AuthoringValue: {fileID: 0}
---- !u!65 &419038965
-BoxCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 419038961}
-  m_Material: {fileID: 0}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_LayerOverridePriority: 0
-  m_IsTrigger: 1
-  m_ProvidesContacts: 0
-  m_Enabled: 1
-  serializedVersion: 3
-  m_Size: {x: 5, y: 5, z: 2.27}
-  m_Center: {x: 0, y: 0, z: 0}
---- !u!4 &419038966
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 419038961}
-  serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 291.91, y: 53.449997, z: 478.43}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 0}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &426313902
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -23325,6 +23029,10 @@ MonoBehaviour:
     FogMode: 1
     FogColor: {r: 0.45098042, g: 0.6, b: 0.69803923, a: 1}
     RealtimeShadowColor: {r: 0.41568628, g: 0.49411765, b: 0.5411765, a: 1}
+  ShaderSettings:
+    EnableMainLight: 0
+    EnableAdditionalLight: 0
+  UseSceneRenderSettings: 1
 --- !u!4 &1046162056
 Transform:
   m_ObjectHideFlags: 0
@@ -30979,6 +30687,63 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 400000, guid: 0f1e1518a80e562458930d8b2d0670d9, type: 3}
   m_PrefabInstance: {fileID: 1506991115}
   m_PrefabAsset: {fileID: 0}
+--- !u!1001 &1509401591
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 4951904309228597353, guid: 1899f583b84d6f44684878703caf9309, type: 3}
+      propertyPath: m_Name
+      value: Exit trigger
+      objectReference: {fileID: 0}
+    - target: {fileID: 8872445849512286184, guid: 1899f583b84d6f44684878703caf9309, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 291.91
+      objectReference: {fileID: 0}
+    - target: {fileID: 8872445849512286184, guid: 1899f583b84d6f44684878703caf9309, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 53.449997
+      objectReference: {fileID: 0}
+    - target: {fileID: 8872445849512286184, guid: 1899f583b84d6f44684878703caf9309, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 478.43
+      objectReference: {fileID: 0}
+    - target: {fileID: 8872445849512286184, guid: 1899f583b84d6f44684878703caf9309, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8872445849512286184, guid: 1899f583b84d6f44684878703caf9309, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8872445849512286184, guid: 1899f583b84d6f44684878703caf9309, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8872445849512286184, guid: 1899f583b84d6f44684878703caf9309, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8872445849512286184, guid: 1899f583b84d6f44684878703caf9309, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8872445849512286184, guid: 1899f583b84d6f44684878703caf9309, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8872445849512286184, guid: 1899f583b84d6f44684878703caf9309, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: 1899f583b84d6f44684878703caf9309, type: 3}
 --- !u!1001 &1516967938
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -50696,7 +50461,7 @@ SceneRoots:
   - {fileID: 323053297}
   - {fileID: 1405608590}
   - {fileID: 226883948}
-  - {fileID: 419038966}
+  - {fileID: 1509401591}
   - {fileID: 904551965}
   - {fileID: 1046162056}
   - {fileID: 293860294}

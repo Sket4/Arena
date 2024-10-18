@@ -18,7 +18,7 @@ namespace Arena.Client
 
         struct RpcDummy : IServerArenaCommands
         {
-            public void NotifyExitingFromGame(NetMessageInfo info) {}
+            public void NotifyExitingFromGame(bool requestMatchFinish, NetMessageInfo info) {}
 
             public void RequestContinueGame(NetMessageInfo info) {}
 
@@ -59,7 +59,7 @@ namespace Arena.Client
             }
         }
 
-        public void NotifyExitFromGame(Entity player, bool callGameInterface = true)
+        public void NotifyExitFromGame(bool requestMatchFinish, Entity player, bool callGameInterface = true)
         {
             if (EntityManager.HasComponent<IsExitingFromGame>(player))
             {
@@ -71,13 +71,13 @@ namespace Arena.Client
             
             if (NetIdentity != null && NetIdentity.Net != null && NetIdentity.Net.IsConnected)
             {
-                this.RPC(rpc.NotifyExitingFromGame);
+                this.RPC(rpc.NotifyExitingFromGame, requestMatchFinish);
             }
             else
             {
                 if (NetIdentity == null)
                 {
-                    World.GetExistingSystemManaged<Server.ArenaMatchSystem>().NotifyExitingFromGame(new NetMessageInfo() { SenderEntity = player });    
+                    World.GetExistingSystemManaged<Server.ArenaMatchSystem>().NotifyExitingFromGame(requestMatchFinish, new NetMessageInfo() { SenderEntity = player });    
                 }
             }
 

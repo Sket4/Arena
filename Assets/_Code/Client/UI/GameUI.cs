@@ -694,16 +694,22 @@ namespace Arena.Client.UI
             GotoState<Gameplay>();
         }
 
-        public void ShowGameplayMenu(bool show)
+        public void ShowGameplayMenuWithMode(bool show, bool exitMode)
         {
             if (show)
             {
+                gameplayMenu.ExitMode = exitMode;
                 GotoState<GameplayMenu>();
             }
             else
             {
                 GotoState<Gameplay>();
             }
+        }
+
+        public void ShowGameplayMenu(bool show)
+        {
+            ShowGameplayMenuWithMode(show, false);
         }
 
         public void ShowLoading()
@@ -817,7 +823,7 @@ namespace Arena.Client.UI
             yield return new WaitForSeconds(.5f);
             
             var clientSystem = EntityManager.World.GetExistingSystemManaged<ClientArenaMatchSystem>();
-            clientSystem.NotifyExitFromGame(GetData<PlayerController>().Value);
+            clientSystem.NotifyExitFromGame(false, GetData<PlayerController>().Value);
         }
 
         public void ShowCutsceneWindow(bool show)

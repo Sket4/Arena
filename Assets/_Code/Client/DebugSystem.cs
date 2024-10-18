@@ -58,6 +58,39 @@ namespace Arena.Client
             }).Run();
         }
 
+        #if UNITY_EDITOR
+        [UnityEditor.MenuItem("Arena/Утилиты/Перенести персонажа к камере сцены _F11")]
+        static void movePlayerToSceneCamera()
+        {
+            foreach (var world in Unity.Entities.World.All)
+            {
+                var system = world.GetExistingSystemManaged<DebugSystem>();
+                if (system != null)
+                {
+                    system.MovePlayerToSceneCamera();
+                }
+            }
+        }
+        
+        [ConsoleCommand]
+        public void MovePlayerToSceneCamera()
+        {
+            var camera = UnityEditor.SceneView.lastActiveSceneView.camera;
+
+            Entities
+                .WithoutBurst()
+                .ForEach((ref LocalTransform transform, in PlayerController pc) =>
+                {
+                    var player = EntityManager.GetComponentData<Player>(pc.Value);
+                    if (player.ItsMe == false)
+                    {
+                        return;
+                    }
+                    transform.Position = camera.transform.position;
+            }).Run();
+        }
+        #endif
+
         [ConsoleCommand]
         public void KillAllEnemiesServer()
         {

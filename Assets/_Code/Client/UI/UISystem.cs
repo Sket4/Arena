@@ -25,6 +25,8 @@ namespace Arena.Client
         private EntityQuery messageRequestQuery;
         private EntityQuery hideMessageRequestQuery;
 
+        public static readonly Message OpenConfirmExitMessage = Message.CreateFromString("open confirm exit");
+
         public bool TryGetSingleton<T>(out T singletonData) where T : unmanaged, IComponentData
         {
             return SystemAPI.TryGetSingleton(out singletonData);
@@ -204,8 +206,33 @@ namespace Arena.Client
 
                         ui.Setup(playerCharacterEntity, uiEntity, World.EntityManager);
                         ui.InitializeUiEntity(uiEntity, World.EntityManager);
+                        EntityManager.AddBuffer<IncomingMessages>(uiEntity);
+
+                        var listenerRequestEntity = EntityManager.CreateEntity();
+                        var request = new RegisterListenerRequestMessage
+                        {
+                            Listener = uiEntity,
+                            MessageToListen = OpenConfirmExitMessage
+                        };
+                        var requests = EntityManager.AddBuffer<RegisterListenerRequestMessage>(listenerRequestEntity);
+                        requests.Add(request);
                         return;
                     }
+                }
+            }).Run();
+            
+            Entities
+                .WithoutBurst()
+                .ForEach((in DynamicBuffer<IncomingMessages> messages) =>
+            {
+                if (IncomingMessages.Contains(messages, UISystem.OpenConfirmExitMessage))
+                {
+                    if(uiQuery.TryGetSingleton<GameUI>(out var ui) == false)
+                    {
+                        Debug.LogError("Failed to find UI entity");
+                        return;
+                    }
+                    ui.ShowGameplayMenuWithMode(true, true);
                 }
             }).Run();
         }

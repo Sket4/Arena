@@ -11,16 +11,27 @@ namespace Arena.Client.UI
     public class GameplayMenuUI : TzarGames.GameFramework.UI.GameUIBase
     {
         [SerializeField] private UIBase pauseMenuForGame = default;
+        [SerializeField] private UIBase exitMenuForGame = default;
         [SerializeField] private UIBase pauseMenuForLobby = default;
         [SerializeField] private GameObject exitToMainMenuButton;
 
         private bool isPendingShow = true;
-        
+
+        public bool ExitMode { get; set; }
+
         public void ExitToMainMenu()
         {
             GameState.Instance.ExitToMainMenu();
             pauseMenuForGame.SetVisible(false);
             pauseMenuForLobby.SetVisible(false);
+            exitMenuForGame.SetVisible(false);
+        }
+
+        public void ReturnToHome()
+        {
+            exitMenuForGame.SetVisible(false);
+            var matchSystem = EntityManager.World.GetExistingSystemManaged<ClientArenaMatchSystem>();
+            matchSystem.NotifyExitFromGame(true, GetData<PlayerController>().Value);
         }
 
         public override void OnSystemUpdate(UISystem system)
@@ -45,8 +56,19 @@ namespace Arena.Client.UI
                 }
                 else
                 {
-                    pauseMenuForGame.SetVisible(true);
-                    pauseMenuForLobby.SetVisible(false);
+                    if (ExitMode)
+                    {
+                        ExitMode = false;
+                        exitMenuForGame.SetVisible(true);
+                        pauseMenuForGame.SetVisible(false);
+                        pauseMenuForLobby.SetVisible(false);
+                    }
+                    else
+                    {
+                        pauseMenuForGame.SetVisible(true);
+                        pauseMenuForLobby.SetVisible(false);
+                        exitMenuForGame.SetVisible(false);
+                    }
                 }
             }
         }

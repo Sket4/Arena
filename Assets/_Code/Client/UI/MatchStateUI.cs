@@ -85,7 +85,7 @@ namespace Arena.Client.UI
                 
                 var matchSystem = EntityManager.World.GetExistingSystemManaged<ClientArenaMatchSystem>();
                 var playerEntity = GetData<PlayerController>().Value;
-                matchSystem.NotifyExitFromGame(playerEntity);
+                matchSystem.NotifyExitFromGame(false, playerEntity);
             }
         }
 
@@ -135,7 +135,7 @@ namespace Arena.Client.UI
             ConfirmExitWindow.SetVisible(false);
 
             var matchSystem = EntityManager.World.GetExistingSystemManaged<ClientArenaMatchSystem>();
-            matchSystem.NotifyExitFromGame(GetData<PlayerController>().Value);
+            matchSystem.NotifyExitFromGame(false, GetData<PlayerController>().Value);
         }
 
         public void OnCancelExitPressed()

@@ -11,9 +11,12 @@ GameObject:
   - component: {fileID: 8872445849512286184}
   - component: {fileID: 7835644994756784349}
   - component: {fileID: 7190060969794952989}
-  - component: {fileID: 23797639880826460}
   - component: {fileID: 7867294970660092440}
-  m_Layer: 11
+  - component: {fileID: 1329384294644034589}
+  - component: {fileID: -2135389220624379803}
+  - component: {fileID: 1249325297342527801}
+  - component: {fileID: 1220373569207416622}
+  m_Layer: 13
   m_Name: Exit trigger
   m_TagString: Untagged
   m_Icon: {fileID: 2974397684917235467, guid: 0000000000000000d000000000000000, type: 0}
@@ -28,13 +31,13 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 4951904309228597353}
   serializedVersion: 2
-  m_LocalRotation: {x: 0, y: -0.7071068, z: 0, w: 0.7071068}
-  m_LocalPosition: {x: -129.96, y: 5.9321704, z: -2.15}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
-  m_LocalEulerAnglesHint: {x: 0, y: -90, z: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!65 &7835644994756784349
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -74,6 +77,97 @@ MonoBehaviour:
   references:
     version: 2
     RefIds:
+    - rid: 5272189426745999391
+      type: {class: InteractionEventNode, ns: Arena.ScriptViz, asm: Arena.Common}
+      data:
+        ID:
+          Value:
+            Value:
+              x: 282622559
+              y: 1249778527
+              z: 225837751
+              w: 1944975054
+        Position: {x: -6, y: 235.33334}
+        output:
+          ID:
+            Value:
+              Value:
+                x: 3084401321
+                y: 1231737719
+                z: 1227100040
+                w: 1136236933
+          ConnectedSocketIDs:
+          - Value:
+              Value:
+                x: 1901987953
+                y: 1322090528
+                z: 912624017
+                w: 2213171225
+        InteractorEntityOutSocket:
+          ID:
+            Value:
+              Value:
+                x: 2983821619
+                y: 1286130881
+                z: 3119511486
+                w: 3562118318
+          ConnectedSocketIDs: []
+          AuthoringValue: {fileID: 0}
+    - rid: 5272189426745999392
+      type: {class: SendMessageCommandNode, ns: TzarGames.GameCore.ScriptViz.Graph, asm: TzarGames.GameCore}
+      data:
+        ID:
+          Value:
+            Value:
+              x: 2538716723
+              y: 1236900554
+              z: 2185659555
+              w: 2227017898
+        Position: {x: 210.66666, y: 235.33334}
+        input:
+          ID:
+            Value:
+              Value:
+                x: 1901987953
+                y: 1322090528
+                z: 912624017
+                w: 2213171225
+          ConnectedSocketIDs:
+          - Value:
+              Value:
+                x: 3084401321
+                y: 1231737719
+                z: 1227100040
+                w: 1136236933
+        output:
+          ID:
+            Value:
+              Value:
+                x: 3859115973
+                y: 1098133033
+                z: 2997057695
+                w: 3068561195
+          ConnectedSocketIDs: []
+        MessageSocket:
+          ID:
+            Value:
+              Value:
+                x: 3131898811
+                y: 1114048265
+                z: 1259278266
+                w: 2256083450
+          ConnectedSocketIDs: []
+          Value: open confirm exit
+        OptionalTarget:
+          ID:
+            Value:
+              Value:
+                x: 3116944232
+                y: 1260108814
+                z: 2800717456
+                w: 1847233480
+          ConnectedSocketIDs: []
+          AuthoringValue: {fileID: 0}
     - rid: 6322991461510152210
       type: {class: ScriptVizGraph, ns: TzarGames.GameCore.ScriptViz.Graph, asm: TzarGames.GameCore}
       data:
@@ -93,46 +187,16 @@ MonoBehaviour:
             variables:
             - rid: 6322991461510152213
             nodes:
-            - rid: 6322991461510152211
-            - rid: 6322991461510152241
+            - rid: 5272189426745999391
+            - rid: 5272189426745999392
+          states: []
+        - id: 1899f583b84d6f44684878703caf9309
+          pages: []
+          states: []
+        - id: d323ea60aa917c64a8f14855972e3f37
+          pages: []
           states: []
         Name: gate trigger
-    - rid: 6322991461510152211
-      type: {class: OnTriggerEnterEventNode, ns: TzarGames.GameCore.ScriptViz.Graph, asm: TzarGames.GameCore}
-      data:
-        ID:
-          Value:
-            Value:
-              x: 2195565747
-              y: 1102061953
-              z: 2917730957
-              w: 2455286402
-        Position: {x: -6, y: 0}
-        output:
-          ID:
-            Value:
-              Value:
-                x: 3212768396
-                y: 1108743854
-                z: 3340871811
-                w: 1438186601
-          ConnectedSocketIDs:
-          - Value:
-              Value:
-                x: 1330966559
-                y: 1237237774
-                z: 3280493708
-                w: 2486760178
-        Other:
-          ID:
-            Value:
-              Value:
-                x: 1598274092
-                y: 1219718115
-                z: 1699064967
-                w: 4217386810
-          ConnectedSocketIDs: []
-          AuthoringValue: {fileID: 0}
     - rid: 6322991461510152213
       type: {class: DynamicArrayVariable, ns: TzarGames.GameCore.ScriptViz.Graph, asm: TzarGames.GameCore}
       data:
@@ -145,74 +209,6 @@ MonoBehaviour:
               w: 228061322
         Name: _delayed_commands
         NetSyncEnabled: 0
-    - rid: 6322991461510152241
-      type: {class: SendMessageCommandNode, ns: TzarGames.GameCore.ScriptViz.Graph, asm: TzarGames.GameCore}
-      data:
-        ID:
-          Value:
-            Value:
-              x: 1995102816
-              y: 1242824734
-              z: 4294227367
-              w: 2763668840
-        Position: {x: 210.66666, y: 0}
-        input:
-          ID:
-            Value:
-              Value:
-                x: 1330966559
-                y: 1237237774
-                z: 3280493708
-                w: 2486760178
-          ConnectedSocketIDs:
-          - Value:
-              Value:
-                x: 3212768396
-                y: 1108743854
-                z: 3340871811
-                w: 1438186601
-        output:
-          ID:
-            Value:
-              Value:
-                x: 3463122192
-                y: 1319684371
-                z: 4052447933
-                w: 1434460795
-          ConnectedSocketIDs: []
-        MessageSocket:
-          ID:
-            Value:
-              Value:
-                x: 2411481263
-                y: 1257109076
-                z: 912724364
-                w: 3419112906
-          ConnectedSocketIDs: []
-          Value: match_finished
-        OptionalTarget:
-          ID:
-            Value:
-              Value:
-                x: 768712634
-                y: 1181100640
-                z: 4013854128
-                w: 1385404642
-          ConnectedSocketIDs: []
-          AuthoringValue: {fileID: 0}
---- !u!114 &23797639880826460
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4951904309228597353}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 4f6edb488579f794180a5c7d0da98419, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  ConversionTargetOptions: -1
 --- !u!114 &7867294970660092440
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -296,3 +292,85 @@ MonoBehaviour:
         byte0060: 0
         byte0061: 0
   Label: gate trigger
+--- !u!114 &1329384294644034589
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4951904309228597353}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d319e1d2cc50b42f7a9c09eace250102, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ConversionTargetOptions: 5
+  Value:
+    Sprite:
+      Id:
+        GlobalId:
+          SceneObjectIdentifier0: 0
+          SceneObjectIdentifier1: 0
+          AssetGUID:
+            Value:
+              x: 0
+              y: 0
+              z: 0
+              w: 0
+          IdentifierType: 0
+        GenerationType: 0
+  sprite: {fileID: 21300000, guid: 0b97d02305ef74e7ea0cb413d9cc158a, type: 3}
+--- !u!54 &-2135389220624379803
+Rigidbody:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4951904309228597353}
+  serializedVersion: 4
+  m_Mass: 1
+  m_Drag: 0
+  m_AngularDrag: 0.05
+  m_CenterOfMass: {x: 0, y: 0, z: 0}
+  m_InertiaTensor: {x: 1, y: 1, z: 1}
+  m_InertiaRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ImplicitCom: 1
+  m_ImplicitTensor: 1
+  m_UseGravity: 0
+  m_IsKinematic: 1
+  m_Interpolate: 0
+  m_Constraints: 0
+  m_CollisionDetection: 0
+--- !u!114 &1249325297342527801
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4951904309228597353}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8bd8502cc938e7b4489798c2a36db789, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ConversionTargetOptions: -1
+  EnabledByDefault: 1
+--- !u!114 &1220373569207416622
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4951904309228597353}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 00bbfa792468a1149a9d9f601d746fae, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ConversionTargetOptions: -1

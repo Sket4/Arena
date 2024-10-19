@@ -241,14 +241,18 @@ namespace Arena.Dialogue
         public override void DeclareSockets(List<SocketInfo> sockets)
         {
             base.DeclareSockets(sockets);
-            sockets.Add(new SocketInfo(Player, SocketType.In, "Player"));
-            sockets.Add(new SocketInfo(Companion, SocketType.In, "Companion"));
+            sockets.Add(new SocketInfo(Player, SocketType.In, "Игрок"));
+            sockets.Add(new SocketInfo(Companion, SocketType.In, "Собеседник"));
         }
 
         public void AddAdditionalVariables(ScriptVizGraphPage page)
         {
-            player_varId = GetOrAddCompanionVariable(Player_varName, Player.AuthoringValue, page).ID;
-            companion_varId = GetOrAddCompanionVariable(Сompanion_varName, Companion.AuthoringValue, page).ID;
+            var playerVar = GetOrAddCompanionVariable(Player_varName, Player.AuthoringValue, page);
+            playerVar.IsHidden = true;
+            player_varId = playerVar.ID;
+            var companionVar = GetOrAddCompanionVariable(Сompanion_varName, Companion.AuthoringValue, page);
+            companionVar.IsHidden = true;
+            companion_varId = companionVar.ID;
         }
 
         public static EntityVariable GetOrAddCompanionVariable(string varName, GameObject authoringValue, ScriptVizGraphPage page)

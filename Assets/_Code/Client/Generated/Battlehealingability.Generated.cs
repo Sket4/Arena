@@ -23,9 +23,9 @@ namespace TzarGames.GameCore.Abilities.Generated
 		[NativeDisableContainerSafetyRestriction]
 		[ReadOnly] public ComponentTypeHandle<TzarGames.GameCore.Abilities.AbilityID> AbilityIDType;
 		[NativeDisableContainerSafetyRestriction]
-		public ComponentTypeHandle<TzarGames.GameCore.Abilities.AbilityCooldown> AbilityCooldownType;
-		[NativeDisableContainerSafetyRestriction]
 		public ComponentTypeHandle<TzarGames.GameCore.Abilities.Duration> DurationType;
+		[NativeDisableContainerSafetyRestriction]
+		public ComponentTypeHandle<TzarGames.GameCore.Abilities.AbilityCooldown> AbilityCooldownType;
 		[NativeDisableContainerSafetyRestriction]
 		public BufferTypeHandle<TzarGames.GameCore.Abilities.AbilityTimerEvent> AbilityTimerEventType;
 		[NativeDisableContainerSafetyRestriction]
@@ -51,10 +51,10 @@ namespace TzarGames.GameCore.Abilities.Generated
 		[ReadOnly] public BufferTypeHandle<TzarGames.GameCore.Abilities.HealthActionData> HealthActionDataType;
 
 		public TzarGames.GameCore.Abilities.InstantiateAbilityComponentJob _InstantiateAbilityComponentJob;
-		public TzarGames.GameCore.Abilities.CopyOwnerTransformToAbilityOnStartJob _CopyOwnerTransformToAbilityOnStartJob;
-		public TzarGames.GameCore.Abilities.SetTargetAbilityJob _SetTargetAbilityJob;
-		public TzarGames.GameCore.Abilities.AbilityCooldownJob _AbilityCooldownJob;
 		public TzarGames.GameCore.Abilities.DurationJob _DurationJob;
+		public TzarGames.GameCore.Abilities.SetTargetAbilityJob _SetTargetAbilityJob;
+		public TzarGames.GameCore.Abilities.CopyOwnerTransformToAbilityOnStartJob _CopyOwnerTransformToAbilityOnStartJob;
+		public TzarGames.GameCore.Abilities.AbilityCooldownJob _AbilityCooldownJob;
 		public TzarGames.GameCore.Abilities.HealthAbilityActionJob _HealthAbilityActionJob;
 		public TzarGames.GameCore.Abilities.TimerEventAbilityComponentJob _TimerEventAbilityComponentJob;
 
@@ -71,8 +71,8 @@ namespace TzarGames.GameCore.Abilities.Generated
 		{
 			var AbilityStateArray = chunk.GetNativeArray(ref AbilityStateType);
 			var AbilityIDArray = chunk.GetNativeArray(ref AbilityIDType);
-			var AbilityCooldownArray = chunk.GetNativeArray(ref AbilityCooldownType);
 			var DurationArray = chunk.GetNativeArray(ref DurationType);
+			var AbilityCooldownArray = chunk.GetNativeArray(ref AbilityCooldownType);
 			var AbilityTimerEventAccessor = chunk.GetBufferAccessor(ref AbilityTimerEventType);
 			var AbilityTimerSharedDataArray = chunk.GetNativeArray(ref AbilityTimerSharedDataType);
 			var AbilityTimerDataArray = chunk.GetNativeArray(ref AbilityTimerDataType);
@@ -96,6 +96,8 @@ namespace TzarGames.GameCore.Abilities.Generated
 					continue;
 				}
 				var _AbilityState = AbilityStateArray[c];
+				var _DurationRef = new RefRW<TzarGames.GameCore.Abilities.Duration>(DurationArray, c);
+				ref var _Duration = ref _DurationRef.ValueRW;
 				var _AbilityOwner = AbilityOwnerArray[c];
 
 				float deltaTime;
@@ -109,13 +111,11 @@ namespace TzarGames.GameCore.Abilities.Generated
 				}
 				var _AbilityCooldownRef = new RefRW<TzarGames.GameCore.Abilities.AbilityCooldown>(AbilityCooldownArray, c);
 				ref var _AbilityCooldown = ref _AbilityCooldownRef.ValueRW;
-				var _DurationRef = new RefRW<TzarGames.GameCore.Abilities.Duration>(DurationArray, c);
-				ref var _Duration = ref _DurationRef.ValueRW;
 
 				if(_AbilityState.Value == AbilityStates.Idle)
 				{
-					_AbilityCooldownJob.OnIdleUpdate(deltaTime, ref _AbilityCooldown);
 					_DurationJob.OnIdleUpdate(ref _Duration);
+					_AbilityCooldownJob.OnIdleUpdate(deltaTime, ref _AbilityCooldown);
 				}
 
 				if(_AbilityState.Value == AbilityStates.WaitingForValidation)
@@ -305,8 +305,8 @@ namespace TzarGames.GameCore.Abilities.Generated
 				{
 					ComponentType.ReadWrite<TzarGames.GameCore.Abilities.AbilityState>(),
 					ComponentType.ReadOnly<TzarGames.GameCore.Abilities.AbilityID>(),
-					ComponentType.ReadWrite<TzarGames.GameCore.Abilities.AbilityCooldown>(),
 					ComponentType.ReadWrite<TzarGames.GameCore.Abilities.Duration>(),
+					ComponentType.ReadWrite<TzarGames.GameCore.Abilities.AbilityCooldown>(),
 					ComponentType.ReadWrite<TzarGames.GameCore.Abilities.AbilityTimerEvent>(),
 					ComponentType.ReadOnly<TzarGames.GameCore.Abilities.AbilityTimerSharedData>(),
 					ComponentType.ReadWrite<TzarGames.GameCore.Abilities.AbilityTimerData>(),
@@ -342,8 +342,8 @@ namespace TzarGames.GameCore.Abilities.Generated
 			job.DeltaTimeFromEntity = state.GetComponentLookup<DeltaTime>(true);
 			job.AbilityStateType = state.GetComponentTypeHandle<TzarGames.GameCore.Abilities.AbilityState>();
 			job.AbilityIDType = state.GetComponentTypeHandle<TzarGames.GameCore.Abilities.AbilityID>(true);
-			job.AbilityCooldownType = state.GetComponentTypeHandle<TzarGames.GameCore.Abilities.AbilityCooldown>();
 			job.DurationType = state.GetComponentTypeHandle<TzarGames.GameCore.Abilities.Duration>();
+			job.AbilityCooldownType = state.GetComponentTypeHandle<TzarGames.GameCore.Abilities.AbilityCooldown>();
 			job.AbilityTimerEventType = state.GetBufferTypeHandle<TzarGames.GameCore.Abilities.AbilityTimerEvent>();
 			job.AbilityTimerSharedDataType = state.GetComponentTypeHandle<TzarGames.GameCore.Abilities.AbilityTimerSharedData>(true);
 			job.EntityType = state.GetEntityTypeHandle();
@@ -357,14 +357,14 @@ namespace TzarGames.GameCore.Abilities.Generated
 			job.TargetType = state.GetComponentTypeHandle<TzarGames.GameCore.Target>();
 			job.HealthActionDataType = state.GetBufferTypeHandle<TzarGames.GameCore.Abilities.HealthActionData>(true);
 
-			var ComponentLookupLocalTransform = state.GetComponentLookup<Unity.Transforms.LocalTransform>(true);
 			var ComponentLookupTarget = state.GetComponentLookup<TzarGames.GameCore.Target>(true);
+			var ComponentLookupLocalTransform = state.GetComponentLookup<Unity.Transforms.LocalTransform>(true);
 
 
-			job._CopyOwnerTransformToAbilityOnStartJob.TransformFromEntity = ComponentLookupLocalTransform;
 
 			job._SetTargetAbilityJob.TargetFromEntity = ComponentLookupTarget;
 
+			job._CopyOwnerTransformToAbilityOnStartJob.TransformFromEntity = ComponentLookupLocalTransform;
 
 
 
@@ -383,8 +383,8 @@ namespace TzarGames.GameCore.Abilities.Generated
 			job.DeltaTimeFromEntity.Update(ref state);
 			job.AbilityStateType.Update(ref state);
 			job.AbilityIDType.Update(ref state);
-			job.AbilityCooldownType.Update(ref state);
 			job.DurationType.Update(ref state);
+			job.AbilityCooldownType.Update(ref state);
 			job.AbilityTimerEventType.Update(ref state);
 			job.AbilityTimerSharedDataType.Update(ref state);
 			job.EntityType.Update(ref state);
@@ -401,10 +401,10 @@ namespace TzarGames.GameCore.Abilities.Generated
 			var singleton_TzarGamesGameCoreModifyHealthSystemSingleton = SystemAPI.GetSingleton<TzarGames.GameCore.ModifyHealthSystem.Singleton>();
 
 
-			job._CopyOwnerTransformToAbilityOnStartJob.TransformFromEntity.Update(ref state);
 
 			job._SetTargetAbilityJob.TargetFromEntity.Update(ref state);
 
+			job._CopyOwnerTransformToAbilityOnStartJob.TransformFromEntity.Update(ref state);
 
 
 			job._HealthAbilityActionJob.ModifyHealthSystemSingleton = singleton_TzarGamesGameCoreModifyHealthSystemSingleton;

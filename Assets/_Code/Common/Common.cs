@@ -3,6 +3,7 @@ using TzarGames.GameCore;
 using TzarGames.GameCore.Abilities;
 using TzarGames.GameCore.ScriptViz;
 using TzarGames.MultiplayerKit;
+using Unity.Collections;
 using Unity.Entities;
 
 namespace Arena
@@ -13,6 +14,12 @@ namespace Arena
         void RequestContinueGame(NetMessageInfo info);
         [RemoteCall(canBeCalledFromClient: true, canBeCalledByNonOwner: true)]
         void NotifyExitingFromGame(bool requestMatchFinish, NetMessageInfo info);
+    }
+
+    public static class Constants
+    {
+        public static readonly FixedString32Bytes MazeSizeParamName = new("maze_size");
+        public static readonly FixedString32Bytes MazeSeedParamName = new("maze_seed");
     }
     
     public enum ArenaMatchState

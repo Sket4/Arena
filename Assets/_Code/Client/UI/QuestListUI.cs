@@ -175,13 +175,25 @@ namespace Arena.Client.UI
 				{
 					spawnPointId = GetData<SpawnPointIdData>(quest).ID;
 				}
+
+				GameParameter[] parameters;
+
+				if (HasData<GameParameter>(quest))
+				{
+					parameters = GetBuffer<GameParameter>(quest).AsNativeArray().ToArray();
+				}
+				else
+				{
+					parameters = null;
+				}
 				
 				var questTask = gameInterface.StartQuest(new QuestGameInfo
 				{
 					GameSceneID = GetData<QuestData>(quest).GameSceneID,
 					SpawnPointID = spawnPointId,
 					MatchType = "ArenaMatch",
-					Multiplayer = multiplayer
+					Multiplayer = multiplayer,
+					Parameters = parameters
 				});
 				
 				onQuestStarted.Invoke(quest);

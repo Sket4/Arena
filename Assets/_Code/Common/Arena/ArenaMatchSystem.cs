@@ -1,4 +1,3 @@
-using System.Data;
 using Arena.GameSceneCode;
 using Arena.Maze;
 using TzarGames.GameCore;
@@ -13,6 +12,7 @@ using Unity.Mathematics;
 using Unity.Transforms;
 using UnityEngine;
 using NetworkPlayer = TzarGames.MultiplayerKit.NetworkPlayer;
+using Random = Unity.Mathematics.Random;
 using SceneLoadingState = Arena.GameSceneCode.SceneLoadingState;
 
 namespace Arena.Server
@@ -242,6 +242,55 @@ namespace Arena.Server
                 ArenaMatchUtility.SetupGameSceneForGameSessionEntity(this, entity, Commands);
 
                 base.OnEnter(entity);
+
+                if (HasBuffer<GameParameter>(entity))
+                {
+                    var gameParams = GetBuffer<GameParameter>(entity).AsNativeArray().ToArray();
+
+                    bool hasMazeParameters = false;
+                    
+                    foreach (var parameter in gameParams)
+                    {
+                        if (parameter.Key == Constants.MazeSizeParamName || parameter.Key == Constants.MazeSeedParamName)
+                        {
+                            hasMazeParameters = true;
+                            break;
+                        }
+                    }
+
+                    if (hasMazeParameters)
+                    {
+                        var initData = new MazeSessionInitializationData();
+                        initData.GenerationSeed = Random.CreateFromIndex((uint)entity.Index).NextUInt();
+                        
+                        foreach (var parameter in gameParams)
+                        {
+                            if (parameter.Key == Constants.MazeSizeParamName)
+                            {
+                                if (byte.TryParse(parameter.Value.Value, out var mazeSize))
+                                {
+                                    initData.MazeSize = mazeSize;
+                                }
+                                else
+                                {
+                                    Debug.Log($"maze size parameter parse error, {parameter.Value.Value}");
+                                }
+                            }
+                            else if(parameter.Key == Constants.MazeSeedParamName)
+                            {
+                                if (uint.TryParse(parameter.Value.Value, out var mazeSeed))
+                                {
+                                    initData.GenerationSeed = mazeSeed;
+                                }
+                                else
+                                {
+                                    Debug.Log($"maze size parameter parse error, {parameter.Value.Value}");
+                                }
+                            }
+                        }
+                        Commands.AddComponent(entity, initData);
+                    }
+                }
             }
 
             protected override void OnPlayerAuthorized(Entity playerEntity, PlayerId userId)
@@ -276,12 +325,12 @@ namespace Arena.Server
                         {
                             Builder = (System as ArenaMatchSystem).mazeBuilderQuery.GetSingletonEntity(),
                             Seed = initData.GenerationSeed,
-                            HorizontalCells = 3,
-                            VerticalCells = 3,
+                            HorizontalCells = initData.MazeSize,
+                            VerticalCells = initData.MazeSize,
                             StartCellCount = 1,
                             State = BuildMazeRequestState.Pending
                         };
-                        EntityManager.AddComponentData(entity, buildMazeRequest);
+                        Commands.AddComponent(entity, buildMazeRequest);
                         return false;
                     }
                 }

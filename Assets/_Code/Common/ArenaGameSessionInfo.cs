@@ -1,4 +1,5 @@
-﻿using TzarGames.MatchFramework.Server;
+﻿using Arena.Quests;
+using TzarGames.MatchFramework.Server;
 using Unity.Entities;
 
 namespace Arena
@@ -13,26 +14,7 @@ namespace Arena
     public struct MazeSessionInitializationData : IComponentData
     {
         public uint GenerationSeed;
-    }
-
-    public class ArenaMazeGameSessionInfo : ArenaGameSessionInfo
-    {
-        public uint MazeGenerationSeed { get; private set; }
-
-        public ArenaMazeGameSessionInfo(int gameSceneId, int spawnPointId, bool isLocalGame, uint mazeGenerationSeed) : base(gameSceneId, spawnPointId, isLocalGame)
-        {
-            MazeGenerationSeed = mazeGenerationSeed;
-        }
-
-        public override void SetupSessionEntity(EntityManager manager, Entity entity)
-        {
-            base.SetupSessionEntity(manager, entity);
-
-            manager.AddComponentData(entity, new MazeSessionInitializationData
-            {
-                GenerationSeed = MazeGenerationSeed
-            });
-        }
+        public byte MazeSize;
     }
     
     public class ArenaGameSessionInfo : GameSessionInfo
@@ -40,12 +22,14 @@ namespace Arena
         public int GameSceneId { get; private set; }
         public bool IsLocalGame { get; private set; }
         public int SpawnPointId { get; private set; }
+        public GameParameter[] Parameters { get; private set; }
 
-        public ArenaGameSessionInfo(int gameSceneId, int spawnPointId, bool isLocalGame)
+        public ArenaGameSessionInfo(int gameSceneId, int spawnPointId, bool isLocalGame, GameParameter[] parameters)
         {
             GameSceneId = gameSceneId;
             IsLocalGame = isLocalGame;
             SpawnPointId = spawnPointId;
+            Parameters = parameters;
         }
         
         public override void SetupSessionEntity(EntityManager manager, Entity entity)
@@ -57,6 +41,15 @@ namespace Arena
                 IsLocalGame = IsLocalGame,
                 SpawnPointId = SpawnPointId
             });
+            
+            var parameters = manager.AddBuffer<GameParameter>(entity);
+            if (Parameters != null)
+            {
+                foreach (var parameter in Parameters)
+                {
+                    parameters.Add(parameter);    
+                }
+            }
         }
     }
 }

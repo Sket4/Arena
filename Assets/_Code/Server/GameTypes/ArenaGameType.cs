@@ -26,7 +26,9 @@ namespace Arena.Server
 
             gameRequest.MetaData.IntKeyValues.TryGet(MetaDataKeys.SpawnPointId, out int spawnPoindId);
 
-            var matchInfo = new ArenaGameSessionInfo(sceneId, spawnPoindId, false);
+            // TODO add game parameters
+            Debug.LogError("NO GAME PARAMETERS!");
+            var matchInfo = new ArenaGameSessionInfo(sceneId, spawnPoindId, false, null);
 
             foreach (var userId in gameRequest.UserRequests)
             {

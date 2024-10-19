@@ -1,4 +1,5 @@
 using System.Text;
+using Arena.ScriptViz;
 using TzarGames.Common;
 using TzarGames.GameCore;
 using TzarGames.GameCore.Abilities;
@@ -99,6 +100,23 @@ namespace Arena.Client
                 return;
             }
             killAllEnemies();
+        }
+
+        [ConsoleCommand]
+        public void SetGameProgressValue(int key, int value)
+        {
+            var entityRequest = EntityManager.CreateEntity();
+            EntityManager.AddComponentData(entityRequest, new SetGameProgressKeyRequest
+            {
+                Key = key,
+                Value = value
+            });
+        }
+
+        [ConsoleCommand]
+        public void SetQuestLevel(int value)
+        {
+            SetGameProgressValue(3, value);
         }
 
         void killAllEnemies()

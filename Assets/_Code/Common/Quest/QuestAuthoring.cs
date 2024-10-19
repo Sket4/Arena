@@ -1,10 +1,10 @@
+using System;
 using TzarGames.GameCore;
-using TzarGames.GameCore.Baking;
 using Unity.Entities;
 
 namespace Arena.Quests
 {
-    [System.Serializable]
+    [Serializable]
     public struct QuestData : IComponentData
     {
         public PrefabID GameSceneID;
@@ -14,7 +14,7 @@ namespace Arena.Quests
     public class QuestAuthoring : ObjectKeyGenericComponent<QuestKey>
     {
         public GameSceneKey GameScene;
-
+        
         protected override void Bake<T>(T baker)
         {
             base.Bake(baker);

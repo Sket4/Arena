@@ -4,6 +4,7 @@ using System;
 using System.Collections;
 using System.Threading;
 using System.Threading.Tasks;
+using Arena.Quests;
 using Grpc.Core;
 using TzarGames.GameCore;
 using TzarGames.GameFramework;
@@ -23,6 +24,8 @@ namespace Arena.Client
         public PrefabID GameSceneID;
         public bool Multiplayer;
         public int SpawnPointID;
+
+        public GameParameter[] Parameters;
     }
     
     public interface IGameInterface
@@ -446,12 +449,14 @@ namespace Arena.Client
             public string MatchType { get; private set; }
             public int GameSceneID { get; private set; }
             public int SpawnPointID { get; private set; }
+            public GameParameter[] Parameters { get; private set; }
 
-            public OfflineGameInfo(string matchType, int gameSceneId, int spawnPointID)
+            public OfflineGameInfo(string matchType, int gameSceneId, int spawnPointID, GameParameter[] parameters)
             {
                 MatchType = matchType;
                 GameSceneID = gameSceneId;
                 SpawnPointID = spawnPointID;
+                Parameters = parameters;
             }
         }
 
@@ -1578,7 +1583,7 @@ namespace Arena.Client
 
             public Task<bool> StartQuest(QuestGameInfo questGameInfo)
             {
-                offlineGameInfo = new OfflineGameInfo(questGameInfo.MatchType, questGameInfo.GameSceneID.Value, questGameInfo.SpawnPointID);
+                offlineGameInfo = new OfflineGameInfo(questGameInfo.MatchType, questGameInfo.GameSceneID.Value, questGameInfo.SpawnPointID, questGameInfo.Parameters);
                 LoadSceneAsync(GameState.localGameSceneName);
                 return Task<bool>.FromResult(true);
             }
@@ -1597,10 +1602,9 @@ namespace Arena.Client
                 }
 
                 var character = GameState.SelectedCharacter;
-                offlineGameInfo = new OfflineGameInfo(matchType, character.Progress.CurrentBaseLocation, character.Progress.CurrentBaseLocationSpawnPoint);
+                offlineGameInfo = new OfflineGameInfo(matchType, character.Progress.CurrentBaseLocation, character.Progress.CurrentBaseLocationSpawnPoint, null);
                 LoadSceneAsync(GameState.localGameSceneName);
                 return Task<bool>.FromResult(true);
-                
             }
         }
 

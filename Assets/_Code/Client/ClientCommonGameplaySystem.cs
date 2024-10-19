@@ -1,3 +1,4 @@
+using Arena.Quests;
 using Arena.ScriptViz;
 using TzarGames.GameCore;
 using Unity.Collections;
@@ -60,13 +61,17 @@ namespace Arena.Client
                     }
 
                     EntityManager.CreateSingleton<QuestStartedFlag>(new FixedString64Bytes("quest started flag"));
+                    GameParameter[] parameters = SystemAPI.HasBuffer<GameParameter>(questEntity)
+                        ? SystemAPI.GetBuffer<GameParameter>(questEntity).AsNativeArray().ToArray()
+                        : null;
 				
                     _ = gameInterface.StartQuest(new QuestGameInfo
                     {
                         GameSceneID = SystemAPI.GetComponent<Quests.QuestData>(questEntity).GameSceneID,
                         SpawnPointID = spawnPointId,
                         MatchType = "ArenaMatch",
-                        Multiplayer = false
+                        Multiplayer = false,
+                        Parameters = parameters
                     });
                 }
                 else

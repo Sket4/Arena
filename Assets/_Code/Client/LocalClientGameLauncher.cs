@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using Arena.Maze;
 using Arena.Quests;
 using TzarGames.GameCore;
@@ -24,6 +25,7 @@ namespace Arena.Client
         GameLocationType debugLocationType;
 
         [SerializeField] private bool debugGenerateMaze;
+        [SerializeField] private int debugMazeSize = 3;
 
         [SerializeField]
         CharacterClass debugCharacterClass;
@@ -120,9 +122,28 @@ namespace Arena.Client
                 storeSystem.DebugGameProgressIntKeys = kvList;
             }
 
-            var gameSceneId = useDebugSettings ? debugGameSceneKey.Id : GameState.GetOfflineGameInfo().GameSceneID;
-            var spawnPointId = useDebugSettings ? debugSpawnPointID ? debugSpawnPointID.Id : 0 : GameState.GetOfflineGameInfo().SpawnPointID;
-            var gameLocationType = useDebugSettings ? debugLocationType : GameState.GetOfflineGameInfo().MatchType == "Town_1" ? GameLocationType.SafeZone : GameLocationType.Arena;
+            var gameInfo = GameState.GetOfflineGameInfo();
+
+            var gameSceneId = useDebugSettings ? debugGameSceneKey.Id : gameInfo.GameSceneID;
+            var spawnPointId = useDebugSettings ? debugSpawnPointID ? debugSpawnPointID.Id : 0 : gameInfo.SpawnPointID;
+            var gameLocationType = useDebugSettings ? debugLocationType : gameInfo.MatchType == "Town_1" ? GameLocationType.SafeZone : GameLocationType.Arena;
+            var gameParameters = new List<GameParameter>();
+            
+            if (gameInfo.Parameters != null)
+            {
+                gameParameters.AddRange(gameInfo.Parameters);
+            }
+            if (debugGenerateMaze)
+            {
+                if (gameParameters.Any(x => x.Key == Constants.MazeSizeParamName) == false)
+                {
+                    gameParameters.Add(new GameParameter
+                    {
+                        Key = Constants.MazeSizeParamName,
+                        Value = debugMazeSize.ToString()
+                    });
+                }
+            }
             
             switch (gameLocationType)
             {
@@ -142,7 +163,7 @@ namespace Arena.Client
                         gameLoop.AddGameSystem<MazeBuilderSystem>();
                         gameLoop.AddGameSystem<NavMeshGenSystem>();
                         gameLoop.AddGameSystemUnmanaged<UpdateLinkedTransformsSystem>();
-                        StartCoroutine(startMatch(matchSystem, gameSceneId, spawnPointId));
+                        StartCoroutine(startMatch(matchSystem, gameSceneId, spawnPointId, gameParameters.ToArray()));
                     }
                     break;
                 case GameLocationType.SafeZone:
@@ -158,7 +179,7 @@ namespace Arena.Client
 
         IEnumerator startSafeArea(Server.SafeAreaMatchSystem matchSystem, int gameSceneId, int spawnPointId)
         {
-            var matchInfo = new ArenaGameSessionInfo(gameSceneId, spawnPointId, true);
+            var matchInfo = new ArenaGameSessionInfo(gameSceneId, spawnPointId, true, null);
             matchInfo.AllowedUserIds = new System.Collections.Generic.List<PlayerId>
             {
                 new PlayerId(1)
@@ -170,19 +191,10 @@ namespace Arena.Client
             }
         }
 
-        IEnumerator startMatch(Server.ArenaMatchSystem matchSystem, int gameSceneId, int spawnPointId)
+        IEnumerator startMatch(Server.ArenaMatchSystem matchSystem, int gameSceneId, int spawnPointId, GameParameter[] parameters)
         {
             ArenaGameSessionInfo matchInfo;
-
-            if (debugGenerateMaze)
-            {
-                var genSeed = (uint)Random.Range(0, int.MaxValue);
-                matchInfo = new ArenaMazeGameSessionInfo(gameSceneId, spawnPointId, true, genSeed);
-            }
-            else
-            {
-                matchInfo = new ArenaGameSessionInfo(gameSceneId, spawnPointId, true);
-            }
+            matchInfo = new ArenaGameSessionInfo(gameSceneId, spawnPointId, true, parameters);
             
             matchInfo.AllowedUserIds = new System.Collections.Generic.List<PlayerId>
             {

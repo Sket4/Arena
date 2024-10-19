@@ -32,6 +32,7 @@ namespace TzarGames.GameCore.Generated
 			ScriptVizCommandRegistry.RegisterCommand(typeof(TzarGames.GameCore.ScriptViz.ChangeDisabledState), TzarGames.GameCore.ScriptViz.ChangeDisabledState.Exec);
 			ScriptVizCommandRegistry.RegisterCommand(typeof(TzarGames.GameCore.ScriptViz.ChangeColliderState), TzarGames.GameCore.ScriptViz.ChangeColliderState.Exec);
 			ScriptVizCommandRegistry.RegisterCommand(typeof(TzarGames.GameCore.ScriptViz.SendMessageCommand), TzarGames.GameCore.ScriptViz.SendMessageCommand.Exec);
+			ScriptVizCommandRegistry.RegisterCommand(typeof(TzarGames.GameCore.ScriptViz.SendMessageToSelfCommand), TzarGames.GameCore.ScriptViz.SendMessageToSelfCommand.Exec);
 			ScriptVizCommandRegistry.RegisterCommand(typeof(TzarGames.GameCore.ScriptViz.BranchCommand), TzarGames.GameCore.ScriptViz.BranchCommand.Exec);
 			ScriptVizCommandRegistry.RegisterCommand(typeof(TzarGames.GameCore.ScriptViz.IntSwitchCommand), TzarGames.GameCore.ScriptViz.IntSwitchCommand.Exec);
 			ScriptVizCommandRegistry.RegisterCommand(typeof(TzarGames.GameCore.ScriptViz.CompareFloatCommand), TzarGames.GameCore.ScriptViz.CompareFloatCommand.Exec);

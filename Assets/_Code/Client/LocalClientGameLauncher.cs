@@ -129,7 +129,7 @@ namespace Arena.Client
             var gameLocationType = useDebugSettings ? debugLocationType : gameInfo.MatchType == "Town_1" ? GameLocationType.SafeZone : GameLocationType.Arena;
             var gameParameters = new List<GameParameter>();
             
-            if (gameInfo.Parameters != null)
+            if (gameInfo != null && gameInfo.Parameters != null)
             {
                 gameParameters.AddRange(gameInfo.Parameters);
             }

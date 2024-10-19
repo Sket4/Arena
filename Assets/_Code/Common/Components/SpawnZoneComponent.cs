@@ -14,7 +14,7 @@ namespace Arena
         public float SpawnAfterDeathInverval;
 
         public bool DisableRespawn;
-        public bool SendMessageOnAllDead;
+        [HideInAuthoring] public bool SendMessageOnAllDead;
         [HideInAuthoring]
         public Message AllDeadMessage;
         
@@ -53,6 +53,8 @@ namespace Arena
             serializedData.Prefab = baker.ConvertObjectKey(CharacterPrefabKey);
             serializedData.SpawnPointTraceLayers = Utility.LayerMaskToCollidesWithMask(SpawnPointTraceLayers);
             serializedData.AllDeadMessage = AllDeadMessage;
+            serializedData.SendMessageOnAllDead =
+                AllDeadMessage != null && string.IsNullOrEmpty(AllDeadMessage.ID) == false;
             
             baker.AddBuffer<SpawnZoneInstance>();
             baker.AddComponent<SpawnZoneStateData>();

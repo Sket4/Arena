@@ -296,6 +296,11 @@ namespace Arena.Maze
 
         Entity spawnBorderCell(DynamicBuffer<BorderCellPrefabs> prefabs, float3 position, float angle, ref DynamicBuffer<MazeObjects> linkedEntities, ref Random random, ref UniversalCommandBuffer commands)
         {
+            if(prefabs.IsEmpty)
+            {
+                return Entity.Null;
+            }
+            
             quaternion rot;
 
             rot = quaternion.Euler(0, math.radians(angle), 0);

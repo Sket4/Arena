@@ -1,4 +1,5 @@
 ﻿using TzarGames.GameCore;
+using TzarGames.MatchFramework.Server;
 using Unity.Entities;
 
 namespace Arena.Client
@@ -11,6 +12,7 @@ namespace Arena.Client
         {
             InitSceneLoading(additionalScenes);
 
+            MatchBaseSystem.WaitPlayerTimeoutEnabled = false;
             Utils.AddSharedSystems(this, true, "Client");
             presentationSystemGroup = World.GetOrCreateSystemManaged<PresentationSystemGroup>();
             GameLoopUtils.AddSystems(this, false, true, gameSettings);

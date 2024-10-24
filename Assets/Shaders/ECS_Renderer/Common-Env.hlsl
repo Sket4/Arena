@@ -88,6 +88,9 @@ v2f env_vert (appdata v)
 	o.alpha = 1;
 	#endif
 
+	#if USE_HEIGHT_FOG
+	o.positionWS_fog.w *= saturate((_FogHeight - o.positionWS_fog.y) * _HeightFogFade); 
+	#endif
 
 	return o;
 }
@@ -166,6 +169,8 @@ half4 env_frag(v2f i) : SV_Target
 	#else
 
 	half4 finalColor = diffuse;
+	half3 envMapColor = 0;
+	ApplyDynamicLighting(viewDirWS, normalWS, i.positionWS_fog.xyz, 0, ambientLight, envMapColor, true);
 	finalColor.rgb *= ambientLight;
 
 	#endif

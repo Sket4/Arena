@@ -46,7 +46,7 @@ namespace Arena.Client
                 Entities
                     .WithoutBurst()
                     .WithStoreEntityQueryInField(ref shaderSettingsQuery)
-                    .WithChangeFilter<SceneRenderSettings>()
+                    .WithChangeFilter<SceneShaderSettings>()
                     .ForEach((in SceneShaderSettings settings) =>
                     {
                         Debug.Log($"Set scene shader settings: enable main light: {settings.EnableMainLight}, enable add lights: {settings.EnableAdditionalLight}");

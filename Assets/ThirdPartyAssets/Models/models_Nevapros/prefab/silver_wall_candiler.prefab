@@ -11,6 +11,7 @@ GameObject:
   - component: {fileID: 1801400051767522729}
   - component: {fileID: 3325887015871230244}
   - component: {fileID: 3325887015870264292}
+  - component: {fileID: 7912547644568689586}
   m_Layer: 0
   m_Name: silver_wall_candiler
   m_TagString: Untagged
@@ -92,6 +93,28 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!205 &7912547644568689586
+LODGroup:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3360954250383312826}
+  serializedVersion: 2
+  m_LocalReferencePoint: {x: 0.24412918, y: 0.19190419, z: 0.000011384487}
+  m_Size: 0.8513285
+  m_FadeMode: 0
+  m_AnimateCrossFading: 0
+  m_LastLODIsBillboard: 0
+  m_LODs:
+  - screenRelativeHeight: 0.031784583
+    fadeTransitionWidth: 0
+    renderers:
+    - renderer: {fileID: 3325887015870264292}
+    - renderer: {fileID: 6738914476287982006}
+    - renderer: {fileID: 5051169023537321018}
+    - renderer: {fileID: 5051169023670364968}
+  m_Enabled: 1
 --- !u!1 &3934940166161595595
 GameObject:
   m_ObjectHideFlags: 0
@@ -508,9 +531,10 @@ GameObject:
   - component: {fileID: 6011310315769409174}
   - component: {fileID: 456430612553329971}
   - component: {fileID: 9021089440546500386}
+  - component: {fileID: 5224618781702055154}
   m_Layer: 0
   m_Name: Highlight (1)
-  m_TagString: EditorOnly
+  m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 126
@@ -601,6 +625,18 @@ SphereCollider:
   serializedVersion: 3
   m_Radius: 0.5000005
   m_Center: {x: 0.000011444098, y: -0.000010490424, z: -0.000001907351}
+--- !u!114 &5224618781702055154
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6165103337355997409}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 054d1f64ae2e41abba98a63f7f0e8e4a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &6738914476285978486
 GameObject:
   m_ObjectHideFlags: 0

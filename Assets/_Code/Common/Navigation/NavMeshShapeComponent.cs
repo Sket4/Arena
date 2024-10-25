@@ -186,7 +186,7 @@ namespace Arena
                     SetupForBounds(capsule.transform, capsule.bounds, ref navMeshShape);
                     break;
                 default:
-                    Debug.LogError($"Collider type of {collider.GetType().Name} is not supported");
+                    Debug.LogError($"Collider type of {collider.GetType().Name} is not supported, object: {Utility.GetScenePath(collider.gameObject)}");
                     break;
             }
         }

@@ -1514,53 +1514,6 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!1 &436222523
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 436222525}
-  - component: {fileID: 436222524}
-  m_Layer: 0
-  m_Name: Maze builder
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!114 &436222524
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 436222523}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 3c812bdf6a2f84bf48157e2d150422a0, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  ConversionTargetOptions: -1
-  Environments: []
---- !u!4 &436222525
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 436222523}
-  serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children:
-  - {fileID: 1679008461}
-  m_Father: {fileID: 0}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &528115827
 GameObject:
   m_ObjectHideFlags: 0
@@ -1814,15 +1767,15 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
-  - {fileID: 1765431910}
   - {fileID: 1189269378}
   - {fileID: 569892248}
   - {fileID: 1319234569}
   - {fileID: 170689353}
-  - {fileID: 36067513}
-  - {fileID: 1635039139}
   - {fileID: 1660323091}
   - {fileID: 86317078}
+  - {fileID: 1765431910}
+  - {fileID: 36067513}
+  - {fileID: 1635039139}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1290770151
@@ -2907,80 +2860,6 @@ MonoBehaviour:
     EnableMainLight: 1
     EnableAdditionalLight: 1
   UseSceneRenderSettings: 0
---- !u!1 &1679008460
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 1679008461}
-  - component: {fileID: 1679008462}
-  m_Layer: 0
-  m_Name: Undergrounds
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &1679008461
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1679008460}
-  serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 436222525}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &1679008462
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1679008460}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: efd4a7416242c4f48a500636ef4f34ff, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  ConversionTargetOptions: -1
-  locationID: {fileID: 8847416135421441434, guid: 284a425996cfd4f41ba0b71d170672a9, type: 2}
-  cellSize: 24
-  fogColor: {r: 0, g: 0, b: 0, a: 1}
-  fogStart: 25
-  fogEnd: 35
-  ambientSkyColor: {r: 1, g: 1, b: 1, a: 1}
-  ambientEquatorColor: {r: 0.5, g: 0.5, b: 0.5, a: 1}
-  ambientGroundColor: {r: 0, g: 0, b: 0, a: 1}
-  startCellPrefabs:
-  - Prefab: {fileID: 4611867785236005679, guid: 5e74f397b8ca04aa3a6f361a620d61c8, type: 3}
-  finishCellPrefabs:
-  - Prefab: {fileID: 2226673943782958361, guid: 3fbb51ab595d5b64d9ea8d8f3762cf2e, type: 3}
-  gameCellPrefabs:
-  - Prefab: {fileID: 2226673943782958361, guid: c3922d1f107de409ca3fda0f217d0210, type: 3}
-  - Prefab: {fileID: 2226673943782958361, guid: a97cd37d985804e7ca23df7f4f9db16b, type: 3}
-  borderCellPrefabs: []
-  environmentCellPrefabs: []
-  wallPrefabs:
-  - Prefab: {fileID: 7847591719149227894, guid: 4a30369aa727a4b87a50664512f33ecc, type: 3}
-  - Prefab: {fileID: 7847591719149227894, guid: fb461fe3dba154302b16bbb09f7856ff, type: 3}
-  borderWallPrefabs:
-  - Prefab: {fileID: 7847591719149227894, guid: 25697bc8b3d787b4f8299dd400690bee, type: 3}
-  doorWallPrefabs:
-  - Prefab: {fileID: 8271701556777552081, guid: 76de6ec86bb584e5595db391084c7012, type: 3}
-  columnPrefabs:
-  - Prefab: {fileID: 657050370488445584, guid: cd2881fad68b847ecac86a95fbb5f374, type: 3}
-  borderColumnPrefabs:
-  - Prefab: {fileID: 657050370488445584, guid: cd2881fad68b847ecac86a95fbb5f374, type: 3}
-  environmentPrefabs: []
 --- !u!1 &1765431909
 GameObject:
   m_ObjectHideFlags: 0
@@ -3142,6 +3021,5 @@ SceneRoots:
   - {fileID: 934147481}
   - {fileID: 1290770155}
   - {fileID: 30618052}
-  - {fileID: 436222525}
   - {fileID: 2043244004}
   - {fileID: 215892082}

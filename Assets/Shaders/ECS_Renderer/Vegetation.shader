@@ -70,11 +70,11 @@ Shader "Arena/Vegetation"
             
             struct appdata
             {
-                float3 vertex : POSITION;
-                float3 normal : NORMAL;
-                float4 tangent : TANGENT;
+                half3 vertex : POSITION;
+                half3 normal : NORMAL;
+                half4 tangent : TANGENT;
                 half4 color : COLOR;
-                float2 uv : TEXCOORD0;
+                half2 uv : TEXCOORD0;
 #if LIGHTMAP_ON
                 TG_DECLARE_LIGHTMAP_UV(1)
 #endif
@@ -122,17 +122,17 @@ Shader "Arena/Vegetation"
 
             void billboard(inout half3 vertex, inout half3 normal, inout half3 tangent)
             {
-            	half3 normalDir = mul(UNITY_MATRIX_I_M, float4(_WorldSpaceCameraPos, 1));
+            	half3 normalDir = mul(UNITY_MATRIX_I_M, half4(_WorldSpaceCameraPos, 1));
             	normalDir.y = 0;
             	normalDir = normalize(normalDir);
 			    
 			    //break out the axis
-            	float3 up = float3(0,1,0);
-			    float3 right = normalize(cross(normalDir, up));
-			    float3 forward = normalDir;
+            	half3 up = half3(0,1,0);
+			    half3 right = normalize(cross(normalDir, up));
+			    half3 forward = normalDir;
             	
 			    //get the rotation parts of the matrix
-			    float4x4 rotationMatrix = float4x4(right, 0,
+			    half4x4 rotationMatrix = half4x4(right, 0,
     				up, 0,
     				forward, 0,
     				0, 0, 0, 1);
@@ -149,7 +149,7 @@ Shader "Arena/Vegetation"
                 UNITY_SETUP_INSTANCE_ID(v);
                 UNITY_TRANSFER_INSTANCE_ID(v, o);
 
-                float3 positionOS = v.vertex;
+                half3 positionOS = v.vertex;
 				
 
                 float4 time = _Time;
@@ -158,8 +158,8 @@ Shader "Arena/Vegetation"
                 positionOS.x += wind;
                 positionOS.z += wind;
                 
-                float3 normalOS = v.normal;
-                float4 tangentOS = v.tangent;
+                half3 normalOS = v.normal;
+                half4 tangentOS = v.tangent;
 
             	#if USE_BILLBOARD
             	billboard(positionOS, normalOS, tangentOS.xyz);

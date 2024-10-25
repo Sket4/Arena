@@ -7581,6 +7581,7 @@ MonoBehaviour:
                   y: 1254323365
                   z: 2319014039
                   w: 2029171863
+            Name: 
             ConversionTargetOptions: 7
             variables:
             - rid: 5191230057822552553
@@ -7595,6 +7596,7 @@ MonoBehaviour:
             - rid: 5191230057822552558
             - rid: 5191230057822552560
           states: []
+          variables: []
         Name: keeper spawn trigger
     - rid: 5191230057822552546
       type: {class: OnTriggerEnterEventNode, ns: TzarGames.GameCore.ScriptViz.Graph, asm: TzarGames.GameCore}
@@ -7754,6 +7756,7 @@ MonoBehaviour:
               w: 904353892
         Name: is spawned
         NetSyncEnabled: 0
+        IsHidden: 0
         Value: 0
     - rid: 5191230057822552554
       type: {class: GetBoolCommandNode, ns: TzarGames.GameCore.ScriptViz.Graph, asm: TzarGames.GameCore}
@@ -8170,6 +8173,7 @@ MonoBehaviour:
               w: 1940574945
         Name: _delayed_commands
         NetSyncEnabled: 0
+        IsHidden: 0
 --- !u!65 &397336669
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -11410,6 +11414,7 @@ MonoBehaviour:
               w: 924990983
         Name: road wolves killed
         NetSyncEnabled: 0
+        IsHidden: 0
         Value: 0
     - rid: 4958927634886819870
       type: {class: BoolVariable, ns: TzarGames.GameCore.ScriptViz.Graph, asm: TzarGames.GameCore}
@@ -11423,6 +11428,7 @@ MonoBehaviour:
               w: 3171853141
         Name: lighthouse wolves killed
         NetSyncEnabled: 0
+        IsHidden: 0
         Value: 0
     - rid: 4958927634886819873
       type: {class: BranchCommandNode, ns: TzarGames.GameCore.ScriptViz.Graph, asm: TzarGames.GameCore}
@@ -12014,6 +12020,7 @@ MonoBehaviour:
               w: 4291526096
         Name: field wolves killed
         NetSyncEnabled: 0
+        IsHidden: 0
         Value: 0
     - rid: 4958927634886819886
       type: {class: GetBoolCommandNode, ns: TzarGames.GameCore.ScriptViz.Graph, asm: TzarGames.GameCore}
@@ -12282,6 +12289,7 @@ MonoBehaviour:
                   y: 1310121085
                   z: 3715515582
                   w: 4270768993
+            Name: 
             ConversionTargetOptions: 7
             variables:
             - rid: 5191229977054150798
@@ -12322,6 +12330,7 @@ MonoBehaviour:
             - rid: 4958927634886820011
             - rid: 4958927634886820014
           states: []
+          variables: []
         Name: kill the wolves quest
     - rid: 5191229977054150766
       type: {class: StartEventNode, ns: TzarGames.GameCore.ScriptViz.Graph, asm: TzarGames.GameCore}
@@ -12804,6 +12813,7 @@ MonoBehaviour:
               w: 316464922
         Name: _delayed_commands
         NetSyncEnabled: 0
+        IsHidden: 0
     - rid: 5191229977054150905
       type: {class: LogCommandNode, ns: TzarGames.GameCore.ScriptViz.Graph, asm: TzarGames.GameCore}
       data:
@@ -15076,7 +15086,7 @@ MonoBehaviour:
   m_OverrideVoxelSize: 0
   m_VoxelSize: 0.16666667
   m_MinRegionArea: 2
-  m_NavMeshData: {fileID: 23800000, guid: e4bf962d69016074490072644b5a3d3a, type: 2}
+  m_NavMeshData: {fileID: 23800000, guid: 48b844bdbde044b5ab83d1d40198faa6, type: 2}
   m_BuildHeightMesh: 0
 --- !u!4 &620603423
 Transform:
@@ -23008,31 +23018,16 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   ConversionTargetOptions: -1
-  Value:
-    SkyboxMaterial:
-      Id:
-        GlobalId:
-          SceneObjectIdentifier0: 2100000
-          SceneObjectIdentifier1: 0
-          AssetGUID:
-            Value:
-              x: 3740543833
-              y: 1132329163
-              z: 3760997809
-              w: 3947772360
-          IdentifierType: 3
-        GenerationType: 1
-    FogStartDistance: 15
-    FogEndDistance: 600
-    FogEnabled: 1
-    FogDensity: 0.0024
-    FogMode: 1
-    FogColor: {r: 0.45098042, g: 0.6, b: 0.69803923, a: 1}
-    RealtimeShadowColor: {r: 0.41568628, g: 0.49411765, b: 0.5411765, a: 1}
   ShaderSettings:
     EnableMainLight: 0
     EnableAdditionalLight: 0
   UseSceneRenderSettings: 1
+  UseCameraSettings: 0
+  CameraSettings:
+    ChangeClearFlags: 0
+    ClearFlags: 0
+    ChangeClearColor: 0
+    ClearColor: {r: 0, g: 0, b: 0, a: 0}
 --- !u!4 &1046162056
 Transform:
   m_ObjectHideFlags: 0

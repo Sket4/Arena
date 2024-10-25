@@ -169,11 +169,13 @@ namespace Arena.Client
     public partial class ThirdPersonCameraSystem : SystemBase
     {
         ThirdPersonCamera cameraPrefab;
+        private EntityQuery sceneCameraSettingsQuery;
 
         protected override void OnCreate()
         {
             base.OnCreate();
             cameraPrefab = ClientGameSettings.Get.CameraPrefab.GetComponent<ThirdPersonCamera>();
+            sceneCameraSettingsQuery = GetEntityQuery(ComponentType.ReadOnly<SceneCameraSettings>());
         }
 
         protected override void OnDestroy()
@@ -266,9 +268,9 @@ namespace Arena.Client
                     var cameraData = createdCamera.Settings;
                     cameraData.Target = characterEntity;
                     createdCamera.transform.forward = viewDirection.Value;
-                    Debug.Log("View dir " + viewDirection.Value);
+                    //Debug.Log("View dir " + viewDirection.Value);
                     var eulers = createdCamera.transform.eulerAngles;
-                    Debug.Log("Eulers " + eulers);
+                    //Debug.Log("Eulers " + eulers);
                     cameraData.CameraYaw = eulers.y;
 
                     cameraData.AimPhysicsTags = Utility.LayerMaskToCollidesWithMask(createdCamera.AimTraceLayers);
@@ -278,6 +280,20 @@ namespace Arena.Client
 
                     EntityManager.AddComponentData(characterEntity, new AimHitPoint());
                     EntityManager.AddComponentData(characterEntity, new PlayerInput());
+
+                    if (sceneCameraSettingsQuery.IsEmpty == false)
+                    {
+                        var settings = sceneCameraSettingsQuery.GetSingleton<SceneCameraSettings>();
+                        if (settings.ChangeClearColor)
+                        {
+                            createdCamera.Camera.backgroundColor = settings.ClearColor;
+                        }
+
+                        if (settings.ChangeClearFlags)
+                        {
+                            createdCamera.Camera.clearFlags = settings.ClearFlags;
+                        }
+                    }
 
                 }).Run();
             

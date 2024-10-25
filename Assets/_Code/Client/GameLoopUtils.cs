@@ -54,7 +54,7 @@ namespace Arena.Client
                 gameLoop.AddGameSystem<RagdollAndBreakableSystem>();
                 gameLoop.AddGameSystem<CharacterModelSmoothMovementSystem>();
                 gameLoop.AddGameSystem<MusicMixerSystem>(presentGroup);
-                gameLoop.AddGameSystem<SceneRenderSettingsSystem>();
+                gameLoop.AddGameSystem<SceneSettingsSystem>();
                 gameLoop.AddGameSystem<AudioSystem>(presentGroup);
             }
 

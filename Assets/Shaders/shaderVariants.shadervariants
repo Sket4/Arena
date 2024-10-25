@@ -20,6 +20,16 @@ ShaderVariantCollection:
       variants:
       - keywords: 
         passType: 0
+  - first: {fileID: 46, guid: 0000000000000000f000000000000000, type: 0}
+    second:
+      variants:
+      - keywords: 
+        passType: 8
+  - first: {fileID: 106, guid: 0000000000000000f000000000000000, type: 0}
+    second:
+      variants:
+      - keywords: _SUNDISK_SIMPLE
+        passType: 0
   - first: {fileID: 108, guid: 0000000000000000f000000000000000, type: 0}
     second:
       variants:
@@ -28,17 +38,12 @@ ShaderVariantCollection:
   - first: {fileID: 211, guid: 0000000000000000f000000000000000, type: 0}
     second:
       variants:
+      - keywords: 
+        passType: 0
       - keywords: _ALPHABLEND_ON
         passType: 0
-      - keywords: PROCEDURAL_INSTANCING_ON _ALPHABLEND_ON
+      - keywords: PROCEDURAL_INSTANCING_ON SHADOWS_DEPTH _ALPHABLEND_ON
         passType: 8
-  - first: {fileID: 10490, guid: 0000000000000000f000000000000000, type: 0}
-    second:
-      variants:
-      - keywords: 
-        passType: 13
-      - keywords: INSTANCING_ON
-        passType: 13
   - first: {fileID: 9000, guid: 0000000000000000f000000000000000, type: 0}
     second:
       variants:
@@ -99,30 +104,17 @@ ShaderVariantCollection:
       variants:
       - keywords: 
         passType: 0
-      - keywords: DOTS_INSTANCING_ON
-        passType: 0
   - first: {fileID: 4800000, guid: 7f888aff2ac86494babad1c2c5daeee2, type: 3}
     second:
       variants:
       - keywords: DOTS_INSTANCING_ON
         passType: 0
-  - first: {fileID: 4800000, guid: 93446b5c5339d4f00b85c159e1159b7c, type: 3}
-    second:
-      variants:
-      - keywords: 
-        passType: 0
-  - first: {fileID: 4800000, guid: 933532a4fcc9baf4fa0491de14d08ed7, type: 3}
-    second:
-      variants:
-      - keywords: 
-        passType: 8
-      - keywords: DOTS_INSTANCING_ON EVALUATE_SH_VERTEX FOG_LINEAR _ADDITIONAL_LIGHTS
-          _MAIN_LIGHT_SHADOWS _SHADOWS_SOFT
-        passType: 13
   - first: {fileID: 4800000, guid: 0406db5a14f94604a8c57ccfbc9f3b46, type: 3}
     second:
       variants:
-      - keywords: FOG_LINEAR _COLORADDSUBDIFF_ON _SURFACE_TYPE_TRANSPARENT
+      - keywords: FOG_EXP2
+        passType: 0
+      - keywords: FOG_EXP2 _COLORADDSUBDIFF_ON _SURFACE_TYPE_TRANSPARENT
         passType: 0
   - first: {fileID: 4800000, guid: 537b6c3f7a4218d459a2cdaea0cd4bf7, type: 3}
     second:
@@ -133,138 +125,133 @@ ShaderVariantCollection:
         passType: 8
       - keywords: INSTANCING_ON
         passType: 8
-      - keywords: 
-        passType: 11
+      - keywords: INSTANCING_ON _ALPHATEST_ON
+        passType: 8
+      - keywords: ARENA_USE_ADD_LIGHT ARENA_USE_MAIN_LIGHT DIRLIGHTMAP_COMBINED FOG_EXP2
+          LIGHTMAP_ON TG_USE_ALPHACLIP UG_QUALITY_MED
+        passType: 13
+      - keywords: ARENA_USE_ADD_LIGHT ARENA_USE_MAIN_LIGHT DIRLIGHTMAP_COMBINED FOG_EXP2
+          LIGHTMAP_ON UG_QUALITY_MED
+        passType: 13
+      - keywords: ARENA_USE_ADD_LIGHT ARENA_USE_MAIN_LIGHT DOTS_INSTANCING_ON FOG_EXP2
+          UG_QUALITY_MED _MAIN_LIGHT_SHADOWS
+        passType: 13
+      - keywords: ARENA_USE_ADD_LIGHT ARENA_USE_MAIN_LIGHT DOTS_INSTANCING_ON UG_QUALITY_MED
+        passType: 13
       - keywords: ARENA_USE_ADD_LIGHT ARENA_USE_MAIN_LIGHT DOTS_INSTANCING_ON UG_QUALITY_MED
           _MAIN_LIGHT_SHADOWS
         passType: 13
-      - keywords: DIRLIGHTMAP_COMBINED DOTS_INSTANCING_ON FOG_LINEAR LIGHTMAP_ON
-          UG_QUALITY_MED USE_SURFACE_BLEND _MAIN_LIGHT_SHADOWS
+      - keywords: ARENA_USE_ADD_LIGHT ARENA_USE_MAIN_LIGHT FOG_EXP2 UG_QUALITY_MED
         passType: 13
-      - keywords: DIRLIGHTMAP_COMBINED DOTS_INSTANCING_ON FOG_LINEAR LIGHTMAP_ON
-          UG_QUALITY_MED USE_UNDERWATER _MAIN_LIGHT_SHADOWS
+      - keywords: ARENA_USE_ADD_LIGHT ARENA_USE_MAIN_LIGHT UG_QUALITY_MED
         passType: 13
-      - keywords: DIRLIGHTMAP_COMBINED DOTS_INSTANCING_ON FOG_LINEAR LIGHTMAP_ON
-          UG_QUALITY_MED _MAIN_LIGHT_SHADOWS
-        passType: 13
-      - keywords: DIRLIGHTMAP_COMBINED FOG_LINEAR LIGHTMAP_ON UG_QUALITY_MED USE_SURFACE_BLEND
-          _MAIN_LIGHT_SHADOWS
-        passType: 13
-      - keywords: DIRLIGHTMAP_COMBINED FOG_LINEAR LIGHTMAP_ON UG_QUALITY_MED _MAIN_LIGHT_SHADOWS
-        passType: 13
-      - keywords: DOTS_INSTANCING_ON FOG_LINEAR UG_QUALITY_MED USE_HEIGHT_FOG _MAIN_LIGHT_SHADOWS
-        passType: 13
-      - keywords: DOTS_INSTANCING_ON FOG_LINEAR UG_QUALITY_MED _MAIN_LIGHT_SHADOWS
-        passType: 13
-      - keywords: FOG_LINEAR UG_QUALITY_MED USE_HEIGHT_FOG _MAIN_LIGHT_SHADOWS
-        passType: 13
-      - keywords: FOG_LINEAR UG_QUALITY_MED _MAIN_LIGHT_SHADOWS
-        passType: 13
-      - keywords: UG_QUALITY_LOW
-        passType: 13
-      - keywords: UG_QUALITY_MED USE_HEIGHT_FOG _MAIN_LIGHT_SHADOWS
-        passType: 13
-      - keywords: UG_QUALITY_MED _MAIN_LIGHT_SHADOWS
-        passType: 13
-  - first: {fileID: 4800000, guid: 338d8a0dc0976dd42ac914673d44bde9, type: 3}
-    second:
-      variants:
-      - keywords: DIRLIGHTMAP_COMBINED DOTS_INSTANCING_ON FOG_LINEAR LIGHTMAP_ON
-          UG_QUALITY_MED
+      - keywords: ARENA_USE_ADD_LIGHT ARENA_USE_MAIN_LIGHT UG_QUALITY_MED _MAIN_LIGHT_SHADOWS
         passType: 13
   - first: {fileID: 4800000, guid: 9ba78930bdb7c473db374bdfe49c271e, type: 3}
     second:
       variants:
-      - keywords: DIRLIGHTMAP_COMBINED DOTS_INSTANCING_ON FOG_LINEAR LIGHTMAP_ON
-          USE_CUSTOM_FOG_COLOR USE_CUSTOM_REFLECTIONS USE_FOAM USE_FOG USE_LOWER_NORMAL_FOG
-          USE_THIRD_WAVE
+      - keywords: DIRLIGHTMAP_COMBINED FOG_EXP2 LIGHTMAP_ON USE_FOAM USE_FOG
         passType: 0
-      - keywords: DIRLIGHTMAP_COMBINED DOTS_INSTANCING_ON FOG_LINEAR LIGHTMAP_ON
-          USE_CUSTOM_FOG_COLOR USE_FOG USE_THIRD_WAVE
+      - keywords: DIRLIGHTMAP_COMBINED FOG_EXP2 LIGHTMAP_ON USE_FOAM USE_FOG USE_THIRD_WAVE
         passType: 0
-      - keywords: DIRLIGHTMAP_COMBINED DOTS_INSTANCING_ON FOG_LINEAR LIGHTMAP_ON
-          USE_FOAM USE_FOG USE_LOWER_NORMAL_FOG
-        passType: 0
-      - keywords: DIRLIGHTMAP_COMBINED FOG_LINEAR LIGHTMAP_ON USE_CUSTOM_FOG_COLOR
-          USE_FOG USE_THIRD_WAVE
-        passType: 0
-  - first: {fileID: 4800000, guid: 776afe56375df422c852dc43662b35a0, type: 3}
-    second:
-      variants:
-      - keywords: DIRLIGHTMAP_COMBINED DOTS_INSTANCING_ON FOG_LINEAR LIGHTMAP_ON
-          TG_USE_ALPHACLIP UG_QUALITY_MED
-        passType: 0
-      - keywords: DIRLIGHTMAP_COMBINED FOG_LINEAR LIGHTMAP_ON TG_USE_ALPHACLIP UG_QUALITY_MED
-        passType: 0
-      - keywords: DOTS_INSTANCING_ON FOG_LINEAR TG_USE_ALPHACLIP UG_QUALITY_MED
-        passType: 0
-      - keywords: DOTS_INSTANCING_ON FOG_LINEAR TG_USE_ALPHACLIP UG_QUALITY_MED USE_BILLBOARD
-        passType: 0
-      - keywords: FOG_LINEAR TG_USE_ALPHACLIP UG_QUALITY_MED
-        passType: 0
-      - keywords: FOG_LINEAR TG_USE_ALPHACLIP UG_QUALITY_MED USE_BILLBOARD
-        passType: 0
-      - keywords: UG_QUALITY_LOW
-        passType: 0
-      - keywords: 
-        passType: 11
   - first: {fileID: 4800000, guid: 0f6665d0c9aa760428a35dd4133f81af, type: 3}
     second:
       variants:
+      - keywords: ARENA_USE_ADD_LIGHT ARENA_USE_MAIN_LIGHT DOTS_INSTANCING_ON FOG_EXP2
+          TG_USE_ALPHACLIP _BONECOUNT_ONE _MAIN_LIGHT_SHADOWS
+        passType: 0
+      - keywords: ARENA_USE_ADD_LIGHT ARENA_USE_MAIN_LIGHT DOTS_INSTANCING_ON FOG_EXP2
+          _BONECOUNT_FOUR _MAIN_LIGHT_SHADOWS
+        passType: 0
+      - keywords: ARENA_USE_ADD_LIGHT ARENA_USE_MAIN_LIGHT DOTS_INSTANCING_ON FOG_EXP2
+          _BONECOUNT_ONE _MAIN_LIGHT_SHADOWS
+        passType: 0
+      - keywords: ARENA_USE_ADD_LIGHT ARENA_USE_MAIN_LIGHT DOTS_INSTANCING_ON TG_USE_ALPHACLIP
+          _BONECOUNT_ONE
+        passType: 0
       - keywords: ARENA_USE_ADD_LIGHT ARENA_USE_MAIN_LIGHT DOTS_INSTANCING_ON TG_USE_ALPHACLIP
           _BONECOUNT_ONE _MAIN_LIGHT_SHADOWS
+        passType: 0
+      - keywords: ARENA_USE_ADD_LIGHT ARENA_USE_MAIN_LIGHT DOTS_INSTANCING_ON _BONECOUNT_FOUR
         passType: 0
       - keywords: ARENA_USE_ADD_LIGHT ARENA_USE_MAIN_LIGHT DOTS_INSTANCING_ON _BONECOUNT_FOUR
           _MAIN_LIGHT_SHADOWS
         passType: 0
       - keywords: ARENA_USE_ADD_LIGHT ARENA_USE_MAIN_LIGHT DOTS_INSTANCING_ON _BONECOUNT_ONE
+        passType: 0
+      - keywords: ARENA_USE_ADD_LIGHT ARENA_USE_MAIN_LIGHT DOTS_INSTANCING_ON _BONECOUNT_ONE
           _MAIN_LIGHT_SHADOWS
         passType: 0
-      - keywords: DOTS_INSTANCING_ON FOG_LINEAR TG_USE_ALPHACLIP _BONECOUNT_ONE _MAIN_LIGHT_SHADOWS
+      - keywords: ARENA_USE_ADD_LIGHT ARENA_USE_MAIN_LIGHT _BONECOUNT_ONE
         passType: 0
-      - keywords: DOTS_INSTANCING_ON FOG_LINEAR _BONECOUNT_FOUR _MAIN_LIGHT_SHADOWS
+      - keywords: ARENA_USE_ADD_LIGHT ARENA_USE_MAIN_LIGHT _BONECOUNT_ONE _MAIN_LIGHT_SHADOWS
         passType: 0
-      - keywords: DOTS_INSTANCING_ON FOG_LINEAR _BONECOUNT_ONE _MAIN_LIGHT_SHADOWS
-        passType: 0
-  - first: {fileID: -6465566751694194690, guid: bacc862ae98afb24dbb20da5475d2596, type: 3}
+  - first: {fileID: 4800000, guid: 650dd9526735d5b46b79224bc6e94025, type: 3}
     second:
       variants:
-      - keywords: DOTS_INSTANCING_ON FOG_LINEAR
+      - keywords: FOG_EXP2
+        passType: 0
+      - keywords: 
+        passType: 13
+  - first: {fileID: -6465566751694194690, guid: a3ad57d039b2fc94fb5bc9e018ce1433, type: 3}
+    second:
+      variants:
+      - keywords: 
+        passType: 0
+      - keywords: FOG_EXP2
         passType: 0
       - keywords: 
         passType: 8
+  - first: {fileID: 4800000, guid: 90bce62cc39fc2249a22582815e12923, type: 3}
+    second:
+      variants:
+      - keywords: DIRLIGHTMAP_COMBINED FOG_EXP2 LIGHTMAP_ON UG_QUALITY_MED
+        passType: 13
   - first: {fileID: 4800000, guid: 58c852870e46641419142bb49fce51e0, type: 3}
     second:
       variants:
+      - keywords: ARENA_USE_ADD_LIGHT ARENA_USE_MAIN_LIGHT DOTS_INSTANCING_ON FOG_EXP2
+          _BONECOUNT_ONE _MAIN_LIGHT_SHADOWS
+        passType: 13
+      - keywords: ARENA_USE_ADD_LIGHT ARENA_USE_MAIN_LIGHT DOTS_INSTANCING_ON _BONECOUNT_ONE
+        passType: 13
       - keywords: ARENA_USE_ADD_LIGHT ARENA_USE_MAIN_LIGHT DOTS_INSTANCING_ON _BONECOUNT_ONE
           _MAIN_LIGHT_SHADOWS
         passType: 13
-  - first: {fileID: 4800000, guid: e2cfc3604174a473d99669b118465ddf, type: 3}
+  - first: {fileID: 4800000, guid: 8516d7a69675844a7a0b7095af7c46af, type: 3}
     second:
       variants:
-      - keywords: DIRLIGHTMAP_COMBINED DOTS_INSTANCING_ON FOG_LINEAR LIGHTMAP_ON
-          USE_LIGHTING
-        passType: 0
-  - first: {fileID: -6465566751694194690, guid: 4b91f1e7d17ed98448b0787e2039a5d0, type: 3}
-    second:
-      variants:
-      - keywords: 
-        passType: 8
+      - keywords: EVALUATE_SH_VERTEX FOG_EXP2 _ADDITIONAL_LIGHTS
+        passType: 13
+      - keywords: EVALUATE_SH_VERTEX FOG_EXP2 _ADDITIONAL_LIGHTS _COLORADDSUBDIFF_ON
+          _EMISSION _SURFACE_TYPE_TRANSPARENT
+        passType: 13
+      - keywords: EVALUATE_SH_VERTEX FOG_EXP2 _ADDITIONAL_LIGHTS _COLORADDSUBDIFF_ON
+          _SURFACE_TYPE_TRANSPARENT
+        passType: 13
+      - keywords: EVALUATE_SH_VERTEX FOG_EXP2 _ADDITIONAL_LIGHTS _DISTORTION_ON _FADING_ON
+          _NORMALMAP _SOFTPARTICLES_ON
+        passType: 13
+      - keywords: EVALUATE_SH_VERTEX FOG_EXP2 _ADDITIONAL_LIGHTS _DISTORTION_ON _FADING_ON
+          _NORMALMAP _SOFTPARTICLES_ON _SURFACE_TYPE_TRANSPARENT
+        passType: 13
+      - keywords: EVALUATE_SH_VERTEX _ADDITIONAL_LIGHTS _COLORADDSUBDIFF_ON _MAIN_LIGHT_SHADOWS
+          _SURFACE_TYPE_TRANSPARENT
+        passType: 13
+      - keywords: EVALUATE_SH_VERTEX _ADDITIONAL_LIGHTS _DISTORTION_ON _FADING_ON
+          _MAIN_LIGHT_SHADOWS _NORMALMAP _SOFTPARTICLES_ON
+        passType: 13
+      - keywords: EVALUATE_SH_VERTEX _ADDITIONAL_LIGHTS _DISTORTION_ON _FADING_ON
+          _MAIN_LIGHT_SHADOWS _NORMALMAP _SOFTPARTICLES_ON _SURFACE_TYPE_TRANSPARENT
+        passType: 13
+      - keywords: EVALUATE_SH_VERTEX _ADDITIONAL_LIGHTS _MAIN_LIGHT_SHADOWS
+        passType: 13
   - first: {fileID: 4800000, guid: 9231de347d9894503ab5a167fff23ac6, type: 3}
     second:
       variants:
       - keywords: 
         passType: 0
-      - keywords: LIGHTPROBE_SH
-        passType: 0
   - first: {fileID: 4800000, guid: b0127e7e38d54ef4394014ff4ccab268, type: 3}
-    second:
-      variants:
-      - keywords: 
-        passType: 0
-      - keywords: LIGHTPROBE_SH
-        passType: 0
-  - first: {fileID: 4800000, guid: 264f253909b24204f802a8c0849511e6, type: 3}
     second:
       variants:
       - keywords: 
@@ -286,16 +273,3 @@ ShaderVariantCollection:
       variants:
       - keywords: 
         passType: 0
-  - first: {fileID: 4800000, guid: 74b1585886a85614aa34e2c8e303c77a, type: 3}
-    second:
-      variants:
-      - keywords: DOTS_INSTANCING_ON
-        passType: 13
-  - first: {fileID: 4800000, guid: 90bce62cc39fc2249a22582815e12923, type: 3}
-    second:
-      variants:
-      - keywords: DIRLIGHTMAP_COMBINED DOTS_INSTANCING_ON FOG_LINEAR LIGHTMAP_ON
-          UG_QUALITY_MED _MAIN_LIGHT_SHADOWS
-        passType: 13
-      - keywords: DIRLIGHTMAP_COMBINED FOG_LINEAR LIGHTMAP_ON UG_QUALITY_MED _MAIN_LIGHT_SHADOWS
-        passType: 13

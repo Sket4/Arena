@@ -25,8 +25,12 @@ namespace Arena.Client
         public bool EnableAdditionalLight;
     }
 
+    public struct SceneSettingsTag : IComponentData
+    {
+    }
+
     [UseDefaultInspector(true)]
-    public class SceneRenderSettingsComponent : ComponentDataBehaviour<SceneRenderSettings>
+    public class SceneRenderSettingsComponent : ComponentDataBehaviour<SceneSettingsTag>
     {
         public SceneShaderSettings ShaderSettings = new SceneShaderSettings
         {
@@ -37,21 +41,28 @@ namespace Arena.Client
         public bool UseSceneRenderSettings = true;
         
         #if UNITY_EDITOR
-        protected override void Bake<K>(ref SceneRenderSettings serializedData, K baker)
+        protected override void Bake<K>(ref SceneSettingsTag serializedData, K baker)
         {
             base.Bake(ref serializedData, baker);
 
             if (UseSceneRenderSettings)
             {
-                serializedData.FogStartDistance = RenderSettings.fogStartDistance;
-                serializedData.FogEndDistance = RenderSettings.fogEndDistance;
-                serializedData.FogEnabled = RenderSettings.fog;
-                serializedData.FogDensity = RenderSettings.fogDensity;
-                serializedData.FogMode = RenderSettings.fogMode;
-                serializedData.FogColor = RenderSettings.fogColor;
-                serializedData.RealtimeShadowColor = RenderSettings.subtractiveShadowColor;
+                var renderSettings = new SceneRenderSettings();
+                renderSettings.FogStartDistance = RenderSettings.fogStartDistance;
+                renderSettings.FogEndDistance = RenderSettings.fogEndDistance;
+                renderSettings.FogEnabled = RenderSettings.fog;
+                renderSettings.FogDensity = RenderSettings.fogDensity;
+                renderSettings.FogMode = RenderSettings.fogMode;
+                renderSettings.FogColor = RenderSettings.fogColor;
+                renderSettings.RealtimeShadowColor = RenderSettings.subtractiveShadowColor;
             
-                serializedData.SkyboxMaterial = new WeakObjectReference<Material>(RenderSettings.skybox);    
+                renderSettings.SkyboxMaterial = new WeakObjectReference<Material>(RenderSettings.skybox);
+
+                if (RenderSettings.skybox != null && renderSettings.SkyboxMaterial.IsReferenceValid == false)
+                {
+                    Debug.LogError($"invalid skybox material! {RenderSettings.skybox.name}");
+                }
+                baker.AddComponent(renderSettings);
             }
             
             baker.AddComponent(ShaderSettings);

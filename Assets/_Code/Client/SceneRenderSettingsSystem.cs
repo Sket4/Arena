@@ -49,10 +49,13 @@ namespace Arena.Client
                     .WithChangeFilter<SceneRenderSettings>()
                     .ForEach((in SceneShaderSettings settings) =>
                     {
+                        Debug.Log($"Set scene shader settings: enable main light: {settings.EnableMainLight}, enable add lights: {settings.EnableAdditionalLight}");
                         Shader.SetKeyword(EnableMainLightKeyword, settings.EnableMainLight);
                         Shader.SetKeyword(EnableAdditionalLightKeyword, settings.EnableAdditionalLight);
 
-                        return;
+                        //return;
+
+                        var materials = new List<Material>();
                         
                         foreach (var renderInfo in renderInfos)
                         {
@@ -77,22 +80,29 @@ namespace Arena.Client
                                 material = renderInfo.Material.Result;
                             }
 
-                            if (material != null)
+                            if (material != null && materials.Contains(material) == false)
                             {
-                                Debug.Log($"set keywords for {material.name}");
-                                foreach (var keyword in material.shader.keywordSpace.keywords)
+                                Debug.Log($"{material.name} =============================");
+                                foreach (var kwd in material.enabledKeywords)
                                 {
-                                    if (keyword.name.Equals(EnableAdditionalLightKeywordName))
-                                    {
-                                        Debug.Log($"set main light keywords for {material.name} to {settings.EnableMainLight}");
-                                        material.SetKeyword(keyword, settings.EnableMainLight);
-                                    }
-                                    else if(keyword.name.Equals(EnableAdditionalLightKeywordName))
-                                    {
-                                        Debug.Log($"set add light keywords for {material.name} to {settings.EnableAdditionalLight}");
-                                        material.SetKeyword(keyword, settings.EnableAdditionalLight);
-                                    }
+                                    Debug.Log($"{kwd.name}");   
                                 }
+                                Debug.Log("============================");
+                                
+                                //Debug.Log($"set keywords for {material.name}");
+                                // foreach (var keyword in material.shader.keywordSpace.keywords)
+                                // {
+                                //     if (keyword.name.Equals(EnableAdditionalLightKeywordName))
+                                //     {
+                                //         Debug.Log($"set main light keywords for {material.name} to {settings.EnableMainLight}");
+                                //         material.SetKeyword(keyword, settings.EnableMainLight);
+                                //     }
+                                //     else if(keyword.name.Equals(EnableAdditionalLightKeywordName))
+                                //     {
+                                //         Debug.Log($"set add light keywords for {material.name} to {settings.EnableAdditionalLight}");
+                                //         material.SetKeyword(keyword, settings.EnableAdditionalLight);
+                                //     }
+                                // }
                             }
                         }
                     

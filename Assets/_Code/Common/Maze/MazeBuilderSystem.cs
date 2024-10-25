@@ -989,6 +989,7 @@ namespace Arena.Maze
             }
 
             // туман
+            RenderSettings.fogMode = FogMode.Linear;
             RenderSettings.fog = true;
             RenderSettings.fogColor = builderData.FogColor;
             RenderSettings.fogStartDistance = builderData.FogStart;

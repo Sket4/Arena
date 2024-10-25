@@ -213,6 +213,7 @@ v2f vert (appdata v)
 float4 frag_default (v2f i) : SV_Target
 {
 	float4 col = tex2D(_MainTex, i.uv);
+	col.a = pow(col.a, 1.0 / 2.2);
 	return col;
 }	
 

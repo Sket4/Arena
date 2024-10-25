@@ -15,6 +15,10 @@ Shader "Arena/Terrain"
         [NoScaleOffset] _Normal3("Normal 3", 2D) = "white" {}
         [NoScaleOffset] _SAH3("Sm AO HGHT 3", 2D) = "black" {}
         
+        [NoScaleOffset] _Color4("Color 4", 2D) = "black" {}
+        [NoScaleOffset] _Normal4("Normal 4", 2D) = "white" {}
+        [NoScaleOffset] _SAH4("Sm AO HGHT 4", 2D) = "black" {}
+        
         //_Layers_Roughness("Layers roughness", Vector) = (0.5,0.5,0.5,0.5)
         _Layers_Tiling("Layers tiling", Vector) = (1,1,1,1)
         _HighlightRemove("Highlight remove", Float) = 0
@@ -56,11 +60,7 @@ Shader "Arena/Terrain"
             #pragma multi_compile _ _MAIN_LIGHT_SHADOWS
             #pragma multi_compile _ _MAIN_LIGHT_SHADOWS_CASCADE
             
-            #pragma shader_feature __ TG_TRANSPARENT
-            #pragma shader_feature TG_USE_ALPHACLIP
             #pragma multi_compile UG_QUALITY_LOW UG_QUALITY_MED UG_QUALITY_HIGH
-            #pragma shader_feature DIFFUSE_ALPHA_AS_SMOOTHNESS
-            #pragma shader_feature USE_SURFACE_BLEND
             //#pragma multi_compile_fwdbase
             #pragma multi_compile _ LIGHTMAP_ON
             #pragma multi_compile _ DIRLIGHTMAP_COMBINED
@@ -125,6 +125,10 @@ Shader "Arena/Terrain"
             sampler2D _Normal3;
             sampler2D _SAH3;
 
+            sampler2D _Color4;
+            sampler2D _Normal4;
+            sampler2D _SAH4;
+
 #if defined(DOTS_INSTANCING_ON)
             UNITY_DOTS_INSTANCING_START(UserPropertyMetadata)
                 //UNITY_DOTS_INSTANCED_PROP_OVERRIDE_REQUIRED(float4, tg_CommonInstanceData)
@@ -176,6 +180,7 @@ Shader "Arena/Terrain"
                 half2 layer1_uv = i.uv * _Layers_Tiling.x;
                 half2 layer2_uv = i.uv * _Layers_Tiling.y;
                 half2 layer3_uv = i.uv * _Layers_Tiling.z;
+                half2 layer4_uv = i.uv * _Layers_Tiling.w;
 
                 //layer3_uv += half2(0, i.positionWS_fog.x * 0.02);
                 
@@ -184,12 +189,14 @@ Shader "Arena/Terrain"
                 half4 color2 = tex2D(_Color2, layer2_uv); 
                 diffuse += color2 * splat.y;
                 diffuse += tex2D(_Color3, layer3_uv) * splat.z;
+                diffuse += tex2D(_Color4, layer4_uv) * splat.w;
 
             	
             	half3 normalTS = UnpackNormal(tex2D(_Normal1, layer1_uv)) * splat.r;
                 half3 normal2 = UnpackNormal(tex2D(_Normal2, layer2_uv)); 
                 normalTS += normal2 * splat.g;
                 normalTS += UnpackNormal(tex2D(_Normal3, layer3_uv)) * splat.b;
+                normalTS += UnpackNormal(tex2D(_Normal4, layer4_uv)) * splat.w;
 
                 normalTS = normalize(normalTS);
 
@@ -215,9 +222,10 @@ Shader "Arena/Terrain"
                 //diffuse.rgb = 1;
                 #if defined(UG_QUALITY_MED) || defined(UG_QUALITY_HIGH)
                 half4 Sm_AO_HGHT = tex2D(_SAH1, layer1_uv) * splat.r;
-                half4 Sm_AO_HGHT_2 = tex2D(_SAH2, layer1_uv);
+                half4 Sm_AO_HGHT_2 = tex2D(_SAH2, layer2_uv);
                 Sm_AO_HGHT += Sm_AO_HGHT_2 * splat.g;
-                Sm_AO_HGHT += tex2D(_SAH3, layer1_uv) * splat.b;
+                Sm_AO_HGHT += tex2D(_SAH3, layer3_uv) * splat.b;
+                Sm_AO_HGHT += tex2D(_SAH4, layer4_uv) * splat.w;
 
                 half3 viewDirWS = GetWorldSpaceNormalizeViewDir(i.positionWS_fog.xyz);
                 half roughness = 1.0 - Sm_AO_HGHT.r;

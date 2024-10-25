@@ -29,6 +29,11 @@ Shader "Arena/Environment"
         _SurfaceMap("Surface", 2D) = "white" {}
         _SurfaceBlendFactor("Blend factor", Float) = 1
         
+        [Toggle(USE_HEIGHT_FOG)]
+        _UseHeightFog("Use height fog", int) = 0
+        _FogHeight("Fog height", float) = 0.0
+        _HeightFogFade("Height fog fade", float) = 0.005
+        
         [HideInInspector][NoScaleOffset] unity_Lightmaps("unity_Lightmaps", 2DArray) = "" {}
         [HideInInspector][NoScaleOffset] unity_LightmapsInd("unity_LightmapsInd", 2DArray) = "" {} 
     }
@@ -64,10 +69,11 @@ Shader "Arena/Environment"
             #pragma multi_compile _ _MAIN_LIGHT_SHADOWS
             #pragma multi_compile _ _MAIN_LIGHT_SHADOWS_CASCADE
             
-            #pragma shader_feature TG_USE_ALPHACLIP
+            #pragma shader_feature_local TG_USE_ALPHACLIP
 			#pragma multi_compile UG_QUALITY_LOW UG_QUALITY_MED UG_QUALITY_HIGH
-            #pragma shader_feature USE_UNDERWATER
-            #pragma shader_feature USE_SURFACE_BLEND
+            #pragma shader_feature_local USE_UNDERWATER
+            #pragma shader_feature_local_fragment USE_SURFACE_BLEND
+            #pragma shader_feature_local_fragment USE_HEIGHT_FOG
             #pragma shader_feature ARENA_USE_MAIN_LIGHT
             #pragma shader_feature ARENA_USE_ADD_LIGHT
             //#pragma multi_compile_fwdbase
@@ -108,7 +114,6 @@ Shader "Arena/Environment"
             #pragma fragment ShadowPassFragment
 
             #pragma shader_feature_local _ALPHATEST_ON
-            #pragma shader_feature_local_fragment _SMOOTHNESS_TEXTURE_ALBEDO_CHANNEL_A
 
             //--------------------------------------
             // GPU Instancing
@@ -147,13 +152,8 @@ Shader "Arena/Environment"
             
             #pragma vertex UniversalVertexMeta
             #pragma fragment UniversalFragmentMetaCustom
-            #pragma shader_feature_local_fragment _SPECULAR_SETUP
-            #pragma shader_feature_local_fragment _EMISSION
-            #pragma shader_feature_local_fragment _METALLICSPECGLOSSMAP
             #pragma shader_feature_local_fragment _ALPHATEST_ON
-            #pragma shader_feature_local_fragment _ _SMOOTHNESS_TEXTURE_ALBEDO_CHANNEL_A
             #pragma shader_feature_local _ _DETAIL_MULX2 _DETAIL_SCALED
-            #pragma shader_feature_local_fragment _SPECGLOSSMAP
             #pragma shader_feature EDITOR_VISUALIZATION
             
             #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Core.hlsl" 

@@ -4,6 +4,9 @@ Shader "Arena/Vegetation"
     {
         [Toggle(DEBUG_VERTEX_COLOR)]
         _DebugVertexColor("Debug vertex color", float) = 0.0
+    	
+    	[Toggle(USE_BILLBOARD)]
+    	_UseBillboard("Use billboard", int) = 0
         
         [Toggle] _ZWrite("ZWrite", int) = 1
         [Toggle(TG_USE_ALPHACLIP)] _AlphaClip("Use alpha clipping", float) = 0.0
@@ -30,7 +33,10 @@ Shader "Arena/Vegetation"
     }
     SubShader
     {
-        Tags { "RenderType"="TransparentCutout" }
+        Tags 
+        { 
+            "RenderType"="TransparentCutout" 
+        }
         LOD 100
         
         Pass
@@ -50,9 +56,10 @@ Shader "Arena/Vegetation"
             // make fog work
             #pragma multi_compile_fog
             #pragma multi_compile _ DOTS_INSTANCING_ON
-            #pragma shader_feature __ DEBUG_VERTEX_COLOR
-            #pragma shader_feature __ TG_TRANSPARENT
-            #pragma shader_feature TG_USE_ALPHACLIP
+            #pragma shader_feature_local __ DEBUG_VERTEX_COLOR
+            #pragma shader_feature_local __ TG_TRANSPARENT
+            #pragma shader_feature_local TG_USE_ALPHACLIP
+            #pragma shader_feature_local_vertex __ USE_BILLBOARD
             #pragma multi_compile _ LIGHTMAP_ON
             #pragma multi_compile _ DIRLIGHTMAP_COMBINED
             #pragma multi_compile UG_QUALITY_LOW UG_QUALITY_MED UG_QUALITY_HIGH
@@ -113,6 +120,29 @@ Shader "Arena/Vegetation"
             UNITY_DOTS_INSTANCING_END(UserPropertyMetadata)
 #endif
 
+            void billboard(inout half3 vertex, inout half3 normal, inout half3 tangent)
+            {
+            	half3 normalDir = mul(UNITY_MATRIX_I_M, float4(_WorldSpaceCameraPos, 1));
+            	normalDir.y = 0;
+            	normalDir = normalize(normalDir);
+			    
+			    //break out the axis
+            	float3 up = float3(0,1,0);
+			    float3 right = normalize(cross(normalDir, up));
+			    float3 forward = normalDir;
+            	
+			    //get the rotation parts of the matrix
+			    float4x4 rotationMatrix = float4x4(right, 0,
+    				up, 0,
+    				forward, 0,
+    				0, 0, 0, 1);
+			    
+			    vertex = mul(rotationMatrix, vertex);
+
+            	normal = normalDir;
+            	tangent = right;
+            }
+
             v2f vert (appdata v)
             {
                 v2f o;
@@ -120,6 +150,7 @@ Shader "Arena/Vegetation"
                 UNITY_TRANSFER_INSTANCE_ID(v, o);
 
                 float3 positionOS = v.vertex;
+				
 
                 float4 time = _Time;
                 half wind = (sin(time.z + (positionOS.x + positionOS.z) * 2) + sin(time.y) + sin(time.w)) * 0.05 * v.color.x;
@@ -129,8 +160,12 @@ Shader "Arena/Vegetation"
                 
                 float3 normalOS = v.normal;
                 float4 tangentOS = v.tangent;
-                
-                VertexPositionInputs vertInputs = GetVertexPositionInputs(positionOS);    //This function calculates all the relative spaces of the objects vertices
+
+            	#if USE_BILLBOARD
+            	billboard(positionOS, normalOS, tangentOS.xyz);
+            	#endif
+
+                const VertexPositionInputs vertInputs = GetVertexPositionInputs(positionOS);    //This function calculates all the relative spaces of the objects vertices
                 o.vertex = vertInputs.positionCS;
                 o.positionWS_fog.xyz = vertInputs.positionWS;
 

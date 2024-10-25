@@ -26,6 +26,8 @@ Shader"Arena/Water"
         _UseCustomReflections("Use custom reflections", Float) = 0
         [NoScaleOffset] _CustomReflectionTex("Custom reflection  (HDR)", Cube) = "white" {}
         
+        [Toggle(USE_FOAM)]
+        _UseFoam("Use foam", Float) = 1.0
         [NoScaleOffset] _FoamGradientTex("Foam gradient", 2D) = "black" {}
         _FoamTex("Foam color", 2D) = "black" {}
         _FoamParameters("Foam params (x - scale, y - spd, zw - foam spd)", Vector) = (1,1,1,1)
@@ -56,6 +58,7 @@ Shader"Arena/Water"
             #pragma shader_feature __ USE_THIRD_WAVE
             #pragma shader_feature __ USE_LOWER_NORMAL_FOG
             #pragma shader_feature __ USE_FOG
+            #pragma shader_feature __ USE_FOAM
             #pragma multi_compile _ LIGHTMAP_ON
             #pragma multi_compile _ DIRLIGHTMAP_COMBINED
             
@@ -222,7 +225,7 @@ Shader"Arena/Water"
                 half3 viewDirWS = GetWorldSpaceNormalizeViewDir(i.positionWS_fog.xyz);
                 
                 float rim = saturate(dot(normalWS, viewDirWS) * _Rim_mult);
-                //rim = 1.0 - rim;
+                //rim = sqrt(rim);
 
 
                 half reflectionLOD = _Roughness * 4;
@@ -244,11 +247,13 @@ Shader"Arena/Water"
                 diffuse.rgb = lerp(reflColor, _BaseColor.rgb, rim);
                 diffuse.a = lerp(1, _BaseColor.a, rim);
 
+                #if USE_FOAM
                 half foam = tex2D(_FoamGradientTex, half2(i.foamData.r, 0)).r;
                 foam *= tex2D(_FoamTex, i.foamData.gb).r;
                 
-                
                 diffuse.rgb = lerp(diffuse.rgb, diffuse.rgb + foam.rrr, waterEdgeFadeInv);
+                #endif
+                
 
                 
 #if LIGHTMAP_ON

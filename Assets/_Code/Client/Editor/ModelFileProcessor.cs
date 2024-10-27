@@ -1,3 +1,4 @@
+using System.Linq;
 using UnityEditor;
 using UnityEngine;
 
@@ -7,6 +8,15 @@ namespace Arena.Editor
     {
         void OnPreprocessModel()
         {
+            var guid = AssetDatabase.GUIDFromAssetPath(assetPath);
+
+            var labels = AssetDatabase.GetLabels(guid);
+
+            if (labels.Contains("Custom-compression"))
+            {
+                return;
+            }
+            
             var modelImporter = assetImporter as ModelImporter;
             var compression = modelImporter.meshCompression;
             var assPath = assetPath.ToLower();

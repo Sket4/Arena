@@ -48,8 +48,8 @@ Shader"Arena/Character"
             #pragma shader_feature __ USE_LIGHTING
             #pragma shader_feature __ USE_RIM
             #pragma shader_feature __ USE_DISTANCE_LIGHT
-            #pragma shader_feature ARENA_USE_MAIN_LIGHT
-            #pragma shader_feature ARENA_USE_ADD_LIGHT
+            #pragma multi_compile __ ARENA_USE_MAIN_LIGHT
+            #pragma multi_compile __ ARENA_USE_ADD_LIGHT
             
             #pragma multi_compile _BONECOUNT_ONE _BONECOUNT_FOUR
             

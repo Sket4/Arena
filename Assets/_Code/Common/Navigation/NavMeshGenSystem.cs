@@ -7,6 +7,7 @@ using Unity.Mathematics;
 using Unity.Transforms;
 using UnityEngine;
 using UnityEngine.AI;
+using UnityEngine.Rendering;
 
 namespace Arena
 {
@@ -19,7 +20,7 @@ namespace Arena
         public Entity Entity;
     }
 
-    struct GeneratedNavMeshData : IComponentData
+    public struct GeneratedNavMeshData : IComponentData
     {
         public NavMeshDataInstance Instance;
     }
@@ -210,14 +211,12 @@ namespace Arena
                 var buildSettings = NavMesh.GetSettingsByIndex(0);
 
                 var navData = NavMeshBuilder.BuildNavMeshData(buildSettings, buildSources, bounds, Vector3.zero, Quaternion.identity);
-
                 var navDataHandle = NavMesh.AddNavMeshData(navData);
-
-
+                
                 var navMeshEntity = EntityManager.CreateEntity(typeof(GeneratedNavMeshData));
                 EntityManager.SetComponentData(navMeshEntity, new GeneratedNavMeshData
                 {
-                    Instance = navDataHandle
+                    Instance = navDataHandle,
                 });
 
             }).Run();

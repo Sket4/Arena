@@ -4459,6 +4459,63 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 400000, guid: ad1f5855a33f0694886cbd301d99cc40, type: 3}
   m_PrefabInstance: {fileID: 789077353}
   m_PrefabAsset: {fileID: 0}
+--- !u!1001 &806795797
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 2388819838117515484, guid: ce87c59e4c9124ae0927a23927eb2420, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2388819838117515484, guid: ce87c59e4c9124ae0927a23927eb2420, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2388819838117515484, guid: ce87c59e4c9124ae0927a23927eb2420, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2388819838117515484, guid: ce87c59e4c9124ae0927a23927eb2420, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 2388819838117515484, guid: ce87c59e4c9124ae0927a23927eb2420, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2388819838117515484, guid: ce87c59e4c9124ae0927a23927eb2420, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2388819838117515484, guid: ce87c59e4c9124ae0927a23927eb2420, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2388819838117515484, guid: ce87c59e4c9124ae0927a23927eb2420, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2388819838117515484, guid: ce87c59e4c9124ae0927a23927eb2420, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2388819838117515484, guid: ce87c59e4c9124ae0927a23927eb2420, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5473701723372417622, guid: ce87c59e4c9124ae0927a23927eb2420, type: 3}
+      propertyPath: m_Name
+      value: Map render and bounds
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: ce87c59e4c9124ae0927a23927eb2420, type: 3}
 --- !u!1 &813379691
 GameObject:
   m_ObjectHideFlags: 0
@@ -5955,6 +6012,7 @@ MonoBehaviour:
                   y: 1146271607
                   z: 2345391803
                   w: 3885033500
+            Name: 
             ConversionTargetOptions: 7
             variables:
             - rid: 5272189209054806136
@@ -5975,6 +6033,7 @@ MonoBehaviour:
             - rid: 5272189209054806150
             - rid: 5272189209054806152
           states: []
+          variables: []
         Name: cargo quest
     - rid: 5272189209054806124
       type: {class: StartEventNode, ns: TzarGames.GameCore.ScriptViz.Graph, asm: TzarGames.GameCore}
@@ -6327,6 +6386,7 @@ MonoBehaviour:
               w: 2057876469
         Name: _delayed_commands
         NetSyncEnabled: 0
+        IsHidden: 0
     - rid: 5272189209054806140
       type: {class: IntVariable, ns: TzarGames.GameCore.ScriptViz.Graph, asm: TzarGames.GameCore}
       data:
@@ -6339,6 +6399,7 @@ MonoBehaviour:
               w: 4091213600
         Name: collected cargo counter
         NetSyncEnabled: 0
+        IsHidden: 0
         Value: 0
     - rid: 5272189209054806142
       type: {class: MessageEventNode, ns: TzarGames.GameCore.ScriptViz.Graph, asm: TzarGames.GameCore}
@@ -7163,27 +7224,16 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   ConversionTargetOptions: -1
-  Value:
-    SkyboxMaterial:
-      Id:
-        GlobalId:
-          SceneObjectIdentifier0: 2100000
-          SceneObjectIdentifier1: 0
-          AssetGUID:
-            Value:
-              x: 3740543833
-              y: 1132329163
-              z: 3760997809
-              w: 3947772360
-          IdentifierType: 3
-        GenerationType: 1
-    FogStartDistance: 15
-    FogEndDistance: 600
-    FogEnabled: 1
-    FogDensity: 0.0024
-    FogMode: 1
-    FogColor: {r: 0.45098042, g: 0.6, b: 0.69803923, a: 1}
-    RealtimeShadowColor: {r: 0.41568628, g: 0.49411765, b: 0.5411765, a: 1}
+  ShaderSettings:
+    EnableMainLight: 0
+    EnableAdditionalLight: 0
+  UseSceneRenderSettings: 1
+  UseCameraSettings: 0
+  CameraSettings:
+    ChangeClearFlags: 0
+    ClearFlags: 0
+    ChangeClearColor: 0
+    ClearColor: {r: 0, g: 0, b: 0, a: 0}
 --- !u!4 &986990762
 Transform:
   m_ObjectHideFlags: 0
@@ -7987,6 +8037,7 @@ MonoBehaviour:
                   y: 1269514004
                   z: 2322244250
                   w: 3358440062
+            Name: 
             ConversionTargetOptions: 7
             variables:
             - rid: 6322991461510152213
@@ -7994,6 +8045,7 @@ MonoBehaviour:
             - rid: 6322991461510152211
             - rid: 6322991461510152241
           states: []
+          variables: []
         Name: gate trigger
     - rid: 6322991461510152211
       type: {class: OnTriggerEnterEventNode, ns: TzarGames.GameCore.ScriptViz.Graph, asm: TzarGames.GameCore}
@@ -8043,6 +8095,7 @@ MonoBehaviour:
               w: 228061322
         Name: _delayed_commands
         NetSyncEnabled: 0
+        IsHidden: 0
     - rid: 6322991461510152241
       type: {class: SendMessageCommandNode, ns: TzarGames.GameCore.ScriptViz.Graph, asm: TzarGames.GameCore}
       data:
@@ -8463,6 +8516,7 @@ MonoBehaviour:
                   y: 1715896786
                   z: 3324246168
                   w: 1821670479
+            Name: 
             ConversionTargetOptions: 7
             variables:
             - rid: 7591488142512226309
@@ -8473,6 +8527,7 @@ MonoBehaviour:
             - rid: 7591488142512226307
             - rid: 7591488142512226308
           states: []
+          variables: []
         Name: DoorHuge01
     - rid: 7591488142512226305
       type: {class: InteractionEventNode, ns: Arena.ScriptViz, asm: Arena.Common}
@@ -8648,6 +8703,7 @@ MonoBehaviour:
               w: 4291240293
         Name: _delayed_commands
         NetSyncEnabled: 0
+        IsHidden: 0
     - rid: 7591488142512226310
       type: {class: EntityVariable, ns: TzarGames.GameCore.ScriptViz.Graph, asm: TzarGames.GameCore}
       data:
@@ -8660,6 +8716,7 @@ MonoBehaviour:
               w: 3701778057
         Name: dialogue_companion_1_5686DFE1-A08F-4F74-A074-6B2B3C593DB0
         NetSyncEnabled: 0
+        IsHidden: 0
         Value: {fileID: 0}
     - rid: 7591488142512226311
       type: {class: EntityVariable, ns: TzarGames.GameCore.ScriptViz.Graph, asm: TzarGames.GameCore}
@@ -8673,6 +8730,7 @@ MonoBehaviour:
               w: 191659224
         Name: dialogue_companion_2_5686DFE1-A08F-4F74-A074-6B2B3C593DB0
         NetSyncEnabled: 0
+        IsHidden: 0
         Value: {fileID: 0}
 --- !u!114 &1197330067
 MonoBehaviour:
@@ -11139,6 +11197,7 @@ MonoBehaviour:
                   y: 1213926692
                   z: 2029231248
                   w: 3551642032
+            Name: 
             ConversionTargetOptions: 7
             variables:
             - rid: 5272189173235187720
@@ -11148,6 +11207,7 @@ MonoBehaviour:
             - rid: 5272189173235187719
             - rid: 5272189173235187724
           states: []
+          variables: []
         Name: Sun light
     - rid: 5272189173235187716
       type: {class: StartEventNode, ns: TzarGames.GameCore.ScriptViz.Graph, asm: TzarGames.GameCore}
@@ -11378,6 +11438,7 @@ MonoBehaviour:
               w: 503074843
         Name: _delayed_commands
         NetSyncEnabled: 0
+        IsHidden: 0
     - rid: 5272189173235187724
       type: {class: LogCommandNode, ns: TzarGames.GameCore.ScriptViz.Graph, asm: TzarGames.GameCore}
       data:
@@ -15473,6 +15534,7 @@ SceneRoots:
   - {fileID: 1980928860}
   - {fileID: 1618256126}
   - {fileID: 813379693}
+  - {fileID: 806795797}
   - {fileID: 353390744}
   - {fileID: 1719974623}
   - {fileID: 2114792641}

@@ -173,10 +173,17 @@ namespace Arena.Client
                     }
                     renderInfo.Material.UnityReference.WaitForCompletion();
 
-                    var texture = RenderTexture.GetTemporary(mapRenderData.MapTextureSize, mapRenderData.MapTextureSize, 0, RenderTextureFormat.Default, RenderTextureReadWrite.Default, 8);
-                    renderInfo.Material.Result.mainTexture = texture;
+                    if (renderInfo.Material.Result)
+                    {
+                        var texture = RenderTexture.GetTemporary(mapRenderData.MapTextureSize, mapRenderData.MapTextureSize, 0, RenderTextureFormat.Default, RenderTextureReadWrite.Default, 8);
+                        renderInfo.Material.Result.mainTexture = texture;
 
-                    renderMapCamera(mapRenderData, texture, l2w);
+                        renderMapCamera(mapRenderData, texture, l2w);    
+                    }
+                    else
+                    {
+                        Debug.Log("Failed to load map plane mesh material");
+                    }
                     
                     EntityManager.DestroyEntity(entity);
                 
@@ -187,11 +194,10 @@ namespace Arena.Client
         {
             await Task.Yield();
             await Task.Yield();
-            await Task.Yield();
 
             var rs = World.GetExistingSystemManaged<RenderingSystem>();
 
-            while (rs.LoadingMaterialCount > 0)
+            while (rs.LoadingMaterialCount > 0 || rs.LoadingMeshCount > 0)
             {
                 await Task.Yield();
                 
@@ -215,6 +221,9 @@ namespace Arena.Client
             camera.Render();
 
             camera.enabled = false;
+
+            var msgEntity = EntityManager.CreateEntity(typeof(Message));
+            EntityManager.SetComponentData(msgEntity, Message.CreateFromString("map rendered"));
             //Object.Destroy(cameroGO);
         }
         

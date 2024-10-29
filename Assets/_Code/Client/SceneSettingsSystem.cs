@@ -51,59 +51,57 @@ namespace Arena.Client
                         Debug.Log($"Set scene shader settings: enable main light: {settings.EnableMainLight}, enable add lights: {settings.EnableAdditionalLight}");
                         Shader.SetKeyword(EnableMainLightKeyword, settings.EnableMainLight);
                         Shader.SetKeyword(EnableAdditionalLightKeyword, settings.EnableAdditionalLight);
-
-                        //return;
-
-                        var materials = new List<Material>();
                         
-                        foreach (var renderInfo in renderInfos)
-                        {
-                            Material material;
-                            
-                            if (renderInfo.Material.LoadingMode ==
-                                CustomWeakObjectReference<Material>.LoadingModes.Default)
-                            {
-                                if (renderInfo.Material.LoadingStatus != ObjectLoadingStatus.Completed)
-                                {
-                                    if (renderInfo.Material.LoadingStatus == ObjectLoadingStatus.None)
-                                    {
-                                        renderInfo.Material.LoadAsync();    
-                                    }
-                                    renderInfo.Material.UnityReference.WaitForCompletion();    
-                                }
-                                
-                                material = renderInfo.Material.Result;
-                            }
-                            else
-                            {
-                                material = renderInfo.Material.Result;
-                            }
-
-                            if (material != null && materials.Contains(material) == false)
-                            {
-                                Debug.Log($"{material.name} =============================");
-                                foreach (var kwd in material.enabledKeywords)
-                                {
-                                    Debug.Log($"{kwd.name}");   
-                                }
-                                Debug.Log("============================");
-                                
-                                //Debug.Log($"set keywords for {material.name}");
-                                // foreach (var keyword in material.shader.keywordSpace.keywords)
-                                // {
-                                //     if (keyword.name.Equals(EnableAdditionalLightKeywordName))
-                                //     {
-                                //         Debug.Log($"set main light keywords for {material.name} to {settings.EnableMainLight}");
-                                //         material.SetKeyword(keyword, settings.EnableMainLight);
-                                //     }
-                                //     else if(keyword.name.Equals(EnableAdditionalLightKeywordName))
-                                //     {
-                                //         Debug.Log($"set add light keywords for {material.name} to {settings.EnableAdditionalLight}");
-                                //         material.SetKeyword(keyword, settings.EnableAdditionalLight);
-                                //     }
-                                // }
-                            }
-                        }
+                        // var materials = new List<Material>();
+                        //
+                        // foreach (var renderInfo in renderInfos)
+                        // {
+                        //     Material material;
+                        //     
+                        //     if (renderInfo.Material.LoadingMode ==
+                        //         CustomWeakObjectReference<Material>.LoadingModes.Default)
+                        //     {
+                        //         if (renderInfo.Material.LoadingStatus != ObjectLoadingStatus.Completed)
+                        //         {
+                        //             if (renderInfo.Material.LoadingStatus == ObjectLoadingStatus.None)
+                        //             {
+                        //                 renderInfo.Material.LoadAsync();    
+                        //             }
+                        //             renderInfo.Material.UnityReference.WaitForCompletion();    
+                        //         }
+                        //         
+                        //         material = renderInfo.Material.Result;
+                        //     }
+                        //     else
+                        //     {
+                        //         material = renderInfo.Material.Result;
+                        //     }
+                        //
+                        //     if (material != null && materials.Contains(material) == false)
+                        //     {
+                        //         Debug.Log($"{material.name} =============================");
+                        //         foreach (var kwd in material.enabledKeywords)
+                        //         {
+                        //             Debug.Log($"{kwd.name}");   
+                        //         }
+                        //         Debug.Log("============================");
+                        //         
+                        //         //Debug.Log($"set keywords for {material.name}");
+                        //         // foreach (var keyword in material.shader.keywordSpace.keywords)
+                        //         // {
+                        //         //     if (keyword.name.Equals(EnableAdditionalLightKeywordName))
+                        //         //     {
+                        //         //         Debug.Log($"set main light keywords for {material.name} to {settings.EnableMainLight}");
+                        //         //         material.SetKeyword(keyword, settings.EnableMainLight);
+                        //         //     }
+                        //         //     else if(keyword.name.Equals(EnableAdditionalLightKeywordName))
+                        //         //     {
+                        //         //         Debug.Log($"set add light keywords for {material.name} to {settings.EnableAdditionalLight}");
+                        //         //         material.SetKeyword(keyword, settings.EnableAdditionalLight);
+                        //         //     }
+                        //         // }
+                        //     }
+                        // }
                     
                     }).Run();    
             }

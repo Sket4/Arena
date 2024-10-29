@@ -187,7 +187,8 @@ PrefabInstance:
     - {fileID: 6588861032818067441, guid: 24123f7370a893b41bbaaae4bd1791d1, type: 3}
     - {fileID: -4082344848641969966, guid: 24123f7370a893b41bbaaae4bd1791d1, type: 3}
     - {fileID: 2498273239397044005, guid: 24123f7370a893b41bbaaae4bd1791d1, type: 3}
-    m_RemovedGameObjects: []
+    m_RemovedGameObjects:
+    - {fileID: 4421632149485194555, guid: 24123f7370a893b41bbaaae4bd1791d1, type: 3}
     m_AddedGameObjects:
     - targetCorrespondingSourceObject: {fileID: 6728593815283415402, guid: 24123f7370a893b41bbaaae4bd1791d1, type: 3}
       insertIndex: -1
@@ -310,6 +311,7 @@ MonoBehaviour:
         - id: scene
           pages: []
           states: []
+          variables: []
         - id: 00000000000000000000000000000000
           pages:
           - ID:
@@ -319,6 +321,7 @@ MonoBehaviour:
                   y: 1081606160
                   z: 671321522
                   w: 2434889874
+            Name: 
             ConversionTargetOptions: 7
             variables:
             - rid: 4877893603581755398
@@ -344,6 +347,7 @@ MonoBehaviour:
                   z: 2549514391
                   w: 2076929661
             Name: Running
+          variables: []
         Name: 
     - rid: 4877893603581755395
       type: {class: OnTargetChangedEventNode, ns: Arena.ScriptViz, asm: Arena.Common}
@@ -399,6 +403,7 @@ MonoBehaviour:
               w: 1725525615
         Name: _delayed_commands
         NetSyncEnabled: 0
+        IsHidden: 0
     - rid: 4877893603581755399
       type: {class: AddOrRemoveSpeedModificator, ns: TzarGames.GameCore.ScriptViz.Commands, asm: TzarGames.GameCore}
       data:

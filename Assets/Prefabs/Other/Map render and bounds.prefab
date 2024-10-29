@@ -17,7 +17,7 @@ GameObject:
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
-  m_StaticEditorFlags: 2147483647
+  m_StaticEditorFlags: 126
   m_IsActive: 1
 --- !u!4 &862540978779049376
 Transform:
@@ -42,12 +42,12 @@ MeshRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 224435341893698614}
   m_Enabled: 1
-  m_CastShadows: 1
+  m_CastShadows: 0
   m_ReceiveShadows: 1
   m_DynamicOccludee: 1
   m_StaticShadowCaster: 0
   m_MotionVectors: 1
-  m_LightProbeUsage: 1
+  m_LightProbeUsage: 0
   m_ReflectionProbeUsage: 1
   m_RayTracingMode: 2
   m_RayTraceProcedural: 0
@@ -114,6 +114,7 @@ GameObject:
   - component: {fileID: 4537766623254488237}
   - component: {fileID: 9174455579691584079}
   - component: {fileID: 4469547087404129860}
+  - component: {fileID: 5904429589358690428}
   m_Layer: 0
   m_Name: Map render camera
   m_TagString: Untagged
@@ -133,7 +134,8 @@ Transform:
   m_LocalPosition: {x: 250, y: 109.7, z: 250}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
-  m_Children: []
+  m_Children:
+  - {fileID: 7970839937350901454}
   m_Father: {fileID: 2388819838117515484}
   m_LocalEulerAnglesHint: {x: 90, y: 180, z: 0}
 --- !u!20 &4537766623254488237
@@ -250,6 +252,193 @@ MonoBehaviour:
     MapTextureSize: 1024
   Camera: {fileID: 4537766623254488237}
   mapPlaneMesh: {fileID: 3275626254713635477}
+--- !u!114 &5904429589358690428
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3067609588563715926}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 25d87a6b957a60841942c7e71e0c252f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ConversionTargetOptions: -1
+  Graph:
+    rid: 5272189704293056514
+  references:
+    version: 2
+    RefIds:
+    - rid: 5272189704293056514
+      type: {class: ScriptVizGraph, ns: TzarGames.GameCore.ScriptViz.Graph, asm: TzarGames.GameCore}
+      data:
+        pages: []
+        states: []
+        layers:
+        - id: scene
+          pages: []
+          states: []
+          variables: []
+        - id: ce87c59e4c9124ae0927a23927eb2420
+          pages:
+          - ID:
+              Value:
+                Value:
+                  x: 3243237256
+                  y: 1135563425
+                  z: 58031783
+                  w: 2775471743
+            Name: 
+            ConversionTargetOptions: 7
+            variables:
+            - rid: 5272189704293056518
+            nodes:
+            - rid: 5272189704293056516
+            - rid: 5272189704293056517
+            - rid: 5272189704293056531
+          states: []
+          variables: []
+        Name: 
+    - rid: 5272189704293056516
+      type: {class: MessageEventNode, ns: TzarGames.GameCore.ScriptViz.Graph, asm: TzarGames.GameCore}
+      data:
+        ID:
+          Value:
+            Value:
+              x: 358057580
+              y: 1180163847
+              z: 198469021
+              w: 2429678433
+        Position: {x: 628, y: 474.6667}
+        output:
+          ID:
+            Value:
+              Value:
+                x: 3548723854
+                y: 1133311916
+                z: 2244247688
+                w: 2328880544
+          ConnectedSocketIDs:
+          - Value:
+              Value:
+                x: 1712153767
+                y: 1203610452
+                z: 3243334334
+                w: 2434066531
+        Message:
+          ID: map rendered
+    - rid: 5272189704293056517
+      type: {class: DestroyCommandNode, ns: TzarGames.GameCore.ScriptViz.Graph, asm: TzarGames.GameCore}
+      data:
+        ID:
+          Value:
+            Value:
+              x: 67944583
+              y: 1126576036
+              z: 3274013364
+              w: 1278309111
+        Position: {x: 1176, y: 458}
+        input:
+          ID:
+            Value:
+              Value:
+                x: 1646766873
+                y: 1179842397
+                z: 1960266903
+                w: 1511843429
+          ConnectedSocketIDs:
+          - Value:
+              Value:
+                x: 3629262816
+                y: 1221570969
+                z: 3688257175
+                w: 31818974
+        output:
+          ID:
+            Value:
+              Value:
+                x: 2711571569
+                y: 1261380980
+                z: 4222043809
+                w: 646379551
+          ConnectedSocketIDs: []
+        Target:
+          ID:
+            Value:
+              Value:
+                x: 2749467774
+                y: 1339952474
+                z: 1123925426
+                w: 2242171355
+          ConnectedSocketIDs: []
+          AuthoringValue: {fileID: 8020525987163432690}
+    - rid: 5272189704293056518
+      type: {class: DynamicArrayVariable, ns: TzarGames.GameCore.ScriptViz.Graph, asm: TzarGames.GameCore}
+      data:
+        ID:
+          Value:
+            Value:
+              x: 3949928587
+              y: 1080634402
+              z: 3001829550
+              w: 633650979
+        Name: _delayed_commands
+        NetSyncEnabled: 0
+        IsHidden: 1
+    - rid: 5272189704293056531
+      type: {class: LogCommandNode, ns: TzarGames.GameCore.ScriptViz.Graph, asm: TzarGames.GameCore}
+      data:
+        ID:
+          Value:
+            Value:
+              x: 3724106942
+              y: 1079000890
+              z: 1820912786
+              w: 4234274691
+        Position: {x: 861.3334, y: 474.6667}
+        input:
+          ID:
+            Value:
+              Value:
+                x: 1712153767
+                y: 1203610452
+                z: 3243334334
+                w: 2434066531
+          ConnectedSocketIDs:
+          - Value:
+              Value:
+                x: 3548723854
+                y: 1133311916
+                z: 2244247688
+                w: 2328880544
+        output:
+          ID:
+            Value:
+              Value:
+                x: 3629262816
+                y: 1221570969
+                z: 3688257175
+                w: 31818974
+          ConnectedSocketIDs:
+          - Value:
+              Value:
+                x: 1646766873
+                y: 1179842397
+                z: 1960266903
+                w: 1511843429
+        EntitySocket:
+          ID:
+            Value:
+              Value:
+                x: 3204994189
+                y: 1174506698
+                z: 1831894962
+                w: 2511493313
+          ConnectedSocketIDs: []
+          AuthoringValue: {fileID: 0}
+        Message: map rendered!
+        LogType: 3
 --- !u!1 &5473701723372417622
 GameObject:
   m_ObjectHideFlags: 0
@@ -283,3 +472,86 @@ Transform:
   - {fileID: 1579033647613629395}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &8020525987163432690
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 7970839937350901454}
+  - component: {fileID: 691263797134993140}
+  - component: {fileID: 5491105774077583037}
+  m_Layer: 0
+  m_Name: Borders
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 2147483647
+  m_IsActive: 1
+--- !u!4 &7970839937350901454
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8020525987163432690}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -0.7071068, z: 0.7071068, w: 0}
+  m_LocalPosition: {x: 0, y: 0, z: 1}
+  m_LocalScale: {x: 50, y: 1, z: 50}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1579033647613629395}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!23 &691263797134993140
+MeshRenderer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8020525987163432690}
+  m_Enabled: 1
+  m_CastShadows: 1
+  m_ReceiveShadows: 1
+  m_DynamicOccludee: 1
+  m_StaticShadowCaster: 0
+  m_MotionVectors: 1
+  m_LightProbeUsage: 1
+  m_ReflectionProbeUsage: 1
+  m_RayTracingMode: 2
+  m_RayTraceProcedural: 0
+  m_RenderingLayerMask: 1
+  m_RendererPriority: 0
+  m_Materials:
+  - {fileID: 2100000, guid: 372d19e6969fa8748b185aa609e10b67, type: 2}
+  m_StaticBatchInfo:
+    firstSubMesh: 0
+    subMeshCount: 0
+  m_StaticBatchRoot: {fileID: 0}
+  m_ProbeAnchor: {fileID: 0}
+  m_LightProbeVolumeOverride: {fileID: 0}
+  m_ScaleInLightmap: 1
+  m_ReceiveGI: 1
+  m_PreserveUVs: 0
+  m_IgnoreNormalsForChartDetection: 0
+  m_ImportantGI: 0
+  m_StitchLightmapSeams: 1
+  m_SelectedEditorRenderState: 3
+  m_MinimumChartSize: 4
+  m_AutoUVMaxDistance: 0.5
+  m_AutoUVMaxAngle: 89
+  m_LightmapParameters: {fileID: 0}
+  m_SortingLayerID: 0
+  m_SortingLayer: 0
+  m_SortingOrder: 0
+  m_AdditionalVertexStreams: {fileID: 0}
+--- !u!33 &5491105774077583037
+MeshFilter:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8020525987163432690}
+  m_Mesh: {fileID: 4300000, guid: 9854153f3ce398547bf9e36128b5416c, type: 2}

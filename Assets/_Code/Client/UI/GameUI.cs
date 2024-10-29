@@ -966,7 +966,7 @@ namespace Arena.Client.UI
         {
             var renderingSystem = manager.World.GetExistingSystemManaged<TzarGames.Rendering.RenderingSystem>();
 
-            while (renderingSystem.LoadingMaterialCount > 0 && renderingSystem.LoadingMeshCount > 0)
+            while (renderingSystem.LoadingMaterialCount > 0 || renderingSystem.LoadingMeshCount > 0)
             {
                 yield return null;
             }

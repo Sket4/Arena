@@ -3,7 +3,7 @@ using UnityEngine;
 
 namespace Arena.Editor
 {
-    public class ModelFileProcessor1 : AssetPostprocessor
+    public class ModelFileProcessor : AssetPostprocessor
     {
         void OnPreprocessModel()
         {

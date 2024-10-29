@@ -1,10 +1,15 @@
-using Arena.Quests;
+using System.Threading.Tasks;
+using Arena.Client.MapWorks;
 using Arena.ScriptViz;
 using TzarGames.GameCore;
+using TzarGames.Rendering;
 using Unity.Collections;
 using Unity.Entities;
+using Unity.Entities.Content;
+using Unity.Transforms;
 using UnityEngine;
 using UnityEngine.AI;
+using UnityEngine.Experimental.Rendering;
 using UnityEngine.Rendering;
 
 namespace Arena.Client
@@ -153,6 +158,64 @@ namespace Arena.Client
                     mapCamera.SetBounds(bounds.Bounds);   
                 }
             }).Run();
+            
+            Entities
+                .WithoutBurst()
+                .WithStructuralChanges()
+                .ForEach((Entity entity, in MapRender mapRenderData, in LocalToWorld l2w) =>
+                {
+                    Debug.Log("Render map");
+                    
+                    var renderInfo = EntityManager.GetSharedComponentManaged<RenderInfo>(mapRenderData.MapPlaneMesh);
+                    if (renderInfo.Material.LoadingStatus == ObjectLoadingStatus.None)
+                    {
+                        renderInfo.Material.LoadAsync();
+                    }
+                    renderInfo.Material.UnityReference.WaitForCompletion();
+
+                    var texture = RenderTexture.GetTemporary(mapRenderData.MapTextureSize, mapRenderData.MapTextureSize, 0, RenderTextureFormat.Default, RenderTextureReadWrite.Default, 8);
+                    renderInfo.Material.Result.mainTexture = texture;
+
+                    renderMapCamera(mapRenderData, texture, l2w);
+                    
+                    EntityManager.DestroyEntity(entity);
+                
+            }).Run();
+        }
+
+        async void renderMapCamera(MapRender mapRenderData, RenderTexture texture, LocalToWorld l2w)
+        {
+            await Task.Yield();
+            await Task.Yield();
+            await Task.Yield();
+
+            var rs = World.GetExistingSystemManaged<RenderingSystem>();
+
+            while (rs.LoadingMaterialCount > 0)
+            {
+                await Task.Yield();
+                
+                if (World.IsCreated == false)
+                {
+                    return;
+                }
+            }
+            
+            var cameroGO = new GameObject("map render camera");
+            var camera = cameroGO.AddComponent<Camera>();
+            camera.cullingMask = mapRenderData.MapRenderLayers;
+            camera.orthographicSize = mapRenderData.MapCameraOrthoSize;
+            camera.orthographic = true;
+            camera.targetTexture = texture;
+            camera.backgroundColor = Color.black;
+            camera.clearFlags = CameraClearFlags.SolidColor;
+            camera.transform.position = l2w.Position;
+            camera.transform.rotation = l2w.Rotation;
+                    
+            camera.Render();
+
+            camera.enabled = false;
+            //Object.Destroy(cameroGO);
         }
         
         static Mesh navMeshToMesh()

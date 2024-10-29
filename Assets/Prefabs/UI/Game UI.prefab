@@ -17463,7 +17463,7 @@ MonoBehaviour:
   m_HandleRect: {fileID: 224058968983430232}
   m_Direction: 0
   m_Value: 1
-  m_Size: 1
+  m_Size: 0.9999997
   m_NumberOfSteps: 0
   m_OnValueChanged:
     m_PersistentCalls:
@@ -18623,15 +18623,41 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+      - m_Target: {fileID: 1186664076948024}
+        m_TargetAssemblyTypeName: UnityEngine.GameObject, UnityEngine
+        m_MethodName: SetActive
+        m_Mode: 6
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 1
+        m_CallState: 2
   _onHidden:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 1186664076948024}
+        m_TargetAssemblyTypeName: UnityEngine.GameObject, UnityEngine
+        m_MethodName: SetActive
+        m_Mode: 6
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
   updateInterval: 0.1
   targetInfoPanel: {fileID: 224773342647254374}
   targetHealthSlider: {fileID: 114123306200499016}
   targetNameText: {fileID: 114247524018009480}
   targetFormatString: {fileID: 114250045527338206, guid: ee4b7d38abc2e6743ae00ac4ab2414f2, type: 2}
   goldText: {fileID: 114379569481676706}
+  mapCameraPrefab: {fileID: -7635363934290112917, guid: 96f64c7f0b4814d9e94009d28d9bbefa, type: 3}
+  miniMapImage: {fileID: 114101404547268404}
   rubyText: {fileID: 114403490404219300}
   chatWindow: {fileID: 1867830464049250}
   skillWindow: {fileID: 1765973796498284}
@@ -19648,7 +19674,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &224687662120440634
 RectTransform:
   m_ObjectHideFlags: 0
@@ -20047,7 +20073,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: 20461a11ed71534488a1bdc1db84b180, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 62620fd9875466c43a5d2560b39d7ee2, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -20118,7 +20144,7 @@ MonoBehaviour:
         m_MethodName: PlayOneShot
         m_Mode: 2
         m_Arguments:
-          m_ObjectArgument: {fileID: 8300000, guid: ca056d4afe5e74498a0798f16e0e866d, type: 3}
+          m_ObjectArgument: {fileID: 8300000, guid: 3101e0ebc6e8dc34d81ffa6346061644, type: 3}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.AudioClip, UnityEngine
           m_IntArgument: 0
           m_FloatArgument: 0
@@ -22994,7 +23020,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: 3b38642fc50e60a4387337ba7f1f24f0, type: 3}
+  m_Sprite: {fileID: 21300000, guid: e936ad2017b527b40bb667e579926343, type: 3}
   m_Type: 1
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -38175,7 +38201,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: -0.0009765625, y: 0}
+  m_AnchoredPosition: {x: -0.0009765625, y: 0.000030517578}
   m_SizeDelta: {x: 0, y: -450}
   m_Pivot: {x: 0.5, y: 1}
 --- !u!114 &114925106892530298
@@ -54608,8 +54634,8 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 114295712573695786}
   m_HandleRect: {fileID: 224199237029499112}
   m_Direction: 2
-  m_Value: 0
-  m_Size: 1
+  m_Value: 1
+  m_Size: 0.99998224
   m_NumberOfSteps: 0
   m_OnValueChanged:
     m_PersistentCalls:
@@ -60288,7 +60314,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 1, g: 1, b: 1, a: 0.78431374}
+  m_Color: {r: 1, g: 1, b: 1, a: 0.7294118}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
@@ -60324,7 +60350,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls: []
   mapRect: {fileID: 224823631885039778}
-  graphic: {fileID: 114097048608477462}
+  mapImage: {fileID: 114097048608477462}
 --- !u!1 &1800327808674294
 GameObject:
   m_ObjectHideFlags: 0
@@ -65303,7 +65329,7 @@ RectTransform:
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: -12, y: -12}
+  m_SizeDelta: {x: -30, y: -30}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &222057040026807616
 CanvasRenderer:
@@ -65333,7 +65359,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: b3941ab494a0eb74f8571ab13ae734ff, type: 3}
+  m_Sprite: {fileID: 21300000, guid: e6f2c2bcc22778b44bbc5075b1986a0a, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -72904,7 +72930,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: b3941ab494a0eb74f8571ab13ae734ff, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 5f8507f4f48482f4b962460c650f16ee, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -72921,7 +72947,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1956598837308912}
-  m_Enabled: 0
+  m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 4e29b1a8efbd4b44bb3f3716e73f07ff, type: 3}
   m_Name: 
@@ -85572,7 +85598,7 @@ PrefabInstance:
       objectReference: {fileID: 7594426792561590381, guid: ab420879fcccd4595b7cfc9b8202874e, type: 2}
     - target: {fileID: 7660070006005476358, guid: 42d063f7ebbf6e14c9d53b2216a3385b, type: 3}
       propertyPath: m_Value
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 7660412584939740704, guid: 42d063f7ebbf6e14c9d53b2216a3385b, type: 3}
       propertyPath: m_fontSize

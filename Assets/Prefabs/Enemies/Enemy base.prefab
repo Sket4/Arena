@@ -47,6 +47,10 @@ PrefabInstance:
       propertyPath: CharacterBody.UseInterpolation
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 181841168699449006, guid: 24123f7370a893b41bbaaae4bd1791d1, type: 3}
+      propertyPath: m_Materials.Array.data[0]
+      value: 
+      objectReference: {fileID: 2100000, guid: 4e68a90901f264b86838e4f388206163, type: 2}
     - target: {fileID: 1415852907774143442, guid: 24123f7370a893b41bbaaae4bd1791d1, type: 3}
       propertyPath: m_Name
       value: Enemy base
@@ -266,6 +270,7 @@ MonoBehaviour:
                   y: 1197615322
                   z: 2535499137
                   w: 3492798462
+            Name: 
             ConversionTargetOptions: 7
             variables:
             - rid: 4877893344000475143
@@ -313,6 +318,7 @@ MonoBehaviour:
                   y: 1088687791
                   z: 2105595551
                   w: 813529680
+            Name: 
             ConversionTargetOptions: 7
             variables:
             - rid: 4877893603581756372
@@ -356,9 +362,11 @@ MonoBehaviour:
                   z: 463934655
                   w: 483066153
             Name: "\u0423\u043C\u0435\u043D\u0438\u0435"
+          variables: []
         - id: scene
           pages: []
           states: []
+          variables: []
         Name: 
     - rid: 4877893344000475139
       type: {class: DeadEventNodeBase, ns: TzarGames.GameCore.ScriptViz.Commands, asm: TzarGames.GameCore}
@@ -424,6 +432,7 @@ MonoBehaviour:
               w: 258786383
         Name: _delayed_commands
         NetSyncEnabled: 0
+        IsHidden: 0
     - rid: 4877893344000475154
       type: {class: GetSelfNode, ns: TzarGames.GameCore.ScriptViz.Graph, asm: TzarGames.GameCore}
       data:
@@ -892,6 +901,7 @@ MonoBehaviour:
               w: 2287761262
         Name: Attack movement speed multiplier
         NetSyncEnabled: 0
+        IsHidden: 0
         Value: 2
     - rid: 4877893400282267658
       type: {class: EnableFollowOnDetectNode, ns: TzarGames.GameCore.ScriptViz.Commands, asm: TzarGames.GameCore}
@@ -1599,6 +1609,7 @@ MonoBehaviour:
               w: 3147300657
         Name: last target
         NetSyncEnabled: 0
+        IsHidden: 0
         Value: {fileID: 0}
     - rid: 4877893546153083040
       type: {class: SetEntityVarCommandNode, ns: TzarGames.GameCore.ScriptViz.Graph, asm: TzarGames.GameCore}
@@ -2008,6 +2019,7 @@ MonoBehaviour:
               w: 3698341474
         Name: send death message
         NetSyncEnabled: 0
+        IsHidden: 0
         Value: 0
     - rid: 4877893603581756374
       type: {class: MessageVariable, ns: TzarGames.GameCore.ScriptViz.Graph, asm: TzarGames.GameCore}
@@ -2021,6 +2033,7 @@ MonoBehaviour:
               w: 2395640485
         Name: death message
         NetSyncEnabled: 0
+        IsHidden: 0
         Value: enemy dead
     - rid: 4877893603581756375
       type: {class: GetBoolCommandNode, ns: TzarGames.GameCore.ScriptViz.Graph, asm: TzarGames.GameCore}

@@ -13,19 +13,20 @@ namespace Arena.Client.UI
         RectTransform mapRect = default;
 
         [SerializeField]
-        Graphic graphic = default;
+        RawImage mapImage = default;
 
         Map map;
 
         protected override void OnSetup(Entity ownerEntity, Entity uiEntity, EntityManager manager)
         {
             base.OnSetup(ownerEntity, uiEntity, manager);
-            map = FindObjectOfType<Map>();
+            map = FindObjectOfType<PlayerCharacterUI>().GetOrCreateMapCamera(ownerEntity, manager);
+            mapImage.texture = map.CameraTexture;
         }
 
         public void OnDrag(PointerEventData eventData)
         {
-            var rectWidth = mapRect.rect.width * graphic.canvas.scaleFactor;
+            var rectWidth = mapRect.rect.width * mapImage.canvas.scaleFactor;
             var delta = -eventData.delta;
             var cameraSize = map.Camera.orthographicSize * 2;
 

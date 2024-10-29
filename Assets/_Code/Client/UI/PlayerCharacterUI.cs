@@ -17,6 +17,9 @@ namespace Arena.Client.UI
         [SerializeField]
         TextUI goldText = default;
 
+        [SerializeField] private Map mapCameraPrefab;
+        [SerializeField] private RawImage miniMapImage;
+
         [SerializeField] private TextUI rubyText = default;
         
         [SerializeField] private GameObject chatWindow = default;
@@ -56,6 +59,8 @@ namespace Arena.Client.UI
         [SerializeField] private TextUI questInfoText = default;
 
         public NotificationUI Notifications => notification;
+
+        private Map mapCamera;
         
         public TextUI QuestInfoText
         {
@@ -110,12 +115,26 @@ namespace Arena.Client.UI
             }
         }
 
+        public Map GetOrCreateMapCamera(Entity targetEntity, EntityManager em)
+        {
+            if (mapCamera)
+            {
+                return mapCamera;
+            }
+            mapCamera = Object.Instantiate(mapCameraPrefab);
+            mapCamera.Setup(targetEntity, em);
+            return mapCamera;
+        }
+
         protected override void OnSetup(Entity ownerEntity, Entity uiEntity, EntityManager manager)
         {
             base.OnSetup(ownerEntity, uiEntity, manager);
             //questInfoText.text = "";
             interaction.Setup(ownerEntity, uiEntity, manager);
             clientSystem = manager.World.GetExistingSystemManaged<TzarGames.MultiplayerKit.Client.ClientSystem>();
+
+            var map = GetOrCreateMapCamera(ownerEntity, manager);
+            miniMapImage.texture = map.CameraTexture;
         }
 
 		private void OnDestroy()

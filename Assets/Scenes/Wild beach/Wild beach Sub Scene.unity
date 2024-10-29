@@ -371,6 +371,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 8535920155759334802, guid: ae14b636b4905364cafd9d28ac5aeb2c, type: 3}
+      propertyPath: EnabledByDefault
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -379,6 +383,11 @@ PrefabInstance:
 --- !u!4 &90901888 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 3070540354502297107, guid: ae14b636b4905364cafd9d28ac5aeb2c, type: 3}
+  m_PrefabInstance: {fileID: 90901887}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1 &90901889 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 2438435880221596841, guid: ae14b636b4905364cafd9d28ac5aeb2c, type: 3}
   m_PrefabInstance: {fileID: 90901887}
   m_PrefabAsset: {fileID: 0}
 --- !u!1001 &101166896
@@ -5931,6 +5940,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 8535920155759334802, guid: ae14b636b4905364cafd9d28ac5aeb2c, type: 3}
+      propertyPath: EnabledByDefault
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -5939,6 +5952,11 @@ PrefabInstance:
 --- !u!4 &905721628 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 3070540354502297107, guid: ae14b636b4905364cafd9d28ac5aeb2c, type: 3}
+  m_PrefabInstance: {fileID: 905721627}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1 &905721629 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 2438435880221596841, guid: ae14b636b4905364cafd9d28ac5aeb2c, type: 3}
   m_PrefabInstance: {fileID: 905721627}
   m_PrefabAsset: {fileID: 0}
 --- !u!1 &918573080
@@ -6032,6 +6050,10 @@ MonoBehaviour:
             - rid: 5272189209054806148
             - rid: 5272189209054806150
             - rid: 5272189209054806152
+            - rid: 5272189704293056552
+            - rid: 5272189704293056553
+            - rid: 5272189704293056556
+            - rid: 5272189704293056557
           states: []
           variables: []
         Name: cargo quest
@@ -6552,16 +6574,16 @@ MonoBehaviour:
           ConnectedSocketIDs:
           - Value:
               Value:
-                x: 1941015140
-                y: 1223552435
-                z: 1401902010
-                w: 3098361357
-          - Value:
-              Value:
                 x: 2379506909
                 y: 1285931273
                 z: 514502570
                 w: 1022174729
+          - Value:
+              Value:
+                x: 1941015140
+                y: 1223552435
+                z: 1401902010
+                w: 3098361357
           Value: 0
     - rid: 5272189209054806146
       type: {class: GetIntVarCommandNode, ns: TzarGames.GameCore.ScriptViz.Graph, asm: TzarGames.GameCore}
@@ -6637,7 +6659,7 @@ MonoBehaviour:
               y: 1234507527
               z: 2854885515
               w: 1970454294
-        Position: {x: 743.3333, y: 418.66666}
+        Position: {x: 743.3334, y: 418.66666}
         input:
           ID:
             Value:
@@ -6810,16 +6832,16 @@ MonoBehaviour:
           ConnectedSocketIDs:
           - Value:
               Value:
-                x: 1208134436
-                y: 1131358894
-                z: 3068454305
-                w: 1955335421
-          - Value:
-              Value:
                 x: 3530694573
                 y: 1271351661
                 z: 1817442751
                 w: 598170752
+          - Value:
+              Value:
+                x: 1208134436
+                y: 1131358894
+                z: 3068454305
+                w: 1955335421
         output:
           ID:
             Value:
@@ -6882,6 +6904,211 @@ MonoBehaviour:
           ConnectedSocketIDs: []
         QuestKey: {fileID: 7521580337438093113, guid: 709759d6d50fadb4ab72406e658ed872, type: 2}
         State: 1
+    - rid: 5272189704293056552
+      type: {class: MessageEventNode, ns: TzarGames.GameCore.ScriptViz.Graph, asm: TzarGames.GameCore}
+      data:
+        ID:
+          Value:
+            Value:
+              x: 2407378207
+              y: 1151992871
+              z: 2457003703
+              w: 1451745742
+        Position: {x: 0, y: 784}
+        output:
+          ID:
+            Value:
+              Value:
+                x: 3618286389
+                y: 1120169361
+                z: 955945915
+                w: 4076758319
+          ConnectedSocketIDs:
+          - Value:
+              Value:
+                x: 562167823
+                y: 1162004998
+                z: 1084301185
+                w: 19714111
+        Message:
+          ID: elite crab dead
+    - rid: 5272189704293056553
+      type: {class: EnableInteractiveObjectNode, ns: TzarGames.GameCore.ScriptViz.Commands, asm: TzarGames.GameCore}
+      data:
+        ID:
+          Value:
+            Value:
+              x: 1525113129
+              y: 1077418656
+              z: 2494977947
+              w: 308055616
+        Position: {x: 326, y: 784}
+        input:
+          ID:
+            Value:
+              Value:
+                x: 562167823
+                y: 1162004998
+                z: 1084301185
+                w: 19714111
+          ConnectedSocketIDs:
+          - Value:
+              Value:
+                x: 3618286389
+                y: 1120169361
+                z: 955945915
+                w: 4076758319
+        output:
+          ID:
+            Value:
+              Value:
+                x: 914928272
+                y: 1268508779
+                z: 187828628
+                w: 2548639030
+          ConnectedSocketIDs:
+          - Value:
+              Value:
+                x: 4070035390
+                y: 1107512468
+                z: 993766816
+                w: 2081646256
+        TargetEntity:
+          ID:
+            Value:
+              Value:
+                x: 2821697631
+                y: 1221533748
+                z: 2549909692
+                w: 295604913
+          ConnectedSocketIDs: []
+          AuthoringValue: {fileID: 1843223837}
+        Enable:
+          ID:
+            Value:
+              Value:
+                x: 1624709881
+                y: 1296098371
+                z: 3054716548
+                w: 604466911
+          ConnectedSocketIDs: []
+          Value: 1
+    - rid: 5272189704293056556
+      type: {class: EnableInteractiveObjectNode, ns: TzarGames.GameCore.ScriptViz.Commands, asm: TzarGames.GameCore}
+      data:
+        ID:
+          Value:
+            Value:
+              x: 4181849530
+              y: 1177738392
+              z: 556450975
+              w: 1145189005
+        Position: {x: 586, y: 784}
+        input:
+          ID:
+            Value:
+              Value:
+                x: 4070035390
+                y: 1107512468
+                z: 993766816
+                w: 2081646256
+          ConnectedSocketIDs:
+          - Value:
+              Value:
+                x: 914928272
+                y: 1268508779
+                z: 187828628
+                w: 2548639030
+        output:
+          ID:
+            Value:
+              Value:
+                x: 1402049811
+                y: 1079001997
+                z: 3221600163
+                w: 1502921085
+          ConnectedSocketIDs:
+          - Value:
+              Value:
+                x: 2175540647
+                y: 1257606426
+                z: 1723473082
+                w: 3970854042
+        TargetEntity:
+          ID:
+            Value:
+              Value:
+                x: 4117211609
+                y: 1242491780
+                z: 2890935703
+                w: 2955211452
+          ConnectedSocketIDs: []
+          AuthoringValue: {fileID: 905721629}
+        Enable:
+          ID:
+            Value:
+              Value:
+                x: 220671564
+                y: 1284588238
+                z: 2991688333
+                w: 619768889
+          ConnectedSocketIDs: []
+          Value: 1
+    - rid: 5272189704293056557
+      type: {class: EnableInteractiveObjectNode, ns: TzarGames.GameCore.ScriptViz.Commands, asm: TzarGames.GameCore}
+      data:
+        ID:
+          Value:
+            Value:
+              x: 1410328175
+              y: 1098582920
+              z: 2681903236
+              w: 2944207711
+        Position: {x: 858.6666, y: 784}
+        input:
+          ID:
+            Value:
+              Value:
+                x: 2175540647
+                y: 1257606426
+                z: 1723473082
+                w: 3970854042
+          ConnectedSocketIDs:
+          - Value:
+              Value:
+                x: 1402049811
+                y: 1079001997
+                z: 3221600163
+                w: 1502921085
+        output:
+          ID:
+            Value:
+              Value:
+                x: 3289945051
+                y: 1274620720
+                z: 2416898960
+                w: 2849384748
+          ConnectedSocketIDs: []
+        TargetEntity:
+          ID:
+            Value:
+              Value:
+                x: 4173613719
+                y: 1322682633
+                z: 2557543318
+                w: 4073473964
+          ConnectedSocketIDs: []
+          AuthoringValue: {fileID: 90901889}
+        Enable:
+          ID:
+            Value:
+              Value:
+                x: 1204249392
+                y: 1278986513
+                z: 3856129667
+                w: 1072863368
+          ConnectedSocketIDs: []
+          Value: 1
 --- !u!114 &926232915
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -12240,6 +12467,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 8535920155759334802, guid: ae14b636b4905364cafd9d28ac5aeb2c, type: 3}
+      propertyPath: EnabledByDefault
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -12248,6 +12479,11 @@ PrefabInstance:
 --- !u!4 &1843223836 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 3070540354502297107, guid: ae14b636b4905364cafd9d28ac5aeb2c, type: 3}
+  m_PrefabInstance: {fileID: 1843223835}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1 &1843223837 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 2438435880221596841, guid: ae14b636b4905364cafd9d28ac5aeb2c, type: 3}
   m_PrefabInstance: {fileID: 1843223835}
   m_PrefabAsset: {fileID: 0}
 --- !u!1 &1846266587
@@ -13651,6 +13887,71 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 3070540354502297107, guid: ae14b636b4905364cafd9d28ac5aeb2c, type: 3}
   m_PrefabInstance: {fileID: 2034838980}
   m_PrefabAsset: {fileID: 0}
+--- !u!1001 &2041447816
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 4029334555802333318, guid: 5dd51dd2d0d9b1d4584cd7de9ac45514, type: 3}
+      propertyPath: m_Name
+      value: Crab elite monster
+      objectReference: {fileID: 0}
+    - target: {fileID: 5537238769002533636, guid: 5dd51dd2d0d9b1d4584cd7de9ac45514, type: 3}
+      propertyPath: managedReferences[4877893603581756372].Value
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 5537238769002533636, guid: 5dd51dd2d0d9b1d4584cd7de9ac45514, type: 3}
+      propertyPath: managedReferences[4877893603581756374].Value
+      value: elite crab dead
+      objectReference: {fileID: 0}
+    - target: {fileID: 8731855932994265662, guid: 5dd51dd2d0d9b1d4584cd7de9ac45514, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 25.68
+      objectReference: {fileID: 0}
+    - target: {fileID: 8731855932994265662, guid: 5dd51dd2d0d9b1d4584cd7de9ac45514, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 16.059334
+      objectReference: {fileID: 0}
+    - target: {fileID: 8731855932994265662, guid: 5dd51dd2d0d9b1d4584cd7de9ac45514, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 21.97
+      objectReference: {fileID: 0}
+    - target: {fileID: 8731855932994265662, guid: 5dd51dd2d0d9b1d4584cd7de9ac45514, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8731855932994265662, guid: 5dd51dd2d0d9b1d4584cd7de9ac45514, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8731855932994265662, guid: 5dd51dd2d0d9b1d4584cd7de9ac45514, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8731855932994265662, guid: 5dd51dd2d0d9b1d4584cd7de9ac45514, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8731855932994265662, guid: 5dd51dd2d0d9b1d4584cd7de9ac45514, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8731855932994265662, guid: 5dd51dd2d0d9b1d4584cd7de9ac45514, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8731855932994265662, guid: 5dd51dd2d0d9b1d4584cd7de9ac45514, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: 5dd51dd2d0d9b1d4584cd7de9ac45514, type: 3}
 --- !u!1001 &2049628817
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -15566,6 +15867,7 @@ SceneRoots:
   - {fileID: 943203856}
   - {fileID: 347098031}
   - {fileID: 2029945178}
+  - {fileID: 2041447816}
   - {fileID: 1061396992}
   - {fileID: 159112077}
   - {fileID: 422868771}

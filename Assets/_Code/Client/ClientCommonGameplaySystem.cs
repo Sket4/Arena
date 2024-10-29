@@ -113,40 +113,27 @@ namespace Arena.Client
                 
                 EntityManager.DestroyEntity(startQuestQuery);
             }
+            
+            Entities
+                .WithoutBurst()
+                .WithStructuralChanges()
+                .WithAll<NavMeshManagedData>()
+                .WithNone<RenderableNavMeshData>()
+                .ForEach((Entity entity, in NavMeshManagedData data) =>
+                {
+                    if (data.IsProcessed == false)
+                    {
+                        return;
+                    }
+                    createRenderableNavMesh(entity, true);
+                }).Run();
 
             Entities
                 .WithoutBurst()
                 .WithStructuralChanges()
                 .WithAll<GeneratedNavMeshData>()
                 .WithNone<RenderableNavMeshData>()
-                .ForEach((Entity entity) =>
-                {
-                    var renderableMesh = navMeshToMesh();
-                    var go = new GameObject("Renderable navmesh");
-                    go.layer = LayerMask.NameToLayer("Map");
-                    go.transform.position = new Vector3(0, -10, 0);
-                    var mf = go.AddComponent<MeshFilter>();
-                    mf.sharedMesh = renderableMesh;
-                    var mr = go.AddComponent<MeshRenderer>();
-                    mr.shadowCastingMode = ShadowCastingMode.Off;
-                    mr.lightProbeUsage = LightProbeUsage.Off;
-                    mr.reflectionProbeUsage = ReflectionProbeUsage.Off;
-                    mr.receiveShadows = false;
-                    mr.allowOcclusionWhenDynamic = false;
-
-                    var navMeshSettings = navMeshSettingsQuery.GetSingleton<ClientNavMeshSettings>();
-                    mr.material = navMeshSettings.MapMaterial;
-                    
-                    EntityManager.AddComponentObject(entity, new RenderableNavMeshData
-                    {
-                        Mesh = renderableMesh
-                    });
-                    EntityManager.AddComponentData(entity, new MapBounds
-                    {
-                        Bounds = mr.bounds
-                    });
-
-                }).Run();
+                .ForEach((Entity entity) => { createRenderableNavMesh(entity, true); }).Run();
             
             Entities
                 .WithoutBurst()
@@ -164,38 +151,76 @@ namespace Arena.Client
                 .WithStructuralChanges()
                 .ForEach((Entity entity, in MapRender mapRenderData, in LocalToWorld l2w) =>
                 {
-                    Debug.Log("Render map");
-                    
-                    var renderInfo = EntityManager.GetSharedComponentManaged<RenderInfo>(mapRenderData.MapPlaneMesh);
-                    if (renderInfo.Material.LoadingStatus == ObjectLoadingStatus.None)
-                    {
-                        renderInfo.Material.LoadAsync();
-                    }
-                    renderInfo.Material.UnityReference.WaitForCompletion();
-
-                    if (renderInfo.Material.Result)
-                    {
-                        var texture = RenderTexture.GetTemporary(mapRenderData.MapTextureSize, mapRenderData.MapTextureSize, 0, RenderTextureFormat.Default, RenderTextureReadWrite.Default, 8);
-                        renderInfo.Material.Result.mainTexture = texture;
-
-                        renderMapCamera(mapRenderData, texture, l2w);    
-                    }
-                    else
-                    {
-                        Debug.Log("Failed to load map plane mesh material");
-                    }
-                    
+                    renderMapCamera(mapRenderData, l2w);
                     EntityManager.DestroyEntity(entity);
                 
             }).Run();
         }
 
-        async void renderMapCamera(MapRender mapRenderData, RenderTexture texture, LocalToWorld l2w)
+        private async void createRenderableNavMesh(Entity entity, bool addMapBounds)
         {
             await Task.Yield();
-            await Task.Yield();
+            
+            var renderableMesh = navMeshToMesh();
+            var go = new GameObject("Renderable navmesh");
+            go.layer = LayerMask.NameToLayer("Map");
+            go.transform.position = new Vector3(0, -10, 0);
+            var mf = go.AddComponent<MeshFilter>();
+            mf.sharedMesh = renderableMesh;
+            var mr = go.AddComponent<MeshRenderer>();
+            mr.shadowCastingMode = ShadowCastingMode.Off;
+            mr.lightProbeUsage = LightProbeUsage.Off;
+            mr.reflectionProbeUsage = ReflectionProbeUsage.Off;
+            mr.receiveShadows = false;
+            mr.allowOcclusionWhenDynamic = false;
+
+            var navMeshSettings = navMeshSettingsQuery.GetSingleton<ClientNavMeshSettings>();
+            mr.material = navMeshSettings.MapMaterial;
+
+            EntityManager.AddComponentObject(entity, new RenderableNavMeshData
+            {
+                Mesh = renderableMesh
+            });
+            if (addMapBounds)
+            {
+                EntityManager.AddComponentData(entity, new MapBounds
+                {
+                    Bounds = mr.bounds
+                });    
+            }
+        }
+
+        async void renderMapCamera(MapRender mapRenderData, LocalToWorld l2w)
+        {
+            Debug.Log("Render map");
+                    
+            var renderInfo = EntityManager.GetSharedComponentManaged<RenderInfo>(mapRenderData.MapPlaneMesh);
+            if (renderInfo.Material.LoadingStatus == ObjectLoadingStatus.None)
+            {
+                renderInfo.Material.LoadAsync();
+            }
+
+            while (renderInfo.Material.LoadingStatus != ObjectLoadingStatus.Completed && renderInfo.Material.LoadingStatus != ObjectLoadingStatus.Error)
+            {
+                await Task.Yield();
+                if (World.IsCreated == false)
+                {
+                    return;
+                }
+            }
+            
+            if (renderInfo.Material.Result == false)
+            {
+                Debug.Log("Failed to load map plane mesh material");
+                return;    
+            }
+            
+            var texture = RenderTexture.GetTemporary(mapRenderData.MapTextureSize, mapRenderData.MapTextureSize, 0, RenderTextureFormat.Default, RenderTextureReadWrite.Default, 8);
+            renderInfo.Material.Result.mainTexture = texture;
 
             var rs = World.GetExistingSystemManaged<RenderingSystem>();
+
+            await Task.Yield();
 
             while (rs.LoadingMaterialCount > 0 || rs.LoadingMeshCount > 0)
             {

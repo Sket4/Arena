@@ -8,6 +8,7 @@ namespace Arena
     public sealed class NavMeshManagedData : IComponentData
     {
         public NavMeshData Data;
+        public bool IsProcessed;
     }
     
     public class NavMeshSurfaceBaker : Baker<NavMeshSurface>

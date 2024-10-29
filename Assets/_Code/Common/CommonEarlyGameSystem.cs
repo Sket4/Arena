@@ -421,11 +421,12 @@ namespace Arena
             Entities
                 .WithoutBurst()
                 .WithNone<NavMeshDataCleanup>()
-                .ForEach((Entity entity, in NavMeshManagedData navData) =>
+                .ForEach((Entity entity, NavMeshManagedData navData) =>
                 {
                     Debug.Log($"adding navmesh data from entity {entity}");
                     
                     var instance = NavMesh.AddNavMeshData(navData.Data);
+                    navData.IsProcessed = true;
                     commands.AddComponent(0, entity, new NavMeshDataCleanup
                     {
                         NavDataInstance = instance

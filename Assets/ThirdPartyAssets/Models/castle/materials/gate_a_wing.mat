@@ -24,11 +24,11 @@ Material:
   m_Shader: {fileID: 4800000, guid: 537b6c3f7a4218d459a2cdaea0cd4bf7, type: 3}
   m_Parent: {fileID: 0}
   m_ModifiedSerializedProperties: 0
-  m_ValidKeywords:
-  - DIFFUSE_ALPHA_AS_SMOOTHNESS
-  - _METALLICSPECGLOSSMAP
+  m_ValidKeywords: []
   m_InvalidKeywords:
+  - DIFFUSE_ALPHA_AS_SMOOTHNESS
   - _METALLICGLOSSMAP
+  - _METALLICSPECGLOSSMAP
   - _NORMALMAP
   - _ZWRITE_ON
   m_LightmapFlags: 4
@@ -133,9 +133,11 @@ Material:
     - _DstBlend: 0
     - _DstBlendAlpha: 0
     - _EnvironmentReflections: 1
+    - _FogHeight: 0
     - _GlossMapScale: 1
     - _Glossiness: 0.5
     - _GlossyReflections: 1
+    - _HeightFogFade: 0.005
     - _HeightIntensity: 0
     - _HighlightRemove: 0
     - _Metallic: 0
@@ -156,12 +158,13 @@ Material:
     - _Underwater_fog_density_factor: 1
     - _Underwater_fog_height_mult: 1
     - _UseAlphaAsSmoothness: 1
+    - _UseHeightFog: 0
     - _UseSurfaceBlend: 0
     - _UseUnderwater: 0
     - _WorkflowMode: 1
     - _ZWrite: 1
     m_Colors:
-    - _BaseColor: {r: 1, g: 1, b: 1, a: 1}
+    - _BaseColor: {r: 0.735849, g: 0.735849, b: 0.735849, a: 1}
     - _Color: {r: 1, g: 1, b: 1, a: 1}
     - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
     - _SpecColor: {r: 0.19999996, g: 0.19999996, b: 0.19999996, a: 1}

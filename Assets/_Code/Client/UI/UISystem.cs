@@ -26,6 +26,8 @@ namespace Arena.Client
         private EntityQuery hideMessageRequestQuery;
 
         public static readonly Message OpenConfirmExitMessage = Message.CreateFromString("open confirm exit");
+        public static readonly Message MapDisableMessage = Message.CreateFromString("disable map");
+        public static readonly Message UI_CreatedMessage = Message.CreateFromString("ui created");
 
         public bool TryGetSingleton<T>(out T singletonData) where T : unmanaged, IComponentData
         {
@@ -209,13 +211,22 @@ namespace Arena.Client
                         EntityManager.AddBuffer<IncomingMessages>(uiEntity);
 
                         var listenerRequestEntity = EntityManager.CreateEntity();
-                        var request = new RegisterListenerRequestMessage
+                        
+                        var requests = EntityManager.AddBuffer<RegisterListenerRequestMessage>(listenerRequestEntity);
+                        requests.Add( new RegisterListenerRequestMessage
                         {
                             Listener = uiEntity,
                             MessageToListen = OpenConfirmExitMessage
-                        };
-                        var requests = EntityManager.AddBuffer<RegisterListenerRequestMessage>(listenerRequestEntity);
-                        requests.Add(request);
+                        });
+                        requests.Add( new RegisterListenerRequestMessage
+                        {
+                            Listener = uiEntity,
+                            MessageToListen = MapDisableMessage
+                        });
+
+                        var uiCreatedMessageEntity = EntityManager.CreateEntity(typeof(Message));
+                        EntityManager.SetComponentData(uiCreatedMessageEntity, UI_CreatedMessage);
+                        
                         return;
                     }
                 }
@@ -225,7 +236,7 @@ namespace Arena.Client
                 .WithoutBurst()
                 .ForEach((in DynamicBuffer<IncomingMessages> messages) =>
             {
-                if (IncomingMessages.Contains(messages, UISystem.OpenConfirmExitMessage))
+                if (IncomingMessages.Contains(messages, OpenConfirmExitMessage))
                 {
                     if(uiQuery.TryGetSingleton<GameUI>(out var ui) == false)
                     {
@@ -233,6 +244,17 @@ namespace Arena.Client
                         return;
                     }
                     ui.ShowGameplayMenuWithMode(true, true);
+                }
+
+                if (IncomingMessages.Contains(messages, MapDisableMessage))
+                {
+                    if(uiQuery.TryGetSingleton<GameUI>(out var ui) == false)
+                    {
+                        Debug.LogError("Failed to find UI entity");
+                        return;
+                    }
+                    Debug.Log("disabling minimap by request");
+                    ui.HUD.EnableMinimap(false);
                 }
             }).Run();
         }

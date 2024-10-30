@@ -117,7 +117,7 @@ namespace Arena.Client
             Entities
                 .WithoutBurst()
                 .WithStructuralChanges()
-                .WithAll<NavMeshManagedData>()
+                .WithAll<NavMeshManagedData, MapBounds>()
                 .WithNone<RenderableNavMeshData>()
                 .ForEach((Entity entity, in NavMeshManagedData data) =>
                 {
@@ -183,10 +183,19 @@ namespace Arena.Client
             });
             if (addMapBounds)
             {
-                EntityManager.AddComponentData(entity, new MapBounds
+                var bounds = new MapBounds
                 {
                     Bounds = mr.bounds
-                });    
+                };
+                
+                if (EntityManager.HasComponent<MapBounds>(entity))
+                {
+                    EntityManager.SetComponentData(entity, bounds);        
+                }
+                else
+                {
+                    EntityManager.AddComponentData(entity, bounds);
+                }
             }
         }
 
@@ -215,7 +224,7 @@ namespace Arena.Client
                 return;    
             }
             
-            var texture = RenderTexture.GetTemporary(mapRenderData.MapTextureSize, mapRenderData.MapTextureSize, 0, RenderTextureFormat.Default, RenderTextureReadWrite.Default, 8);
+            var texture = RenderTexture.GetTemporary(mapRenderData.MapTextureSize, mapRenderData.MapTextureSize, 16, RenderTextureFormat.Default, RenderTextureReadWrite.Default, 8);
             renderInfo.Material.Result.mainTexture = texture;
 
             var rs = World.GetExistingSystemManaged<RenderingSystem>();
@@ -242,6 +251,7 @@ namespace Arena.Client
             camera.clearFlags = CameraClearFlags.SolidColor;
             camera.transform.position = l2w.Position;
             camera.transform.rotation = l2w.Rotation;
+            camera.transparencySortMode = TransparencySortMode.Orthographic;
                     
             camera.Render();
 

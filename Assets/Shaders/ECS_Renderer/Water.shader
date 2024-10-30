@@ -138,6 +138,7 @@ Shader"Arena/Water"
                 float4 tangentOS = v.tangent;
 
                 VertexPositionInputs vertInputs = GetVertexPositionInputs(positionOS);    //This function calculates all the relative spaces of the objects vertices
+                
                 o.vertex = vertInputs.positionCS;
                 o.uv = v.uv;//TRANSFORM_TEX(v.uv, _Bum);
                 

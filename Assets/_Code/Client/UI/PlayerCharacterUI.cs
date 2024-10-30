@@ -18,6 +18,7 @@ namespace Arena.Client.UI
         TextUI goldText = default;
 
         [SerializeField] private Map mapCameraPrefab;
+        [SerializeField] private GameObject minimapContainer;
         [SerializeField] private RawImage miniMapImage;
 
         [SerializeField] private TextUI rubyText = default;
@@ -61,6 +62,7 @@ namespace Arena.Client.UI
         public NotificationUI Notifications => notification;
 
         private Map mapCamera;
+        private bool mapCameraEnabledState = true;
         
         public TextUI QuestInfoText
         {
@@ -123,6 +125,7 @@ namespace Arena.Client.UI
             }
             mapCamera = Object.Instantiate(mapCameraPrefab);
             mapCamera.Setup(targetEntity, em);
+            mapCamera.Camera.enabled = mapCameraEnabledState;
             return mapCamera;
         }
 
@@ -282,6 +285,16 @@ namespace Arena.Client.UI
                     difficultyContainer.SetActive(false);
                 }
             }
+        }
+
+        public void EnableMinimap(bool enable)
+        {
+            minimapContainer.SetActive(enable);
+            if (mapCamera)
+            {
+                mapCamera.Camera.enabled = enable;
+            }
+            mapCameraEnabledState = enable;
         }
     }
 }

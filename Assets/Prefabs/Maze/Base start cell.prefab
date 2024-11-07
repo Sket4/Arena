@@ -120,8 +120,147 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 795648143749534487, guid: 5aeb5e9ffe4314f74807e02a46f12098, type: 3}
       insertIndex: -1
       addedObject: {fileID: 7128833639434537476}
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 6388540786796375257, guid: 5aeb5e9ffe4314f74807e02a46f12098, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 2937558748074611028}
   m_SourcePrefab: {fileID: 100100000, guid: 5aeb5e9ffe4314f74807e02a46f12098, type: 3}
+--- !u!1 &2047730844126052631 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 6388540786796375257, guid: 5aeb5e9ffe4314f74807e02a46f12098, type: 3}
+  m_PrefabInstance: {fileID: 4954988342445419982}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &2937558748074611028
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2047730844126052631}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 25d87a6b957a60841942c7e71e0c252f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ConversionTargetOptions: -1
+  Graph:
+    rid: 5815056447928270858
+  references:
+    version: 2
+    RefIds:
+    - rid: 5815056447928270858
+      type: {class: ScriptVizGraph, ns: TzarGames.GameCore.ScriptViz.Graph, asm: TzarGames.GameCore}
+      data:
+        pages: []
+        states: []
+        layers:
+        - id: scene
+          pages: []
+          states: []
+          variables: []
+        - id: 8563684e8e33a40389e43ac490e5cbf5
+          pages:
+          - ID:
+              Value:
+                Value:
+                  x: 379536113
+                  y: 1104090437
+                  z: 579024515
+                  w: 1919513137
+            Name: 
+            ConversionTargetOptions: 7
+            variables:
+            - rid: 5815056447928270860
+            nodes:
+            - rid: 5815056447928270859
+            - rid: 5815056447928270863
+          states: []
+          variables: []
+        Name: 
+    - rid: 5815056447928270859
+      type: {class: StartEventNode, ns: TzarGames.GameCore.ScriptViz.Graph, asm: TzarGames.GameCore}
+      data:
+        ID:
+          Value:
+            Value:
+              x: 103586784
+              y: 1093692266
+              z: 151137166
+              w: 2041750856
+        Position: {x: 0, y: 0}
+        output:
+          ID:
+            Value:
+              Value:
+                x: 3959237418
+                y: 1151193863
+                z: 1400364463
+                w: 1788921871
+          ConnectedSocketIDs:
+          - Value:
+              Value:
+                x: 607870147
+                y: 1130660808
+                z: 2454621577
+                w: 563143907
+    - rid: 5815056447928270860
+      type: {class: DynamicArrayVariable, ns: TzarGames.GameCore.ScriptViz.Graph, asm: TzarGames.GameCore}
+      data:
+        ID:
+          Value:
+            Value:
+              x: 2949088817
+              y: 1178680487
+              z: 4058105246
+              w: 3259337925
+        Name: _delayed_commands
+        NetSyncEnabled: 0
+        IsHidden: 1
+    - rid: 5815056447928270863
+      type: {class: ActivateZoneRequestCommandNode, ns: Arena.ScriptViz, asm: Arena.Common}
+      data:
+        ID:
+          Value:
+            Value:
+              x: 3855175030
+              y: 1281857843
+              z: 1957882279
+              w: 2925308956
+        Position: {x: 156.66666, y: 0}
+        input:
+          ID:
+            Value:
+              Value:
+                x: 607870147
+                y: 1130660808
+                z: 2454621577
+                w: 563143907
+          ConnectedSocketIDs:
+          - Value:
+              Value:
+                x: 3959237418
+                y: 1151193863
+                z: 1400364463
+                w: 1788921871
+        output:
+          ID:
+            Value:
+              Value:
+                x: 465130828
+                y: 1277088339
+                z: 3210086827
+                w: 276942267
+          ConnectedSocketIDs: []
+        ZoneIdSocket:
+          ID:
+            Value:
+              Value:
+                x: 2280461609
+                y: 1106582385
+                z: 1562678176
+                w: 3277892362
+          ConnectedSocketIDs: []
+          Value: 0
 --- !u!4 &5749146604985319129 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 795648143749534487, guid: 5aeb5e9ffe4314f74807e02a46f12098, type: 3}

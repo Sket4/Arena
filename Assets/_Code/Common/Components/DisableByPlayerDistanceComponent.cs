@@ -9,9 +9,15 @@ using UnityEngine;
 namespace Arena
 {
     [Serializable]
-    public struct DisableByPlayerDistance : IComponentData
+    public struct DisableByPlayerDistance : ISharedComponentData
     {
         public float Distance;
+    }
+
+    [TemporaryBakingType]
+    struct DisableByPlayerDistanceBakingOnly : IComponentData
+    {
+        public DisableByPlayerDistance Data;
     }
 
     [TemporaryBakingType]
@@ -21,15 +27,35 @@ namespace Arena
     }
     
     [UseDefaultInspector]
-    public class DisableByPlayerDistanceComponent : ComponentDataBehaviour<DisableByPlayerDistance>
+    class DisableByPlayerDistanceComponent : ComponentDataBehaviour<DisableByPlayerDistanceBakingOnly>
     {
         public float DisableDistance = 50;
         public bool AddToChilds = false;
-        
-        protected override void Bake<K>(ref DisableByPlayerDistance serializedData, K baker)
+        public bool IgnoreSelf = false;
+
+        public override bool ShouldBeConverted(IGCBaker baker)
+        {
+            if (AddToChilds == false && IgnoreSelf)
+            {
+                return false;
+            }
+            return base.ShouldBeConverted(baker);
+        }
+
+        protected override void Bake<K>(ref DisableByPlayerDistanceBakingOnly serializedData, K baker)
         {
             base.Bake(ref serializedData, baker);
-            serializedData.Distance = DisableDistance * DisableDistance;
+
+            var sharedData = new DisableByPlayerDistance
+            {
+                Distance = DisableDistance * DisableDistance
+            };
+            serializedData.Data = sharedData;
+
+            if (IgnoreSelf == false)
+            {
+                baker.AddSharedComponent(sharedData);
+            }
 
             if (AddToChilds)
             {
@@ -53,9 +79,9 @@ namespace Arena
     {
         public EntityCommandBuffer Commands;
         [ReadOnly] public ComponentLookup<DontDisableByPlayerDistance> DontDisableLookup;
-        [ReadOnly] public ComponentLookup<DisableByPlayerDistance> DisableLookup;
+        [ReadOnly] public ComponentLookup<DisableByPlayerDistanceBakingOnly> DisableLookup;
         
-        public void Execute(in DisableByPlayerDistance distance, in DynamicBuffer<DisableByPlayerDistanceChilds> childs)
+        public void Execute(in DisableByPlayerDistanceBakingOnly distance, in DynamicBuffer<DisableByPlayerDistanceChilds> childs)
         {
             foreach (var child in childs)
             {
@@ -67,11 +93,11 @@ namespace Arena
                 {
                     continue;
                 }
-
                 if (DisableLookup.HasComponent(child.Entity))
                 {
                     continue;
                 }
+                Commands.AddSharedComponent(child.Entity, distance.Data);
                 Commands.AddComponent(child.Entity, distance);
             }
         }
@@ -89,13 +115,13 @@ namespace Arena
             bakingJob = new BakingJob
             {
                 DontDisableLookup = state.GetComponentLookup<DontDisableByPlayerDistance>(true),
-                DisableLookup = state.GetComponentLookup<DisableByPlayerDistance>(true)
+                DisableLookup = state.GetComponentLookup<DisableByPlayerDistanceBakingOnly>(true)
             };
             mainQuery = state.GetEntityQuery(new EntityQueryDesc
             {
                 All = new[]
                 {
-                    ComponentType.ReadOnly<DisableByPlayerDistance>(),
+                    ComponentType.ReadOnly<DisableByPlayerDistanceBakingOnly>(),
                     ComponentType.ReadOnly<DisableByPlayerDistanceChilds>(),
                 },
                 Options = EntityQueryOptions.IncludeDisabledEntities | EntityQueryOptions.IncludePrefab

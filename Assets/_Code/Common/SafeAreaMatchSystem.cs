@@ -130,11 +130,12 @@ namespace Arena.Server
                         } 
                         
                         var pspEntity = playerSpawnPoints[0];
-                        var position = GetComponent<LocalToWorld>(pspEntity).Position;
-                        var cameraWorldYaw = GetComponent<PlayerSpawnPoint>(pspEntity).WorldViewRotation;
+                        var spl2w = GetComponent<LocalToWorld>(pspEntity);
+                        var position = spl2w.Position;
+                        var rotation = spl2w.Rotation;
                         
                         Debug.Log($"Creating a character for player {networkPlayer.ID}");
-                        ArenaMatchUtility.SetupPlayerCharacter(waitingState, matchInitData.IsLocalGame, playerPrefab.Value, position, cameraWorldYaw, playerEntity, networkPlayer, ref commands);
+                        ArenaMatchUtility.SetupPlayerCharacter(waitingState, matchInitData.IsLocalGame, playerPrefab.Value, position, rotation, playerEntity, networkPlayer, ref commands);
 
                     }).Run();
 

@@ -87,6 +87,8 @@ namespace Arena.Maze
                     buildRequest.State = BuildMazeRequestState.Building;
                     commands.SetComponentWithDefaultKey(requestEntity, buildRequest);
 
+                    var builder = SystemAPI.GetComponent<MazeWorldBuilder>(buildRequest.Builder);
+
                     GenerateMaze(mazeEntity, buildRequest.Builder, buildRequest.Seed, buildRequest.HorizontalCells, buildRequest.VerticalCells, buildRequest.StartCellCount, ref random, ref commands);
                     return;
                 }
@@ -491,6 +493,12 @@ namespace Arena.Maze
                 }
             }
 
+            foreach (var zoneId in zonesInPath)
+            {
+                var zoneInstance = commands.InstantiateWithDefaultKey(builderData.ZonePrefab);
+                commands.SetComponentWithDefaultKey(zoneInstance, new ZoneId((ushort)zoneId));
+            }
+            
             var addedWalls = new List<AddedWallInfo>();
 
             for (int i = 0; i < mazeCells.Length; i++)
@@ -741,8 +749,14 @@ namespace Arena.Maze
                         isDownRemoved = false;
                     }
                 }
+                
+                bool isRightBorderIndex = (i + 1) % maze.HorizontalCells == 0;
+                bool isLeftBorderIndex = i % maze.HorizontalCells == 0;
+                bool isDownBorderIndex = i + maze.HorizontalCells >= mazeCells.Length;
+                bool isUpBorderIndex = i < maze.HorizontalCells;
 
-                if (isLeftRemoved == false && (leftWallIndex == -1 || (addedWalls.Contains(new AddedWallInfo(i, leftWallIndex))) == false))//(i % maze.HorizontalCells == 0)
+                if (isLeftRemoved == false 
+                    && (leftWallIndex == -1 || addedWalls.Contains(new AddedWallInfo(i, leftWallIndex)) == false))
                 {
                     addedWalls.Add(new AddedWallInfo(i, leftWallIndex));
 
@@ -753,27 +767,29 @@ namespace Arena.Maze
                     borderCellLocation = currentCellLocation;
                     borderCellLocation.x += cellSize;
 
-                    bool isBorderIndex = i % maze.HorizontalCells == 0;
+                    
                     DynamicBuffer<WallPrefabs> selectedWallPrefabs;
 
-                    if(isBorderIndex && borderWallPrefabs.IsEmpty == false)
+                    if((isRightBorderIndex == false && isLeftBorderIndex) && borderWallPrefabs.IsEmpty == false)
                     {
+                        Debug.DrawRay(wallSpawnLocation,  Vector3.up, Color.blue, 999);
                         selectedWallPrefabs = borderWallPrefabs.Reinterpret<WallPrefabs>();
                     }
                     else
                     {
+                        Debug.DrawRay(wallSpawnLocation,  Vector3.up, Color.yellow, 999);
                         selectedWallPrefabs = wallPrefabs;
                     }
 
                     spawnWall(selectedWallPrefabs, wallSpawnLocation, true, ref linkedEntities, ref random, ref commands);
 
-                    if(isBorderIndex)
+                    if(isLeftBorderIndex)
                     {
                         isHorizontalBorderCell = true;
                         spawnBorderCell(borderCellPrefabs, borderCellLocation, 90, ref linkedEntities, ref random, ref commands);
                     }
 
-                    addColumnPosition(true, wallSpawnLocation, cellSize, isBorderIndex, columnPositions);
+                    addColumnPosition(true, wallSpawnLocation, cellSize, isLeftBorderIndex, columnPositions);
                 }
 
                 if (isUpRemoved == false && (upWallIndex == -1 || addedWalls.Contains(new AddedWallInfo(i, upWallIndex)) == false))//(i + maze.HorizontalCells >= mazeCells.Length)
@@ -787,28 +803,28 @@ namespace Arena.Maze
                     borderCellLocation = currentCellLocation;
                     borderCellLocation.z += -cellSize;
 
-                    bool isBorderIndex = i < maze.HorizontalCells;
-
                     DynamicBuffer<WallPrefabs> selectedWallPrefabs;
 
-                    if (isBorderIndex && borderWallPrefabs.IsEmpty == false)
+                    if ((isUpBorderIndex && isDownBorderIndex == false) && borderWallPrefabs.IsEmpty == false)
                     {
+                        Debug.DrawRay(wallSpawnLocation,  Vector3.up, Color.blue, 999);
                         selectedWallPrefabs = borderWallPrefabs.Reinterpret<WallPrefabs>();
                     }
                     else
                     {
+                        Debug.DrawRay(wallSpawnLocation,  Vector3.up, Color.yellow, 999);
                         selectedWallPrefabs = wallPrefabs;
                     }
 
                     spawnWall(selectedWallPrefabs, wallSpawnLocation, false, ref linkedEntities, ref random, ref commands);
 
-                    if(isBorderIndex)
+                    if(isUpBorderIndex)
                     {
                         isVerticalBorderCell = true;
                         spawnBorderCell(borderCellPrefabs, borderCellLocation, 180, ref linkedEntities, ref random, ref commands);
                     }
 
-                    addColumnPosition(false, wallSpawnLocation, cellSize, isBorderIndex, columnPositions);
+                    addColumnPosition(false, wallSpawnLocation, cellSize, isUpBorderIndex, columnPositions);
                 }
 
                 if (isRightRemoved == false && (rightWallIndex == -1 || addedWalls.Contains(new AddedWallInfo(i, rightWallIndex)) == false))
@@ -821,28 +837,29 @@ namespace Arena.Maze
 
                     borderCellLocation = currentCellLocation;
                     borderCellLocation.x += -cellSize;
-
-                    bool isBorderIndex = (i + 1) % maze.HorizontalCells == 0;
+                    
                     DynamicBuffer<WallPrefabs> selectedWallPrefabs;
 
-                    if (isBorderIndex && borderWallPrefabs.IsEmpty == false)
+                    if ((isRightBorderIndex && isLeftBorderIndex == false) && borderWallPrefabs.IsEmpty == false)
                     {
+                        Debug.DrawRay(wallSpawnLocation,  Vector3.up, Color.blue, 999);
                         selectedWallPrefabs = borderWallPrefabs.Reinterpret<WallPrefabs>();
                     }
                     else
                     {
+                        Debug.DrawRay(wallSpawnLocation,  Vector3.up, Color.yellow, 999);
                         selectedWallPrefabs = wallPrefabs;
                     }
 
                     spawnWall(selectedWallPrefabs, wallSpawnLocation, true, ref linkedEntities, ref random, ref commands);
 
-                    if(isBorderIndex)
+                    if(isRightBorderIndex)
                     {
                         isHorizontalBorderCell = true;
                         spawnBorderCell(borderCellPrefabs, borderCellLocation, -90, ref linkedEntities, ref random, ref commands);
                     }
 
-                    addColumnPosition(true, wallSpawnLocation, cellSize, isBorderIndex, columnPositions);
+                    addColumnPosition(true, wallSpawnLocation, cellSize, isRightBorderIndex, columnPositions);
                 }
 
                 if (isDownRemoved == false && (downWallIndex == -1 || addedWalls.Contains(new AddedWallInfo(i, downWallIndex)) == false))
@@ -856,28 +873,28 @@ namespace Arena.Maze
                     borderCellLocation = currentCellLocation;
                     borderCellLocation.z += cellSize;
 
-                    bool isBorderIndex = i + maze.HorizontalCells >= mazeCells.Length;
-
                     DynamicBuffer<WallPrefabs> selectedWallPrefabs;
 
-                    if (isBorderIndex && borderWallPrefabs.IsEmpty == false)
+                    if ((isDownBorderIndex && isUpBorderIndex == false) && borderWallPrefabs.IsEmpty == false)
                     {
+                        Debug.DrawRay(wallSpawnLocation,  Vector3.up, Color.blue, 999);
                         selectedWallPrefabs = borderWallPrefabs.Reinterpret<WallPrefabs>();
                     }
                     else
                     {
+                        Debug.DrawRay(wallSpawnLocation,  Vector3.up, Color.yellow, 999);
                         selectedWallPrefabs = wallPrefabs;
                     }
 
                     spawnWall(selectedWallPrefabs, wallSpawnLocation, false, ref linkedEntities, ref random, ref commands);
 
-                    if(isBorderIndex)
+                    if(isDownBorderIndex)
                     {
                         isVerticalBorderCell = true;
                         spawnBorderCell(borderCellPrefabs, borderCellLocation, 0, ref linkedEntities, ref random, ref commands);
                     }
 
-                    addColumnPosition(false, wallSpawnLocation, cellSize, isBorderIndex, columnPositions);
+                    addColumnPosition(false, wallSpawnLocation, cellSize, isDownBorderIndex, columnPositions);
                 }
 
                 if (isHorizontalBorderCell && isVerticalBorderCell)
@@ -994,6 +1011,9 @@ namespace Arena.Maze
             RenderSettings.fogColor = builderData.FogColor;
             RenderSettings.fogStartDistance = builderData.FogStart;
             RenderSettings.fogEndDistance = builderData.FogEnd;
+            
+            // освещение
+            RenderSettings.subtractiveShadowColor = builderData.RelatimeShadowColor;
             
             // спауним точку старта
             //var spawnPoint = new GameObject("Player spawn point");
@@ -1405,8 +1425,8 @@ namespace Arena.Maze
             // счетчик ячеек в текущей зоне. 
             int zoneCellCounter = 0;
 
-            // текущий индекс зоны
-            ushort zoneId = 0;
+            // текущий индекс зоны (0 - не присвоен)
+            ushort zoneId = 1;
 
             // назначаем индексы зон
             for(int i=0; i<cells.Count; i++)
@@ -1429,7 +1449,7 @@ namespace Arena.Maze
                     currentCell.MazeCell.IsVisited = true;
                     currentCell.MazeCell.ZoneId = zoneId;
 
-                    if(currentCellIndex == startCellIndex && zoneId == 0)
+                    if(currentCellIndex == startCellIndex && zoneId == 1)
                     {
                         // зона 0 - только для стартовой ячейки
                         zoneId++;

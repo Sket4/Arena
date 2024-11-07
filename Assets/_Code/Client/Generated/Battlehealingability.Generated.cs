@@ -52,11 +52,11 @@ namespace TzarGames.GameCore.Abilities.Generated
 
 		public TzarGames.GameCore.Abilities.InstantiateAbilityComponentJob _InstantiateAbilityComponentJob;
 		public TzarGames.GameCore.Abilities.DurationJob _DurationJob;
-		public TzarGames.GameCore.Abilities.SetTargetAbilityJob _SetTargetAbilityJob;
 		public TzarGames.GameCore.Abilities.CopyOwnerTransformToAbilityOnStartJob _CopyOwnerTransformToAbilityOnStartJob;
 		public TzarGames.GameCore.Abilities.AbilityCooldownJob _AbilityCooldownJob;
-		public TzarGames.GameCore.Abilities.HealthAbilityActionJob _HealthAbilityActionJob;
+		public TzarGames.GameCore.Abilities.SetTargetAbilityJob _SetTargetAbilityJob;
 		public TzarGames.GameCore.Abilities.TimerEventAbilityComponentJob _TimerEventAbilityComponentJob;
+		public TzarGames.GameCore.Abilities.HealthAbilityActionJob _HealthAbilityActionJob;
 
 
 		bool Validate(in TzarGames.GameCore.Abilities.AbilityCooldown _AbilityCooldown)
@@ -156,8 +156,8 @@ namespace TzarGames.GameCore.Abilities.Generated
 					_CopyOwnerTransformToAbilityOnStartJob.OnStarted(in _AbilityOwner, in _CopyOwnerTransformToAbilityOnStart, ref _LocalTransform);
 					_TimerEventAbilityComponentJob.OnStarted(ref _AbilityTimerEventBuffer, in _AbilityTimerSharedData, ref _AbilityTimerData);
 					_InstantiateAbilityComponentJob.OnStarted(abilityEntity, in _AbilityOwner, in _InstantiateAbilityComponentData, ref _InstantiateAbilityInstanceData, Commands, unfilteredChunkIndex, in _LocalTransform);
-					_SetTargetAbilityJob.OnStarted(in _AbilityOwner, in _SetOwnerAsTargetAbilityData, ref _Target);
 					_AbilityCooldownJob.OnStarted(ref _AbilityCooldown);
+					_SetTargetAbilityJob.OnStarted(in _AbilityOwner, in _SetOwnerAsTargetAbilityData, ref _Target);
 
 					if (_AbilityState.Value == AbilityStates.WaitingForValidation || _AbilityState.Value == AbilityStates.ValidatedAndWaitingForStart)
 					{
@@ -357,15 +357,15 @@ namespace TzarGames.GameCore.Abilities.Generated
 			job.TargetType = state.GetComponentTypeHandle<TzarGames.GameCore.Target>();
 			job.HealthActionDataType = state.GetBufferTypeHandle<TzarGames.GameCore.Abilities.HealthActionData>(true);
 
-			var ComponentLookupTarget = state.GetComponentLookup<TzarGames.GameCore.Target>(true);
 			var ComponentLookupLocalTransform = state.GetComponentLookup<Unity.Transforms.LocalTransform>(true);
+			var ComponentLookupTarget = state.GetComponentLookup<TzarGames.GameCore.Target>(true);
 
 
-
-			job._SetTargetAbilityJob.TargetFromEntity = ComponentLookupTarget;
 
 			job._CopyOwnerTransformToAbilityOnStartJob.TransformFromEntity = ComponentLookupLocalTransform;
 
+
+			job._SetTargetAbilityJob.TargetFromEntity = ComponentLookupTarget;
 
 
 
@@ -402,13 +402,13 @@ namespace TzarGames.GameCore.Abilities.Generated
 
 
 
-			job._SetTargetAbilityJob.TargetFromEntity.Update(ref state);
-
 			job._CopyOwnerTransformToAbilityOnStartJob.TransformFromEntity.Update(ref state);
 
 
-			job._HealthAbilityActionJob.ModifyHealthSystemSingleton = singleton_TzarGamesGameCoreModifyHealthSystemSingleton;
+			job._SetTargetAbilityJob.TargetFromEntity.Update(ref state);
 
+
+			job._HealthAbilityActionJob.ModifyHealthSystemSingleton = singleton_TzarGamesGameCoreModifyHealthSystemSingleton;
 
 		}
 	}

@@ -17,14 +17,14 @@ namespace Arena.Server
 {
     public static class ArenaMatchUtility
     {
-        public static Entity CreateCharacter(Entity playerPrefab, Entity playerOwner, float3 position, float cameraWorldYaw, NativeArray<IdToEntity> database, CharacterData data, EntityCommandBuffer commands)
+        public static Entity CreateCharacter(Entity playerPrefab, Entity playerOwner, float3 position, quaternion spawnRotation, NativeArray<IdToEntity> database, CharacterData data, EntityCommandBuffer commands)
         {
             var playerCharacter = commands.Instantiate(playerPrefab);
 
             commands.AddComponent(playerCharacter, new PlayerController { Value = playerOwner });
             commands.SetComponent(playerCharacter, new Group { ID = 1 });
-            commands.SetComponent(playerCharacter, LocalTransform.FromPositionRotation(position, quaternion.Euler(0,cameraWorldYaw,0)));
-            commands.SetComponent(playerCharacter, new ViewDirection { Value = math.forward(quaternion.Euler(0, cameraWorldYaw, 0)) });
+            commands.SetComponent(playerCharacter, LocalTransform.FromPositionRotation(position, spawnRotation));
+            commands.SetComponent(playerCharacter, new ViewDirection { Value = math.forward(spawnRotation) });
 
             ApplyData(playerCharacter, data, commands, database);
 
@@ -320,7 +320,7 @@ namespace Arena.Server
             }
         }
 
-        public static CharacterData SetupPlayerCharacter(StateSystemBase.State state, bool isLocalGame, Entity characterPrefab, float3 spawnPosition, float cameraWorldYaw, Entity player, TzarGames.MultiplayerKit.NetworkPlayer netPlayer, ref EntityCommandBuffer Commands)
+        public static CharacterData SetupPlayerCharacter(StateSystemBase.State state, bool isLocalGame, Entity characterPrefab, float3 spawnPosition, quaternion spawnRotation, Entity player, TzarGames.MultiplayerKit.NetworkPlayer netPlayer, ref EntityCommandBuffer Commands)
         {
             if(isLocalGame == false)
             {
@@ -344,7 +344,7 @@ namespace Arena.Server
 
             using (var database = databaseBuffer.ToNativeArray(Allocator.Temp))
             {
-                var characterEntity = CreateCharacter(characterPrefab, player, spawnPosition, cameraWorldYaw, database, characterData, Commands);
+                var characterEntity = CreateCharacter(characterPrefab, player, spawnPosition, spawnRotation, database, characterData, Commands);
 
                 if (state.HasComponent<ControlledCharacter>(player))
                 {

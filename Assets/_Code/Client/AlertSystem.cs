@@ -54,6 +54,10 @@ namespace Arena.ArenaGame
 
         void showMessage(AlertUI ui, ArenaMatchStateData data)
         {
+            if (data.ShowCurrentStage == false)
+            {
+                return;
+            }
             ui.Show($"Уровень {data.CurrentStage}");
         }
     }

@@ -10,11 +10,14 @@ namespace Arena.Maze
     {
         public float CellSize;
         public byte LocationID;
+        public Entity ZonePrefab;
 
         [Header("Fog settings")]
         public Color FogColor;
         public float FogStart;
         public float FogEnd;
+
+        [Header("Lighting settings")] public Color RelatimeShadowColor;
     }
 
     [System.Serializable]
@@ -85,6 +88,8 @@ namespace Arena.Maze
         [SerializeField]
         LocationID locationID = default;
 
+        [SerializeField] private ZoneIdComponent zonePrefab;
+
         [SerializeField]
         float cellSize = 10;
 
@@ -110,6 +115,9 @@ namespace Arena.Maze
         [SerializeField]
         [ColorUsage(false, true)]
         Color ambientGroundColor = Color.black;
+
+        [SerializeField]
+        private Color realtimeShadowColor = new Color(0.3f, 0.3f, 0.3f);
 
         abstract class MazeEntryInfo
         {
@@ -193,6 +201,8 @@ namespace Arena.Maze
                 FogColor = fogColor,
                 FogStart = fogStart,
                 FogEnd = fogEnd,
+                RelatimeShadowColor = realtimeShadowColor,
+                ZonePrefab = baker.GetEntity(zonePrefab)
             };
 
             convertArray(baker, startCellPrefabs, (prefabEntity) => new StartCellPrefabs { Prefab = prefabEntity });

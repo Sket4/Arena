@@ -17,6 +17,7 @@ namespace Arena
         [HideInAuthoring] public bool SendMessageOnAllDead;
         [HideInAuthoring]
         public Message AllDeadMessage;
+        [HideInAuthoring] public bool SendAllDeadMessageOnlyToSelf;
         
         [HideInAuthoring]
         public uint SpawnPointTraceLayers;
@@ -45,6 +46,7 @@ namespace Arena
         public CharacterKey CharacterPrefabKey;
         public LayerMask SpawnPointTraceLayers;
         public MessageAuthoring AllDeadMessage;
+        public bool SendAllDeadMessageOnlyToSelf;
         
         protected override void Bake<K>(ref SpawnZoneParameters serializedData, K baker)
         {
@@ -55,6 +57,7 @@ namespace Arena
             serializedData.AllDeadMessage = AllDeadMessage;
             serializedData.SendMessageOnAllDead =
                 AllDeadMessage != null && string.IsNullOrEmpty(AllDeadMessage.ID) == false;
+            serializedData.SendAllDeadMessageOnlyToSelf = SendAllDeadMessageOnlyToSelf;
             
             baker.AddBuffer<SpawnZoneInstance>();
             baker.AddComponent<SpawnZoneStateData>();

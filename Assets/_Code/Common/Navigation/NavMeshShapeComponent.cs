@@ -177,7 +177,7 @@ namespace Arena
                 case BoxCollider box:
                     navMeshShape.Shape = NavMeshShapeType.Box;
                     var transform1 = box.transform;
-                    var bounds = new Bounds(box.center + transform1.position, transform1.rotation * box.size);
+                    var bounds = new Bounds(/*transform1.rotation * */box.center + transform1.position, transform1.rotation * box.size);
                     SetupForBounds(transform1, bounds, ref navMeshShape);
                     break;
 

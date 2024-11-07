@@ -184,7 +184,7 @@ namespace Arena
                             break;
                     }
 
-                    Debug.DrawRay(transform.Translation(), Vector3.up * 0.2f, Color.red, 1000);
+                    //Debug.DrawRay(transform.Translation(), Vector3.up * 0.2f, Color.red, 1000);
                     Object sourceObject = null;
 
                     if (shape.Shape == NavMeshShapeType.Mesh && shape.MeshReference.IsReferenceValid)

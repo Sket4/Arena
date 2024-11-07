@@ -162,8 +162,14 @@ namespace Arena
                     {
                         if (spawnZoneParameters.SendMessageOnAllDead)
                         {
+                            Debug.Log($"sending all dead message from {spawnZoneEntity.Index}");
                             var messageEntity = Commands.CreateEntity(jobIndex);
                             Commands.AddComponent(jobIndex, messageEntity, spawnZoneParameters.AllDeadMessage);
+                            if (spawnZoneParameters.SendAllDeadMessageOnlyToSelf)
+                            {
+                                var targets = Commands.AddBuffer<Targets>(jobIndex, messageEntity);
+                                targets.Add(new Targets(spawnZoneEntity));
+                            }
                         }   
                         Commands.SetComponentEnabled<SpawnZoneStateData>(jobIndex, spawnZoneEntity, false);
                         return;

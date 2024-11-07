@@ -38,7 +38,7 @@ namespace Arena
             updateJob = new UpdateJob
             {
                 EntityType = GetEntityTypeHandle(),
-                DisableDistanceType = GetComponentTypeHandle<DisableByPlayerDistance>(true),
+                DisableDistanceType = GetSharedComponentTypeHandle<DisableByPlayerDistance>(),
                 DisabledType = GetComponentTypeHandle<Disabled>(true),
                 L2WType = GetComponentTypeHandle<LocalToWorld>(true)
             };
@@ -80,7 +80,7 @@ namespace Arena
     struct UpdateJob : IJobChunk
     {
         [ReadOnly] public NativeArray<LocalTransform> PlayerTransforms;
-        [ReadOnly] public ComponentTypeHandle<DisableByPlayerDistance> DisableDistanceType;
+        [ReadOnly] public SharedComponentTypeHandle<DisableByPlayerDistance> DisableDistanceType;
         [ReadOnly] public ComponentTypeHandle<LocalToWorld> L2WType;
         [ReadOnly] public EntityTypeHandle EntityType;
         [ReadOnly] public ComponentTypeHandle<Disabled> DisabledType;
@@ -90,14 +90,13 @@ namespace Arena
         public void Execute(in ArchetypeChunk chunk, int unfilteredChunkIndex, bool useEnabledMask, in v128 chunkEnabledMask)
         {
             var transforms = chunk.GetNativeArray(ref L2WType);
-            var distanceDatas = chunk.GetNativeArray(ref DisableDistanceType);
+            var distance = chunk.GetSharedComponent(DisableDistanceType);
             var entities = chunk.GetNativeArray(EntityType);
             var hasDisabled = chunk.Has(ref DisabledType);
 
             for (int c = 0; c < chunk.Count; c++)
             {
                 var transform = transforms[c];
-                var distance = distanceDatas[c];
                 
                 bool isAnyPlayerNear = false;
                 var myPosition = transform.Position;

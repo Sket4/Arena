@@ -212,7 +212,7 @@ namespace Arena.Server
             });
         }
 
-        void getSpawnPositionForPlayer(NativeArray<Entity> spawnPoints, int spawnPointId, out float3 position, out float cameraWorldYaw)
+        void getSpawnPositionForPlayer(NativeArray<Entity> spawnPoints, int spawnPointId, out float3 position, out quaternion rotation)
         {
             Entity spawnPointEntity = Entity.Null;
 
@@ -230,9 +230,10 @@ namespace Arena.Server
             {
                 spawnPointEntity = spawnPoints[0];    
             }
-            
-            cameraWorldYaw = EntityManager.GetComponentData<PlayerSpawnPoint>(spawnPointEntity).WorldViewRotation;
-            position = EntityManager.GetComponentData<LocalToWorld>(spawnPointEntity).Position;
+
+            var spl2w = EntityManager.GetComponentData<LocalToWorld>(spawnPointEntity);
+            position = spl2w.Position;
+            rotation = spl2w.Rotation;
         }
 
         protected class Arena_WaitingForPlayersState : MatchSystem_WaitingForPlayers
@@ -780,8 +781,8 @@ namespace Arena.Server
                     var player = playerElement.PlayerEntity;
 
                     var netPlayer = em.GetComponentData<NetworkPlayer>(player);
-                    arenaSystem.getSpawnPositionForPlayer(playerSpawnPoints, initData.SpawnPointId, out float3 spawnPos, out float cameraWorldYaw);
-                    var characterData = ArenaMatchUtility.SetupPlayerCharacter(this, initData.IsLocalGame, playerPrefab.Value, spawnPos, cameraWorldYaw, player, netPlayer, ref Commands);
+                    arenaSystem.getSpawnPositionForPlayer(playerSpawnPoints, initData.SpawnPointId, out float3 spawnPos, out var spawnRot);
+                    var characterData = ArenaMatchUtility.SetupPlayerCharacter(this, initData.IsLocalGame, playerPrefab.Value, spawnPos, spawnRot, player, netPlayer, ref Commands);
 
                     if (characterData.Progress != null && maxStage < characterData.Progress.CurrentStage)
                     {
@@ -1149,8 +1150,8 @@ namespace Arena.Server
                         
                         using (var database = databaseBuffer.ToNativeArray(Allocator.Temp))
                         {
-                            arenaSystem.getSpawnPositionForPlayer(playerSpawnPoints, initData.SpawnPointId, out float3 spawnPos, out float cameraWorldYaw);
-                            ArenaMatchUtility.CreateCharacter(playerPrefab.Value, player, spawnPos, cameraWorldYaw, database, playerData, Commands);    
+                            arenaSystem.getSpawnPositionForPlayer(playerSpawnPoints, initData.SpawnPointId, out float3 spawnPos, out var spawnRot);
+                            ArenaMatchUtility.CreateCharacter(playerPrefab.Value, player, spawnPos, spawnRot, database, playerData, Commands);    
                         }
                     }
                 }

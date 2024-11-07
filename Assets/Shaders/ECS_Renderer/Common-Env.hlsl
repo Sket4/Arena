@@ -124,15 +124,7 @@ half4 env_frag(v2f i) : SV_Target
 	ambientLight = TG_ComputeAmbientLight_half(normalWS);
 	#endif
 	#endif
-	
-	float4 shadowCoord = TransformWorldToShadowCoord(i.positionWS_fog.xyz);
-	half shadow = MainLightRealtimeShadow(shadowCoord);
-	//return shadow;
-	ambientLight = MixLightWithRealtimeShadow(shadow, ambientLight);
-	//return half4(ambientLight,1);
 
-	
-	
 	#if USE_SURFACE_BLEND
 	float2 surfaceUV = TRANSFORM_TEX(i.positionWS_fog.xz, _SurfaceMap);
 	half4 surfaceColor = tex2D(_SurfaceMap, surfaceUV);
@@ -159,10 +151,9 @@ half4 env_frag(v2f i) : SV_Target
 	remEnvMapColor = envMapColor - remEnvMapColor;
 
 	half lum = tg_luminance(ambientLight);
-
 	envMapColor = lerp(remEnvMapColor, envMapColor, saturate(lum * lum * lum));
 
-	ApplyDynamicLighting(viewDirWS, normalWS, i.positionWS_fog.xyz, smoothness, ambientLight, envMapColor, true);
+	ApplyDynamicLighting(viewDirWS, normalWS, i.positionWS_fog.xyz, ambientLight, envMapColor, true);
 
 	half4 finalColor = LightingPBR(diffuse, ambientLight, viewDirWS, normalWS, mesm.rrr, roughness, envMapColor);
 
@@ -170,7 +161,7 @@ half4 env_frag(v2f i) : SV_Target
 
 	half4 finalColor = diffuse;
 	half3 envMapColor = 0;
-	ApplyDynamicLighting(viewDirWS, normalWS, i.positionWS_fog.xyz, 0, ambientLight, envMapColor, true);
+	ApplyDynamicLighting(viewDirWS, normalWS, i.positionWS_fog.xyz, ambientLight, envMapColor, true);
 	finalColor.rgb *= ambientLight;
 
 	#endif

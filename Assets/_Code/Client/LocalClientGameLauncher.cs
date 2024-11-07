@@ -161,6 +161,7 @@ namespace Arena.Client
                         gameLoop.AddGameSystem<ArenaSpawnerSystem>();
                         gameLoop.AddGameSystemUnmanaged<SpawnZoneSystem>();
                         gameLoop.AddGameSystem<MazeBuilderSystem>();
+                        gameLoop.AddGameSystem<ZoneSystem>();
                         gameLoop.AddGameSystem<NavMeshGenSystem>();
                         gameLoop.AddGameSystemUnmanaged<UpdateLinkedTransformsSystem>();
                         StartCoroutine(startMatch(matchSystem, gameSceneId, spawnPointId, gameParameters.ToArray()));

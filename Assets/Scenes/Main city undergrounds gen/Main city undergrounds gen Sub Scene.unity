@@ -25,7 +25,7 @@ RenderSettings:
   m_AmbientGroundColor: {r: 0.047, g: 0.043, b: 0.035, a: 1}
   m_AmbientIntensity: 1
   m_AmbientMode: 0
-  m_SubtractiveShadowColor: {r: 0.42, g: 0.478, b: 0.627, a: 1}
+  m_SubtractiveShadowColor: {r: 0.31764707, g: 0.31764707, b: 0.31764707, a: 1}
   m_SkyboxMaterial: {fileID: 0}
   m_HaloStrength: 0.5
   m_FlareStrength: 1
@@ -344,6 +344,12 @@ MonoBehaviour:
             - rid: 5272189481285321143
             - rid: 5272189481285321166
             - rid: 5272189481285321170
+            - rid: 5815056591846113314
+            - rid: 5815056591846113315
+            - rid: 5815056591846113316
+            - rid: 5815056591846113318
+            - rid: 5815056591846113320
+            - rid: 5815056591846113412
           states: []
           variables:
           - rid: 5272189481285321114
@@ -376,7 +382,7 @@ MonoBehaviour:
                 z: 2429353402
                 w: 4192541713
         Message:
-          ID: maze_spawner_signal
+          ID: register zone
     - rid: 5272189481285321114
       type: {class: IntVariable, ns: TzarGames.GameCore.ScriptViz.Graph, asm: TzarGames.GameCore}
       data:
@@ -387,7 +393,7 @@ MonoBehaviour:
               y: 1269366821
               z: 3437946789
               w: 1014886038
-        Name: Maze spawners count
+        Name: zone count
         NetSyncEnabled: 0
         IsHidden: 0
         Value: 0
@@ -625,7 +631,7 @@ MonoBehaviour:
               y: 1132692576
               z: 3877600648
               w: 3269029060
-        Name: cleared maze spawners count
+        Name: cleared zone count
         NetSyncEnabled: 0
         IsHidden: 0
         Value: 0
@@ -656,7 +662,7 @@ MonoBehaviour:
                 z: 2615765398
                 w: 352351350
         Message:
-          ID: maze spawner all dead
+          ID: zone cleared
     - rid: 5272189481285321127
       type: {class: GetIntVarCommandNode, ns: TzarGames.GameCore.ScriptViz.Graph, asm: TzarGames.GameCore}
       data:
@@ -884,7 +890,7 @@ MonoBehaviour:
               y: 1211435111
               z: 3441412540
               w: 2092453721
-        Position: {x: 2235.3333, y: 790.6667}
+        Position: {x: 2438, y: 806}
         InputSocket:
           ID:
             Value:
@@ -896,10 +902,10 @@ MonoBehaviour:
           ConnectedSocketIDs:
           - Value:
               Value:
-                x: 801274007
-                y: 1270885678
-                z: 3970426266
-                w: 2205361315
+                x: 3089492945
+                y: 1239113213
+                z: 1614180996
+                w: 3738193889
         IfMoreSocket:
           ID:
             Value:
@@ -966,10 +972,10 @@ MonoBehaviour:
           ConnectedSocketIDs:
           - Value:
               Value:
-                x: 2376587036
-                y: 1230366476
-                z: 4110648225
-                w: 2932478535
+                x: 1531585716
+                y: 1239363711
+                z: 2914030773
+                w: 2283251276
           Value: 0
     - rid: 5272189481285321135
       type: {class: GetIntVarCommandNode, ns: TzarGames.GameCore.ScriptViz.Graph, asm: TzarGames.GameCore}
@@ -1008,10 +1014,10 @@ MonoBehaviour:
           ConnectedSocketIDs:
           - Value:
               Value:
-                x: 3982394327
-                y: 1213677138
-                z: 486410125
-                w: 3921799018
+                x: 2692942028
+                y: 1075906491
+                z: 1525701547
+                w: 2654882503
         getVariableId:
           Value:
             Value:
@@ -1030,10 +1036,10 @@ MonoBehaviour:
           ConnectedSocketIDs:
           - Value:
               Value:
-                x: 1953593166
-                y: 1212359735
-                z: 4193880967
-                w: 472254738
+                x: 1483105850
+                y: 1141132231
+                z: 2687194557
+                w: 4117425475
           Value: 0
     - rid: 5272189481285321137
       type: {class: LogCommandNode, ns: TzarGames.GameCore.ScriptViz.Graph, asm: TzarGames.GameCore}
@@ -1045,7 +1051,7 @@ MonoBehaviour:
               y: 1313290719
               z: 524258461
               w: 921475268
-        Position: {x: 2437.3333, y: 806}
+        Position: {x: 2674.6667, y: 830}
         input:
           ID:
             Value:
@@ -1078,10 +1084,10 @@ MonoBehaviour:
           ConnectedSocketIDs:
           - Value:
               Value:
-                x: 3922996351
-                y: 1123647478
-                z: 1749824952
-                w: 3916298727
+                x: 353296201
+                y: 1076431170
+                z: 1772995514
+                w: 4020470522
         EntitySocket:
           ID:
             Value:
@@ -1100,19 +1106,19 @@ MonoBehaviour:
         ID:
           Value:
             Value:
-              x: 2796558063
-              y: 1307464148
-              z: 1105675685
-              w: 3969777708
-        Position: {x: 3299.3333, y: 872}
+              x: 2879467408
+              y: 1087353313
+              z: 3131198631
+              w: 906568507
+        Position: {x: 3536.6667, y: 896}
         InputSocket:
           ID:
             Value:
               Value:
-                x: 3171428455
-                y: 1231611103
-                z: 3842946717
-                w: 230684073
+                x: 2287173879
+                y: 1181882935
+                z: 400205496
+                w: 2841165964
           ConnectedSocketIDs:
           - Value:
               Value:
@@ -1125,25 +1131,25 @@ MonoBehaviour:
           ID:
             Value:
               Value:
-                x: 336019102
-                y: 1325699400
-                z: 2847971968
-                w: 2097871875
+                x: 2574517888
+                y: 1217906285
+                z: 2705116844
+                w: 1384998009
           ConnectedSocketIDs:
           - Value:
               Value:
-                x: 1096888647
-                y: 1146273324
-                z: 2371283114
-                w: 3144562451
+                x: 2816826992
+                y: 1091615751
+                z: 4238613948
+                w: 3730447050
         QuestActiveSocket:
           ID:
             Value:
               Value:
-                x: 4171288385
-                y: 1167991462
-                z: 1206801054
-                w: 3913017354
+                x: 710405614
+                y: 1169220478
+                z: 2446165685
+                w: 3701657307
           ConnectedSocketIDs:
           - Value:
               Value:
@@ -1155,28 +1161,28 @@ MonoBehaviour:
           ID:
             Value:
               Value:
-                x: 892336203
-                y: 1230623278
-                z: 1101571757
-                w: 1088010171
+                x: 379864644
+                y: 1311648116
+                z: 1747469980
+                w: 916312129
           ConnectedSocketIDs: []
         QuestFailedSocket:
           ID:
             Value:
               Value:
-                x: 1706803897
-                y: 1102059337
-                z: 1007402655
-                w: 2574149997
+                x: 716161115
+                y: 1288202349
+                z: 3314462383
+                w: 320456996
           ConnectedSocketIDs: []
         NoQuestSocket:
           ID:
             Value:
               Value:
-                x: 2918322961
-                y: 1275301214
-                z: 624126097
-                w: 1350468116
+                x: 1374135370
+                y: 1119203802
+                z: 2635796896
+                w: 1434136602
           ConnectedSocketIDs: []
     - rid: 5272189481285321140
       type: {class: GetGameProgressCommandNode, ns: Arena.ScriptViz, asm: Arena.Common}
@@ -1184,19 +1190,19 @@ MonoBehaviour:
         ID:
           Value:
             Value:
-              x: 2036362979
-              y: 1141855486
-              z: 3912967310
-              w: 2494703198
-        Position: {x: 2753.3333, y: 806}
+              x: 580210643
+              y: 1250406988
+              z: 555272580
+              w: 3692001593
+        Position: {x: 2990.6667, y: 830}
         InputSocket:
           ID:
             Value:
               Value:
-                x: 3922996351
-                y: 1123647478
-                z: 1749824952
-                w: 3916298727
+                x: 353296201
+                y: 1076431170
+                z: 1772995514
+                w: 4020470522
           ConnectedSocketIDs:
           - Value:
               Value:
@@ -1208,10 +1214,10 @@ MonoBehaviour:
           ID:
             Value:
               Value:
-                x: 3222983533
-                y: 1268556565
-                z: 631871634
-                w: 2965484012
+                x: 2285112937
+                y: 1310766650
+                z: 3461891989
+                w: 297781378
           ConnectedSocketIDs:
           - Value:
               Value:
@@ -1223,17 +1229,17 @@ MonoBehaviour:
           ID:
             Value:
               Value:
-                x: 1096888647
-                y: 1146273324
-                z: 2371283114
-                w: 3144562451
+                x: 2816826992
+                y: 1091615751
+                z: 4238613948
+                w: 3730447050
           ConnectedSocketIDs:
           - Value:
               Value:
-                x: 336019102
-                y: 1325699400
-                z: 2847971968
-                w: 2097871875
+                x: 2574517888
+                y: 1217906285
+                z: 2705116844
+                w: 1384998009
     - rid: 5272189481285321141
       type: {class: SequenceNode, ns: TzarGames.GameCore.ScriptViz.Graph, asm: TzarGames.GameCore}
       data:
@@ -1244,7 +1250,7 @@ MonoBehaviour:
               y: 1206554696
               z: 1327030145
               w: 3493356379
-        Position: {x: 3060.6667, y: 754}
+        Position: {x: 3298, y: 778}
         InputSocket:
           ID:
             Value:
@@ -1256,10 +1262,10 @@ MonoBehaviour:
           ConnectedSocketIDs:
           - Value:
               Value:
-                x: 3222983533
-                y: 1268556565
-                z: 631871634
-                w: 2965484012
+                x: 2285112937
+                y: 1310766650
+                z: 3461891989
+                w: 297781378
         OutputSockets:
         - ID:
             Value:
@@ -1271,10 +1277,10 @@ MonoBehaviour:
           ConnectedSocketIDs:
           - Value:
               Value:
-                x: 3171428455
-                y: 1231611103
-                z: 3842946717
-                w: 230684073
+                x: 2287173879
+                y: 1181882935
+                z: 400205496
+                w: 2841165964
     - rid: 5272189481285321143
       type: {class: AddGameProgressQuestCommandNode, ns: Arena.ScriptViz, asm: Arena.Common}
       data:
@@ -1285,7 +1291,7 @@ MonoBehaviour:
               y: 1186396374
               z: 3706180505
               w: 2038702398
-        Position: {x: 3794.6665, y: 872}
+        Position: {x: 4032, y: 896}
         input:
           ID:
             Value:
@@ -1297,10 +1303,10 @@ MonoBehaviour:
           ConnectedSocketIDs:
           - Value:
               Value:
-                x: 4171288385
-                y: 1167991462
-                z: 1206801054
-                w: 3913017354
+                x: 710405614
+                y: 1169220478
+                z: 2446165685
+                w: 3701657307
         output:
           ID:
             Value:
@@ -1309,7 +1315,13 @@ MonoBehaviour:
                 y: 1111205335
                 z: 2078962571
                 w: 1746917409
-          ConnectedSocketIDs: []
+          ConnectedSocketIDs:
+          - Value:
+              Value:
+                x: 743375804
+                y: 1256626483
+                z: 3244829881
+                w: 772067835
         QuestKey: {fileID: -5995000349584570135, guid: 709759d6d50fadb4ab72406e658ed872, type: 2}
         State: 1
     - rid: 5272189481285321166
@@ -1322,7 +1334,7 @@ MonoBehaviour:
               y: 1115077623
               z: 969161128
               w: 3676851929
-        Position: {x: 1530.6666, y: 418}
+        Position: {x: 1506.6666, y: 461.33334}
         input:
           ID:
             Value:
@@ -1357,7 +1369,7 @@ MonoBehaviour:
                 w: 175195966
           ConnectedSocketIDs: []
           AuthoringValue: {fileID: 0}
-        Message: spawner counter
+        Message: quest zone register count
         LogType: 3
     - rid: 5272189481285321170
       type: {class: LogCommandNode, ns: TzarGames.GameCore.ScriptViz.Graph, asm: TzarGames.GameCore}
@@ -1410,8 +1422,347 @@ MonoBehaviour:
                 w: 1976048871
           ConnectedSocketIDs: []
           AuthoringValue: {fileID: 0}
-        Message: spanwer cleared counter
+        Message: quest zone cleared counter
         LogType: 3
+    - rid: 5815056591846113314
+      type: {class: GetGameProgressCommandNode, ns: Arena.ScriptViz, asm: Arena.Common}
+      data:
+        ID:
+          Value:
+            Value:
+              x: 2816390690
+              y: 1175421589
+              z: 3223576730
+              w: 396881876
+        Position: {x: 800.6667, y: 1196}
+        InputSocket:
+          ID:
+            Value:
+              Value:
+                x: 3881941926
+                y: 1296611577
+                z: 1686858170
+                w: 3318759738
+          ConnectedSocketIDs:
+          - Value:
+              Value:
+                x: 1361621225
+                y: 1298752696
+                z: 1134518434
+                w: 2542918278
+        OnDataLoadedSocket:
+          ID:
+            Value:
+              Value:
+                x: 2932169560
+                y: 1158060030
+                z: 805313938
+                w: 2000468981
+          ConnectedSocketIDs:
+          - Value:
+              Value:
+                x: 1913033463
+                y: 1088940145
+                z: 3734353817
+                w: 2199915633
+        ProgressSocket:
+          ID:
+            Value:
+              Value:
+                x: 363470848
+                y: 1274675069
+                z: 562841751
+                w: 3031250575
+          ConnectedSocketIDs:
+          - Value:
+              Value:
+                x: 4048998352
+                y: 1259300719
+                z: 3186136481
+                w: 1642135820
+    - rid: 5815056591846113315
+      type: {class: GameProgressQuestCheckNode, ns: Arena.ScriptViz, asm: Arena.Common}
+      data:
+        ID:
+          Value:
+            Value:
+              x: 3674920183
+              y: 1228277859
+              z: 1495379890
+              w: 1391052668
+        Position: {x: 1093.3334, y: 1204.6666}
+        InputSocket:
+          ID:
+            Value:
+              Value:
+                x: 1913033463
+                y: 1088940145
+                z: 3734353817
+                w: 2199915633
+          ConnectedSocketIDs:
+          - Value:
+              Value:
+                x: 2932169560
+                y: 1158060030
+                z: 805313938
+                w: 2000468981
+        QuestKey: {fileID: -5995000349584570135, guid: 709759d6d50fadb4ab72406e658ed872, type: 2}
+        ProgressSocket:
+          ID:
+            Value:
+              Value:
+                x: 4048998352
+                y: 1259300719
+                z: 3186136481
+                w: 1642135820
+          ConnectedSocketIDs:
+          - Value:
+              Value:
+                x: 363470848
+                y: 1274675069
+                z: 562841751
+                w: 3031250575
+        QuestActiveSocket:
+          ID:
+            Value:
+              Value:
+                x: 899164384
+                y: 1252496258
+                z: 278214067
+                w: 2921249226
+          ConnectedSocketIDs:
+          - Value:
+              Value:
+                x: 883931370
+                y: 1227429728
+                z: 253559693
+                w: 1416870391
+        QuestCompletedSocket:
+          ID:
+            Value:
+              Value:
+                x: 4270231709
+                y: 1259228595
+                z: 1508467605
+                w: 902109945
+          ConnectedSocketIDs: []
+        QuestFailedSocket:
+          ID:
+            Value:
+              Value:
+                x: 2907167140
+                y: 1123709154
+                z: 1064016038
+                w: 426297729
+          ConnectedSocketIDs: []
+        NoQuestSocket:
+          ID:
+            Value:
+              Value:
+                x: 271957319
+                y: 1165488611
+                z: 4002855092
+                w: 3137747644
+          ConnectedSocketIDs: []
+    - rid: 5815056591846113316
+      type: {class: StartEventNode, ns: TzarGames.GameCore.ScriptViz.Graph, asm: TzarGames.GameCore}
+      data:
+        ID:
+          Value:
+            Value:
+              x: 3436561468
+              y: 1258607949
+              z: 3174745223
+              w: 291486078
+        Position: {x: 608.6667, y: 1196}
+        output:
+          ID:
+            Value:
+              Value:
+                x: 1361621225
+                y: 1298752696
+                z: 1134518434
+                w: 2542918278
+          ConnectedSocketIDs:
+          - Value:
+              Value:
+                x: 3881941926
+                y: 1296611577
+                z: 1686858170
+                w: 3318759738
+    - rid: 5815056591846113318
+      type: {class: ShowMessageNode, ns: Arena.ScriptViz, asm: Arena.Common}
+      data:
+        ID:
+          Value:
+            Value:
+              x: 2061935571
+              y: 1147451736
+              z: 610288050
+              w: 3327716010
+        Position: {x: 1598, y: 1204.6666}
+        input:
+          ID:
+            Value:
+              Value:
+                x: 883931370
+                y: 1227429728
+                z: 253559693
+                w: 1416870391
+          ConnectedSocketIDs:
+          - Value:
+              Value:
+                x: 899164384
+                y: 1252496258
+                z: 278214067
+                w: 2921249226
+        output:
+          ID:
+            Value:
+              Value:
+                x: 999182580
+                y: 1184069383
+                z: 2597136027
+                w: 1341561911
+          ConnectedSocketIDs: []
+        OptionalID: quest
+        Message:
+          m_TableReference:
+            m_TableCollectionName: GUID:aad91b28e51f6fc489b46b3d5b4a981a
+          m_TableEntryReference:
+            m_KeyId: 42981952250015744
+            m_Key: 
+          m_FallbackState: 0
+          m_WaitForCompletion: 0
+          m_LocalVariables: []
+    - rid: 5815056591846113320
+      type: {class: ShowMessageNode, ns: Arena.ScriptViz, asm: Arena.Common}
+      data:
+        ID:
+          Value:
+            Value:
+              x: 2315856158
+              y: 1213947730
+              z: 1978227885
+              w: 2180164260
+        Position: {x: 4472.6665, y: 896}
+        input:
+          ID:
+            Value:
+              Value:
+                x: 743375804
+                y: 1256626483
+                z: 3244829881
+                w: 772067835
+          ConnectedSocketIDs:
+          - Value:
+              Value:
+                x: 518091190
+                y: 1111205335
+                z: 2078962571
+                w: 1746917409
+        output:
+          ID:
+            Value:
+              Value:
+                x: 542154780
+                y: 1172824178
+                z: 4238792578
+                w: 1229924365
+          ConnectedSocketIDs: []
+        OptionalID: quest
+        Message:
+          m_TableReference:
+            m_TableCollectionName: GUID:aad91b28e51f6fc489b46b3d5b4a981a
+          m_TableEntryReference:
+            m_KeyId: 42982432724316160
+            m_Key: 
+          m_FallbackState: 0
+          m_WaitForCompletion: 0
+          m_LocalVariables: []
+    - rid: 5815056591846113412
+      type: {class: AddIntCommandNode, ns: TzarGames.GameCore.ScriptViz.Graph, asm: TzarGames.GameCore}
+      data:
+        ID:
+          Value:
+            Value:
+              x: 1650895216
+              y: 1080534208
+              z: 3516760232
+              w: 76820375
+        Position: {x: 2190.6667, y: 694}
+        input:
+          ID:
+            Value:
+              Value:
+                x: 2692942028
+                y: 1075906491
+                z: 1525701547
+                w: 2654882503
+          ConnectedSocketIDs:
+          - Value:
+              Value:
+                x: 801274007
+                y: 1270885678
+                z: 3970426266
+                w: 2205361315
+        output:
+          ID:
+            Value:
+              Value:
+                x: 3089492945
+                y: 1239113213
+                z: 1614180996
+                w: 3738193889
+          ConnectedSocketIDs:
+          - Value:
+              Value:
+                x: 3982394327
+                y: 1213677138
+                z: 486410125
+                w: 3921799018
+        Term1:
+          ID:
+            Value:
+              Value:
+                x: 1483105850
+                y: 1141132231
+                z: 2687194557
+                w: 4117425475
+          ConnectedSocketIDs:
+          - Value:
+              Value:
+                x: 2376587036
+                y: 1230366476
+                z: 4110648225
+                w: 2932478535
+          Value: 0
+        Term2:
+          ID:
+            Value:
+              Value:
+                x: 3666374936
+                y: 1222226605
+                z: 1653690780
+                w: 685643569
+          ConnectedSocketIDs: []
+          Value: -1
+        WriteOutput:
+          ID:
+            Value:
+              Value:
+                x: 1531585716
+                y: 1239363711
+                z: 2914030773
+                w: 2283251276
+          ConnectedSocketIDs:
+          - Value:
+              Value:
+                x: 1953593166
+                y: 1212359735
+                z: 4193880967
+                w: 472254738
+          Value: 0
 --- !u!1 &170689352
 GameObject:
   m_ObjectHideFlags: 0
@@ -2934,6 +3285,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   ConversionTargetOptions: -1
   locationID: {fileID: 8847416135421441434, guid: 284a425996cfd4f41ba0b71d170672a9, type: 2}
+  zonePrefab: {fileID: 2219043070835335636, guid: 1f10504beebfd184a8877630f3d3c4a9, type: 3}
   cellSize: 20
   fogColor: {r: 0, g: 0, b: 0, a: 1}
   fogStart: 25
@@ -2941,13 +3293,15 @@ MonoBehaviour:
   ambientSkyColor: {r: 1, g: 1, b: 1, a: 1}
   ambientEquatorColor: {r: 0.5, g: 0.5, b: 0.5, a: 1}
   ambientGroundColor: {r: 0, g: 0, b: 0, a: 1}
+  realtimeShadowColor: {r: 0.31764707, g: 0.31764707, b: 0.31764707, a: 1}
   startCellPrefabs:
   - Prefab: {fileID: 4611867785236005679, guid: 5e74f397b8ca04aa3a6f361a620d61c8, type: 3}
   finishCellPrefabs:
-  - Prefab: {fileID: 2226673943782958361, guid: 3fbb51ab595d5b64d9ea8d8f3762cf2e, type: 3}
+  - Prefab: {fileID: 4933161399811685930, guid: 3fbb51ab595d5b64d9ea8d8f3762cf2e, type: 3}
   gameCellPrefabs:
   - Prefab: {fileID: 2226673943782958361, guid: c3922d1f107de409ca3fda0f217d0210, type: 3}
-  - Prefab: {fileID: 2226673943782958361, guid: a97cd37d985804e7ca23df7f4f9db16b, type: 3}
+  - Prefab: {fileID: 3059032643603121158, guid: 01e3f3bed06f33c459fa3171f489d5d2, type: 3}
+  - Prefab: {fileID: 3059032643603121158, guid: ad1f38d8c73b3a443a6f32e6865a886f, type: 3}
   borderCellPrefabs: []
   environmentCellPrefabs: []
   wallPrefabs:
@@ -2955,6 +3309,7 @@ MonoBehaviour:
   - Prefab: {fileID: 7847591719149227894, guid: fb461fe3dba154302b16bbb09f7856ff, type: 3}
   borderWallPrefabs:
   - Prefab: {fileID: 7847591719149227894, guid: 25697bc8b3d787b4f8299dd400690bee, type: 3}
+  - Prefab: {fileID: 1391267932000665649, guid: a10fb5c51ca9d0b4f9f1e64d47228e15, type: 3}
   doorWallPrefabs:
   - Prefab: {fileID: 8271701556777552081, guid: 76de6ec86bb584e5595db391084c7012, type: 3}
   columnPrefabs:

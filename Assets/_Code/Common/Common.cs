@@ -36,6 +36,7 @@ namespace Arena
     {
         public ArenaMatchState State;
         public bool Saved;
+        public bool ShowCurrentStage;
         public ushort CurrentStage;
 
         public bool IsMatchComplete;

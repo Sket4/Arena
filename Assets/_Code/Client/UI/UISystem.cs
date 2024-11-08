@@ -1,10 +1,13 @@
 using System.Collections.Generic;
+using Arena.Client.Baking;
 using Arena.Client.UI;
 using Arena.Dialogue;
 using Arena.ScriptViz;
 using TzarGames.GameCore;
 using Unity.Entities;
 using UnityEngine;
+using UnityEngine.Localization;
+using UnityEngine.Localization.Components;
 using UnityEngine.Localization.Settings;
 
 namespace Arena.Client
@@ -24,6 +27,7 @@ namespace Arena.Client
         private EntityQuery dialogueQuery;
         private EntityQuery messageRequestQuery;
         private EntityQuery hideMessageRequestQuery;
+        private EntityQuery localizedEntityQuery;
 
         public static readonly Message OpenConfirmExitMessage = Message.CreateFromString("open confirm exit");
         public static readonly Message MapDisableMessage = Message.CreateFromString("disable map");
@@ -49,10 +53,43 @@ namespace Arena.Client
             var presentSystem = World.GetOrCreateSystemManaged<PresentationSystemGroup>();
             presentSystem.AddSystemToUpdateList(World.CreateSystemManaged<FloatingLabelCharacterLabelUiSystem>());
             presentSystem.AddSystemToUpdateList(World.CreateSystemManaged<UIEventHandlerSystem>());
+            
+            LocalizationSettings.SelectedLocaleChanged += LocalizationSettingsOnSelectedLocaleChanged;
+        }
+
+        private void LocalizationSettingsOnSelectedLocaleChanged(Locale obj)
+        {
+            Debug.Log("updating scene localized entities");
+            localizedEntityQuery.ResetFilter();
+            
+            Entities
+                .WithoutBurst()
+                .WithStoreEntityQueryInField(ref localizedEntityQuery)
+                .ForEach((LocalizeStringEvent loc) =>
+                {
+                    // trigger reset
+                }).Run();
         }
 
         protected override void OnUpdate()
         {
+            localizedEntityQuery.SetChangedVersionFilter(ComponentType.ReadOnly<LocalizeStringEvent>());
+            
+            Entities
+                .WithoutBurst()
+                .WithStoreEntityQueryInField(ref localizedEntityQuery)
+                .ForEach((LocalizeStringEvent loc, TMPro.TextMeshPro tmpro, in TextMeshProData data) =>
+                {
+                    Debug.Log($"resetting localized entity {loc.name}");
+                    loc.RefreshString();
+                    var localized = loc.StringReference.GetLocalizedString();
+                    tmpro.text = localized;
+                    var bounds = data.Bounds;
+                    bounds.center = tmpro.transform.position;
+                    tmpro.renderer.bounds = bounds;
+
+                }).Run();
+            
             Entities
                 .WithoutBurst()
                 .WithStructuralChanges()
@@ -262,6 +299,8 @@ namespace Arena.Client
         protected override void OnDestroy()
         {
             base.OnDestroy();
+
+            LocalizationSettings.SelectedLocaleChanged -= LocalizationSettingsOnSelectedLocaleChanged;
             
             Entities
                 .WithoutBurst()

@@ -12,6 +12,7 @@ using Unity.Entities;
 using Unity.Mathematics;
 using Unity.Transforms;
 using UnityEngine;
+using UnityEngine.Localization.Components;
 
 namespace Arena.Client
 {
@@ -56,6 +57,21 @@ namespace Arena.Client
                 .ForEach((Entity entity) =>
             {
                 Debug.Log($"{entity.Index}:{entity.Version}");
+            }).Run();
+        }
+
+        [ConsoleCommand]
+        public void ResetLocalizedEntities()
+        {
+            Entities
+                .WithoutBurst()
+                .ForEach((LocalizeStringEvent loc, TMPro.TextMeshPro tmpro) =>
+            {
+                Debug.Log($"resetting localized entity {loc.name}");
+                loc.RefreshString();
+                var localized = loc.StringReference.GetLocalizedString();
+                tmpro.text = localized;
+                
             }).Run();
         }
 
@@ -223,6 +239,21 @@ namespace Arena.Client
 
         protected override void OnUpdate()
         {
+            // Entities
+            //     .WithoutBurst()
+            //     .ForEach((MeshRenderer renderer, TMPro.TextMeshPro tmpro) =>
+            // {
+            //     var bounds = renderer.bounds;
+            //     var min = bounds.min;
+            //     var max = bounds.max;
+            //     Debug.DrawLine(min, new Vector3(min.x, min.y, max.z));
+            //     Debug.DrawLine(min, new Vector3(min.x, max.y, min.z));
+            //     Debug.DrawLine(min, new Vector3(max.x, min.y, min.z));
+            //     Debug.DrawLine(max, new Vector3(max.x, max.y, min.z));
+            //     Debug.DrawLine(max, new Vector3(max.x, min.y, max.z));
+            //     Debug.DrawLine(max, new Vector3(min.x, max.y, max.z));
+            //     
+            // }).Run();
         }   
     }
 }

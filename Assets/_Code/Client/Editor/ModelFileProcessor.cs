@@ -21,7 +21,7 @@ namespace Arena.Editor
             var compression = modelImporter.meshCompression;
             var assPath = assetPath.ToLower();
 
-            if (assPath.Contains("water") || assPath.Contains("terrain"))
+            if (assPath.Contains("water") || assPath.Contains("terrain") || assPath.Contains("sea"))
             {
                 if (compression == ModelImporterMeshCompression.High ||
                     compression == ModelImporterMeshCompression.Medium)

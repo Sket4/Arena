@@ -15,9 +15,14 @@ real3 MixLightWithRealtimeShadow(real realtimeShadow, real3 ambientLight)
 
 void ApplyDynamicLighting(half3 viewDirWS, half3 normalWS, float3 positionWS, inout float3 diffuseLight, inout half3 specularLight, bool multiplySpecByAtten)
 {
+    #if !DOTS_INSTANCING_ON && !LIGHTMAPS_ON
+    Light mainLight = GetMainLight();
+    diffuseLight += LightingLambert(mainLight.color, mainLight.direction, normalWS.xyz);
+    
+    #endif
+    
+    
     #ifdef ARENA_USE_ADD_LIGHT
-
-    //Light light = GetMainLight();
     Light addLight = GetAdditionalLight(0, positionWS);
 
     diffuseLight *= addLight.distanceAttenuation;

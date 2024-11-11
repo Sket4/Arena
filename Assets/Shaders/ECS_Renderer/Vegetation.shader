@@ -12,8 +12,8 @@ Shader "Arena/Vegetation"
         [Toggle(TG_USE_ALPHACLIP)] _AlphaClip("Use alpha clipping", float) = 0.0
         //[Enum(Off,0,On,1)] _AlphaToMask("Alpha to Mask", Int) = 0
         _Cutoff("Alpha Cutoff", Range(0.0, 1.0)) = 0.5
-        [Enum(UnityEngine.Rendering.BlendMode)] _SrcBlend("Blend Source", float) = 1
-        [Enum(UnityEngine.Rendering.BlendMode)] _DstBlend("Blend Destination", float) = 0
+        //[Enum(UnityEngine.Rendering.BlendMode)] _SrcBlend("Blend Source", float) = 1
+        //[Enum(UnityEngine.Rendering.BlendMode)] _DstBlend("Blend Destination", float) = 0
 
         [Enum(UnityEngine.Rendering.CullMode)] _Cull("Cull", int) = 2
 
@@ -36,13 +36,20 @@ Shader "Arena/Vegetation"
         Tags 
         { 
             "RenderType"="TransparentCutout" 
+        	"Queue"="AlphaTest"
         }
         LOD 100
         
         Pass
         {
+        	Name "ForwardLit"
+            Tags
+            {
+                "LightMode" = "UniversalForward"
+            }
+            
             //AlphaToMask[_AlphaToMask]
-            Blend[_SrcBlend][_DstBlend]
+            //Blend[_SrcBlend][_DstBlend]
             Cull[_Cull]
             ZWrite[_ZWrite]
 
@@ -87,13 +94,13 @@ Shader "Arena/Vegetation"
                 half2 uv : TEXCOORD0;
                 nointerpolation half4 instanceData : TEXCOORD1;
 
-                half4 normalWS_occl : TEXCOORD3;
-                half4 tangentWS : TEXCOORD4;
-                half3 bitangentWS : TEXCOORD5;
-                float4 positionWS_fog : TEXCOORD6;
+                half4 normalWS_occl : TEXCOORD2;
+                half4 tangentWS : TEXCOORD3;
+                half3 bitangentWS : TEXCOORD4;
+                float4 positionWS_fog : TEXCOORD5;
 
 #if LIGHTMAP_ON
-                TG_DECLARE_LIGHTMAP_UV(7)
+                TG_DECLARE_LIGHTMAP_UV(6)
 #endif
                 UNITY_VERTEX_INPUT_INSTANCE_ID
             };

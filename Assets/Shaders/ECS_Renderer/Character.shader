@@ -21,15 +21,25 @@ Shader"Arena/Character"
         
         [HideInInspector] _SkinningData("SkinData", Vector) = (0, 1, 0, 0)
         [HideInInspector] _BaseColor("Color", Color) = (1,1,1,1)
-        [HideInInspector] _Cutoff("Cutoff", Float) = 1 
     }
     SubShader
     {
-        Tags { "RenderType"="Opaque" }
+        Tags 
+        { 
+            "RenderType"="Opaque" 
+            "IgnoreProjector" = "True"
+            "Queue"="Geometry"
+        }
         LOD 100
 
         Pass
         {
+            Name "ForwardLit"
+            Tags
+            {
+                "LightMode" = "UniversalForward"
+            }
+            
             Cull[_Cull]
             
             HLSLPROGRAM
@@ -65,5 +75,82 @@ Shader"Arena/Character"
             ENDHLSL
         }
         UsePass "Hidden/Arena/ShadowCaster-Skinned/SHADOWCASTER"
+
+        Pass
+        {
+            Name "DepthOnly"
+            Tags
+            {
+                "LightMode" = "DepthOnly"
+            }
+
+            // -------------------------------------
+            // Render State Commands
+            ZWrite On
+            ColorMask R
+
+            HLSLPROGRAM
+            #pragma target 4.5
+            #pragma require cubearray       // из-за использования tg_ReflectionProbes
+            #pragma exclude_renderers gles //excluded shader from OpenGL ES 2.0 because it uses non-square matrices
+            
+            #pragma multi_compile _ DOTS_INSTANCING_ON
+            #pragma shader_feature TG_USE_ALPHACLIP
+            
+            #pragma multi_compile _BONECOUNT_ONE _BONECOUNT_FOUR
+            
+            // -------------------------------------
+            // Shader Stages
+            #pragma vertex DepthOnlyVertex
+            #pragma fragment DepthOnlyFragment
+
+            // -------------------------------------
+            // Includes
+            #include "Input-Character.hlsl"
+            #include "Common-Character.hlsl"
+            ENDHLSL
+        }
+
+//        Pass
+//        {
+//            Name "DepthNormalsOnly"
+//            Tags
+//            {
+//                "LightMode" = "DepthNormalsOnly"
+//            }
+//
+//            // -------------------------------------
+//            // Render State Commands
+//            ZWrite On
+//
+//            HLSLPROGRAM
+//            #pragma target 2.0
+//
+//            // -------------------------------------
+//            // Shader Stages
+//            #pragma vertex DepthNormalsVertex
+//            #pragma fragment DepthNormalsFragment
+//
+//            // -------------------------------------
+//            // Material Keywords
+//            #pragma shader_feature_local _ALPHATEST_ON
+//
+//            // -------------------------------------
+//            // Universal Pipeline keywords
+//            #pragma multi_compile_fragment _ _GBUFFER_NORMALS_OCT // forward-only variant
+//            #pragma multi_compile_fragment _ LOD_FADE_CROSSFADE
+//            #include_with_pragmas "Packages/com.unity.render-pipelines.universal/ShaderLibrary/RenderingLayers.hlsl"
+//
+//            //--------------------------------------
+//            // GPU Instancing
+//            #pragma multi_compile_instancing
+//            #include_with_pragmas "Packages/com.unity.render-pipelines.universal/ShaderLibrary/DOTS.hlsl"
+//
+//            // -------------------------------------
+//            // Includes
+//            #include "Packages/com.unity.render-pipelines.universal/Shaders/UnlitInput.hlsl"
+//            #include "Packages/com.unity.render-pipelines.universal/Shaders/UnlitDepthNormalsPass.hlsl"
+//            ENDHLSL
+//        }
     }
 }

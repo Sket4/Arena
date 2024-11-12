@@ -139,6 +139,40 @@ Shader "Arena/Environment"
             #include "ShadowCasterPass.hlsl"
             ENDHLSL
         }
+
+        Pass
+        {
+            Name "DepthOnly"
+            Tags
+            {
+                "LightMode" = "DepthOnly"
+            }
+
+            // -------------------------------------
+            // Render State Commands
+            ZWrite On
+            ColorMask R
+
+            HLSLPROGRAM
+            #pragma target 4.5
+            #pragma require 2darray
+            #pragma require cubearray       // из-за использования tg_ReflectionProbes
+            #pragma exclude_renderers gles //excluded shader from OpenGL ES 2.0 because it uses non-square matrices
+            
+            #pragma multi_compile _ DOTS_INSTANCING_ON
+            #pragma shader_feature TG_USE_ALPHACLIP
+            
+            // -------------------------------------
+            // Shader Stages
+            #pragma vertex DepthOnlyVertex
+            #pragma fragment DepthOnlyFragment 
+
+            // -------------------------------------
+            // Includes
+            #include "Input-Env.hlsl"
+            #include "Common-Env.hlsl"
+            ENDHLSL
+        }
         
         Pass
         {

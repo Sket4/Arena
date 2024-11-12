@@ -174,5 +174,54 @@ half4 env_frag(v2f i) : SV_Target
 	return half4(MixFog(finalColor.rgb, i.positionWS_fog.w), finalColor.a);
 }
 
+struct appdata_depthonly
+{
+	float3 vertex : POSITION;
+	//float3 normal : NORMAL;
+	//float4 tangent : TANGENT;
+	float2 uv : TEXCOORD0;
+	
+	UNITY_VERTEX_INPUT_INSTANCE_ID
+};
+
+struct v2f_depthonly
+{
+	half4 positionCS : SV_POSITION;
+	float2 uv : TEXCOORD0;
+	UNITY_VERTEX_INPUT_INSTANCE_ID
+};
+
+v2f_depthonly DepthOnlyVertex(appdata_depthonly v)
+{
+	v2f_depthonly output = (v2f_depthonly)0;
+	UNITY_SETUP_INSTANCE_ID(v);
+	UNITY_TRANSFER_INSTANCE_ID(v, output);
+	//UNITY_INITIALIZE_VERTEX_OUTPUT_STEREO(output);
+
+	float3 positionOS = v.vertex;
+
+	#if defined(TG_USE_ALPHACLIP)
+	output.uv = TRANSFORM_TEX(v.uv, _BaseMap);
+	#endif
+	output.positionCS = TransformObjectToHClip(positionOS);
+	return output;
+}
+
+half DepthOnlyFragment(v2f_depthonly input) : SV_TARGET
+{
+	UNITY_SETUP_INSTANCE_ID(input);
+	//UNITY_SETUP_STEREO_EYE_INDEX_POST_VERTEX(input);
+
+	#if defined(TG_USE_ALPHACLIP)
+	//Alpha(SampleAlbedoAlpha(input.uv, TEXTURE2D_ARGS(_BaseMap, sampler_BaseMap)).a, _BaseColor, _Cutoff);
+	#endif
+
+	#if defined(LOD_FADE_CROSSFADE)
+	LODFadeCrossFade(input.positionCS);
+	#endif
+
+	return input.positionCS.z;
+}
+
 #endif //UG_COMMON_ENV_INCLUDED
 

@@ -81,17 +81,6 @@ public static class Tools
         }
     }
 
-    const string liveConversionMenuPath = "Arena/DOTS/Live conversion";
-    
-    [MenuItem(liveConversionMenuPath)]
-    static void liveConversionEnabled()
-    {
-        Unity.Scenes.Editor.LiveConversionEditorSettings.LiveConversionEnabled =
-            !Unity.Scenes.Editor.LiveConversionEditorSettings.LiveConversionEnabled;
-        Menu.SetChecked(liveConversionMenuPath, Unity.Scenes.Editor.LiveConversionEditorSettings.LiveConversionEnabled);
-        Debug.Log("DOTS live conversion enabled: " + Unity.Scenes.Editor.LiveConversionEditorSettings.LiveConversionEnabled);
-    }
-
     const string clientAbilityCodegenSettingsPath = "Assets/Data/Codegen/Client ability codegen settings.asset";
     const string serverAbilityCodegenSettingsPath = "Assets/Data/Codegen/Server ability codegen settings.asset";
     const string commonAssemblyCodegenSettingsPath = "Assets/Data/Codegen/Common assembly codegen settings.asset";

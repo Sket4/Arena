@@ -8,17 +8,15 @@ Material:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_Name: Unlit black
-  m_Shader: {fileID: 4800000, guid: 537b6c3f7a4218d459a2cdaea0cd4bf7, type: 3}
+  m_Shader: {fileID: -6465566751694194690, guid: 3bf9df4dd48b50b41b0dc17a6ae5502b, type: 3}
   m_Parent: {fileID: 0}
   m_ModifiedSerializedProperties: 0
   m_ValidKeywords: []
-  m_InvalidKeywords:
-  - USE_LIGHTING
-  - _ZWRITE_ON
+  m_InvalidKeywords: []
   m_LightmapFlags: 4
   m_EnableInstancingVariants: 0
-  m_DoubleSidedGI: 1
-  m_CustomRenderQueue: -1
+  m_DoubleSidedGI: 0
+  m_CustomRenderQueue: 1957
   stringTagMap: {}
   disabledShaderPasses: []
   m_LockedProperties: 
@@ -91,6 +89,7 @@ Material:
     - _AlphaToMask: 0
     - _Blend: 0
     - _BlendModePreserveSpecular: 1
+    - _BlendOp: 0
     - _BumpScale: 1
     - _ClearCoatMask: 0
     - _ClearCoatSmoothness: 0
@@ -102,16 +101,19 @@ Material:
     - _DstBlend: 0
     - _DstBlendAlpha: 0
     - _EnvironmentReflections: 1
+    - _FogHeight: 0
     - _GlossMapScale: 0
     - _Glossiness: 0
     - _GlossyReflections: 0
+    - _HeightFogFade: 0.005
     - _HighlightRemove: 0
     - _Metallic: 0
     - _OcclusionStrength: 1
     - _Parallax: 0.005
     - _QueueControl: 0
-    - _QueueOffset: 0
+    - _QueueOffset: -43
     - _ReceiveShadows: 1
+    - _SampleGI: 0
     - _Smoothness: 0.5
     - _SmoothnessTextureChannel: 0
     - _SpecularHighlights: 1
@@ -119,8 +121,10 @@ Material:
     - _SrcBlendAlpha: 1
     - _Surface: 0
     - _SurfaceBlendFactor: 1
+    - _USE_FOG: 0
     - _Underwater_fog_density_factor: 1
     - _Underwater_fog_height_mult: 1
+    - _UseHeightFog: 0
     - _UseLighting: 1
     - _UseSurfaceBlend: 0
     - _UseUnderwater: 0

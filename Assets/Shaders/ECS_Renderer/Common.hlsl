@@ -13,7 +13,7 @@ real3 MixLightWithRealtimeShadow(real realtimeShadow, real3 ambientLight)
     return lerp(minLight, ambientLight, realtimeShadow);
 }
 
-void ApplyDynamicLighting(half3 viewDirWS, half3 normalWS, float3 positionWS, inout float3 diffuseLight, inout half3 specularLight, bool multiplySpecByAtten)
+void ApplyDynamicLighting(half3 viewDirWS, half3 normalWS, float3 positionWS, inout float3 diffuseLight, inout half3 specularLight, bool multiplySpecByAtten, bool useShadowMap)
 {
     #if !DOTS_INSTANCING_ON && !LIGHTMAPS_ON
     Light mainLight = GetMainLight();
@@ -43,9 +43,12 @@ void ApplyDynamicLighting(half3 viewDirWS, half3 normalWS, float3 positionWS, in
     
     #endif
 
-    float4 shadowCoord = TransformWorldToShadowCoord(positionWS);
-    half shadow = MainLightRealtimeShadow(shadowCoord);
-    diffuseLight = MixLightWithRealtimeShadow(shadow, diffuseLight);
+    if(useShadowMap)
+    {
+        float4 shadowCoord = TransformWorldToShadowCoord(positionWS);
+        half shadow = MainLightRealtimeShadow(shadowCoord);
+        diffuseLight = MixLightWithRealtimeShadow(shadow, diffuseLight);    
+    }
 }
 
 #endif //UG_COMMON_INCLUDED

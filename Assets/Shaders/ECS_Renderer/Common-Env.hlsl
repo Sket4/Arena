@@ -45,11 +45,10 @@ struct v2f
 	float4 positionWS_fog : TEXCOORD5;
 
 	half alpha : TEXCOORD6;
-	#if LIGHTMAP_ON
+#if LIGHTMAP_ON
 	TG_DECLARE_LIGHTMAP_UV(7)
 #endif
 	UNITY_VERTEX_INPUT_INSTANCE_ID
-	
 };
 
 v2f env_vert (appdata v)
@@ -153,7 +152,7 @@ half4 env_frag(v2f i) : SV_Target
 	half lum = tg_luminance(ambientLight);
 	envMapColor = lerp(remEnvMapColor, envMapColor, saturate(lum * lum * lum));
 
-	ApplyDynamicLighting(viewDirWS, normalWS, i.positionWS_fog.xyz, ambientLight, envMapColor, true);
+	ApplyDynamicLighting(viewDirWS, normalWS, i.positionWS_fog.xyz, ambientLight, envMapColor, true, true);
 
 	half4 finalColor = LightingPBR(diffuse, ambientLight, viewDirWS, normalWS, mesm.rrr, roughness, envMapColor);
 
@@ -161,7 +160,7 @@ half4 env_frag(v2f i) : SV_Target
 
 	half4 finalColor = diffuse;
 	half3 envMapColor = 0;
-	ApplyDynamicLighting(viewDirWS, normalWS, i.positionWS_fog.xyz, ambientLight, envMapColor, true);
+	ApplyDynamicLighting(viewDirWS, normalWS, i.positionWS_fog.xyz, ambientLight, envMapColor, true, true);
 	finalColor.rgb *= ambientLight;
 
 	#endif

@@ -161,6 +161,7 @@ namespace TzarGames.MultiplayerKit.Generated
 			}
 			sourceData.State = data.State;
 			sourceData.Saved = data.Saved;
+			sourceData.ShowCurrentStage = data.ShowCurrentStage;
 			sourceData.CurrentStage = data.CurrentStage;
 			sourceData.IsMatchComplete = data.IsMatchComplete;
 			sourceData.MatchEndTime = data.MatchEndTime;
@@ -199,6 +200,7 @@ namespace TzarGames.MultiplayerKit.Generated
 		{
 			public Arena.ArenaMatchState State;
 			public System.Boolean Saved;
+			public System.Boolean ShowCurrentStage;
 			public System.UInt16 CurrentStage;
 			public System.Boolean IsMatchComplete;
 			public System.Double MatchEndTime;
@@ -248,6 +250,7 @@ namespace TzarGames.MultiplayerKit.Generated
 						var source = sources[i];
 						data.State = source.State;
 						data.Saved = source.Saved;
+						data.ShowCurrentStage = source.ShowCurrentStage;
 						data.CurrentStage = source.CurrentStage;
 						data.IsMatchComplete = source.IsMatchComplete;
 						data.MatchEndTime = source.MatchEndTime;

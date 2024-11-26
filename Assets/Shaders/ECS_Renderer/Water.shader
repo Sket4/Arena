@@ -34,6 +34,7 @@ Shader"Arena/Water"
         
         [HideInInspector][NoScaleOffset]unity_Lightmaps("unity_Lightmaps", 2DArray) = "" {} 
         [HideInInspector][NoScaleOffset] unity_LightmapsInd("unity_LightmapsInd", 2DArray) = "" {} 
+        _TransparencyLM ("Transmissive Texture", 2D) = "white" {}
     }
     SubShader
     {
@@ -61,12 +62,22 @@ Shader"Arena/Water"
             #pragma shader_feature __ USE_FOAM
             #pragma multi_compile _ LIGHTMAP_ON
             #pragma multi_compile _ DIRLIGHTMAP_COMBINED
+
+            #pragma multi_compile _ _MAIN_LIGHT_SHADOWS
+            #pragma multi_compile _ _MAIN_LIGHT_SHADOWS_CASCADE
+            #pragma multi_compile_fragment __ ARENA_USE_MAIN_LIGHT
+            #pragma multi_compile_fragment __ ARENA_USE_ADD_LIGHT
+            
+            #pragma multi_compile_fragment _ _SHADOWS_SOFT
+            #pragma multi_compile_fragment _ _SHADOWS_SOFT_LOW _SHADOWS_SOFT_MEDIUM _SHADOWS_SOFT_HIGH
+            #pragma multi_compile_fragment _ _LIGHT_COOKIES
             
             //#pragma multi_compile_instancing
 
             #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Core.hlsl"
             #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Input.hlsl" 
             #include "Packages/com.tzargames.rendering/Shaders/Lighting.hlsl"
+            #include "Common.hlsl"
 
             struct appdata
             {
@@ -263,10 +274,12 @@ Shader"Arena/Water"
                 half3 lighting = half3(1,1,1);
 #endif
 
+                ARENA_DYN_LIGHT(normalWS, i.positionWS_fog.xyz, lighting, viewDirWS, reflColor, true);
+                
                 diffuse.rgb *= lighting;
 
                 diffuse.a *= (i.color.g + i.color.r) * i.color.b;
-                
+
                 half4 finalColor = diffuse;
                 
                 // apply fog
@@ -281,6 +294,62 @@ Shader"Arena/Water"
                 #endif
                 
             }
+            ENDHLSL
+        }
+
+        Pass
+        {
+            Name "Meta"
+            Tags { "LightMode" = "Meta" }
+            
+            Cull Off
+            HLSLPROGRAM
+            
+            #pragma target 4.5
+            
+            #pragma vertex UniversalVertexMeta
+            #pragma fragment UniversalFragmentMetaCustom
+            #pragma shader_feature_local _ _DETAIL_MULX2 _DETAIL_SCALED
+            #pragma shader_feature_local_fragment _SPECGLOSSMAP
+            #pragma shader_feature EDITOR_VISUALIZATION
+            
+            #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Core.hlsl" 
+            
+             
+            CBUFFER_START(UnityPerMaterial)
+                half4 _BaseColor;
+                half4 _CustomFogColor;
+                half4 _Tiling_and_speed_1;
+                half4 _Tiling_and_speed_2;
+                half4 _Tiling_and_speed_3;
+                half _Roughness;
+                half _Rim_mult;
+                half _Normal_strength;
+                half4 _FoamParameters;
+                half4 _FoamTex_ST;
+            CBUFFER_END
+
+            half4 _BaseMap_ST;
+            half4 _EmissionColor;
+            
+            #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/UniversalMetaPass.hlsl"
+                         
+            half4 UniversalFragmentMetaCustom(Varyings fragIn) : SV_Target
+            {
+                MetaInput metaInput;
+                            
+                metaInput.Albedo = float3(1,1,1);
+                metaInput.Emission = 1;
+                            
+                #ifdef EDITOR_VISUALIZATION
+                metaInput.VizUV = fragIn.VizUV;
+                metaInput.LightCoord = fragIn.LightCoord;
+                #endif
+
+                half4 result = UnityMetaFragment(metaInput);
+                return result;
+            }
+            
             ENDHLSL
         }
     }

@@ -58,12 +58,18 @@ Shader "Arena/Terrain (for beach)"
             #pragma shader_feature __ TG_TRANSPARENT
             #pragma shader_feature TG_USE_ALPHACLIP
             #pragma multi_compile UG_QUALITY_LOW UG_QUALITY_MED UG_QUALITY_HIGH
+            #pragma multi_compile __ ARENA_USE_MAIN_LIGHT
+            #pragma multi_compile __ ARENA_USE_ADD_LIGHT
             #pragma shader_feature USE_UNDERWATER
             #pragma shader_feature DIFFUSE_ALPHA_AS_SMOOTHNESS
             #pragma shader_feature USE_SURFACE_BLEND
             //#pragma multi_compile_fwdbase
             #pragma multi_compile _ LIGHTMAP_ON
             #pragma multi_compile _ DIRLIGHTMAP_COMBINED
+
+            #pragma multi_compile_fragment _ _SHADOWS_SOFT
+            #pragma multi_compile_fragment _ _SHADOWS_SOFT_LOW _SHADOWS_SOFT_MEDIUM _SHADOWS_SOFT_HIGH
+            #pragma multi_compile_fragment _ _LIGHT_COOKIES
 
             #if defined(UG_QUALITY_LOW)
             #undef DIRLIGHTMAP_COMBINED
@@ -92,7 +98,7 @@ Shader "Arena/Terrain (for beach)"
             {
                 half4 vertex : SV_POSITION;
                 float2 uv : TEXCOORD0;
-                nointerpolation half4 instanceData : TEXCOORD1;
+                TG_DECLARE_INSTANCE_DATA(1)
 
                 float3 normalWS : TEXCOORD2;
                 float4 tangentWS : TEXCOORD3;
@@ -203,20 +209,7 @@ Shader "Arena/Terrain (for beach)"
 
                 half3 normalWS = TransformTangentToWorld(normalTS.xyz, tangentToWorld, true);
 
-                half3 ambientLight;
-
-#if LIGHTMAP_ON
-                ambientLight = TG_SAMPLE_LIGHTMAP(i.lightmapUV, i.instanceData.x, normalWS);
-#else
-                ambientLight = TG_ComputeAmbientLight_half(normalWS);
-#endif
-
-                float4 shadowCoord = TransformWorldToShadowCoord(i.positionWS_fog.xyz);
-	            half shadow = MainLightRealtimeShadow(shadowCoord);
-
-                ambientLight = MixLightWithRealtimeShadow(shadow, ambientLight);
-
-                
+                half3 ambientLight = ARENA_COMPUTE_AMBIENT_LIGHT(i, normalWS);
                 
                 //diffuse.rgb = 1;
                 #if defined(UG_QUALITY_MED) || defined(UG_QUALITY_HIGH)
@@ -237,10 +230,13 @@ Shader "Arena/Terrain (for beach)"
                 half lum = tg_luminance(ambientLight);
 
                 envMapColor = lerp(remEnvMapColor, envMapColor, saturate(lum * lum * lum));
+
+                ARENA_DYN_LIGHT(normalWS, i.positionWS_fog.xyz, ambientLight, viewDirWS, envMapColor, true);
                 
                 half4 finalColor = LightingPBR(diffuse, ambientLight, viewDirWS, normalWS, 0, roughness, envMapColor);
                 #else
                 half4 finalColor = diffuse;
+                ARENA_DYN_LIGHT(normalWS, i.positionWS_fog.xyz, ambientLight, 0,0, true);
                 finalColor.rgb *= ambientLight;
                 #endif
 

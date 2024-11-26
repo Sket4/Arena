@@ -126,13 +126,8 @@ half4 frag (v2f i) : SV_Target
     mesm.a *= _Smoothness;
 
     half roughness = 1.0 - mesm.a;
-
-
-    #if defined(ARENA_USE_MAIN_LIGHT) || defined(ARENA_USE_ADD_LIGHT)
-    half3 lighting = TG_ComputeAmbientLight_half(normalWS);
-    #else
-    half3 lighting = TG_ComputeAmbientLight_half(normalWS);
-    #endif
+    
+    half3 lighting = ARENA_COMPUTE_AMBIENT_LIGHT(i, normalWS);
 
     // shadowing
     //float4 shadowCoord = TransformWorldToShadowCoord(i.positionWS.xyz);
@@ -148,7 +143,7 @@ half4 frag (v2f i) : SV_Target
 
     half3 envMapColor = TG_ReflectionProbe(viewDirWS, normalWS, i.instanceData.y, roughness * 4);
 
-    ApplyDynamicLighting(viewDirWS, normalWS, i.positionWS, lighting, envMapColor, true, false);
+    ARENA_DYN_LIGHT(normalWS, i.positionWS.xyz, lighting, viewDirWS, envMapColor, false);
     
     //envMapColor *= metallic.a;
     half4 finalColor = LightingPBR(diffuse, lighting, viewDirWS, normalWS, metallic, roughness, envMapColor);

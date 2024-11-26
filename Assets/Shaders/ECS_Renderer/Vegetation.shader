@@ -69,6 +69,11 @@ Shader "Arena/Vegetation"
             #pragma shader_feature_local_vertex __ USE_BILLBOARD
             #pragma multi_compile _ LIGHTMAP_ON
             #pragma multi_compile _ DIRLIGHTMAP_COMBINED
+
+            #pragma multi_compile_fragment _ _SHADOWS_SOFT
+            #pragma multi_compile_fragment _ _SHADOWS_SOFT_LOW _SHADOWS_SOFT_MEDIUM _SHADOWS_SOFT_HIGH
+            #pragma multi_compile_fragment _ _LIGHT_COOKIES
+            
             #pragma multi_compile UG_QUALITY_LOW UG_QUALITY_MED UG_QUALITY_HIGH
             
             #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Core.hlsl"

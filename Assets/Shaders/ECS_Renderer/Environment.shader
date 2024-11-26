@@ -69,13 +69,18 @@ Shader "Arena/Environment"
             #pragma multi_compile _ _MAIN_LIGHT_SHADOWS
             #pragma multi_compile _ _MAIN_LIGHT_SHADOWS_CASCADE
             
+            #pragma multi_compile_fragment _ _SHADOWS_SOFT
+            #pragma multi_compile_fragment _ _SHADOWS_SOFT_LOW _SHADOWS_SOFT_MEDIUM _SHADOWS_SOFT_HIGH
+            #pragma multi_compile_fragment _ _LIGHT_COOKIES
+            
             #pragma shader_feature_local TG_USE_ALPHACLIP
 			#pragma multi_compile UG_QUALITY_LOW UG_QUALITY_MED UG_QUALITY_HIGH
             #pragma shader_feature_local USE_UNDERWATER
             #pragma shader_feature_local_fragment USE_SURFACE_BLEND
             #pragma shader_feature_local_fragment USE_HEIGHT_FOG
-            #pragma multi_compile __ ARENA_USE_MAIN_LIGHT
-            #pragma multi_compile __ ARENA_USE_ADD_LIGHT
+            #pragma multi_compile_fragment __ ARENA_USE_MAIN_LIGHT
+            #pragma multi_compile_fragment __ ARENA_USE_ADD_LIGHT
+            #pragma multi_compile_fragment __ ARENA_USE_DARK_MODE
             //#pragma multi_compile_fwdbase
             #pragma multi_compile _ LIGHTMAP_ON
             #pragma multi_compile _ DIRLIGHTMAP_COMBINED

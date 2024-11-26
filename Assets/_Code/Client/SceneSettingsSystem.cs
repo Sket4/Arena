@@ -18,9 +18,11 @@ namespace Arena.Client
 
         private const string EnableMainLightKeywordName = "ARENA_USE_MAIN_LIGHT";
         private const string EnableAdditionalLightKeywordName = "ARENA_USE_ADD_LIGHT";
+        private const string EnableDakModeKeywordName = "ARENA_USE_DARK_MODE";
         
         private readonly static GlobalKeyword EnableMainLightKeyword = GlobalKeyword.Create(EnableMainLightKeywordName);
         private readonly static GlobalKeyword EnableAdditionalLightKeyword = GlobalKeyword.Create(EnableAdditionalLightKeywordName);
+        private readonly static GlobalKeyword EnableDakModeKeyword = GlobalKeyword.Create(EnableDakModeKeywordName);
 
         private EntityQuery shaderSettingsQuery;
 
@@ -51,6 +53,7 @@ namespace Arena.Client
                         Debug.Log($"Set scene shader settings: enable main light: {settings.EnableMainLight}, enable add lights: {settings.EnableAdditionalLight}");
                         Shader.SetKeyword(EnableMainLightKeyword, settings.EnableMainLight);
                         Shader.SetKeyword(EnableAdditionalLightKeyword, settings.EnableAdditionalLight);
+                        Shader.SetKeyword(EnableDakModeKeyword, settings.EnableDarkMode);
                         
                         // var materials = new List<Material>();
                         //

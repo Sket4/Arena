@@ -21,12 +21,12 @@ using Unity.Collections;
 [assembly: Unity.Jobs.RegisterGenericJobType(typeof(TzarGames.MultiplayerKit.ComponentDataSync<TzarGames.MultiplayerKit.Generated.Level_DataProcessor,TzarGames.MultiplayerKit.Generated.Level_Sync.Data,TzarGames.MultiplayerKit.Generated.Level_Sync.Tag>.SerializeJob))]
 [assembly: Unity.Jobs.RegisterGenericJobType(typeof(TzarGames.MultiplayerKit.ComponentDataSync<TzarGames.MultiplayerKit.Generated.Droppable_DataProcessor,TzarGames.MultiplayerKit.Generated.Droppable_Sync.Data,TzarGames.MultiplayerKit.Generated.Droppable_Sync.Tag>.DeserializeJob))]
 [assembly: Unity.Jobs.RegisterGenericJobType(typeof(TzarGames.MultiplayerKit.ComponentDataSync<TzarGames.MultiplayerKit.Generated.Droppable_DataProcessor,TzarGames.MultiplayerKit.Generated.Droppable_Sync.Data,TzarGames.MultiplayerKit.Generated.Droppable_Sync.Tag>.SerializeJob))]
-[assembly: Unity.Jobs.RegisterGenericJobType(typeof(TzarGames.MultiplayerKit.ComponentDataSync<TzarGames.MultiplayerKit.Generated.AbilityOwner_DataProcessor,TzarGames.MultiplayerKit.Generated.AbilityOwner_Sync.Data,TzarGames.MultiplayerKit.Generated.AbilityOwner_Sync.Tag>.DeserializeJob))]
-[assembly: Unity.Jobs.RegisterGenericJobType(typeof(TzarGames.MultiplayerKit.ComponentDataSync<TzarGames.MultiplayerKit.Generated.AbilityOwner_DataProcessor,TzarGames.MultiplayerKit.Generated.AbilityOwner_Sync.Data,TzarGames.MultiplayerKit.Generated.AbilityOwner_Sync.Tag>.SerializeJob))]
 [assembly: Unity.Jobs.RegisterGenericJobType(typeof(TzarGames.MultiplayerKit.ComponentDataSync<TzarGames.MultiplayerKit.Generated.ActivatedState_DataProcessor,TzarGames.MultiplayerKit.Generated.ActivatedState_Sync.Data,TzarGames.MultiplayerKit.Generated.ActivatedState_Sync.Tag>.DeserializeJob))]
 [assembly: Unity.Jobs.RegisterGenericJobType(typeof(TzarGames.MultiplayerKit.ComponentDataSync<TzarGames.MultiplayerKit.Generated.ActivatedState_DataProcessor,TzarGames.MultiplayerKit.Generated.ActivatedState_Sync.Data,TzarGames.MultiplayerKit.Generated.ActivatedState_Sync.Tag>.SerializeJob))]
 [assembly: Unity.Jobs.RegisterGenericJobType(typeof(TzarGames.MultiplayerKit.ComponentDataSync<TzarGames.MultiplayerKit.Generated.Health_DataProcessor,TzarGames.MultiplayerKit.Generated.Health_Sync.Data,TzarGames.MultiplayerKit.Generated.Health_Sync.Tag>.DeserializeJob))]
 [assembly: Unity.Jobs.RegisterGenericJobType(typeof(TzarGames.MultiplayerKit.ComponentDataSync<TzarGames.MultiplayerKit.Generated.Health_DataProcessor,TzarGames.MultiplayerKit.Generated.Health_Sync.Data,TzarGames.MultiplayerKit.Generated.Health_Sync.Tag>.SerializeJob))]
+[assembly: Unity.Jobs.RegisterGenericJobType(typeof(TzarGames.MultiplayerKit.ComponentDataSync<TzarGames.MultiplayerKit.Generated.AbilityOwner_DataProcessor,TzarGames.MultiplayerKit.Generated.AbilityOwner_Sync.Data,TzarGames.MultiplayerKit.Generated.AbilityOwner_Sync.Tag>.DeserializeJob))]
+[assembly: Unity.Jobs.RegisterGenericJobType(typeof(TzarGames.MultiplayerKit.ComponentDataSync<TzarGames.MultiplayerKit.Generated.AbilityOwner_DataProcessor,TzarGames.MultiplayerKit.Generated.AbilityOwner_Sync.Data,TzarGames.MultiplayerKit.Generated.AbilityOwner_Sync.Tag>.SerializeJob))]
 [assembly: Unity.Jobs.RegisterGenericJobType(typeof(TzarGames.MultiplayerKit.ComponentDataSync<TzarGames.MultiplayerKit.Generated.LivingState_DataProcessor,TzarGames.MultiplayerKit.Generated.LivingState_Sync.Data,TzarGames.MultiplayerKit.Generated.LivingState_Sync.Tag>.DeserializeJob))]
 [assembly: Unity.Jobs.RegisterGenericJobType(typeof(TzarGames.MultiplayerKit.ComponentDataSync<TzarGames.MultiplayerKit.Generated.LivingState_DataProcessor,TzarGames.MultiplayerKit.Generated.LivingState_Sync.Data,TzarGames.MultiplayerKit.Generated.LivingState_Sync.Tag>.SerializeJob))]
 [assembly: Unity.Jobs.RegisterGenericJobType(typeof(TzarGames.MultiplayerKit.ComponentDataSync<TzarGames.MultiplayerKit.Generated.Consumable_DataProcessor,TzarGames.MultiplayerKit.Generated.Consumable_Sync.Data,TzarGames.MultiplayerKit.Generated.Consumable_Sync.Tag>.DeserializeJob))]
@@ -993,140 +993,6 @@ namespace TzarGames.MultiplayerKit.Generated
 			return false;
 		}
 	}
-	public struct AbilityOwner_DataProcessor : INetworkIdDataProcessor
-	{
-		[ReadOnly] public ComponentLookup<TzarGames.GameCore.Abilities.AbilityOwner> DataFromEntity;
-		[ReadOnly] public EntityFromNetworkId EntityFromNetworkId;
-		public void Deserialize(in NetworkID networkID, in NativeArray<byte> bytes, in NetworkIdDataProcessorOptions options)
-		{
-			var data = NetworkIdDataProcessorUtility.AsStruct<AbilityOwner_Sync.Data>(bytes);
-			if(EntityFromNetworkId.TryGet(networkID, out Entity entity) == false)
-			{
-				return;
-			}
-			var hasComponent = DataFromEntity.HasComponent(entity);
-			TzarGames.GameCore.Abilities.AbilityOwner sourceData;
-			if(hasComponent)
-			{
-				sourceData = DataFromEntity[entity];
-			}
-			else
-			{
-				sourceData = new TzarGames.GameCore.Abilities.AbilityOwner();
-			}
-			if(data.Value != NetworkID.Invalid && EntityFromNetworkId.TryGet(data.Value, out Entity Value))
-			{
-				sourceData.Value = Value;
-			}
-			else
-			{
-				sourceData.Value = Entity.Null;
-			}
-			if (hasComponent) options.Commands.SetComponent(entity, sourceData);
-			else
-			{
-				options.Commands.AddComponent(entity, sourceData);
-			}
-		}
-	}
-	[DisableAutoCreation]
-	public partial class AbilityOwner_Sync : ComponentDataSync<AbilityOwner_DataProcessor, AbilityOwner_Sync.Data, AbilityOwner_Sync.Tag>
-	{
-		ComponentType sourceType;
-		EntityQuery applyQuery;
-		EntityQuery collectQuery;
-		#if UNITY_EDITOR
-		[UnityEditor.InitializeOnLoadMethod]
-		#endif
-		[RuntimeInitializeOnLoadMethod] static void Register()
-		{
-			DataSyncBase.RegisterDataSync(typeof(AbilityOwner_Sync));
-		}
-		public override void Initialize(DataSyncSystemBase system)
-		{
-			base.Initialize(system);
-			applyQuery = system.GetEntityQueryForJob(ComponentType.ReadOnly<NetworkID>());
-			sourceType = ComponentType.ReadOnly<TzarGames.GameCore.Abilities.AbilityOwner>();
-			collectQuery = system.GetEntityQueryForJob(ComponentType.ReadOnly<NetworkID>(), sourceType);
-			Priority = 0;
-		}
-		public struct Data
-		{
-			public NetworkID Value;
-		}
-		public struct Tag : IComponentData
-		{
-		}
-		protected override JobHandle ScheduleCollectDataJob(SerializedDataContainer dataMap, JobHandle inputDeps)
-		{
-			var job = new CollectDataJob()
-			{
-				SourceType = system.GetComponentTypeHandle<TzarGames.GameCore.Abilities.AbilityOwner>(true),
-				NetworkIdType = system.GetComponentTypeHandle<NetworkID>(true),
-				DataMap = dataMap,
-				NetworkIdFromEntity = system.GetComponentLookup<NetworkID>(true),
-				IsZeroSized = sourceType.IsZeroSized
-			};
-			return job.Schedule(collectQuery, inputDeps);
-		}
-		[BurstCompile]
-		struct CollectDataJob : IJobChunk
-		{
-			public SerializedDataContainer DataMap;
-			[ReadOnly] public ComponentTypeHandle<TzarGames.GameCore.Abilities.AbilityOwner> SourceType;
-			[ReadOnly] public ComponentTypeHandle<NetworkID> NetworkIdType;
-			[ReadOnly] public ComponentLookup<NetworkID> NetworkIdFromEntity;
-			public bool IsZeroSized;
-			public void Execute(in ArchetypeChunk chunk, int unfilteredChunkIndex, bool useEnabledMask, in v128 chunkEnabledMask)
-			{
-				var netIds = chunk.GetNativeArray(NetworkIdType);
-				NativeArray<TzarGames.GameCore.Abilities.AbilityOwner> sources = default;
-				if(IsZeroSized == false)
-				{
-					sources = chunk.GetNativeArray(SourceType);
-				}
-				for(int i=0; i<chunk.Count; i++)
-				{
-					var networkId = netIds[i];
-					if(networkId.IsValid == false)
-					{
-						continue;
-					}
-					var data = new Data();
-					if(IsZeroSized == false)
-					{
-						var source = sources[i];
-						if(NetworkIdFromEntity.HasComponent(source.Value))
-						{
-							data.Value = NetworkIdFromEntity[source.Value];
-						}
-						else
-						{
-							data.Value = NetworkID.Invalid;
-						}
-					}
-					DataMap.WriteStruct(networkId, ref data);
-				}
-			}
-		}
-		protected override JobHandle ScheduleRelevancyJob(SerializedDataContainer dataMap, NativeParallelMultiHashMap<int, int> relevancyMap, JobHandle inputDeps)
-		{
-			return inputDeps;
-		}
-		protected override JobHandle CreateDataProcessor(JobHandle inputDeps, out AbilityOwner_DataProcessor dataProcessor)
-		{
-			dataProcessor = new AbilityOwner_DataProcessor()
-			{
-				EntityFromNetworkId = new EntityFromNetworkId(system),
-				DataFromEntity = system.GetComponentLookup<TzarGames.GameCore.Abilities.AbilityOwner>(true)
-			};
-			return inputDeps;
-		}
-		protected override bool UseRelevancy()
-		{
-			return false;
-		}
-	}
 	public struct ActivatedState_DataProcessor : INetworkIdDataProcessor
 	{
 		[ReadOnly] public ComponentLookup<TzarGames.GameCore.ActivatedState> DataFromEntity;
@@ -1359,6 +1225,140 @@ namespace TzarGames.MultiplayerKit.Generated
 			{
 				EntityFromNetworkId = new EntityFromNetworkId(system),
 				DataFromEntity = system.GetComponentLookup<TzarGames.GameCore.Health>(true)
+			};
+			return inputDeps;
+		}
+		protected override bool UseRelevancy()
+		{
+			return false;
+		}
+	}
+	public struct AbilityOwner_DataProcessor : INetworkIdDataProcessor
+	{
+		[ReadOnly] public ComponentLookup<TzarGames.GameCore.Abilities.AbilityOwner> DataFromEntity;
+		[ReadOnly] public EntityFromNetworkId EntityFromNetworkId;
+		public void Deserialize(in NetworkID networkID, in NativeArray<byte> bytes, in NetworkIdDataProcessorOptions options)
+		{
+			var data = NetworkIdDataProcessorUtility.AsStruct<AbilityOwner_Sync.Data>(bytes);
+			if(EntityFromNetworkId.TryGet(networkID, out Entity entity) == false)
+			{
+				return;
+			}
+			var hasComponent = DataFromEntity.HasComponent(entity);
+			TzarGames.GameCore.Abilities.AbilityOwner sourceData;
+			if(hasComponent)
+			{
+				sourceData = DataFromEntity[entity];
+			}
+			else
+			{
+				sourceData = new TzarGames.GameCore.Abilities.AbilityOwner();
+			}
+			if(data.Value != NetworkID.Invalid && EntityFromNetworkId.TryGet(data.Value, out Entity Value))
+			{
+				sourceData.Value = Value;
+			}
+			else
+			{
+				sourceData.Value = Entity.Null;
+			}
+			if (hasComponent) options.Commands.SetComponent(entity, sourceData);
+			else
+			{
+				options.Commands.AddComponent(entity, sourceData);
+			}
+		}
+	}
+	[DisableAutoCreation]
+	public partial class AbilityOwner_Sync : ComponentDataSync<AbilityOwner_DataProcessor, AbilityOwner_Sync.Data, AbilityOwner_Sync.Tag>
+	{
+		ComponentType sourceType;
+		EntityQuery applyQuery;
+		EntityQuery collectQuery;
+		#if UNITY_EDITOR
+		[UnityEditor.InitializeOnLoadMethod]
+		#endif
+		[RuntimeInitializeOnLoadMethod] static void Register()
+		{
+			DataSyncBase.RegisterDataSync(typeof(AbilityOwner_Sync));
+		}
+		public override void Initialize(DataSyncSystemBase system)
+		{
+			base.Initialize(system);
+			applyQuery = system.GetEntityQueryForJob(ComponentType.ReadOnly<NetworkID>());
+			sourceType = ComponentType.ReadOnly<TzarGames.GameCore.Abilities.AbilityOwner>();
+			collectQuery = system.GetEntityQueryForJob(ComponentType.ReadOnly<NetworkID>(), sourceType);
+			Priority = 0;
+		}
+		public struct Data
+		{
+			public NetworkID Value;
+		}
+		public struct Tag : IComponentData
+		{
+		}
+		protected override JobHandle ScheduleCollectDataJob(SerializedDataContainer dataMap, JobHandle inputDeps)
+		{
+			var job = new CollectDataJob()
+			{
+				SourceType = system.GetComponentTypeHandle<TzarGames.GameCore.Abilities.AbilityOwner>(true),
+				NetworkIdType = system.GetComponentTypeHandle<NetworkID>(true),
+				DataMap = dataMap,
+				NetworkIdFromEntity = system.GetComponentLookup<NetworkID>(true),
+				IsZeroSized = sourceType.IsZeroSized
+			};
+			return job.Schedule(collectQuery, inputDeps);
+		}
+		[BurstCompile]
+		struct CollectDataJob : IJobChunk
+		{
+			public SerializedDataContainer DataMap;
+			[ReadOnly] public ComponentTypeHandle<TzarGames.GameCore.Abilities.AbilityOwner> SourceType;
+			[ReadOnly] public ComponentTypeHandle<NetworkID> NetworkIdType;
+			[ReadOnly] public ComponentLookup<NetworkID> NetworkIdFromEntity;
+			public bool IsZeroSized;
+			public void Execute(in ArchetypeChunk chunk, int unfilteredChunkIndex, bool useEnabledMask, in v128 chunkEnabledMask)
+			{
+				var netIds = chunk.GetNativeArray(NetworkIdType);
+				NativeArray<TzarGames.GameCore.Abilities.AbilityOwner> sources = default;
+				if(IsZeroSized == false)
+				{
+					sources = chunk.GetNativeArray(SourceType);
+				}
+				for(int i=0; i<chunk.Count; i++)
+				{
+					var networkId = netIds[i];
+					if(networkId.IsValid == false)
+					{
+						continue;
+					}
+					var data = new Data();
+					if(IsZeroSized == false)
+					{
+						var source = sources[i];
+						if(NetworkIdFromEntity.HasComponent(source.Value))
+						{
+							data.Value = NetworkIdFromEntity[source.Value];
+						}
+						else
+						{
+							data.Value = NetworkID.Invalid;
+						}
+					}
+					DataMap.WriteStruct(networkId, ref data);
+				}
+			}
+		}
+		protected override JobHandle ScheduleRelevancyJob(SerializedDataContainer dataMap, NativeParallelMultiHashMap<int, int> relevancyMap, JobHandle inputDeps)
+		{
+			return inputDeps;
+		}
+		protected override JobHandle CreateDataProcessor(JobHandle inputDeps, out AbilityOwner_DataProcessor dataProcessor)
+		{
+			dataProcessor = new AbilityOwner_DataProcessor()
+			{
+				EntityFromNetworkId = new EntityFromNetworkId(system),
+				DataFromEntity = system.GetComponentLookup<TzarGames.GameCore.Abilities.AbilityOwner>(true)
 			};
 			return inputDeps;
 		}

@@ -24,6 +24,7 @@ namespace Arena.Client
     {
         public bool EnableMainLight;
         public bool EnableAdditionalLight;
+        public bool EnableDarkMode;
     }
 
     public struct SceneSettingsTag : IComponentData

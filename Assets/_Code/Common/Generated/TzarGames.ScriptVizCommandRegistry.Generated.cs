@@ -11,9 +11,16 @@ namespace TzarGames.GameCore.Generated
 		[RuntimeInitializeOnLoadMethod]
 		static unsafe void init()
 		{
+			ScriptVizCommandRegistry.RegisterCommand(typeof(TzarGames.GameCore.ScriptViz.LerpFloat3Command), TzarGames.GameCore.ScriptViz.LerpFloat3Command.Add);
+			ScriptVizCommandRegistry.RegisterCommand(typeof(TzarGames.GameCore.ScriptViz.LerpQuaternionCommand), TzarGames.GameCore.ScriptViz.LerpQuaternionCommand.Add);
+			ScriptVizCommandRegistry.RegisterCommand(typeof(TzarGames.GameCore.ScriptViz.MultiplyQuatWithFloat3Command), TzarGames.GameCore.ScriptViz.MultiplyQuatWithFloat3Command.Add);
+			ScriptVizCommandRegistry.RegisterCommand(typeof(TzarGames.GameCore.ScriptViz.Float3DecomposeCommand), TzarGames.GameCore.ScriptViz.Float3DecomposeCommand.Add);
+			ScriptVizCommandRegistry.RegisterCommand(typeof(TzarGames.GameCore.ScriptViz.Float3ComposeCommand), TzarGames.GameCore.ScriptViz.Float3ComposeCommand.Add);
+			ScriptVizCommandRegistry.RegisterCommand(typeof(TzarGames.GameCore.ScriptViz.LookRotationCommand), TzarGames.GameCore.ScriptViz.LookRotationCommand.Add);
 			ScriptVizCommandRegistry.RegisterCommand(typeof(TzarGames.GameCore.ScriptViz.AddIntCommand), TzarGames.GameCore.ScriptViz.AddIntCommand.Add);
 			ScriptVizCommandRegistry.RegisterCommand(typeof(TzarGames.GameCore.ScriptViz.AddFloat3Command), TzarGames.GameCore.ScriptViz.AddFloat3Command.Add);
 			ScriptVizCommandRegistry.RegisterCommand(typeof(TzarGames.GameCore.ScriptViz.AddFloatCommand), TzarGames.GameCore.ScriptViz.AddFloatCommand.Add);
+			ScriptVizCommandRegistry.RegisterCommand(typeof(TzarGames.GameCore.ScriptViz.MultiplyFloatCommand), TzarGames.GameCore.ScriptViz.MultiplyFloatCommand.Add);
 			ScriptVizCommandRegistry.RegisterCommand(typeof(TzarGames.GameCore.ScriptViz.GetDeltaTimeCommand), TzarGames.GameCore.ScriptViz.GetDeltaTimeCommand.Exec);
 			ScriptVizCommandRegistry.RegisterCommand(typeof(TzarGames.GameCore.ScriptViz.DestroyCommand), TzarGames.GameCore.ScriptViz.DestroyCommand.Exec);
 			ScriptVizCommandRegistry.RegisterCommand(typeof(TzarGames.GameCore.ScriptViz.LogCommand), TzarGames.GameCore.ScriptViz.LogCommand.Print);
@@ -57,6 +64,7 @@ namespace TzarGames.GameCore.Generated
 			ScriptVizCommandRegistry.RegisterCommand(typeof(TzarGames.GameCore.ScriptViz.SetComponentEnabledCommand<TzarGames.GameCore.InteractiveObject>), TzarGames.GameCore.ScriptViz.SetComponentEnabledCommand<TzarGames.GameCore.InteractiveObject>.Exec);
 			ScriptVizCommandRegistry.RegisterCommand(typeof(TzarGames.GameCore.ScriptViz.SetComponentEnabledCommand<TzarGames.GameCore.FollowTarget>), TzarGames.GameCore.ScriptViz.SetComponentEnabledCommand<TzarGames.GameCore.FollowTarget>.Exec);
 			ScriptVizCommandRegistry.RegisterCommand(typeof(TzarGames.GameCore.ScriptViz.Commands.AddOrRemoveItemCommand), TzarGames.GameCore.ScriptViz.Commands.AddOrRemoveItemCommand.Execute);
+			ScriptVizCommandRegistry.RegisterCommand(typeof(TzarGames.GameCore.ScriptViz.Commands.GetViewDirectionCommand), TzarGames.GameCore.ScriptViz.Commands.GetViewDirectionCommand.Exec);
 		}
 	}
 }

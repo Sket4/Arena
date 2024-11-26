@@ -37,7 +37,7 @@ struct v2f
 {
 	half4 vertex : SV_POSITION;
 	float2 uv : TEXCOORD0;
-	nointerpolation half4 instanceData : TEXCOORD1;
+	TG_DECLARE_INSTANCE_DATA(1)
 
 	float3 normalWS : TEXCOORD2;
 	float4 tangentWS : TEXCOORD3;
@@ -112,18 +112,8 @@ half4 env_frag(v2f i) : SV_Target
 
 	half3 normalWS = TransformTangentToWorld(normalTS.xyz, tangentToWorld, true);
 
-	half3 ambientLight;
-
-	#if LIGHTMAP_ON
-	ambientLight = TG_SAMPLE_LIGHTMAP(i.lightmapUV, i.instanceData.x, normalWS);
-	#else
-	#if defined(ARENA_USE_MAIN_LIGHT) || defined(ARENA_USE_ADD_LIGHT)
-	ambientLight = 1;
-	#else
-	ambientLight = TG_ComputeAmbientLight_half(normalWS);
-	#endif
-	#endif
-
+	half3 ambientLight = ARENA_COMPUTE_AMBIENT_LIGHT(i, normalWS);
+	
 	#if USE_SURFACE_BLEND
 	float2 surfaceUV = TRANSFORM_TEX(i.positionWS_fog.xz, _SurfaceMap);
 	half4 surfaceColor = tex2D(_SurfaceMap, surfaceUV);
@@ -152,7 +142,7 @@ half4 env_frag(v2f i) : SV_Target
 	half lum = tg_luminance(ambientLight);
 	envMapColor = lerp(remEnvMapColor, envMapColor, saturate(lum * lum * lum));
 
-	ApplyDynamicLighting(viewDirWS, normalWS, i.positionWS_fog.xyz, ambientLight, envMapColor, true, true);
+	ARENA_DYN_LIGHT(normalWS, i.positionWS_fog.xyz, ambientLight, viewDirWS, envMapColor, true);
 
 	half4 finalColor = LightingPBR(diffuse, ambientLight, viewDirWS, normalWS, mesm.rrr, roughness, envMapColor);
 
@@ -160,7 +150,7 @@ half4 env_frag(v2f i) : SV_Target
 
 	half4 finalColor = diffuse;
 	half3 envMapColor = 0;
-	ApplyDynamicLighting(viewDirWS, normalWS, i.positionWS_fog.xyz, ambientLight, envMapColor, true, true);
+	ARENA_DYN_LIGHT(normalWS, i.positionWS_fog.xyz, ambientLight, 0,0, true); 
 	finalColor.rgb *= ambientLight;
 
 	#endif

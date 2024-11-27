@@ -38,12 +38,17 @@ struct v2f
 #include "Packages/com.tzargames.rendering/Shaders/Lighting.hlsl"
 #include "Packages/com.tzargames.rendering/Shaders/Skinning.hlsl"
 
-// #if defined(DOTS_INSTANCING_ON)
-//     UNITY_DOTS_INSTANCING_START(UserPropertyMetadata)
-//     UNITY_DOTS_INSTANCING_END(UserPropertyMetadata)
-// #endif
+ #if defined(DOTS_INSTANCING_ON)
+     UNITY_DOTS_INSTANCING_START(UserPropertyMetadata)
+            UNITY_DOTS_INSTANCED_PROP_OVERRIDE_REQUIRED(float4, _SkinColor) 
+     UNITY_DOTS_INSTANCING_END(UserPropertyMetadata)
+#endif
 
-
+#if defined(DOTS_INSTANCING_ON)
+#define SKIN_COLOR UNITY_ACCESS_DOTS_INSTANCED_PROP(float4, _SkinColor)
+#else
+#define SKIN_COLOR _SkinColor
+#endif
 
 sampler2D _BaseMap;
 #if defined TG_FADING
@@ -103,6 +108,10 @@ half4 frag (v2f i) : SV_Target
     UNITY_SETUP_INSTANCE_ID(i);
     
     half4 diffuse = tex2D(_BaseMap, i.uv);
+
+    #if defined(ARENA_SKIN_COLOR)
+    diffuse.rgb = lerp(diffuse.rgb, diffuse.rgb * SKIN_COLOR.rgb, diffuse.a); 
+    #endif
 
     #if defined(TG_FADING)
     half4 fadeColor = tex2D(_FadeMap, i.uv);

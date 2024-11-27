@@ -7,17 +7,13 @@ Shader"Arena/Character Fading"
         _BumpMap ("Normal map", 2D) = "bump" {}
         _MeSmAO_Map("Me Sm AO map", 2D) = "white" {} 
         
-        [Toggle(USE_RIM)]
-        _UseRim("Use rim", float) = 0.0
-        [Toggle(USE_DISTANCE_LIGHT)]
-        _UseDistLight("Use distance light", float) = 0.0
-        _RimColor("Rim color", Color) = (1,1,1,1)
-        _RimStr("Rim strength", Range(0,1)) = 1
-        
         _FadeMap ("Fade map", 2D) = "white" {}
 
         _Smoothness("Smoothness", Range(0,1)) = 1
         _Metallic("Metallic", Range(0,1)) = 1
+        
+        [Toggle(ARENA_SKIN_COLOR)] _UseSkinColor("Use skin color", float) = 0.0
+        _SkinColor("Skin color", Color) = (1,1,1,1)
         
         [HideInInspector] _SkinningData("SkinData", Vector) = (0, 1, 0, 0)
         [HideInInspector] _Cutoff("Cutoff", Float) = 1 
@@ -53,6 +49,7 @@ Shader"Arena/Character Fading"
             #pragma multi_compile _ _MAIN_LIGHT_SHADOWS_CASCADE
             #pragma shader_feature __ USE_RIM
             #pragma shader_feature __ USE_DISTANCE_LIGHT
+            #pragma shader_feature __ ARENA_SKIN_COLOR
             #pragma multi_compile_fragment __ ARENA_USE_MAIN_LIGHT
             #pragma multi_compile_fragment __ ARENA_USE_ADD_LIGHT
             #pragma multi_compile_fragment __ ARENA_USE_DARK_MODE

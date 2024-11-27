@@ -10,14 +10,11 @@ Shader"Arena/Character"
         _BaseMap ("Texture", 2D) = "white" {}
         _BumpMap ("Normal map", 2D) = "bump" {}
         _MetallicSmoothnessMap("Metallic Smoothness (A)", 2D) = "white" {}
-        [Toggle(USE_RIM)]
-        _UseRim("Use rim", float) = 0.0
-        [Toggle(USE_DISTANCE_LIGHT)]
-        _UseDistLight("Use distance light", float) = 0.0
-        _RimColor("Rim color", Color) = (1,1,1,1)
-        _RimStr("Rim strength", Range(0,1)) = 1
         _Smoothness("Smoothness", Range(0,1)) = 1
         _Metallic("Metallic", Range(0,1)) = 1
+        
+        [Toggle(ARENA_SKIN_COLOR)] _UseSkinColor("Use skin color", float) = 0.0
+        _SkinColor("Skin color", Color) = (1,1,1,1)
         
         [HideInInspector] _SkinningData("SkinData", Vector) = (0, 1, 0, 0)
         [HideInInspector] _BaseColor("Color", Color) = (1,1,1,1)
@@ -55,6 +52,7 @@ Shader"Arena/Character"
             #pragma multi_compile _ _MAIN_LIGHT_SHADOWS_CASCADE
 
             #pragma shader_feature TG_USE_ALPHACLIP
+            #pragma shader_feature __ ARENA_SKIN_COLOR
             #pragma shader_feature __ USE_LIGHTING
             #pragma shader_feature __ USE_RIM
             #pragma shader_feature __ USE_DISTANCE_LIGHT
@@ -98,7 +96,7 @@ Shader"Arena/Character"
             
             #pragma multi_compile _ DOTS_INSTANCING_ON
             #pragma shader_feature TG_USE_ALPHACLIP
-            
+
             #pragma multi_compile _BONECOUNT_ONE _BONECOUNT_FOUR
             
             // -------------------------------------

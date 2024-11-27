@@ -6,16 +6,23 @@
 
 CBUFFER_START(UnityPerMaterial)
     half4 _BaseMap_ST;
-    half4 _RimColor;
-    half _RimStr;
     half _Smoothness;
     half _Metallic;
+    half4 _SkinColor;
+
     //half4 _BaseColor;
 
-#if defined(TG_USE_ALPHACLIP)
+    
+
+
+//#if defined(TG_USE_ALPHACLIP)
     half _Cutoff;
-#endif
+//#endif
+
 CBUFFER_END
 
 #endif //UG_INPUT_INCLUDED
 
+//#if defined(ARENA_SKIN_COLOR)
+    
+//#endif

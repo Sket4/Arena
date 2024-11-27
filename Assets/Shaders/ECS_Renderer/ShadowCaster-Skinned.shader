@@ -7,17 +7,13 @@ Shader "Hidden/Arena/ShadowCaster-Skinned"
         _BumpMap ("Normal map", 2D) = "bump" {}
         _MeSmAO_Map("Me Sm AO map", 2D) = "white" {} 
         
-        [Toggle(USE_RIM)]
-        _UseRim("Use rim", float) = 0.0
-        [Toggle(USE_DISTANCE_LIGHT)]
-        _UseDistLight("Use distance light", float) = 0.0
-        _RimColor("Rim color", Color) = (1,1,1,1)
-        _RimStr("Rim strength", Range(0,1)) = 1
-        
         _FadeMap ("Fade map", 2D) = "white" {}
 
         _Roughness("Roughness", Range(0,1)) = 1
         _Metallic("Metallic", Range(0,1)) = 1
+        
+        [Toggle(ARENA_SKIN_COLOR)] _UseSkinColor("Use skin color", float) = 0.0
+        _SkinColor("Skin color", Color) = (1,1,1,1)
         
         [HideInInspector] _SkinningData("SkinData", Vector) = (0, 1, 0, 0)
         [HideInInspector] _Cutoff("Cutoff", Float) = 1 

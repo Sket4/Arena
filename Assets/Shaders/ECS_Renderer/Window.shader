@@ -39,6 +39,10 @@ Shader"Arena/Window"
             #pragma multi_compile _ DIRLIGHTMAP_COMBINED
             //#pragma multi_compile_instancing
 
+            #ifndef TG_USE_URP
+                #define TG_USE_URP
+            #endif
+
             #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Core.hlsl"
             #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Input.hlsl" 
             #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Lighting.hlsl"

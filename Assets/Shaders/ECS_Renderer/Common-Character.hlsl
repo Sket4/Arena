@@ -1,6 +1,10 @@
 #ifndef UG_COMMON_CHARACTER_INCLUDED
 #define UG_COMMON_CHARACTER_INCLUDED
 
+#ifndef TG_USE_URP
+#define TG_USE_URP
+#endif
+
 #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Core.hlsl"
 #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Input.hlsl" 
 #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Lighting.hlsl"

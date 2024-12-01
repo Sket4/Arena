@@ -60,6 +60,10 @@ Shader "Hidden/Arena/ShadowCaster-Skinned"
             // -------------------------------------
             // Includes
             #define TG_SKINNING
+
+            #ifndef TG_USE_URP
+                #define TG_USE_URP
+            #endif
             
             #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Core.hlsl"
             #include "Packages/com.unity.render-pipelines.core/ShaderLibrary/CommonMaterial.hlsl"
@@ -107,6 +111,10 @@ Shader "Hidden/Arena/ShadowCaster-Skinned"
             #define TG_SKINNING
             #define TG_FADING
             #define TG_USE_ALPHACLIP
+
+            #ifndef TG_USE_URP
+                #define TG_USE_URP
+            #endif
 
             #include "Input-Character.hlsl"
             #include "ShadowCasterPass.hlsl"  

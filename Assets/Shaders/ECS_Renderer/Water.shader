@@ -72,7 +72,9 @@ Shader"Arena/Water"
             #pragma multi_compile_fragment _ _SHADOWS_SOFT_LOW _SHADOWS_SOFT_MEDIUM _SHADOWS_SOFT_HIGH
             #pragma multi_compile_fragment _ _LIGHT_COOKIES
             
-            //#pragma multi_compile_instancing
+            #ifndef TG_USE_URP
+                #define TG_USE_URP
+            #endif
 
             #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Core.hlsl"
             #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Input.hlsl" 

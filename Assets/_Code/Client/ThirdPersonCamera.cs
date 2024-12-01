@@ -1,4 +1,5 @@
 using TzarGames.GameCore;
+using TzarGames.Rendering;
 using Unity.Entities;
 using Unity.Mathematics;
 using Unity.Physics;
@@ -164,8 +165,8 @@ namespace Arena.Client
     
 
     [DisableAutoCreation]
-    [UpdateInGroup(typeof(PresentationSystemGroup), OrderLast = true)]
-    //[UpdateBefore(typeof(CharacterControlSystem))]
+    [UpdateInGroup(typeof(PresentationSystemGroup))]
+    [UpdateBefore(typeof(RenderingSystem))]
     public partial class ThirdPersonCameraSystem : SystemBase
     {
         ThirdPersonCamera cameraPrefab;
@@ -300,7 +301,7 @@ namespace Arena.Client
             Entities
                 .WithStructuralChanges()
                 .WithoutBurst()
-                .ForEach((Entity cameraEntity, ThirdPersonCamera camera, in CameraData cameraData, in LocalTransform transform) =>
+                .ForEach((Entity cameraEntity, ThirdPersonCamera camera, in CameraData cameraData) =>
                 {
                     if (camera == false || camera.CachedTransform == false)
                     {
@@ -321,7 +322,7 @@ namespace Arena.Client
             
 
             Entities
-                .ForEach((Entity cameraEntity, ref CameraData cameraData, ref LocalTransform transform) =>
+                .ForEach((ref CameraData cameraData, ref LocalTransform transform) =>
                 {
                     if(SystemAPI.HasComponent<CharacterAnimation>(cameraData.Target) == false)
                     {

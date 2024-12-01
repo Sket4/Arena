@@ -74,6 +74,10 @@ Shader "Arena/Terrain (for beach)"
             #if defined(UG_QUALITY_LOW)
             #undef DIRLIGHTMAP_COMBINED
             #endif
+
+            #ifndef TG_USE_URP
+                #define TG_USE_URP
+            #endif
             
             #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Core.hlsl"
             #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Lighting.hlsl"

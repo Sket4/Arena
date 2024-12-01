@@ -78,6 +78,9 @@ Shader "Hidden/Arena/ShadowCaster"
             #pragma multi_compile_vertex _ _CASTING_PUNCTUAL_LIGHT_SHADOW
             #pragma multi_compile_shadowcaster
 
+            #ifndef TG_USE_URP
+                #define TG_USE_URP
+            #endif
             // -------------------------------------
             // Includes
             #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Core.hlsl"
@@ -129,6 +132,10 @@ Shader "Hidden/Arena/ShadowCaster"
 
             #define TG_FADING
             #define TG_USE_ALPHACLIP
+
+            #ifndef TG_USE_URP
+                #define TG_USE_URP
+            #endif
 
             // -------------------------------------
             // Includes

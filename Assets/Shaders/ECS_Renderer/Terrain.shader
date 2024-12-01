@@ -74,8 +74,13 @@ Shader "Arena/Terrain"
             #if defined(UG_QUALITY_LOW)
             #undef DIRLIGHTMAP_COMBINED
             #endif
+
+            #ifndef TG_USE_URP
+                #define TG_USE_URP
+            #endif
             
             #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Core.hlsl"
+            #include "HLSLSupport.cginc"
             #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Lighting.hlsl"
             #include "Packages/com.tzargames.rendering/Shaders/Lighting.hlsl"
             #include "Common.hlsl"
@@ -119,21 +124,22 @@ Shader "Arena/Terrain"
             CBUFFER_END
 
             sampler2D _SplatMap;
-            sampler2D _Color1;
-            sampler2D _Normal1;
-            sampler2D _SAH1;
 
-            sampler2D _Color2;
-            sampler2D _Normal2;
-            sampler2D _SAH2;
+            UNITY_DECLARE_TEX2D(_Color1);
+            UNITY_DECLARE_TEX2D(_Normal1);
+            UNITY_DECLARE_TEX2D(_SAH1);
 
-            sampler2D _Color3;
-            sampler2D _Normal3;
-            sampler2D _SAH3;
+            UNITY_DECLARE_TEX2D_NOSAMPLER(_Color2);
+            UNITY_DECLARE_TEX2D_NOSAMPLER(_Normal2);
+            UNITY_DECLARE_TEX2D_NOSAMPLER(_SAH2);
 
-            sampler2D _Color4;
-            sampler2D _Normal4;
-            sampler2D _SAH4;
+            UNITY_DECLARE_TEX2D_NOSAMPLER(_Color3);
+            UNITY_DECLARE_TEX2D_NOSAMPLER(_Normal3);
+            UNITY_DECLARE_TEX2D_NOSAMPLER(_SAH3);
+
+            UNITY_DECLARE_TEX2D_NOSAMPLER(_Color4);
+            UNITY_DECLARE_TEX2D_NOSAMPLER(_Normal4);
+            UNITY_DECLARE_TEX2D_NOSAMPLER(_SAH4);
 
 #if defined(DOTS_INSTANCING_ON)
             UNITY_DOTS_INSTANCING_START(UserPropertyMetadata)
@@ -190,19 +196,19 @@ Shader "Arena/Terrain"
 
                 //layer3_uv += half2(0, i.positionWS_fog.x * 0.02);
                 
-                half4 diffuse = tex2D(_Color1, layer1_uv) * splat.x;
+                half4 diffuse = UNITY_SAMPLE_TEX2D_SAMPLER(_Color1, _Color1, layer1_uv) * splat.x;
 
-                half4 color2 = tex2D(_Color2, layer2_uv); 
+                half4 color2 = UNITY_SAMPLE_TEX2D_SAMPLER(_Color2, _Color1, layer2_uv); 
                 diffuse += color2 * splat.y;
-                diffuse += tex2D(_Color3, layer3_uv) * splat.z;
-                diffuse += tex2D(_Color4, layer4_uv) * splat.w;
+                diffuse += UNITY_SAMPLE_TEX2D_SAMPLER(_Color3, _Color1, layer3_uv) * splat.z;
+                diffuse += UNITY_SAMPLE_TEX2D_SAMPLER(_Color4, _Color1, layer4_uv) * splat.w;
 
             	
-            	half3 normalTS = UnpackNormal(tex2D(_Normal1, layer1_uv)) * splat.r;
-                half3 normal2 = UnpackNormal(tex2D(_Normal2, layer2_uv)); 
+            	half3 normalTS = UnpackNormal(UNITY_SAMPLE_TEX2D_SAMPLER(_Normal1, _Normal1, layer1_uv)) * splat.r;
+                half3 normal2 = UnpackNormal(UNITY_SAMPLE_TEX2D_SAMPLER(_Normal2, _Normal1, layer2_uv)); 
                 normalTS += normal2 * splat.g;
-                normalTS += UnpackNormal(tex2D(_Normal3, layer3_uv)) * splat.b;
-                normalTS += UnpackNormal(tex2D(_Normal4, layer4_uv)) * splat.w;
+                normalTS += UnpackNormal(UNITY_SAMPLE_TEX2D_SAMPLER(_Normal3, _Normal1, layer3_uv)) * splat.b;
+                normalTS += UnpackNormal(UNITY_SAMPLE_TEX2D_SAMPLER(_Normal4, _Normal1, layer4_uv)) * splat.w;
 
                 normalTS = normalize(normalTS);
 
@@ -214,11 +220,11 @@ Shader "Arena/Terrain"
                 
                 //diffuse.rgb = 1;
                 #if defined(UG_QUALITY_MED) || defined(UG_QUALITY_HIGH)
-                half4 Sm_AO_HGHT = tex2D(_SAH1, layer1_uv) * splat.r;
-                half4 Sm_AO_HGHT_2 = tex2D(_SAH2, layer2_uv);
+                half4 Sm_AO_HGHT = UNITY_SAMPLE_TEX2D_SAMPLER(_SAH1, _SAH1, layer1_uv) * splat.r;
+                half4 Sm_AO_HGHT_2 = UNITY_SAMPLE_TEX2D_SAMPLER(_SAH2, _SAH1, layer2_uv);
                 Sm_AO_HGHT += Sm_AO_HGHT_2 * splat.g;
-                Sm_AO_HGHT += tex2D(_SAH3, layer3_uv) * splat.b;
-                Sm_AO_HGHT += tex2D(_SAH4, layer4_uv) * splat.w;
+                Sm_AO_HGHT += UNITY_SAMPLE_TEX2D_SAMPLER(_SAH3, _SAH1, layer3_uv) * splat.b;
+                Sm_AO_HGHT += UNITY_SAMPLE_TEX2D_SAMPLER(_SAH4, _SAH1, layer4_uv) * splat.w;
 
                 half3 viewDirWS = GetWorldSpaceNormalizeViewDir(i.positionWS_fog.xyz);
                 half roughness = 1.0 - Sm_AO_HGHT.r;
@@ -271,7 +277,8 @@ Shader "Arena/Terrain"
             #pragma shader_feature_local _ _DETAIL_MULX2 _DETAIL_SCALED
             #pragma shader_feature_local_fragment _SPECGLOSSMAP
             #pragma shader_feature EDITOR_VISUALIZATION
-            
+
+            #include "HLSLSupport.cginc"
             #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Core.hlsl" 
             
              
@@ -286,12 +293,13 @@ Shader "Arena/Terrain"
 
             sampler2D _BaseMap;
             sampler2D _SplatMap;
-            sampler2D _Color1;
-            sampler2D _Color2;
-            sampler2D _Color3; 
+            UNITY_DECLARE_TEX2D(_Color1);
+            UNITY_DECLARE_TEX2D_NOSAMPLER(_Color2);
+            UNITY_DECLARE_TEX2D_NOSAMPLER(_Color3); 
 
             #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/UniversalMetaPass.hlsl"
-                         
+           
+            
             half4 UniversalFragmentMetaCustom(Varyings fragIn) : SV_Target
             {
                 MetaInput metaInput;
@@ -304,11 +312,11 @@ Shader "Arena/Terrain"
 
                 //layer3_uv += half2(0, i.positionWS_fog.x * 0.02);
                 
-                half4 diffuse = tex2D(_Color1, layer1_uv) * splat.x;
+                half4 diffuse = UNITY_SAMPLE_TEX2D_SAMPLER(_Color1, _Color1, layer1_uv) * splat.x;
 
-                half4 color2 = tex2D(_Color2, layer2_uv); 
+                half4 color2 = UNITY_SAMPLE_TEX2D_SAMPLER(_Color2, _Color1, layer2_uv); 
                 diffuse += color2 * splat.y;
-                diffuse += tex2D(_Color3, layer3_uv) * splat.z;
+                diffuse += UNITY_SAMPLE_TEX2D_SAMPLER(_Color3, _Color1, layer3_uv) * splat.z;
                             
                 metaInput.Albedo = diffuse.rgb;
                 metaInput.Emission = _EmissionColor.rgb;

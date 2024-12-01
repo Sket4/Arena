@@ -75,6 +75,10 @@ Shader "Arena/Vegetation"
             #pragma multi_compile_fragment _ _LIGHT_COOKIES
             
             #pragma multi_compile UG_QUALITY_LOW UG_QUALITY_MED UG_QUALITY_HIGH
+
+            #ifndef TG_USE_URP
+				#define TG_USE_URP
+			#endif
             
             #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Core.hlsl"
             #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Lighting.hlsl"

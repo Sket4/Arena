@@ -1,6 +1,10 @@
 #ifndef UG_COMMON_ENV_INCLUDED
 #define UG_COMMON_ENV_INCLUDED
 
+#ifndef TG_USE_URP
+#define TG_USE_URP
+#endif
+
 #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Core.hlsl"
 #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Lighting.hlsl"
 #include "Packages/com.tzargames.rendering/Shaders/Lighting.hlsl"

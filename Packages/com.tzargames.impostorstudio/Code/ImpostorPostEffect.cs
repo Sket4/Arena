@@ -81,8 +81,9 @@ namespace TzarGames.ImpostorStudio
         {
             var camera = GetComponent<Camera>();
 
-            var urpData = GetComponent<UnityEngine.Rendering.Universal.UniversalAdditionalCameraData>();
-            urpData.renderPostProcessing = enablePostProcessing;
+            throw new System.NotImplementedException();
+            //var urpData = GetComponent<UnityEngine.Rendering.Universal.UniversalAdditionalCameraData>();
+            //urpData.renderPostProcessing = enablePostProcessing;
             camera.depthTextureMode = DepthTextureMode.DepthNormals;
         }
 

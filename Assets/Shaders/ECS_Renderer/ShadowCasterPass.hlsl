@@ -2,11 +2,11 @@
 #define TG_SHADOW_CASTER_PASS_INCLUDED
 
 #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Core.hlsl"
-#include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Shadows.hlsl"
 #include "Packages/com.tzargames.rendering/Shaders/Input.hlsl"
 
-#if defined(LOD_FADE_CROSSFADE)
-    #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/LODCrossFade.hlsl"
+#if defined(TG_USE_URP)
+#include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Core.hlsl"
+#include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Shadows.hlsl"
 #endif
 
 #if defined(TG_SKINNING)
@@ -65,7 +65,12 @@ float4 GetShadowPositionHClip(Attributes input)
     float3 lightDirectionWS = _LightDirection;
 #endif
 
-    float4 positionCS = TransformWorldToHClip(ApplyShadowBias(positionWS, normalWS, lightDirectionWS));
+    #if defined(TG_USE_URP)
+    float3 biased = ApplyShadowBias(positionWS, normalWS, lightDirectionWS);
+    #else
+    float3 biased = positionWS;
+    #endif
+    float4 positionCS = TransformWorldToHClip(biased);
 
 #if UNITY_REVERSED_Z
     positionCS.z = min(positionCS.z, UNITY_NEAR_CLIP_VALUE);

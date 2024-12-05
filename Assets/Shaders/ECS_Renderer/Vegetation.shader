@@ -42,22 +42,30 @@ Shader "Arena/Vegetation"
         
         Pass
         {
-        	Name "ForwardLit"
+        	Name "GBuffer"
             Tags
             {
-                "LightMode" = "UniversalForward"
+                "LightMode" = "gbuffer"
             }
             
             //AlphaToMask[_AlphaToMask]
             //Blend[_SrcBlend][_DstBlend]
             Cull[_Cull]
             ZWrite[_ZWrite]
+            
+            Stencil 
+            {
+                Ref 128
+                Comp Always
+                Pass Replace
+                Fail Keep
+                ZFail Keep
+            }
 
             HLSLPROGRAM
             #pragma target 4.5
-            #pragma require cubearray
             #pragma require 2darray
-            #pragma exclude_renderers gles //excluded shader from OpenGL ES 2.0 because it uses non-square matrices
+            #pragma exclude_renderers gles nomrt //excluded shader from OpenGL ES 2.0 because it uses non-square matrices
             #pragma vertex vert
             #pragma fragment frag
             // make fog work
@@ -69,20 +77,13 @@ Shader "Arena/Vegetation"
             #pragma shader_feature_local_vertex __ USE_BILLBOARD
             #pragma multi_compile _ LIGHTMAP_ON
             #pragma multi_compile _ DIRLIGHTMAP_COMBINED
-
-            #pragma multi_compile_fragment _ _SHADOWS_SOFT
-            #pragma multi_compile_fragment _ _SHADOWS_SOFT_LOW _SHADOWS_SOFT_MEDIUM _SHADOWS_SOFT_HIGH
-            #pragma multi_compile_fragment _ _LIGHT_COOKIES
             
             #pragma multi_compile UG_QUALITY_LOW UG_QUALITY_MED UG_QUALITY_HIGH
 
-            #ifndef TG_USE_URP
-				#define TG_USE_URP
-			#endif
             
-            #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Core.hlsl"
-            #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Lighting.hlsl"
+            #include "Common.hlsl"
             #include "Packages/com.tzargames.rendering/Shaders/Lighting.hlsl"
+            #include "Packages/com.dgx.srp/ShaderLibrary/Lighting.hlsl"
             
             struct appdata
             {
@@ -131,11 +132,6 @@ Shader "Arena/Vegetation"
             sampler2D _BumpMap;
             sampler2D _MetallicGlossMap;
 
-#if defined(DOTS_INSTANCING_ON)
-            UNITY_DOTS_INSTANCING_START(UserPropertyMetadata)
-            UNITY_DOTS_INSTANCING_END(UserPropertyMetadata)
-#endif
-
             void billboard(inout half3 vertex, inout half3 normal, inout half3 tangent)
             {
             	half3 normalDir = mul(UNITY_MATRIX_I_M, half4(_WorldSpaceCameraPos, 1));
@@ -181,9 +177,8 @@ Shader "Arena/Vegetation"
             	billboard(positionOS, normalOS, tangentOS.xyz);
             	#endif
 
-                const VertexPositionInputs vertInputs = GetVertexPositionInputs(positionOS);    //This function calculates all the relative spaces of the objects vertices
-                o.vertex = vertInputs.positionCS;
-                o.positionWS_fog.xyz = vertInputs.positionWS;
+                o.positionWS_fog.xyz = TransformObjectToWorld(positionOS);
+				o.vertex = TransformWorldToHClip(o.positionWS_fog.xyz);
 
                 o.uv = TRANSFORM_TEX(v.uv, _BaseMap);
                 o.positionWS_fog.a = ComputeFogFactor(o.vertex.z);
@@ -193,12 +188,15 @@ Shader "Arena/Vegetation"
 
                 
                 
-                VertexNormalInputs normalInputs = GetVertexNormalInputs(normalOS, tangentOS);
+				real sign = real(tangentOS.w);
+			    float3 normalWS = TransformObjectToWorldNormal(normalOS);
+			    real3 tangentWS = real3(TransformObjectToWorldDir(tangentOS.xyz));
+			    real3 bitangentWS = real3(cross(normalWS, float3(tangentWS))) * sign;
 
-                o.normalWS_occl.xyz = normalInputs.normalWS;
+                o.normalWS_occl.xyz = normalWS;
                 o.normalWS_occl.w = saturate(v.color.x + _AOAdd);
-                o.tangentWS = float4(normalInputs.tangentWS, tangentOS.w);
-                o.bitangentWS = normalInputs.bitangentWS;
+                o.tangentWS = float4(tangentWS, tangentOS.w);
+                o.bitangentWS = bitangentWS;
 
 #if LIGHTMAP_ON
                 TG_TRANSFORM_LIGHTMAP_TEX(v.lightmapUV, o.lightmapUV)
@@ -207,7 +205,7 @@ Shader "Arena/Vegetation"
                 return o;
             }
 
-            half4 frag(v2f i) : SV_Target
+            GBufferFragmentOutput frag(v2f i) : SV_Target
             {
                 UNITY_SETUP_INSTANCE_ID(i);
                 
@@ -230,23 +228,25 @@ Shader "Arena/Vegetation"
                 half3 normalWS = i.normalWS_occl.xyz;
                 #endif
 
-                real3 ambientLight;
                 half ao =  i.normalWS_occl.w;
-                
-#if LIGHTMAP_ON
-                ambientLight = TG_SAMPLE_LIGHTMAP(i.lightmapUV, i.instanceData.x, normalWS);
-#else
-                ambientLight = TG_ComputeAmbientLight_half(normalWS);
-                ambientLight *= ao;
+
+            	half3 lighting = ARENA_COMPUTE_AMBIENT_LIGHT(i, normalWS);
+#if !LIGHTMAP_ON
+                lighting *= ao;          
 #endif
 
-                
+                SurfaceHalf surface;
+            	surface.Albedo = diffuse.rgb;
+            	surface.Alpha = diffuse.a;
+            	surface.NormalWS = normalWS;
+            	surface.AmbientLight = lighting;
+            	
 
                 #if defined(UG_QUALITY_MED) || defined(UG_QUALITY_HIGH)
                 half4 mesm = tex2D(_MetallicGlossMap, i.uv);
                 mesm.rgb *= _Metallic;
 
-                half lum = tg_luminance(ambientLight);
+                half lum = tg_luminance(lighting);
                 //return lum;
 
                 half smoothness = mesm.a * _Smoothness * lum;
@@ -257,58 +257,61 @@ Shader "Arena/Vegetation"
                 half3 envMapColor = TG_ReflectionProbe(viewDirWS, normalWS, i.instanceData.y, roughness * 4);
                 envMapColor *= ao;
                 
-                half4 finalColor = LightingPBR(diffuse, ambientLight, viewDirWS, normalWS, mesm.rgb, roughness, envMapColor);
+                surface.Metallic = mesm.rgb;
+            	surface.Roughness = roughness;
+            	surface.EnvCubemapIndex = i.instanceData.y;
+            	
                 #else
-                half4 finalColor = diffuse;
-                finalColor.rgb *= 0.075 + ambientLight;
+                surface.Metallic = 0;
+            	surface.Roughness = 1;
+            	surface.EnvCubemapIndex = 0;
                 #endif
                 
-                // apply fog
-                return half4(MixFog(finalColor.rgb, i.positionWS_fog.w), finalColor.a);  
+                return SurfaceToGBufferOutputHalf(surface);
             }
             ENDHLSL
         }
 
-        Pass
-        {
-            Name "Meta"
-            Tags { "LightMode" = "Meta" }
-            
-            Cull Off
-            HLSLPROGRAM
-
-            #pragma target 2.0
-            
-            #pragma vertex UniversalVertexMeta
-            #pragma fragment UniversalFragmentMetaCustom
-            #pragma shader_feature_local_fragment _SPECULAR_SETUP
-            #pragma shader_feature_local_fragment _EMISSION
-            #pragma shader_feature_local_fragment _METALLICSPECGLOSSMAP
-            #pragma shader_feature_local_fragment _ALPHATEST_ON
-            #pragma shader_feature_local_fragment _ _SMOOTHNESS_TEXTURE_ALBEDO_CHANNEL_A
-            #pragma shader_feature_local _ _DETAIL_MULX2 _DETAIL_SCALED
-            #pragma shader_feature_local_fragment _SPECGLOSSMAP
-            #pragma shader_feature EDITOR_VISUALIZATION
-            
-            #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Core.hlsl" 
-            
-            
-            CBUFFER_START(UnityPerMaterial)
-                half4 _BaseMap_ST;
-                half4 _BaseColor;
-                half4 _Underwater_color;
-                half _BaseColorMult;
-				half _Metallic;
-				half _Smoothness;
-                half _Cutoff;
-                half4 _EmissionColor;
-                half _WindForce;
-                half _AOAdd;
-            CBUFFER_END
-
-            #include "Packages/com.tzargames.rendering/Shaders/MetaPass.hlsl"
-            
-            ENDHLSL
-        }
+//        Pass
+//        {
+//            Name "Meta"
+//            Tags { "LightMode" = "Meta" }
+//            
+//            Cull Off
+//            HLSLPROGRAM
+//
+//            #pragma target 2.0
+//            
+//            #pragma vertex UniversalVertexMeta
+//            #pragma fragment UniversalFragmentMetaCustom
+//            #pragma shader_feature_local_fragment _SPECULAR_SETUP
+//            #pragma shader_feature_local_fragment _EMISSION
+//            #pragma shader_feature_local_fragment _METALLICSPECGLOSSMAP
+//            #pragma shader_feature_local_fragment _ALPHATEST_ON
+//            #pragma shader_feature_local_fragment _ _SMOOTHNESS_TEXTURE_ALBEDO_CHANNEL_A
+//            #pragma shader_feature_local _ _DETAIL_MULX2 _DETAIL_SCALED
+//            #pragma shader_feature_local_fragment _SPECGLOSSMAP
+//            #pragma shader_feature EDITOR_VISUALIZATION
+//            
+//            #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Core.hlsl" 
+//            
+//            
+//            CBUFFER_START(UnityPerMaterial)
+//                half4 _BaseMap_ST;
+//                half4 _BaseColor;
+//                half4 _Underwater_color;
+//                half _BaseColorMult;
+//				half _Metallic;
+//				half _Smoothness;
+//                half _Cutoff;
+//                half4 _EmissionColor;
+//                half _WindForce;
+//                half _AOAdd;
+//            CBUFFER_END
+//
+//            #include "Packages/com.tzargames.rendering/Shaders/MetaPass.hlsl"
+//            
+//            ENDHLSL
+//        }
     }
 }

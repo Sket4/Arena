@@ -72,12 +72,8 @@ Shader"Arena/Water"
             #pragma multi_compile_fragment _ _SHADOWS_SOFT_LOW _SHADOWS_SOFT_MEDIUM _SHADOWS_SOFT_HIGH
             #pragma multi_compile_fragment _ _LIGHT_COOKIES
             
-            #ifndef TG_USE_URP
-                #define TG_USE_URP
-            #endif
-
-            #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Core.hlsl"
-            #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Input.hlsl" 
+            #include "Packages/com.unity.render-pipelines.core/ShaderLibrary/Common.hlsl"
+            #include "Packages/com.unity.render-pipelines.core/ShaderLibrary/UnityInstancing.hlsl"
             #include "Packages/com.tzargames.rendering/Shaders/Lighting.hlsl"
             #include "Common.hlsl"
 
@@ -150,22 +146,23 @@ Shader"Arena/Water"
                 float3 normalOS = v.normal.xyz;
                 float4 tangentOS = v.tangent;
 
-                VertexPositionInputs vertInputs = GetVertexPositionInputs(positionOS);    //This function calculates all the relative spaces of the objects vertices
+                o.positionWS_fog.xyz = TransformObjectToWorld(positionOS);
+                o.vertex = TransformWorldToHClip(o.positionWS_fog.xyz); //This function calculates all the relative spaces of the objects vertices
                 
-                o.vertex = vertInputs.positionCS;
                 o.uv = v.uv;//TRANSFORM_TEX(v.uv, _Bum);
-                
-                o.positionWS_fog.xyz = vertInputs.positionWS;
                 o.positionWS_fog.a = ComputeFogFactor(o.vertex.z);
                 
                 float4 instanceData = tg_InstanceData;
                 o.instanceData = instanceData.xy;
     
-                VertexNormalInputs ni = GetVertexNormalInputs(normalOS, tangentOS);
+                real sign = real(tangentOS.w);
+                float3 normalWS = TransformObjectToWorldNormal(normalOS);
+                real3 tangentWS = real3(TransformObjectToWorldDir(tangentOS.xyz));
+                real3 bitangentWS = real3(cross(normalWS, float3(tangentWS))) * sign;
 
-                o.tspace0 = half3(ni.tangentWS.x, ni.bitangentWS.x, ni.normalWS.x);
-                o.tspace1 = half3(ni.tangentWS.y, ni.bitangentWS.y, ni.normalWS.y);
-                o.tspace2 = half3(ni.tangentWS.z, ni.bitangentWS.z, ni.normalWS.z);
+                o.tspace0 = half3(tangentWS.x, bitangentWS.x, normalWS.x);
+                o.tspace1 = half3(tangentWS.y, bitangentWS.y, normalWS.y);
+                o.tspace2 = half3(tangentWS.z, bitangentWS.z, normalWS.z);
                 o.foamData.r = v.color.g * _FoamParameters.x + _Time.x * _FoamParameters.y;
                 o.foamData.gb = TRANSFORM_TEX(v.uv, _FoamTex);
                 o.foamData.gb += half2(_SinTime.w * _FoamParameters.z, _SinTime.w * _FoamParameters.w);
@@ -287,9 +284,9 @@ Shader"Arena/Water"
                 // apply fog
                 #if USE_FOG
                 #if USE_CUSTOM_FOG_COLOR
-                return half4(MixFogColor(finalColor.rgb, _CustomFogColor.rgb, i.positionWS_fog.a), finalColor.a);
+                return half4(MixFog(finalColor.rgb, _CustomFogColor.rgb, i.positionWS_fog.a), finalColor.a);
                 #else
-                return half4(MixFogColor(finalColor.rgb, unity_FogColor.rgb, i.positionWS_fog.a), finalColor.a);
+                return half4(MixFog(finalColor.rgb, unity_FogColor.rgb, i.positionWS_fog.a), finalColor.a);
                 #endif
                 #else
                 return finalColor;
@@ -299,60 +296,60 @@ Shader"Arena/Water"
             ENDHLSL
         }
 
-        Pass
-        {
-            Name "Meta"
-            Tags { "LightMode" = "Meta" }
-            
-            Cull Off
-            HLSLPROGRAM
-            
-            #pragma target 4.5
-            
-            #pragma vertex UniversalVertexMeta
-            #pragma fragment UniversalFragmentMetaCustom
-            #pragma shader_feature_local _ _DETAIL_MULX2 _DETAIL_SCALED
-            #pragma shader_feature_local_fragment _SPECGLOSSMAP
-            #pragma shader_feature EDITOR_VISUALIZATION
-            
-            #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Core.hlsl" 
-            
-             
-            CBUFFER_START(UnityPerMaterial)
-                half4 _BaseColor;
-                half4 _CustomFogColor;
-                half4 _Tiling_and_speed_1;
-                half4 _Tiling_and_speed_2;
-                half4 _Tiling_and_speed_3;
-                half _Roughness;
-                half _Rim_mult;
-                half _Normal_strength;
-                half4 _FoamParameters;
-                half4 _FoamTex_ST;
-            CBUFFER_END
-
-            half4 _BaseMap_ST;
-            half4 _EmissionColor;
-            
-            #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/UniversalMetaPass.hlsl"
-                         
-            half4 UniversalFragmentMetaCustom(Varyings fragIn) : SV_Target
-            {
-                MetaInput metaInput;
-                            
-                metaInput.Albedo = float3(1,1,1);
-                metaInput.Emission = 1;
-                            
-                #ifdef EDITOR_VISUALIZATION
-                metaInput.VizUV = fragIn.VizUV;
-                metaInput.LightCoord = fragIn.LightCoord;
-                #endif
-
-                half4 result = UnityMetaFragment(metaInput);
-                return result;
-            }
-            
-            ENDHLSL
-        }
+//        Pass
+//        {
+//            Name "Meta"
+//            Tags { "LightMode" = "Meta" }
+//            
+//            Cull Off
+//            HLSLPROGRAM
+//            
+//            #pragma target 4.5
+//            
+//            #pragma vertex UniversalVertexMeta
+//            #pragma fragment UniversalFragmentMetaCustom
+//            #pragma shader_feature_local _ _DETAIL_MULX2 _DETAIL_SCALED
+//            #pragma shader_feature_local_fragment _SPECGLOSSMAP
+//            #pragma shader_feature EDITOR_VISUALIZATION
+//            
+//            #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Core.hlsl" 
+//            
+//             
+//            CBUFFER_START(UnityPerMaterial)
+//                half4 _BaseColor;
+//                half4 _CustomFogColor;
+//                half4 _Tiling_and_speed_1;
+//                half4 _Tiling_and_speed_2;
+//                half4 _Tiling_and_speed_3;
+//                half _Roughness;
+//                half _Rim_mult;
+//                half _Normal_strength;
+//                half4 _FoamParameters;
+//                half4 _FoamTex_ST;
+//            CBUFFER_END
+//
+//            half4 _BaseMap_ST;
+//            half4 _EmissionColor;
+//            
+//            #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/UniversalMetaPass.hlsl"
+//                         
+//            half4 UniversalFragmentMetaCustom(Varyings fragIn) : SV_Target
+//            {
+//                MetaInput metaInput;
+//                            
+//                metaInput.Albedo = float3(1,1,1);
+//                metaInput.Emission = 1;
+//                            
+//                #ifdef EDITOR_VISUALIZATION
+//                metaInput.VizUV = fragIn.VizUV;
+//                metaInput.LightCoord = fragIn.LightCoord;
+//                #endif
+//
+//                half4 result = UnityMetaFragment(metaInput);
+//                return result;
+//            }
+//            
+//            ENDHLSL
+//        }
     }
 }

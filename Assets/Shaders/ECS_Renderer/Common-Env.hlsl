@@ -1,25 +1,22 @@
 #ifndef UG_COMMON_ENV_INCLUDED
 #define UG_COMMON_ENV_INCLUDED
 
-#ifndef TG_USE_URP
-#define TG_USE_URP
-#endif
-
+#ifdef TG_USE_URP
 #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Core.hlsl"
 #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Lighting.hlsl"
+#endif
+#include "Packages/com.unity.render-pipelines.core/ShaderLibrary/UnityInstancing.hlsl"
 #include "Packages/com.tzargames.rendering/Shaders/Lighting.hlsl"
 #include "Common.hlsl"
+
+//#ifdef ARENA_DEFERRED
+#include "Packages/com.dgx.srp/ShaderLibrary/Lighting.hlsl"
+//#endif
 
 sampler2D _BaseMap;
 sampler2D _SurfaceMap;
 sampler2D _BumpMap;
 sampler2D _MetallicGlossMap;
-
-#if defined(DOTS_INSTANCING_ON)
-UNITY_DOTS_INSTANCING_START(UserPropertyMetadata)
-	//UNITY_DOTS_INSTANCED_PROP_OVERRIDE_REQUIRED(float4, tg_CommonInstanceData)
-UNITY_DOTS_INSTANCING_END(UserPropertyMetadata)
-#endif
 
 struct appdata
 {
@@ -27,7 +24,8 @@ struct appdata
 	float3 normal : NORMAL;
 	float4 tangent : TANGENT;
 	float2 uv : TEXCOORD0;
-	#if LIGHTMAP_ON
+	
+#if LIGHTMAP_ON
 	TG_DECLARE_LIGHTMAP_UV(1)
 #endif
 
@@ -53,6 +51,9 @@ struct v2f
 	TG_DECLARE_LIGHTMAP_UV(7)
 #endif
 	UNITY_VERTEX_INPUT_INSTANCE_ID
+
+	#ifndef  ARENA_DEFERRED
+	#endif
 };
 
 v2f env_vert (appdata v)
@@ -65,21 +66,24 @@ v2f env_vert (appdata v)
 	float3 normalOS = v.normal;
 	float4 tangentOS = v.tangent;
 
-	VertexPositionInputs vertInputs = GetVertexPositionInputs(positionOS);    //This function calculates all the relative spaces of the objects vertices
-	o.vertex = vertInputs.positionCS;
-	o.positionWS_fog.xyz = vertInputs.positionWS;
+	o.positionWS_fog.xyz = TransformObjectToWorld(positionOS);
+	o.vertex = TransformWorldToHClip(o.positionWS_fog.xyz);
+	
 
 	o.uv = TRANSFORM_TEX(v.uv, _BaseMap);
 	o.positionWS_fog.w = ComputeFogFactor(o.vertex.z);
 
+	real sign = real(tangentOS.w);
+	float3 normalWS = TransformObjectToWorldNormal(normalOS);
+	real3 tangentWS = real3(TransformObjectToWorldDir(tangentOS.xyz));
+	real3 bitangentWS = real3(cross(normalWS, float3(tangentWS))) * sign;
+
 	float4 instanceData = tg_InstanceData;
 	o.instanceData = instanceData;
 
-	VertexNormalInputs normalInputs = GetVertexNormalInputs(normalOS, tangentOS);
-
-	o.normalWS = normalInputs.normalWS;
-	o.tangentWS = float4(normalInputs.tangentWS, tangentOS.w);
-	o.bitangentWS = normalInputs.bitangentWS;
+	o.normalWS = normalWS;
+	o.tangentWS = float4(tangentWS, tangentOS.w);
+	o.bitangentWS = bitangentWS;
 
 	#if LIGHTMAP_ON
 	TG_TRANSFORM_LIGHTMAP_TEX(v.lightmapUV, o.lightmapUV)
@@ -96,6 +100,71 @@ v2f env_vert (appdata v)
 	#endif
 
 	return o;
+}
+
+GBufferFragmentOutput env_frag_deferred(v2f i)
+{
+	UNITY_SETUP_INSTANCE_ID(i);
+
+	half4 diffuse = tex2D(_BaseMap, i.uv) * _BaseColor;
+
+	#if defined(TG_USE_ALPHACLIP)
+	clip(diffuse.a - _Cutoff);
+	#endif
+
+	half3 normalTS = UnpackNormal(tex2D(_BumpMap, i.uv));
+	//normalTS.xy *= 2;
+	half3 viewDirWS = GetWorldSpaceNormalizeViewDir(i.positionWS_fog.xyz);
+
+	half3x3 tangentToWorld = half3x3(i.tangentWS.xyz, i.bitangentWS.xyz, i.normalWS.xyz); 
+
+	half3 normalWS = TransformTangentToWorld(normalTS.xyz, tangentToWorld, true);
+
+	half3 ambientLight = ARENA_COMPUTE_AMBIENT_LIGHT(i, normalWS);
+	
+	#if USE_SURFACE_BLEND
+	float2 surfaceUV = TRANSFORM_TEX(i.positionWS_fog.xz, _SurfaceMap);
+	half4 surfaceColor = tex2D(_SurfaceMap, surfaceUV);
+	float surfaceBlend = saturate(dot(half3(normalWS.x, normalWS.y, normalWS.z), half3(0.0,1,0.0)));
+
+	// pow 4
+	surfaceBlend *= surfaceBlend;
+	surfaceBlend  *= surfaceBlend;
+
+	diffuse.rgb = lerp(diffuse.rgb, surfaceColor.rgb, surfaceBlend  * _SurfaceBlendFactor);
+	#endif
+
+	SurfaceHalf surface;
+	surface.Albedo = diffuse.rgb;
+	surface.Alpha = diffuse.a;
+	surface.AmbientLight = ambientLight;
+	surface.NormalWS = normalWS;
+	
+	#if defined(UG_QUALITY_MED) || defined(UG_QUALITY_HIGH)
+	half4 mesm = tex2D(_MetallicGlossMap, i.uv);
+	surface.Metallic = mesm.r * _Metallic; 
+		
+	half smoothness = mesm.a * _Smoothness;
+	surface.Roughness = 1 - smoothness;
+
+	surface.EnvCubemapIndex = i.instanceData.y;
+	
+	#else
+
+	surface.Metallic = 0;
+	surface.Roughness = 1;
+	surface.EnvCubemapIndex = 0;
+
+	#endif
+
+	#if USE_UNDERWATER
+	//finalColor.rgb = lerp(finalColor.rgb, _Underwater_color.rgb * ambientLight, i.alpha);
+	#endif
+
+	surface.Albedo *= surface.AmbientLight;
+	surface.AmbientLight = 1;
+
+	return SurfaceToGBufferOutputHalf(surface);
 }
 
 half4 env_frag(v2f i) : SV_Target
@@ -165,7 +234,7 @@ half4 env_frag(v2f i) : SV_Target
 
 
 	// apply fog
-	return half4(MixFog(finalColor.rgb, i.positionWS_fog.w), finalColor.a);
+	return half4(MixFog(finalColor.rgb, unity_FogColor.rgb, i.positionWS_fog.w), finalColor.a);
 }
 
 struct appdata_depthonly
@@ -197,7 +266,7 @@ v2f_depthonly DepthOnlyVertex(appdata_depthonly v)
 	#if defined(TG_USE_ALPHACLIP)
 	output.uv = TRANSFORM_TEX(v.uv, _BaseMap);
 	#endif
-	output.positionCS = TransformObjectToHClip(positionOS);
+	output.positionCS = mul(unity_MatrixVP, mul(unity_ObjectToWorld, float4(positionOS, 1.0)));
 	return output;
 }
 

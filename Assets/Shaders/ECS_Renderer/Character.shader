@@ -28,37 +28,37 @@ Shader"Arena/Character"
             "Queue"="Geometry"
         }
         LOD 100
-
+        
         Pass
         {
-            Name "ForwardLit"
+            Name "gbuffer"
             Tags
             {
-                "LightMode" = "UniversalForward"
+                "LightMode" = "gbuffer"
             }
             
             Cull[_Cull]
             
+            Stencil 
+            {
+                Ref 128
+                Comp Always
+                Pass Replace
+                Fail Keep
+                ZFail Keep
+            }
+            
             HLSLPROGRAM
             #pragma target 4.5
-            #pragma require cubearray
-            #pragma exclude_renderers gles //excluded shader from OpenGL ES 2.0 because it uses non-square matrices
+            #pragma exclude_renderers gles nomrt//excluded shader from OpenGL ES 2.0 because it uses non-square matrices
             #pragma vertex vert
             #pragma fragment frag
             // make fog work
             #pragma multi_compile_fog
             #pragma multi_compile _ DOTS_INSTANCING_ON
-            #pragma multi_compile _ _MAIN_LIGHT_SHADOWS
-            #pragma multi_compile _ _MAIN_LIGHT_SHADOWS_CASCADE
 
             #pragma shader_feature TG_USE_ALPHACLIP
             #pragma shader_feature __ ARENA_SKIN_COLOR
-            #pragma shader_feature __ USE_LIGHTING
-            #pragma shader_feature __ USE_RIM
-            #pragma shader_feature __ USE_DISTANCE_LIGHT
-            #pragma multi_compile_fragment __ ARENA_USE_MAIN_LIGHT
-            #pragma multi_compile_fragment __ ARENA_USE_ADD_LIGHT
-            #pragma multi_compile_fragment __ ARENA_USE_DARK_MODE
             
             #pragma multi_compile _BONECOUNT_ONE _BONECOUNT_FOUR
 
@@ -66,7 +66,6 @@ Shader"Arena/Character"
 
             //#define UNITY_DOTS_INSTANCED_PROP_OVERRIDE_DISABLED_BY_DEFAULT
 
-            #define UG_QUALITY_HIGH
             #define TG_SKINNING
 
             #include "Input-Character.hlsl"
@@ -74,42 +73,88 @@ Shader"Arena/Character"
             
             ENDHLSL
         }
-        UsePass "Hidden/Arena/ShadowCaster-Skinned/SHADOWCASTER"
 
-        Pass
-        {
-            Name "DepthOnly"
-            Tags
-            {
-                "LightMode" = "DepthOnly"
-            }
-
-            // -------------------------------------
-            // Render State Commands
-            ZWrite On
-            ColorMask R
-
-            HLSLPROGRAM
-            #pragma target 4.5
-            #pragma require cubearray       // из-за использования tg_ReflectionProbes
-            #pragma exclude_renderers gles //excluded shader from OpenGL ES 2.0 because it uses non-square matrices
-            
-            #pragma multi_compile _ DOTS_INSTANCING_ON
-            #pragma shader_feature TG_USE_ALPHACLIP
-
-            #pragma multi_compile _BONECOUNT_ONE _BONECOUNT_FOUR
-            
-            // -------------------------------------
-            // Shader Stages
-            #pragma vertex DepthOnlyVertex
-            #pragma fragment DepthOnlyFragment
-
-            // -------------------------------------
-            // Includes
-            #include "Input-Character.hlsl"
-            #include "Common-Character.hlsl"
-            ENDHLSL
-        }
+//        Pass
+//        {
+//            Name "ForwardLit"
+//            Tags
+//            {
+//                "LightMode" = "UniversalForward"
+//            }
+//            
+//            Cull[_Cull]
+//            
+//            HLSLPROGRAM
+//            #pragma target 4.5
+//            #pragma require cubearray
+//            #pragma exclude_renderers gles //excluded shader from OpenGL ES 2.0 because it uses non-square matrices
+//            #pragma vertex vert
+//            #pragma fragment frag
+//            // make fog work
+//            #pragma multi_compile_fog
+//            #pragma multi_compile _ DOTS_INSTANCING_ON
+//            #pragma multi_compile _ _MAIN_LIGHT_SHADOWS
+//            #pragma multi_compile _ _MAIN_LIGHT_SHADOWS_CASCADE
+//
+//            #pragma shader_feature TG_USE_ALPHACLIP
+//            #pragma shader_feature __ ARENA_SKIN_COLOR
+//            #pragma shader_feature __ USE_LIGHTING
+//            #pragma shader_feature __ USE_RIM
+//            #pragma shader_feature __ USE_DISTANCE_LIGHT
+//            #pragma multi_compile_fragment __ ARENA_USE_MAIN_LIGHT
+//            #pragma multi_compile_fragment __ ARENA_USE_ADD_LIGHT
+//            #pragma multi_compile_fragment __ ARENA_USE_DARK_MODE
+//            
+//            #pragma multi_compile _BONECOUNT_ONE _BONECOUNT_FOUR
+//
+//            //#pragma multi_compile_instancing
+//
+//            //#define UNITY_DOTS_INSTANCED_PROP_OVERRIDE_DISABLED_BY_DEFAULT
+//
+//            #define UG_QUALITY_HIGH
+//            #define TG_SKINNING
+//
+//            #include "Input-Character.hlsl"
+//            #include "Common-Character.hlsl" 
+//            
+//            ENDHLSL
+//        }
+//        UsePass "Hidden/Arena/ShadowCaster-Skinned/SHADOWCASTER"
+//
+//        Pass
+//        {
+//            Name "DepthOnly"
+//            Tags
+//            {
+//                "LightMode" = "DepthOnly"
+//            }
+//
+//            // -------------------------------------
+//            // Render State Commands
+//            ZWrite On
+//            ColorMask R
+//
+//            HLSLPROGRAM
+//            #pragma target 4.5
+//            #pragma require cubearray       // из-за использования tg_ReflectionProbes
+//            #pragma exclude_renderers gles //excluded shader from OpenGL ES 2.0 because it uses non-square matrices
+//            
+//            #pragma multi_compile _ DOTS_INSTANCING_ON
+//            #pragma shader_feature TG_USE_ALPHACLIP
+//
+//            #pragma multi_compile _BONECOUNT_ONE _BONECOUNT_FOUR
+//            
+//            // -------------------------------------
+//            // Shader Stages
+//            #pragma vertex DepthOnlyVertex
+//            #pragma fragment DepthOnlyFragment
+//
+//            // -------------------------------------
+//            // Includes
+//            #include "Input-Character.hlsl"
+//            #include "Common-Character.hlsl"
+//            ENDHLSL
+//        }
 
 //        Pass
 //        {

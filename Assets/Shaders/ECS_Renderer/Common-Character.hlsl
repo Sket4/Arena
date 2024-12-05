@@ -1,13 +1,7 @@
 #ifndef UG_COMMON_CHARACTER_INCLUDED
 #define UG_COMMON_CHARACTER_INCLUDED
 
-#ifndef TG_USE_URP
-#define TG_USE_URP
-#endif
-
-#include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Core.hlsl"
-#include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Input.hlsl" 
-#include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Lighting.hlsl"
+#include "Packages/com.dgx.srp/ShaderLibrary/Lighting.hlsl"
 #include "Common.hlsl"
 
 struct appdata
@@ -42,7 +36,7 @@ struct v2f
 #include "Packages/com.tzargames.rendering/Shaders/Lighting.hlsl"
 #include "Packages/com.tzargames.rendering/Shaders/Skinning.hlsl"
 
- #if defined(DOTS_INSTANCING_ON)
+#if defined(DOTS_INSTANCING_ON)
      UNITY_DOTS_INSTANCING_START(UserPropertyMetadata)
             UNITY_DOTS_INSTANCED_PROP_OVERRIDE_REQUIRED(float4, _SkinColor) 
      UNITY_DOTS_INSTANCING_END(UserPropertyMetadata)
@@ -77,37 +71,30 @@ v2f vert (appdata v)
     #else
     ComputeSkinning_OneBone(v.BoneIndices.x, positionOS, normalOS, tangentOS.xyz);
     #endif
-     
-    VertexPositionInputs vertInputs = GetVertexPositionInputs(positionOS);    //This function calculates all the relative spaces of the objects vertices
-    o.vertex = vertInputs.positionCS;
-    o.positionWS = vertInputs.positionWS;
+
+    o.positionWS.xyz = TransformObjectToWorld(positionOS);
+    o.vertex = TransformWorldToHClip(o.positionWS.xyz);
 
     o.uv = TRANSFORM_TEX(v.uv, _BaseMap);
     o.fogCoords = ComputeFogFactor(o.vertex.z);
 
 
-    VertexNormalInputs normalInputs = GetVertexNormalInputs(normalOS, tangentOS);
+    real sign = real(tangentOS.w);
+    float3 normalWS = TransformObjectToWorldNormal(normalOS);
+    real3 tangentWS = real3(TransformObjectToWorldDir(tangentOS.xyz));
+    real3 bitangentWS = real3(cross(normalWS, float3(tangentWS))) * sign;
 
-    o.normalWS = normalInputs.normalWS;
-    o.tangentWS = float4(normalInputs.tangentWS, tangentOS.w);
-    o.bitangentWS = normalInputs.bitangentWS;
+    o.normalWS = normalWS;
+    o.tangentWS = float4(tangentWS, tangentOS.w);
+    o.bitangentWS = bitangentWS;
 
     float4 instanceData = tg_InstanceData;
     o.instanceData = instanceData;
     
-    
-    #if USE_DISTANCE_LIGHT
-    float3 dirToPos = o.positionWS - _WorldSpaceCameraPos;
-    half sqDistance = dot(dirToPos, dirToPos);
-    half maxDistanceSq = 2500.0;
-    half distanceMult = saturate(sqDistance * (1.0f / maxDistanceSq));
-    o.color += distanceMult;
-    #endif
-    
     return o;
 }
 
-half4 frag (v2f i) : SV_Target
+GBufferFragmentOutput frag (v2f i)
 {
     UNITY_SETUP_INSTANCE_ID(i);
     
@@ -127,7 +114,6 @@ half4 frag (v2f i) : SV_Target
     #endif
 
     half3 normalTS = UnpackNormal(tex2D(_BumpMap, i.uv));
-    half3 viewDirWS = GetWorldSpaceNormalizeViewDir(i.positionWS);
 
     half3x3 tangentToWorld = half3x3(i.tangentWS.xyz, i.bitangentWS.xyz, i.normalWS.xyz);
 
@@ -142,34 +128,16 @@ half4 frag (v2f i) : SV_Target
     
     half3 lighting = ARENA_COMPUTE_AMBIENT_LIGHT(i, normalWS);
 
-    // shadowing
-    //float4 shadowCoord = TransformWorldToShadowCoord(i.positionWS.xyz);
-	//half shadow = MainLightRealtimeShadow(shadowCoord);
-    //lighting = MixLightWithRealtimeShadow(shadow, lighting);
+    SurfaceHalf surface;
+    surface.Albedo = diffuse.rgb;
+    surface.Alpha = diffuse.a;
+    surface.Metallic = metallic;
+    surface.Roughness = roughness;
+    surface.AmbientLight = lighting;
+    surface.EnvCubemapIndex = i.instanceData.y;
+    surface.NormalWS = normalWS;
 
-    // experemental specular
-    //half3 reflectDir = reflect(-normalWS, normalWS);
-    //float spec = pow(max(dot(viewDirWS, reflectDir), 0.0), 32);
-    //float3 specular = diffuse.a * spec * lighting;
-    ////return half4(specular,1);
-    //lighting += specular;
-
-    half3 envMapColor = TG_ReflectionProbe(viewDirWS, normalWS, i.instanceData.y, roughness * 4);
-
-    ARENA_DYN_LIGHT(normalWS, i.positionWS.xyz, lighting, viewDirWS, envMapColor, false);
-    
-    //envMapColor *= metallic.a;
-    half4 finalColor = LightingPBR(diffuse, lighting, viewDirWS, normalWS, metallic, roughness, envMapColor);
-
-    #if USE_RIM
-    half ndotv = dot(viewDirWS, normalWS);
-
-    half3 mixedRim = lerp(finalColor.rgb, _RimColor.rgb, _RimStr);
-    finalColor.rgb = lerp(finalColor.rgb, mixedRim, saturate(1.0 - abs(ndotv) - _RimColor.a));
-    #endif
-
-    // apply fog
-    return half4(MixFog(finalColor.rgb, i.fogCoords), finalColor.a);
+    return SurfaceToGBufferOutputHalf(surface);
 }
 
 struct appdata_depthonly

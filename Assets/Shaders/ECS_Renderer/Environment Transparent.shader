@@ -46,7 +46,7 @@ Shader "Arena/Environment Transparent"
             Name "ForwardLit"
             Tags
             {
-                "LightMode" = "UniversalForward"
+                "LightMode" = "DGXForward"
             }
             //AlphaToMask[_AlphaToMask]
             Blend[_SrcBlend][_DstBlend]
@@ -89,33 +89,33 @@ Shader "Arena/Environment Transparent"
             ENDHLSL
         }
 
-        Pass
-        {
-            Name "Meta"
-            Tags { "LightMode" = "Meta" }
-            
-            Cull Off
-            HLSLPROGRAM
-
-            #pragma target 2.0
-            
-            #pragma vertex UniversalVertexMeta
-            #pragma fragment UniversalFragmentMetaCustom
-            #pragma shader_feature_local_fragment _SPECULAR_SETUP
-            #pragma shader_feature_local_fragment _EMISSION
-            #pragma shader_feature_local_fragment _METALLICSPECGLOSSMAP
-            #pragma shader_feature_local_fragment _ALPHATEST_ON
-            #pragma shader_feature_local_fragment _ _SMOOTHNESS_TEXTURE_ALBEDO_CHANNEL_A
-            #pragma shader_feature_local _ _DETAIL_MULX2 _DETAIL_SCALED
-            #pragma shader_feature_local_fragment _SPECGLOSSMAP
-            #pragma shader_feature EDITOR_VISUALIZATION
-            
-            #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Core.hlsl" 
-
-            #include "Input-Env.hlsl"
-            #include "Packages/com.tzargames.rendering/Shaders/MetaPass.hlsl"
-            
-            ENDHLSL
-        }
+//        Pass
+//        {
+//            Name "Meta"
+//            Tags { "LightMode" = "Meta" }
+//            
+//            Cull Off
+//            HLSLPROGRAM
+//
+//            #pragma target 2.0
+//            
+//            #pragma vertex UniversalVertexMeta
+//            #pragma fragment UniversalFragmentMetaCustom
+//            #pragma shader_feature_local_fragment _SPECULAR_SETUP
+//            #pragma shader_feature_local_fragment _EMISSION
+//            #pragma shader_feature_local_fragment _METALLICSPECGLOSSMAP
+//            #pragma shader_feature_local_fragment _ALPHATEST_ON
+//            #pragma shader_feature_local_fragment _ _SMOOTHNESS_TEXTURE_ALBEDO_CHANNEL_A
+//            #pragma shader_feature_local _ _DETAIL_MULX2 _DETAIL_SCALED
+//            #pragma shader_feature_local_fragment _SPECGLOSSMAP
+//            #pragma shader_feature EDITOR_VISUALIZATION
+//            
+//            #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Core.hlsl" 
+//
+//            #include "Input-Env.hlsl"
+//            #include "Packages/com.tzargames.rendering/Shaders/MetaPass.hlsl"
+//            
+//            ENDHLSL
+//        }
     }
 }

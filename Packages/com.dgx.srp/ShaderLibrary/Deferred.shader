@@ -29,12 +29,12 @@ Shader "Hidden/DGX/DEFERRED"
             #pragma fragment frag
 
             #pragma multi_compile FOG_LINEAR FOG_EXP FOG_EXP2
+            #pragma require cubearray
             //#if defined(DGX_USE_PBR)
             //#pragma require cubearray
             //#endif
             
             #include "DeferredPass.hlsl"
-
             
             ENDHLSL
         }

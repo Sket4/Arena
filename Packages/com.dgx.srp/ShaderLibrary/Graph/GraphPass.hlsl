@@ -6,9 +6,12 @@
 Varyings vert (Attributes v)
 {
     Varyings o;
+
+    #ifdef UNITY_ANY_INSTANCING_ENABLED
     UNITY_SETUP_INSTANCE_ID(v);
     UNITY_TRANSFER_INSTANCE_ID(v, o);
-
+    #endif
+ 
     float3 positionWS = TransformObjectToWorld(v.positionOS);
     o.positionCS = TransformWorldToHClip(positionWS);
     #ifdef VARYINGS_NEED_POSITION_WS
@@ -20,19 +23,19 @@ Varyings vert (Attributes v)
     o.normalWS = normalWS;
     #endif
     
-    #ifdef ATTRIBUTES_NEED_TEXCOORD0
+    #ifdef VARYINGS_NEED_TEXCOORD0
     o.texCoord0 = v.uv0;
     #endif
 
-    #ifdef ATTRIBUTES_NEED_TEXCOORD1
+    #ifdef VARYINGS_NEED_TEXCOORD1
     o.texCoord1 = v.uv1;
     #endif
 
-    #ifdef ATTRIBUTES_NEED_TEXCOORD2
+    #ifdef VARYINGS_NEED_TEXCOORD2
     o.texCoord2 = v.uv2;
     #endif
     
-    return o;
+    return o; 
 }
 
 half4 frag(Varyings varyings) : SV_Target

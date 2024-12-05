@@ -15,6 +15,7 @@ struct v2f
 
 #include "Packages/com.unity.render-pipelines.core/ShaderLibrary/Common.hlsl"
 #include "Packages/com.unity.render-pipelines.core/ShaderLibrary/GlobalSamplers.hlsl"
+#include "Packages/com.unity.render-pipelines.core/ShaderLibrary/EntityLighting.hlsl"
 #include "Common.hlsl"
 #include "Lighting.hlsl"
 #include "PBR.hlsl"
@@ -42,6 +43,14 @@ float4 _ZBufferParams;
 float4 unity_FogParams;
 real4  unity_FogColor;
 float4 _ProjectionParams;
+
+
+
+TEXTURECUBE_ARRAY(tg_ReflectionProbes);
+SAMPLER(samplertg_ReflectionProbes);
+float4 tg_ReflectionProbeDecodeInstructions;
+
+
 
 real ComputeFogFactorZ0ToFar(float z)
 {
@@ -94,6 +103,21 @@ float3 MixFog(float3 fragColor, float3 fogColor, float fogFactor)
     return fragColor;
 }
 
+float4x4 OptimizeProjectionMatrix(float4x4 M)
+{
+    // Matrix format (x = non-constant value).
+    // Orthographic Perspective  Combined(OR)
+    // | x 0 0 x |  | x 0 x 0 |  | x 0 x x |
+    // | 0 x 0 x |  | 0 x x 0 |  | 0 x x x |
+    // | x x x x |  | x x x x |  | x x x x | <- oblique projection row
+    // | 0 0 0 1 |  | 0 0 x 0 |  | 0 0 x x |
+    // Notice that some values are always 0.
+    // We can avoid loading and doing math with constants.
+    M._21_41 = 0;
+    M._12_42 = 0;
+    return M;
+}
+
 v2f vert (appdata v)
 {
     v2f o;
@@ -111,6 +135,14 @@ v2f vert (appdata v)
     //o.screenUV.xy = DynamicScalingApplyScaleBias(o.screenUV.xy, float4(_RTHandleScale.xy, 0.0f, 0.0f));
     
     return o;
+}
+
+half3 Sample_ReflectionProbe_half(half3 viewDir, half3 normalWS, half index, half lod)
+{
+    half3 reflectVec = reflect(-viewDir, normalWS);
+
+    float4 color = SAMPLE_TEXTURECUBE_ARRAY_LOD(tg_ReflectionProbes, samplertg_ReflectionProbes, reflectVec, index, lod);
+    return DecodeHDREnvironment(color, tg_ReflectionProbeDecodeInstructions);
 }
 
 half4 frag (v2f i) : SV_Target
@@ -144,7 +176,9 @@ half4 frag (v2f i) : SV_Target
     
     float3 V = normalize(_WorldSpaceCameraPos.xyz - worldPos.xyz);
 
-    half4 result = LightingPBR_Half(surface, V, 0.5);
+    half3 envMapColor = Sample_ReflectionProbe_half(V, surface.NormalWS, surface.EnvCubemapIndex, surface.Roughness * 4);
+
+    half4 result = LightingPBR_Half(surface, V, envMapColor);
 
     float eyeDepth = LinearEyeDepth(depth, _ZBufferParams);
     float clip_z = UNITY_MATRIX_P[2][2] * -eyeDepth + UNITY_MATRIX_P[2][3];
@@ -156,6 +190,7 @@ half4 frag (v2f i) : SV_Target
     // result.r = unity_FogParams.w * 0.875;
     // result.g = UNITY_MATRIX_P[2][3];
     // result.b = _ProjectionParams.z;
+    //result.rgb = surface.EnvCubemapIndex;
 
     result.rgb = MixFog(result.rgb, unity_FogColor.rgb, fogFactor);
     //result = saturate(dot(surface.NormalWS, V));

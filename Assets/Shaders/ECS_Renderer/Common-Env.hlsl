@@ -162,6 +162,10 @@ GBufferFragmentOutput env_frag_deferred(v2f i)
 	#endif
 
 	surface.Albedo *= surface.AmbientLight;
+	// #if LIGHTMAP_ON
+	// surface.Albedo.xy = i.lightmapUV.xy;
+	// surface.Albedo.z = 0;
+	// #endif
 	surface.AmbientLight = 1;
 
 	return SurfaceToGBufferOutputHalf(surface);
@@ -266,7 +270,7 @@ v2f_depthonly DepthOnlyVertex(appdata_depthonly v)
 	#if defined(TG_USE_ALPHACLIP)
 	output.uv = TRANSFORM_TEX(v.uv, _BaseMap);
 	#endif
-	output.positionCS = mul(unity_MatrixVP, mul(unity_ObjectToWorld, float4(positionOS, 1.0)));
+	output.positionCS = mul(UNITY_MATRIX_VP, mul(UNITY_MATRIX_M, float4(positionOS, 1.0)));
 	return output;
 }
 

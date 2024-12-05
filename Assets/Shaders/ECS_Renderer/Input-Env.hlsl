@@ -17,6 +17,6 @@ half _HighlightRemove;
 half _HeightFogFade;
 half _FogHeight;
 CBUFFER_END
-
+ 
 #endif //UG_INPUT_INCLUDED
 

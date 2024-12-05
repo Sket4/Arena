@@ -221,7 +221,8 @@ namespace DGX.SRP
                 // Create a DrawingSettings struct that describes which geometry to draw and how to draw it
                 DrawingSettings drawingSettings = new DrawingSettings(shaderTagId, sortingSettings)
                 {
-                    perObjectData = PerObjectData.Lightmaps | PerObjectData.LightProbe
+                    perObjectData = PerObjectData.Lightmaps | PerObjectData.LightProbe,
+                    enableInstancing = true
                 };
 
                 // Tell Unity how to filter the culling results, to further specify which geometry to draw
@@ -245,11 +246,6 @@ namespace DGX.SRP
                 cmd.name = "lightpass";
 
                 SetupMatrixConstants(cmd, camera);
-                var prj = camera.nonJitteredProjectionMatrix;
-                
-                var projectionMatrix = GL.GetGPUProjectionMatrix(prj, false);
-                cmd.SetViewProjectionMatrices(camera.GetStereoViewMatrix(0), projectionMatrix);
-                cmd.SetGlobalMatrix("glstate_matrix_projection", projectionMatrix);
                 
                 var colorTexture = rt.Color0_ID;
                 cmd.SetRenderTarget(colorTexture, rt.Depth);
@@ -259,7 +255,10 @@ namespace DGX.SRP
                 
                 // FORWARD UNLIT
                 sortingSettings.criteria = SortingCriteria.CommonOpaque;
-                drawingSettings = new DrawingSettings(srpDefaultUnlitShaderTag, sortingSettings);
+                drawingSettings = new DrawingSettings(srpDefaultUnlitShaderTag, sortingSettings)
+                {
+                    enableInstancing = true,
+                };
                 filteringSettings.renderQueueRange = RenderQueueRange.opaque;
                 
                 context.ExecuteCommandBuffer(cmd);
@@ -293,7 +292,8 @@ namespace DGX.SRP
                 sortingSettings.criteria = SortingCriteria.CommonTransparent;
                 drawingSettings = new DrawingSettings(srpDefaultUnlitShaderTag, sortingSettings)
                 {
-                    perObjectData = PerObjectData.Lightmaps | PerObjectData.ReflectionProbes
+                    perObjectData = PerObjectData.Lightmaps | PerObjectData.ReflectionProbes,
+                    enableInstancing = true
                 };
                 drawingSettings.SetShaderPassName(1, dgxForwardShaderTag);
                 filteringSettings.renderQueueRange = RenderQueueRange.transparent;

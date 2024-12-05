@@ -104,23 +104,24 @@ namespace DGX.SRP.Editor.ShaderGraph
         public static IncludeCollection Includes = new()
         {
             { "Packages/com.unity.render-pipelines.core/ShaderLibrary/Common.hlsl", IncludeLocation.Pregraph },
-            { "Packages/com.unity.render-pipelines.core/ShaderLibrary/UnityInstancing.hlsl", IncludeLocation.Pregraph },
+            { "Packages/com.dgx.srp/ShaderLibrary/Common.hlsl", IncludeLocation.Pregraph },
             { "Packages/com.dgx.srp/ShaderLibrary/Graph/GraphInput.hlsl", IncludeLocation.Pregraph },
+            { "Packages/com.unity.render-pipelines.core/ShaderLibrary/UnityInstancing.hlsl", IncludeLocation.Pregraph },
             { "Packages/com.unity.render-pipelines.core/ShaderLibrary/SpaceTransforms.hlsl", IncludeLocation.Pregraph },
             { "Packages/com.unity.render-pipelines.core/ShaderLibrary/Texture.hlsl", IncludeLocation.Pregraph },
             { "Packages/com.dgx.srp/ShaderLibrary/Graph/ShaderGraphFunctions.hlsl", IncludeLocation.Pregraph },
-            { "Packages/com.dgx.srp/ShaderLibrary/Common.hlsl", IncludeLocation.Pregraph },
             { "Packages/com.dgx.srp/ShaderLibrary/Graph/GraphPass.hlsl", IncludeLocation.Postgraph },
             
         };
         public static readonly PragmaCollection Pragmas = new PragmaCollection
         {
-            { Pragma.Target(ShaderModel.Target30) },
+            { Pragma.Target(ShaderModel.Target45) },
             { Pragma.MultiCompileInstancing },
             //{ Pragma.MultiCompileFog },
             //{ Pragma.MultiCompileForwardBase },
             { Pragma.Vertex("vert") },
             { Pragma.Fragment("frag") },
+            { Pragma.DOTSInstancing },
         };
         public static RenderStateCollection DefaultRenderStates()
         {

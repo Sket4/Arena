@@ -2,6 +2,7 @@
 #define DGX_LIGHTING_INCLUDED
 
 #include "Common.hlsl"
+#include "Packages/com.unity.render-pipelines.core/ShaderLibrary/Color.hlsl"
 
 struct GBufferFragmentOutput
 {
@@ -18,10 +19,10 @@ struct SurfaceHalf
     half3 Metallic;
     half Roughness;
     half Alpha;
-    uint EnvCubemapIndex;
+    half EnvCubemapIndex;
 };
 
-const half MAX_ENVMAP_INDEX = 512;
+const half MAX_ENVMAP_INDEX = 128.0;
 
 GBufferFragmentOutput SurfaceToGBufferOutputHalf(SurfaceHalf surface)
 {
@@ -29,12 +30,13 @@ GBufferFragmentOutput SurfaceToGBufferOutputHalf(SurfaceHalf surface)
 
     float2 encodedNormal = OctahedronEncode(surface.NormalWS);
     result.GBuffer0.xyz = surface.Albedo;
-    result.GBuffer0.w = encodedNormal.x;
+    result.GBuffer0.w = LinearToSRGB(encodedNormal.x);
     result.GBuffer1.xyz = surface.AmbientLight.xyz;
-    result.GBuffer1.w = encodedNormal.y; 
-    result.GBuffer2.x = surface.Metallic;
+    result.GBuffer1.w = LinearToSRGB(encodedNormal.y); 
+    result.GBuffer2.x = surface.Metallic.r;
     result.GBuffer2.y = surface.Roughness;
-    result.GBuffer2.z = (surface.EnvCubemapIndex / MAX_ENVMAP_INDEX) + (1 / MAX_ENVMAP_INDEX) * 0.0001;
+    //TODO
+    result.GBuffer2.z = (surface.EnvCubemapIndex / MAX_ENVMAP_INDEX) ;//+ (1.0 / MAX_ENVMAP_INDEX) * 0.1;
     result.GBuffer2.w = 0;
 
     return result;
@@ -46,10 +48,11 @@ SurfaceHalf GBufferToSurfaceHalf(float4 gbuffer0, float4 gbuffer1, float4 gbuffe
 
     result.Albedo = gbuffer0.rgb;
     result.AmbientLight = gbuffer1.rgb;
-    result.NormalWS = OctahedronDecode(float2(gbuffer0.w, gbuffer1.w));
+    result.NormalWS = OctahedronDecode(float2(SRGBToLinear(gbuffer0.w), SRGBToLinear(gbuffer1.w)));
     result.Metallic = gbuffer2.x;
     result.Roughness = gbuffer2.y;
-    result.EnvCubemapIndex = gbuffer2.z * MAX_ENVMAP_INDEX;
+    // TODO
+    result.EnvCubemapIndex = gbuffer2.z ;//* MAX_ENVMAP_INDEX;
     result.Alpha = 1;
     
     return  result;

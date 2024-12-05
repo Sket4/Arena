@@ -142,7 +142,7 @@ GBufferFragmentOutput frag(v2f i)
     normalTS += normal2 * splat.g;
     normalTS += UnpackNormal(tex2D(_Normal3, layer3_uv)) * splat.b;
 
-    #if ARENA_USE_FOUR_CHANNEL
+    #ifdef ARENA_USE_FOUR_CHANNEL
     normalTS += UnpackNormal(tex2D(_Normal4, layer4_uv)) * splat.w;
     #else
     normalTS += normal2 * splat.w * 0.5;

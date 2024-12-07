@@ -157,9 +157,7 @@ GBufferFragmentOutput env_frag_deferred(v2f i)
 
 	#endif
 
-	#if USE_UNDERWATER
-	//finalColor.rgb = lerp(finalColor.rgb, _Underwater_color.rgb * ambientLight, i.alpha);
-	#endif
+	
 
 	surface.Albedo *= surface.AmbientLight;
 	// #if LIGHTMAP_ON
@@ -167,6 +165,11 @@ GBufferFragmentOutput env_frag_deferred(v2f i)
 	// surface.Albedo.z = 0;
 	// #endif
 	surface.AmbientLight = 1;
+
+	#if USE_UNDERWATER
+	surface.Albedo = lerp(surface.Albedo, _Underwater_color.rgb * ambientLight, i.alpha);
+	surface.Roughness = lerp(surface.Roughness, 1, i.alpha);
+	#endif
 
 	return SurfaceToGBufferOutputHalf(surface);
 }

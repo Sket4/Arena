@@ -22,7 +22,8 @@ struct SurfaceHalf
     half EnvCubemapIndex;
 };
 
-const half MAX_ENVMAP_INDEX = 128.0;
+#define MAX_ENVMAP_INDEX 128.0
+#define MAX_ENVMAP_INDEX_INV (1.0 / 128.0)
 
 GBufferFragmentOutput SurfaceToGBufferOutputHalf(SurfaceHalf surface)
 {
@@ -36,7 +37,8 @@ GBufferFragmentOutput SurfaceToGBufferOutputHalf(SurfaceHalf surface)
     result.GBuffer2.x = surface.Metallic.r;
     result.GBuffer2.y = surface.Roughness;
     //TODO
-    result.GBuffer2.z = (surface.EnvCubemapIndex / MAX_ENVMAP_INDEX) ;//+ (1.0 / MAX_ENVMAP_INDEX) * 0.1;
+    result.GBuffer2.z = surface.EnvCubemapIndex * MAX_ENVMAP_INDEX_INV + MAX_ENVMAP_INDEX_INV * 0.1;
+    //result.GBuffer2.z = surface.EnvCubemapIndex * 0.1;
     result.GBuffer2.w = 0;
 
     return result;
@@ -52,7 +54,8 @@ SurfaceHalf GBufferToSurfaceHalf(float4 gbuffer0, float4 gbuffer1, float4 gbuffe
     result.Metallic = gbuffer2.x;
     result.Roughness = gbuffer2.y;
     // TODO
-    result.EnvCubemapIndex = gbuffer2.z ;//* MAX_ENVMAP_INDEX;
+    result.EnvCubemapIndex = gbuffer2.z * MAX_ENVMAP_INDEX;
+    //result.EnvCubemapIndex = gbuffer2.z * 10;
     result.Alpha = 1;
     
     return  result;

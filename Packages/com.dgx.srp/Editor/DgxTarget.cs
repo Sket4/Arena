@@ -1,10 +1,25 @@
 using System;
 using System.Linq;
 using UnityEditor.ShaderGraph;
+using UnityEngine;
 using UnityEngine.Rendering;
+using UnityEngine.UIElements;
 
 namespace DGX.SRP.Editor.ShaderGraph
 {
+    enum SurfaceType
+    {
+        Opaque,
+        Transparent
+    }
+    enum AlphaMode
+    {
+        Alpha,
+        Premultiply,
+        Additive,
+        Multiply,
+    }
+    
     [GenerateBlocks]
     internal struct FullScreenBlocks
     {
@@ -15,6 +30,10 @@ namespace DGX.SRP.Editor.ShaderGraph
 
     sealed class DgxTarget : Target
     {
+        [SerializeField] private ZWrite ZWriteMode = ZWrite.On;
+        [SerializeField] private SurfaceType surfaceType = SurfaceType.Opaque;
+        [SerializeField] private AlphaMode alphaMode = AlphaMode.Alpha;
+        
         public DgxTarget()
         {
             displayName = "DGX";
@@ -28,10 +47,10 @@ namespace DGX.SRP.Editor.ShaderGraph
 
         public override void Setup(ref TargetSetupContext context)
         {
-            context.AddSubShader(Unlit("Opaque", "Geometry"));
+            context.AddSubShader(Unlit("Opaque", "Geometry", this));
         }
         
-        public static SubShaderDescriptor Unlit(string renderType, string renderQueue)
+        public static SubShaderDescriptor Unlit(string renderType, string renderQueue, DgxTarget target)
         {
             var result = new SubShaderDescriptor()
             {
@@ -43,7 +62,7 @@ namespace DGX.SRP.Editor.ShaderGraph
                 passes = new PassCollection()
             };
 
-            result.passes.Add(UnlitPass());
+            result.passes.Add(UnlitPass(target));
             //
             // if (target.mayWriteDepth)
             //     result.passes.Add(CorePasses.DepthOnly(target));
@@ -55,7 +74,7 @@ namespace DGX.SRP.Editor.ShaderGraph
             return result;
         }
         
-        public static PassDescriptor UnlitPass()
+        public static PassDescriptor UnlitPass(DgxTarget target)
         {
             var result = new PassDescriptor
             {
@@ -79,7 +98,7 @@ namespace DGX.SRP.Editor.ShaderGraph
                 fieldDependencies = FieldDependencies.Default,
 
                 // Conditional State
-                renderStates = DefaultRenderStates(),
+                renderStates = DefaultRenderStates(target),
                 pragmas = Pragmas,
                 defines = new DefineCollection(),
                 keywords = new KeywordCollection(),
@@ -123,12 +142,38 @@ namespace DGX.SRP.Editor.ShaderGraph
             { Pragma.Fragment("frag") },
             { Pragma.DOTSInstancing },
         };
-        public static RenderStateCollection DefaultRenderStates()
+        public static RenderStateCollection DefaultRenderStates(DgxTarget target)
         {
             var result = new RenderStateCollection();
             result.Add(RenderState.ZTest("LEqual"));
-            result.Add(RenderState.ZWrite("On"));
+
+            if (target.ZWriteMode == ZWrite.On)
+            {
+                result.Add(RenderState.ZWrite("On"));    
+            }
+            else
+            {
+                result.Add(RenderState.ZWrite("Off"));
+            }
+            
             result.Add(RenderState.Cull("Back"));
+            
+            if (target.surfaceType == SurfaceType.Opaque)
+            {
+                result.Add(RenderState.Blend(Blend.One, Blend.Zero));
+            }
+            else
+            {
+                if (target.alphaMode == AlphaMode.Alpha)
+                    result.Add(RenderState.Blend(Blend.SrcAlpha, Blend.OneMinusSrcAlpha, Blend.One, Blend.OneMinusSrcAlpha));
+                else if (target.alphaMode == AlphaMode.Premultiply)
+                    result.Add(RenderState.Blend(Blend.One, Blend.OneMinusSrcAlpha, Blend.One, Blend.OneMinusSrcAlpha));
+                else if (target.alphaMode == AlphaMode.Additive)
+                    result.Add(RenderState.Blend(Blend.SrcAlpha, Blend.One, Blend.One, Blend.One));
+                else if (target.alphaMode == AlphaMode.Multiply)
+                    result.Add(RenderState.Blend(Blend.DstColor, Blend.Zero));
+            }
+            
             
             // AddUberSwitchedBlend(target, result);
             // if (target.surfaceType != SurfaceType.Opaque)
@@ -179,7 +224,38 @@ namespace DGX.SRP.Editor.ShaderGraph
 
         public override void GetPropertiesGUI(ref TargetPropertyGUIContext context, Action onChange, Action<string> registerUndo)
         {
-            //
+            context.AddProperty("ZWrite", new EnumField(ZWriteMode) { value = ZWriteMode }, (evt) =>
+            {
+                if (Equals(ZWriteMode, evt.newValue))
+                    return;
+
+                registerUndo("Change z write mode");
+                ZWriteMode = (ZWrite)evt.newValue;
+                onChange();
+            });  
+            
+            context.AddProperty("Surface Type", new EnumField(SurfaceType.Opaque) { value = surfaceType }, (evt) =>
+            {
+                if (Equals(surfaceType, evt.newValue))
+                    return;
+
+                registerUndo("Change Surface");
+                surfaceType = (SurfaceType)evt.newValue;
+                onChange();
+            });
+
+            if (surfaceType == SurfaceType.Transparent)
+            {
+                context.AddProperty("Alpha mode", new EnumField(alphaMode) { value = alphaMode }, (evt) =>
+                {
+                    if (Equals(alphaMode, evt.newValue))
+                        return;
+
+                    registerUndo("Change alpha mode");
+                    alphaMode = (AlphaMode)evt.newValue;
+                    onChange();
+                });    
+            }
         }
 
         public override bool WorksWithSRP(UnityEngine.Rendering.RenderPipelineAsset scriptableRenderPipeline)

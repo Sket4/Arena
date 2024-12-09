@@ -22,15 +22,13 @@ struct appdata
 struct v2f
 {
     half2 uv : TEXCOORD0;
-    half fogCoords : TEXCOORD1;
     half4 vertex : SV_POSITION;
-    nointerpolation half4 instanceData : TEXCOORD2;
+    nointerpolation half4 instanceData : TEXCOORD1;
     
-    float3 normalWS : TEXCOORD3;
-    float4 tangentWS : TEXCOORD4;
-    float3 bitangentWS : TEXCOORD5;
-    float3 positionWS : TEXCOORD6;
-    UNITY_VERTEX_INPUT_INSTANCE_ID
+    float3 normalWS : TEXCOORD2;
+    float4 tangentWS : TEXCOORD3;
+    float3 bitangentWS : TEXCOORD4;
+    //UNITY_VERTEX_INPUT_INSTANCE_ID
 };
 
 #include "Packages/com.tzargames.rendering/Shaders/Lighting.hlsl"
@@ -59,7 +57,7 @@ v2f vert (appdata v)
 {
     v2f o;
     UNITY_SETUP_INSTANCE_ID(v);
-    UNITY_TRANSFER_INSTANCE_ID(v, o);
+    //UNITY_TRANSFER_INSTANCE_ID(v, o);
     
     float3 positionOS = v.vertex;
     float3 normalOS = v.normal;
@@ -72,11 +70,10 @@ v2f vert (appdata v)
     ComputeSkinning_OneBone(v.BoneIndices.x, positionOS, normalOS, tangentOS.xyz);
     #endif
 
-    o.positionWS.xyz = TransformObjectToWorld(positionOS);
-    o.vertex = TransformWorldToHClip(o.positionWS.xyz);
+    float3 positionWS = TransformObjectToWorld(positionOS);
+    o.vertex = TransformWorldToHClip(positionWS);
 
     o.uv = TRANSFORM_TEX(v.uv, _BaseMap);
-    o.fogCoords = ComputeFogFactor(o.vertex.z);
 
 
     real sign = real(tangentOS.w);
@@ -96,7 +93,7 @@ v2f vert (appdata v)
 
 GBufferFragmentOutput frag (v2f i)
 {
-    UNITY_SETUP_INSTANCE_ID(i);
+    //UNITY_SETUP_INSTANCE_ID(i);
     
     half4 diffuse = tex2D(_BaseMap, i.uv);
 

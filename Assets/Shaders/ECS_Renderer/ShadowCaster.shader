@@ -61,33 +61,12 @@ Shader "Hidden/Arena/ShadowCaster"
             // Shader Stages
             #pragma vertex ShadowPassVertex
             #pragma fragment ShadowPassFragment
-
-            // -------------------------------------
-            // Material Keywords
-            //#pragma shader_feature_local_fragment _GLOSSINESS_FROM_BASE_ALPHA
-
-            // -------------------------------------
-            // Unity defined keywords
-            #pragma multi_compile_fragment _ LOD_FADE_CROSSFADE
-
-            //--------------------------------------
-            // GPU Instancing
+            
             #pragma multi_compile _ DOTS_INSTANCING_ON
-
-            // This is used during shadow map generation to differentiate between directional and punctual light shadows, as they use different formulas to apply Normal Bias
-            #pragma multi_compile_vertex _ _CASTING_PUNCTUAL_LIGHT_SHADOW
             #pragma multi_compile_shadowcaster
-
-            #ifndef TG_USE_URP
-                #define TG_USE_URP
-            #endif
-            // -------------------------------------
-            // Includes
-            #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Core.hlsl"
-            #include "Packages/com.unity.render-pipelines.core/ShaderLibrary/CommonMaterial.hlsl"
             
             #include "Input-Env.hlsl"
-            #include "ShadowCasterPass.hlsl"
+            #include "ShadowCasterPass.hlsl" 
             ENDHLSL
         }
         Pass
@@ -113,35 +92,13 @@ Shader "Hidden/Arena/ShadowCaster"
             // Shader Stages
             #pragma vertex ShadowPassVertex
             #pragma fragment ShadowPassFragment
-
-            // -------------------------------------
-            // Material Keywords
-            //#pragma shader_feature_local_fragment _GLOSSINESS_FROM_BASE_ALPHA
-
-            // -------------------------------------
-            // Unity defined keywords
-            #pragma multi_compile_fragment _ LOD_FADE_CROSSFADE
-
-            //--------------------------------------
-            // GPU Instancing
+            
             #pragma multi_compile _ DOTS_INSTANCING_ON
-
-            // This is used during shadow map generation to differentiate between directional and punctual light shadows, as they use different formulas to apply Normal Bias
-            #pragma multi_compile_vertex _ _CASTING_PUNCTUAL_LIGHT_SHADOW
             #pragma multi_compile_shadowcaster
 
             #define TG_FADING
             #define TG_USE_ALPHACLIP
 
-            #ifndef TG_USE_URP
-                #define TG_USE_URP
-            #endif
-
-            // -------------------------------------
-            // Includes
-            #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Core.hlsl"
-            #include "Packages/com.unity.render-pipelines.core/ShaderLibrary/CommonMaterial.hlsl"
-            
             #include "Input-Env.hlsl"
             #include "ShadowCasterPass.hlsl"
             ENDHLSL

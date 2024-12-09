@@ -61,6 +61,7 @@ Shader "Arena/Environment"
                 Fail Keep
                 ZFail Keep
             }
+            
             HLSLPROGRAM
             #pragma target 4.5
             #pragma exclude_renderers nomrt
@@ -89,6 +90,37 @@ Shader "Arena/Environment"
             #include "Input-Env.hlsl"
             #include "Common-Env.hlsl"
             
+            ENDHLSL
+        }
+        Pass
+        {
+            Name "ShadowCaster"
+            Tags
+            {
+                "LightMode" = "ShadowCaster"
+            }
+
+            // -------------------------------------
+            // Render State Commands
+            Cull Back
+            ZTest LEqual
+            ZWrite On
+            ColorMask 0
+
+            HLSLPROGRAM
+            #pragma target 4.5
+            #pragma exclude_renderers gles
+
+            // -------------------------------------
+            // Shader Stages
+            #pragma vertex ShadowPassVertex
+            #pragma fragment ShadowPassFragment
+            
+            #pragma multi_compile _ DOTS_INSTANCING_ON
+            #pragma multi_compile_shadowcaster
+            
+            #include "Input-Env.hlsl"
+            #include "ShadowCasterPass.hlsl" 
             ENDHLSL
         }
 //        Pass

@@ -18,7 +18,7 @@ Shader "Arena/Vegetation"
         [Enum(UnityEngine.Rendering.CullMode)] _Cull("Cull", int) = 2
 
         _BaseColor("Color tint", Color) = (1,1,1,1)
-        _BaseColorMult("Base color mult", Float) = 1
+        _BaseColorMult("Base color mult", Float) = 1 
         _BaseMap ("Main color", 2D) = "white" {}
         _BumpMap ("Normal map", 2D) = "bump" {}
         _MetallicGlossMap("Metallic/Smoothness map", 2D) = "white" {}
@@ -65,6 +65,7 @@ Shader "Arena/Vegetation"
             HLSLPROGRAM
             #pragma target 4.5
             #pragma require 2darray
+            #pragma require cubearray
             #pragma exclude_renderers gles nomrt //excluded shader from OpenGL ES 2.0 because it uses non-square matrices
             #pragma vertex vert
             #pragma fragment frag
@@ -107,7 +108,6 @@ Shader "Arena/Vegetation"
                 half4 normalWS_occl : TEXCOORD2;
                 half4 tangentWS : TEXCOORD3;
                 half3 bitangentWS : TEXCOORD4;
-                float4 positionWS_fog : TEXCOORD5;
 
 #if LIGHTMAP_ON
                 TG_DECLARE_LIGHTMAP_UV(6)
@@ -163,7 +163,6 @@ Shader "Arena/Vegetation"
 
                 half3 positionOS = v.vertex;
 				
-
                 float4 time = _Time;
                 half wind = (sin(time.z + (positionOS.x + positionOS.z) * 2) + sin(time.y) + sin(time.w)) * 0.05 * v.color.x;
                 wind *= _WindForce;
@@ -177,17 +176,15 @@ Shader "Arena/Vegetation"
             	billboard(positionOS, normalOS, tangentOS.xyz);
             	#endif
 
-                o.positionWS_fog.xyz = TransformObjectToWorld(positionOS);
-				o.vertex = TransformWorldToHClip(o.positionWS_fog.xyz);
+                float3 positionWS = TransformObjectToWorld(positionOS);
+				o.vertex = TransformWorldToHClip(positionWS);
 
                 o.uv = TRANSFORM_TEX(v.uv, _BaseMap);
-                o.positionWS_fog.a = ComputeFogFactor(o.vertex.z);
+                //o.positionWS_fog.a = ComputeFogFactor(o.vertex.z);
 
                 float4 instanceData = tg_InstanceData;
                 o.instanceData = instanceData;
 
-                
-                
 				real sign = real(tangentOS.w);
 			    float3 normalWS = TransformObjectToWorldNormal(normalOS);
 			    real3 tangentWS = real3(TransformObjectToWorldDir(tangentOS.xyz));
@@ -252,10 +249,9 @@ Shader "Arena/Vegetation"
                 half smoothness = mesm.a * _Smoothness * lum;
                 half roughness = 1 - smoothness;
 
-                half3 viewDirWS = GetWorldSpaceNormalizeViewDir(i.positionWS_fog.xyz);
-
-                half3 envMapColor = TG_ReflectionProbe(viewDirWS, normalWS, i.instanceData.y, roughness * 4);
-                envMapColor *= ao;
+                //half3 viewDirWS = GetWorldSpaceNormalizeViewDir(i.positionWS_fog.xyz);
+            	//half3 envMapColor = TG_ReflectionProbe(viewDirWS, normalWS, i.instanceData.y, roughness * 4);
+                //envMapColor *= ao;
                 
                 surface.Metallic = mesm.rgb;
             	surface.Roughness = roughness;

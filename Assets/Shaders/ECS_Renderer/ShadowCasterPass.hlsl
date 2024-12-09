@@ -1,13 +1,30 @@
 #ifndef TG_SHADOW_CASTER_PASS_INCLUDED
 #define TG_SHADOW_CASTER_PASS_INCLUDED
 
-#include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Core.hlsl"
+#include "Packages/com.unity.render-pipelines.core/ShaderLibrary/Common.hlsl"
+#include "Packages/com.unity.render-pipelines.core/ShaderLibrary/UnityInstancing.hlsl"
 #include "Packages/com.tzargames.rendering/Shaders/Input.hlsl"
 
 #if defined(TG_USE_URP)
 #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Core.hlsl"
 #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Shadows.hlsl"
+#else
+#include "Packages/com.dgx.srp/ShaderLibrary/Common.hlsl"
+#include "Packages/ECS-Renderer/Shaders/Input.hlsl"
+float4 _ShadowBias;
+
+float3 ApplyShadowBias(float3 positionWS, float3 normalWS, float3 lightDirection)
+{
+    float invNdotL = 1.0 - saturate(dot(lightDirection, normalWS));
+    float scale = invNdotL * _ShadowBias.y;
+
+    // normal bias is negative since we want to apply an inset normal offset
+    positionWS = lightDirection * _ShadowBias.xxx + positionWS;
+    positionWS = normalWS * scale.xxx + positionWS;
+    return positionWS;
+}
 #endif
+#include "Packages/com.unity.render-pipelines.core/ShaderLibrary/SpaceTransforms.hlsl"
 
 #if defined(TG_SKINNING)
 #include "Packages/com.tzargames.rendering/Shaders/Skinning.hlsl"
@@ -65,11 +82,7 @@ float4 GetShadowPositionHClip(Attributes input)
     float3 lightDirectionWS = _LightDirection;
 #endif
 
-    #if defined(TG_USE_URP)
     float3 biased = ApplyShadowBias(positionWS, normalWS, lightDirectionWS);
-    #else
-    float3 biased = positionWS;
-    #endif
     float4 positionCS = TransformWorldToHClip(biased);
 
 #if UNITY_REVERSED_Z

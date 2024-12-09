@@ -69,9 +69,9 @@ Shader "Arena/Environment Transparent"
             #pragma shader_feature DIFFUSE_ALPHA_AS_SMOOTHNESS
             #pragma shader_feature USE_SURFACE_BLEND
             
-            #pragma multi_compile_fragment __ ARENA_USE_MAIN_LIGHT
-            #pragma multi_compile_fragment __ ARENA_USE_ADD_LIGHT
-            #pragma multi_compile_fragment __ ARENA_USE_DARK_MODE
+            //#pragma multi_compile_fragment __ ARENA_USE_MAIN_LIGHT
+            //#pragma multi_compile_fragment __ ARENA_USE_ADD_LIGHT
+            //#pragma multi_compile_fragment __ ARENA_USE_DARK_MODE
             
             //#pragma multi_compile_fwdbase
             #pragma multi_compile _ LIGHTMAP_ON

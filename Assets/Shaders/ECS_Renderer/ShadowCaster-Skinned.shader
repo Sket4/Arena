@@ -42,31 +42,12 @@ Shader "Hidden/Arena/ShadowCaster-Skinned"
             HLSLPROGRAM
             #pragma target 4.5
             #pragma exclude_renderers gles
-
-            // -------------------------------------
+            #pragma multi_compile _ DOTS_INSTANCING_ON
+            
             // Shader Stages
             #pragma vertex ShadowPassVertex
             #pragma fragment ShadowPassFragment
-            // -------------------------------------
-            // Unity defined keywords
-            #pragma multi_compile_fragment _ LOD_FADE_CROSSFADE
-            //--------------------------------------
-            // GPU Instancing
-            #include_with_pragmas "Packages/com.unity.render-pipelines.universal/ShaderLibrary/DOTS.hlsl"
-
-            // This is used during shadow map generation to differentiate between directional and punctual light shadows, as they use different formulas to apply Normal Bias
-            #pragma multi_compile_vertex _ _CASTING_PUNCTUAL_LIGHT_SHADOW
-
-            // -------------------------------------
-            // Includes
             #define TG_SKINNING
-
-            #ifndef TG_USE_URP
-                #define TG_USE_URP
-            #endif
-            
-            #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Core.hlsl"
-            #include "Packages/com.unity.render-pipelines.core/ShaderLibrary/CommonMaterial.hlsl"
 
             #include "Input-Character.hlsl"
             #include "ShadowCasterPass.hlsl" 
@@ -95,26 +76,12 @@ Shader "Hidden/Arena/ShadowCaster-Skinned"
             // Shader Stages
             #pragma vertex ShadowPassVertex
             #pragma fragment ShadowPassFragment
-
-            // -------------------------------------
-            // Unity defined keywords
-            #pragma multi_compile_fragment _ LOD_FADE_CROSSFADE
-            //--------------------------------------
-            // GPU Instancing
-            #include_with_pragmas "Packages/com.unity.render-pipelines.universal/ShaderLibrary/DOTS.hlsl"
-
-            // This is used during shadow map generation to differentiate between directional and punctual light shadows, as they use different formulas to apply Normal Bias
-            #pragma multi_compile_vertex _ _CASTING_PUNCTUAL_LIGHT_SHADOW
-
-            // -------------------------------------
-            // Includes
+            #pragma multi_compile _ DOTS_INSTANCING_ON
+            
             #define TG_SKINNING
             #define TG_FADING
             #define TG_USE_ALPHACLIP
 
-            #ifndef TG_USE_URP
-                #define TG_USE_URP
-            #endif
 
             #include "Input-Character.hlsl"
             #include "ShadowCasterPass.hlsl"  

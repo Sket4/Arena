@@ -44,15 +44,18 @@ struct v2f
 	float3 normalWS : TEXCOORD2;
 	float4 tangentWS : TEXCOORD3;
 	float3 bitangentWS : TEXCOORD4;
-	float4 positionWS_fog : TEXCOORD5;
 
-	half alpha : TEXCOORD6;
+	#if USE_UNDERWATER
+	half UnderwaterFade : TEXCOORD5;
+	#endif
+	
 #if LIGHTMAP_ON
-	TG_DECLARE_LIGHTMAP_UV(7)
+	TG_DECLARE_LIGHTMAP_UV(6)
 #endif
 	UNITY_VERTEX_INPUT_INSTANCE_ID
 
-	#ifndef  ARENA_DEFERRED
+	#ifndef ARENA_DEFERRED
+	float4 positionWS_fog : TEXCOORD7;
 	#endif
 };
 
@@ -66,12 +69,16 @@ v2f env_vert (appdata v)
 	float3 normalOS = v.normal;
 	float4 tangentOS = v.tangent;
 
+	#ifdef ARENA_DEFERRED
+	float3 positionWS = TransformObjectToWorld(positionOS);
+	o.vertex = TransformWorldToHClip(positionWS);
+	#else
 	o.positionWS_fog.xyz = TransformObjectToWorld(positionOS);
 	o.vertex = TransformWorldToHClip(o.positionWS_fog.xyz);
-	
+	o.positionWS_fog.w = ComputeFogFactor(o.vertex.z);
+	#endif
 
 	o.uv = TRANSFORM_TEX(v.uv, _BaseMap);
-	o.positionWS_fog.w = ComputeFogFactor(o.vertex.z);
 
 	real sign = real(tangentOS.w);
 	float3 normalWS = TransformObjectToWorldNormal(normalOS);
@@ -90,18 +97,16 @@ v2f env_vert (appdata v)
 	#endif
 
 	#if USE_UNDERWATER
-	o.alpha = v.color.r;
-	#else
-	o.alpha = 1;
+	o.UnderwaterFade = v.color.r;
 	#endif
 
-	#if USE_HEIGHT_FOG
-	o.positionWS_fog.w *= saturate((_FogHeight - o.positionWS_fog.y) * _HeightFogFade); 
-	#endif
+	// #if USE_HEIGHT_FOG
+	// o.positionWS_fog.w *= saturate((_FogHeight - o.positionWS_fog.y) * _HeightFogFade); 
+	// #endif
 
 	return o;
 }
-
+#ifdef ARENA_DEFERRED
 GBufferFragmentOutput env_frag_deferred(v2f i)
 {
 	UNITY_SETUP_INSTANCE_ID(i);
@@ -114,7 +119,6 @@ GBufferFragmentOutput env_frag_deferred(v2f i)
 
 	half3 normalTS = UnpackNormal(tex2D(_BumpMap, i.uv));
 	//normalTS.xy *= 2;
-	half3 viewDirWS = GetWorldSpaceNormalizeViewDir(i.positionWS_fog.xyz);
 
 	half3x3 tangentToWorld = half3x3(i.tangentWS.xyz, i.bitangentWS.xyz, i.normalWS.xyz); 
 
@@ -158,7 +162,6 @@ GBufferFragmentOutput env_frag_deferred(v2f i)
 	#endif
 
 	
-
 	surface.Albedo *= surface.AmbientLight;
 	// #if LIGHTMAP_ON
 	// surface.Albedo.xy = i.lightmapUV.xy;
@@ -167,13 +170,15 @@ GBufferFragmentOutput env_frag_deferred(v2f i)
 	surface.AmbientLight = 1;
 
 	#if USE_UNDERWATER
-	surface.Albedo = lerp(surface.Albedo, _Underwater_color.rgb * ambientLight, i.alpha);
-	surface.Roughness = lerp(surface.Roughness, 1, i.alpha);
+	surface.Albedo = lerp(surface.Albedo, _Underwater_color.rgb * ambientLight, i.UnderwaterFade);
+	surface.Roughness = lerp(surface.Roughness, 1, i.UnderwaterFade);
 	#endif
 
 	return SurfaceToGBufferOutputHalf(surface);
 }
+#endif
 
+#ifndef ARENA_DEFERRED
 half4 env_frag(v2f i) : SV_Target
 {
 	UNITY_SETUP_INSTANCE_ID(i);
@@ -186,7 +191,6 @@ half4 env_frag(v2f i) : SV_Target
 
 	half3 normalTS = UnpackNormal(tex2D(_BumpMap, i.uv));
 	//normalTS.xy *= 2;
-	half3 viewDirWS = GetWorldSpaceNormalizeViewDir(i.positionWS_fog.xyz);
 
 	half3x3 tangentToWorld = half3x3(i.tangentWS.xyz, i.bitangentWS.xyz, i.normalWS.xyz); 
 
@@ -213,6 +217,7 @@ half4 env_frag(v2f i) : SV_Target
 	half smoothness = mesm.a * _Smoothness;
 	half roughness = 1 - smoothness;
 
+	half3 viewDirWS = GetWorldSpaceNormalizeViewDir(i.positionWS_fog.xyz);
 	half3 envMapColor = TG_ReflectionProbe_half(viewDirWS, normalWS, i.instanceData.y,roughness * 4);
 
 	half3 remEnvMapColor = clamp(envMapColor - 0.5, 0, 10);
@@ -236,13 +241,13 @@ half4 env_frag(v2f i) : SV_Target
 	#endif
 
 	#if USE_UNDERWATER
-	finalColor.rgb = lerp(finalColor.rgb, _Underwater_color.rgb * ambientLight, i.alpha);
+	finalColor.rgb = lerp(finalColor.rgb, _Underwater_color.rgb * ambientLight, i.UnderwaterFade);
 	#endif
-
 
 	// apply fog
 	return half4(MixFog(finalColor.rgb, unity_FogColor.rgb, i.positionWS_fog.w), finalColor.a);
 }
+#endif
 
 struct appdata_depthonly
 {

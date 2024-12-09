@@ -51,6 +51,8 @@ Shader"Arena/Character"
             HLSLPROGRAM
             #pragma target 4.5
             #pragma exclude_renderers gles nomrt//excluded shader from OpenGL ES 2.0 because it uses non-square matrices
+            #pragma require 2darray
+            #pragma require cubearray
             #pragma vertex vert
             #pragma fragment frag
             // make fog work
@@ -119,7 +121,7 @@ Shader"Arena/Character"
 //            
 //            ENDHLSL
 //        }
-//        UsePass "Hidden/Arena/ShadowCaster-Skinned/SHADOWCASTER"
+        UsePass "Hidden/Arena/ShadowCaster-Skinned/SHADOWCASTER"
 //
 //        Pass
 //        {

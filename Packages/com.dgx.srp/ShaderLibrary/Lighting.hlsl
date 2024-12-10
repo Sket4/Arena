@@ -8,7 +8,7 @@ struct GBufferFragmentOutput
 {
     half4 GBuffer0 : SV_Target0;
     half4 GBuffer1 : SV_Target1;
-    half4 GBuffer2 : SV_Target2;
+    //half4 GBuffer2 : SV_Target2;
 };
 
 struct SurfaceHalf
@@ -31,31 +31,25 @@ GBufferFragmentOutput SurfaceToGBufferOutputHalf(SurfaceHalf surface)
 
     float2 encodedNormal = OctahedronEncode(surface.NormalWS);
     result.GBuffer0.xyz = surface.Albedo;
-    result.GBuffer0.w = LinearToSRGB(encodedNormal.x);
-    result.GBuffer1.xyz = surface.AmbientLight.xyz;
-    result.GBuffer1.w = LinearToSRGB(encodedNormal.y); 
-    result.GBuffer2.x = surface.Metallic.r;
-    result.GBuffer2.y = surface.Roughness;
-    //TODO
-    result.GBuffer2.z = surface.EnvCubemapIndex * MAX_ENVMAP_INDEX_INV + MAX_ENVMAP_INDEX_INV * 0.1;
-    //result.GBuffer2.z = surface.EnvCubemapIndex * 0.1;
-    result.GBuffer2.w = 0;
+    result.GBuffer0.w = LinearToSRGB(surface.Metallic.r);
+    result.GBuffer1.x = encodedNormal.x;
+    result.GBuffer1.y = encodedNormal.y;
+    result.GBuffer1.z = surface.Roughness;
+    result.GBuffer1.w = surface.EnvCubemapIndex * MAX_ENVMAP_INDEX_INV + MAX_ENVMAP_INDEX_INV * 0.1;
 
     return result;
 }
 
-SurfaceHalf GBufferToSurfaceHalf(float4 gbuffer0, float4 gbuffer1, float4 gbuffer2)
+SurfaceHalf GBufferToSurfaceHalf(float4 gbuffer0, float4 gbuffer1)
 {
     SurfaceHalf result;
 
     result.Albedo = gbuffer0.rgb;
     result.AmbientLight = gbuffer1.rgb;
-    result.NormalWS = OctahedronDecode(float2(SRGBToLinear(gbuffer0.w), SRGBToLinear(gbuffer1.w)));
-    result.Metallic = gbuffer2.x;
-    result.Roughness = gbuffer2.y;
-    // TODO
-    result.EnvCubemapIndex = gbuffer2.z * MAX_ENVMAP_INDEX;
-    //result.EnvCubemapIndex = gbuffer2.z * 10;
+    result.NormalWS = OctahedronDecode(float2(gbuffer1.x, gbuffer1.y));
+    result.Metallic = SRGBToLinear(gbuffer0.w);
+    result.Roughness = gbuffer1.z;
+    result.EnvCubemapIndex = gbuffer1.w * MAX_ENVMAP_INDEX;
     result.Alpha = 1;
     
     return  result;

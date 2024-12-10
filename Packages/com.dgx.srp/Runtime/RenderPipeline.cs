@@ -150,7 +150,7 @@ namespace DGX.SRP
             public RenderTargetIdentifier GBuffer1TargetId;
             public RenderTexture GBuffer2;
             public RenderTargetIdentifier GBuffer2TargetId;
-            public RenderTargetIdentifier[] GBufferIDs = new RenderTargetIdentifier[3];
+            public RenderTargetIdentifier[] GBufferIDs = new RenderTargetIdentifier[2];
             public RenderTexture Depth;
             public RenderTargetIdentifier Depth_ID;
             public RenderTexture LinearDepth;
@@ -172,7 +172,7 @@ namespace DGX.SRP
             {
                 RenderTexture.ReleaseTemporary(GBuffer0);
                 RenderTexture.ReleaseTemporary(GBuffer1);
-                RenderTexture.ReleaseTemporary(GBuffer2);
+                //RenderTexture.ReleaseTemporary(GBuffer2);
                 RenderTexture.ReleaseTemporary(Depth);
                 RenderTexture.ReleaseTemporary(LinearDepth);
                 RenderTexture.ReleaseTemporary(Color0);
@@ -221,7 +221,7 @@ namespace DGX.SRP
                 cameraRT.Release();    
             }
             
-            for(int i=0; i<3; i++) 
+            for(int i=0; i<2; i++) 
                 Shader.SetGlobalTexture("_GT"+i, null);
 
             if (LightingPassMaterial)
@@ -349,7 +349,7 @@ namespace DGX.SRP
                 // GBUFFER
                 Shader.SetGlobalTexture("_GT0", rt.GBuffer0);
                 Shader.SetGlobalTexture("_GT1", rt.GBuffer1);
-                Shader.SetGlobalTexture("_GT2", rt.GBuffer2);
+                //Shader.SetGlobalTexture("_GT2", rt.GBuffer2);
                 Shader.SetGlobalTexture("_Depth", rt.Depth);
                 
                 var clearFlags = camera.clearFlags;
@@ -539,30 +539,24 @@ namespace DGX.SRP
                 
                 rt.GBuffer0 = RenderTexture.GetTemporary(width, height, 0, RenderTextureFormat.ARGB32, rwMode);
                 rt.GBuffer0.name = $"GBuffer 0 ({name})";
-                rt.GBuffer1 = RenderTexture.GetTemporary(width, height, 0, RenderTextureFormat.ARGB32, rwMode);
+                rt.GBuffer1 = RenderTexture.GetTemporary(width, height, 0, RenderTextureFormat.ARGB32, RenderTextureReadWrite.Linear);
                 rt.GBuffer1.name = $"GBuffer 1 ({name})";
-                rt.GBuffer2 = RenderTexture.GetTemporary(width, height, 0, RenderTextureFormat.ARGB32, RenderTextureReadWrite.Linear);
-                rt.GBuffer2.name = $"GBuffer 2 ({name})";
+                //rt.GBuffer2 = RenderTexture.GetTemporary(width, height, 0, RenderTextureFormat.ARGB32, RenderTextureReadWrite.Linear);
+                //rt.GBuffer2.name = $"GBuffer 2 ({name})";
 
                 rt.GBuffer0TargetId = rt.GBuffer0;
                 rt.GBuffer1TargetId = rt.GBuffer1;
-                rt.GBuffer2TargetId = rt.GBuffer2;
+                //rt.GBuffer2TargetId = rt.GBuffer2;
                 
                 rt.GBufferIDs[0] = rt.GBuffer0TargetId;
                 rt.GBufferIDs[1] = rt.GBuffer1TargetId;
-                rt.GBufferIDs[2] = rt.GBuffer2TargetId;
+                //rt.GBufferIDs[2] = rt.GBuffer2TargetId;
 
                 rt.Color0 = RenderTexture.GetTemporary(width, height, 0, RenderTextureFormat.ARGB32,
                     rwMode);
                 
                 rt.Color0.name = $"Color A ({name})";
                 rt.Color0_ID = rt.Color0;
-                
-                // rt.Color1 = RenderTexture.GetTemporary(width, height, 0, RenderTextureFormat.ARGB32,
-                //     RenderTextureReadWrite.sRGB);
-                //
-                // rt.Color1.name = $"Color B ({name})";
-                // rt.Color1_ID = rt.Color1;
             }
 
             return rt;

@@ -233,10 +233,10 @@ Shader "Arena/Vegetation"
 #endif
 
                 SurfaceHalf surface;
-            	surface.Albedo = diffuse.rgb;
+            	surface.Albedo = diffuse.rgb * lighting;
             	surface.Alpha = diffuse.a;
             	surface.NormalWS = normalWS;
-            	surface.AmbientLight = lighting;
+            	surface.AmbientLight = 0;
             	
 
                 #if defined(UG_QUALITY_MED) || defined(UG_QUALITY_HIGH)

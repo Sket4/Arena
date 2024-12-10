@@ -187,9 +187,9 @@ half4 frag (v2f i) : SV_Target
     // Gbuffer
     float4 g0 = tex2D(_GT0, screen_uv);
     float4 g1 = tex2D(_GT1, screen_uv);
-    float4 g2 = tex2D(_GT2, screen_uv);
+    //float4 g2 = tex2D(_GT2, screen_uv);
 
-    SurfaceHalf surface = GBufferToSurfaceHalf(g0, g1, g2);
+    SurfaceHalf surface = GBufferToSurfaceHalf(g0, g1);
     
     #if UNITY_REVERSED_Z
         float depth = _LinearDepth.Sample(sampler_PointClamp, screen_uv).r;

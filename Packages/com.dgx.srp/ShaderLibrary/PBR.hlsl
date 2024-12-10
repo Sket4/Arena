@@ -85,7 +85,7 @@ half4 LightingPBR_Half(SurfaceHalf surface, half3 worldViewDir, half3 envMapColo
 	PBR_Half(envMapColor, NoV, surface, specular);
 
 	half4 result = half4(surface.Albedo, surface.Alpha);
-	result.rgb *= surface.AmbientLight;
+	//result.rgb *= surface.AmbientLight;
 	result.rgb += specular;
 
 	#if defined(DGX_TRANSPARENT) 

@@ -1,3 +1,4 @@
+#include <HLSLSupport.cginc>
 #ifndef DGX_DEFERRED_INCLUDED
 #define DGX_DEFERRED_INCLUDED
 
@@ -66,7 +67,7 @@ TEXTURE2D_SHADOW(_DirectionalShadowAtlas);
 #define SHADOW_SAMPLER sampler_linear_clamp_compare
 SAMPLER_CMP(SHADOW_SAMPLER);
 
-sampler2D _Depth;
+UNITY_DECLARE_TEX2D_FLOAT(_Depth); 
 
 real ComputeFogFactorZ0ToFar(float z)
 {
@@ -183,16 +184,16 @@ half4 frag (v2f i) : SV_Target
     //float4 g2 = tex2D(_GT2, screen_uv);
 
     SurfaceHalf surface = GBufferToSurfaceHalf(g0, g1);
-    
-    float depth = tex2D(_Depth, screen_uv.xy).r;
-    //float camdepth = tex2D(_CameraDepthTexture, screen_uv.xy).r;
-    //return half4(depth.x, 0, 0, 1);
-    float linDepth = Linear01Depth(depth, _ZBufferParams);
-    
-    #if !UNITY_REVERSED_Z
-        linDepth = lerp(UNITY_NEAR_CLIP_VALUE, 1, linDepth);
-    #endif
 
+    float rawDepth = _Depth.Sample(sampler_Depth, screen_uv.xy).r;
+    
+    float linDepth = Linear01Depth(rawDepth, _ZBufferParams);
+    
+    // #if !UNITY_REVERSED_Z
+    //     linDepth = lerp(UNITY_NEAR_CLIP_VALUE, 1, linDepth);
+    // #endif
+
+    //return half4(linDepth.x, 0, 0, 1);
     
     float3 worldPos = _WorldSpaceCameraPos.xyz + i.viewDir * linDepth;
     float3 V = normalize(_WorldSpaceCameraPos.xyz - worldPos.xyz);
@@ -201,7 +202,7 @@ half4 frag (v2f i) : SV_Target
 
     half4 result = LightingPBR_Half(surface, V, envMapColor);
 
-    float eyeDepth = LinearEyeDepth(depth, _ZBufferParams);
+    float eyeDepth = LinearEyeDepth(rawDepth, _ZBufferParams);
     float clip_z = UNITY_MATRIX_P[2][2] * -eyeDepth + UNITY_MATRIX_P[2][3];
     half fogFactor = ComputeFogFactor(clip_z);
     

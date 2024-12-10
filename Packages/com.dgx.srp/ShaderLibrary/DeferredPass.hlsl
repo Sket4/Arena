@@ -41,8 +41,8 @@ sampler2D _GT0;
 sampler2D _GT1;
 sampler2D _GT2;
 
-TEXTURE2D(_Depth);
-TEXTURE2D(_LinearDepth);
+//TEXTURE2D(_Depth);
+//TEXTURE2D(_LinearDepth);
 
 float4 _WorldSpaceLightPos0;
 float4 _WorldSpaceCameraPos;
@@ -65,6 +65,8 @@ float4x4 _ShadowVP;
 TEXTURE2D_SHADOW(_DirectionalShadowAtlas);
 #define SHADOW_SAMPLER sampler_linear_clamp_compare
 SAMPLER_CMP(SHADOW_SAMPLER);
+
+sampler2D _Depth;
 
 real ComputeFogFactorZ0ToFar(float z)
 {
@@ -136,13 +138,15 @@ v2f vert (appdata v)
     //o.vertex = mul(UNITY_MATRIX_VP, mul(UNITY_MATRIX_M, float4(v.vertex.xyz, 1.0)));
     o.positionCS = float4(v.vertex.xy, UNITY_RAW_FAR_CLIP_VALUE, 1.0); // Force triangle to be on zfar
 
-    o.screenUV = o.positionCS.xyw;
+    o.screenUV.xyz = o.positionCS.xyw;
     #if UNITY_UV_STARTS_AT_TOP
     o.screenUV.xy = o.screenUV.xy * float2(0.5, -0.5) + 0.5 * o.screenUV.z;
-    //
     #else
     o.screenUV.xy = o.screenUV.xy * 0.5 + 0.5 * o.screenUV.z;
     #endif
+    
+    //o.screenUV.y = _ProjectionParams.x == 1.0 ? o.screenUV.y : 1-o.screenUV.y;
+    //o.screenUV.y = 1 - o.screenUV.y;
 
     //o.screenUV.xy = DynamicScalingApplyScaleBias(o.screenUV.xy, float4(_RTHandleScale.xy, 0.0f, 0.0f));
 
@@ -166,43 +170,30 @@ half3 Sample_ReflectionProbe_half(half3 viewDir, half3 normalWS, half index, hal
     return DecodeHDREnvironment(color, tg_ReflectionProbeDecodeInstructions);
 }
 
-float3 WorldPosFromDepth(float depth, float2 screenUV)
-{
-    float z = depth * 2.0 - 1.0;
-    float4 clipSpacePosition = float4(screenUV * 2.0 - 1.0, z, 1.0);
-    float4 viewSpacePosition = mul(UNITY_MATRIX_I_P, clipSpacePosition);
-
-    // Perspective division
-    viewSpacePosition /= viewSpacePosition.w;
-    
-    float4 worldSpacePosition = mul(UNITY_MATRIX_I_V, viewSpacePosition);
-
-    return worldSpacePosition.xyz;
-}
-
 half4 frag (v2f i) : SV_Target
 {
     float2 screen_uv = (i.screenUV.xy / i.screenUV.z);
 
     // Gbuffer
-    float4 g0 = tex2D(_GT0, screen_uv);
-    float4 g1 = tex2D(_GT1, screen_uv);
+    //float2 screen_uv2 = float2(screen_uv.x, 1-screen_uv.y);
+    //screen_uv.xy = screen_uv2.xy;
+    
+    float4 g0 = tex2D(_GT0, screen_uv.xy);
+    float4 g1 = tex2D(_GT1, screen_uv.xy);
     //float4 g2 = tex2D(_GT2, screen_uv);
 
     SurfaceHalf surface = GBufferToSurfaceHalf(g0, g1);
     
-    #if UNITY_REVERSED_Z
-        float depth = _LinearDepth.Sample(sampler_PointClamp, screen_uv).r;
-        float linDepth = Linear01Depth(depth, _ZBufferParams);
-    #else
-        // Adjust z to match NDC for OpenGL
-        float depth = _LinearDepth.Sample(sampler_PointClamp, screen_uv).r;
-        float linDepth = Linear01Depth(depth, _ZBufferParams);
+    float depth = tex2D(_Depth, screen_uv.xy).r;
+    //float camdepth = tex2D(_CameraDepthTexture, screen_uv.xy).r;
+    //return half4(depth.x, 0, 0, 1);
+    float linDepth = Linear01Depth(depth, _ZBufferParams);
+    
+    #if !UNITY_REVERSED_Z
         linDepth = lerp(UNITY_NEAR_CLIP_VALUE, 1, linDepth);
     #endif
 
     
-
     float3 worldPos = _WorldSpaceCameraPos.xyz + i.viewDir * linDepth;
     float3 V = normalize(_WorldSpaceCameraPos.xyz - worldPos.xyz);
 
@@ -240,10 +231,10 @@ half4 frag (v2f i) : SV_Target
     ).r;
 
     half3 L = normalize(half3(_WorldSpaceLightPos0.xyz));
-    half NdotL = saturate(dot(surface.NormalWS, -L));
+    half NdotL = saturate(dot(surface.NormalWS, L));
     //surface.AmbientLight += ;
     
-    half shadowStrength = lerp(0.5, 1, NdotL);
+    half shadowStrength = 0.5;
     half fadeSize = 0.05;
     
     half distanceFade = saturate((1 - eyeDepth / shadowDistance) / fadeSize);

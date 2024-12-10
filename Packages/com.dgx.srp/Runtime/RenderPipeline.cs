@@ -139,7 +139,9 @@ namespace DGX.SRP
         int _ScreenToWorld = Shader.PropertyToID("_ScreenToWorld");
         static readonly ShaderTagId srpDefaultUnlitShaderTag = new("SRPDefaultUnlit");
         static readonly ShaderTagId dgxForwardShaderTag = new("DGXForward");
-        private Shadows shadows = new(); 
+        private Shadows shadows = new();
+        private RenderTexture tempDepthTexture;
+        private RenderTargetIdentifier tempDepthTextureID;
         
         class CameraRenderTextures
         {
@@ -155,8 +157,8 @@ namespace DGX.SRP
             public RenderTargetIdentifier Depth_ID;
             public RenderTexture LinearDepth;
             public RenderTargetIdentifier LinearDepth_ID;
-            public RenderTexture Color0;
-            public RenderTargetIdentifier Color0_ID;
+            // RenderTexture Color0;
+            //public RenderTargetIdentifier Color0_ID;
             // public RenderTexture Color1;
             // public RenderTargetIdentifier Color1_ID;
 
@@ -175,7 +177,7 @@ namespace DGX.SRP
                 //RenderTexture.ReleaseTemporary(GBuffer2);
                 RenderTexture.ReleaseTemporary(Depth);
                 RenderTexture.ReleaseTemporary(LinearDepth);
-                RenderTexture.ReleaseTemporary(Color0);
+                //RenderTexture.ReleaseTemporary(Color0);
                 //RenderTexture.ReleaseTemporary(Color1);
             }
         }
@@ -192,6 +194,8 @@ namespace DGX.SRP
             isOpenGL = SystemInfo.graphicsDeviceType == GraphicsDeviceType.OpenGLCore
                 || SystemInfo.graphicsDeviceType == GraphicsDeviceType.OpenGLES2
                 || SystemInfo.graphicsDeviceType == GraphicsDeviceType.OpenGLES2;
+            
+            Debug.Log($"is vertical flipped: {flipVertical()}");
         }
 
         void checkResources()
@@ -210,6 +214,13 @@ namespace DGX.SRP
 
             if(fullscreenMesh == false)
                 fullscreenMesh = CreateFullscreenMesh();
+
+            if (tempDepthTexture == false)
+            {
+                tempDepthTexture = RenderTexture.GetTemporary(1, 1, 32, RenderTextureFormat.Depth, RenderTextureReadWrite.Linear);
+                tempDepthTexture.name = $"Temp depth";
+                tempDepthTextureID = tempDepthTexture;
+            }
         }
 
         protected override void Dispose(bool disposing)
@@ -230,6 +241,8 @@ namespace DGX.SRP
             }
             
             destroyObject(ref fullscreenMesh);
+            
+            destroyObject(ref tempDepthTexture);
         }
 
         static void destroyObject<T>(ref T obj) where T : UnityEngine.Object
@@ -267,39 +280,38 @@ namespace DGX.SRP
         
         void SetupMatrixConstants(CommandBuffer cmd, Camera camera)
         {
-            Matrix4x4 proj = camera.projectionMatrix;
-            Matrix4x4 view = camera.worldToCameraMatrix;
-            Matrix4x4 gpuProj = GL.GetGPUProjectionMatrix(proj, false);
-
-            var width = camera.pixelWidth;
-            var height = camera.pixelHeight;
-
-            // xy coordinates in range [-1; 1] go to pixel coordinates.
-            Matrix4x4 toScreen = new Matrix4x4(
-                new Vector4(0.5f * width, 0.0f, 0.0f, 0.0f),
-                new Vector4(0.0f, 0.5f * height, 0.0f, 0.0f),
-                new Vector4(0.0f, 0.0f, 1.0f, 0.0f),
-                new Vector4(0.5f * width, 0.5f * height, 0.0f, 1.0f)
-            );
-
-            Matrix4x4 zScaleBias = Matrix4x4.identity;
-                
-            if (isOpenGL)
-            {
-                // We need to manunally adjust z in NDC space from [-1; 1] to [0; 1] (storage in depth texture).
-                zScaleBias = new Matrix4x4(
-                    new Vector4(1.0f, 0.0f, 0.0f, 0.0f),
-                    new Vector4(0.0f, 1.0f, 0.0f, 0.0f),
-                    new Vector4(0.0f, 0.0f, 0.5f, 0.0f),
-                    new Vector4(0.0f, 0.0f, 0.5f, 1.0f)
-                );
-            }
-
-            var screenToWorld = Matrix4x4.Inverse(toScreen * zScaleBias * gpuProj * view);
-            
-            cmd.SetGlobalMatrix(_ScreenToWorld, screenToWorld);
-            cmd.SetGlobalMatrix("_InvProjMatrix", gpuProj.inverse);
-            cmd.SetGlobalMatrix("unity_MatrixInvV", view.inverse);
+            // Matrix4x4 proj = camera.projectionMatrix;
+            // Matrix4x4 view = camera.worldToCameraMatrix;
+            // Matrix4x4 gpuProj = GL.GetGPUProjectionMatrix(proj, false);
+            //
+            // var width = camera.pixelWidth;
+            // var height = camera.pixelHeight;
+            //
+            // // xy coordinates in range [-1; 1] go to pixel coordinates.
+            // Matrix4x4 toScreen = new Matrix4x4(
+            //     new Vector4(0.5f * width, 0.0f, 0.0f, 0.0f),
+            //     new Vector4(0.0f, 0.5f * height, 0.0f, 0.0f),
+            //     new Vector4(0.0f, 0.0f, 1.0f, 0.0f),
+            //     new Vector4(0.5f * width, 0.5f * height, 0.0f, 1.0f)
+            // );
+            //
+            // Matrix4x4 zScaleBias = Matrix4x4.identity;
+            //     
+            // if (isOpenGL)
+            // {
+            //     // We need to manunally adjust z in NDC space from [-1; 1] to [0; 1] (storage in depth texture).
+            //     zScaleBias = new Matrix4x4(
+            //         new Vector4(1.0f, 0.0f, 0.0f, 0.0f),
+            //         new Vector4(0.0f, 1.0f, 0.0f, 0.0f),
+            //         new Vector4(0.0f, 0.0f, 0.5f, 0.0f),
+            //         new Vector4(0.0f, 0.0f, 0.5f, 1.0f)
+            //     );
+            // }
+            //
+            // var vp = gpuProj * view;
+            // var screenToWorld = Matrix4x4.Inverse(toScreen * zScaleBias * vp);
+            //
+            // cmd.SetGlobalMatrix(_ScreenToWorld, screenToWorld);
             
             var frustumCorners = new Vector3[4];
             camera.CalculateFrustumCorners(new Rect(0, 0, 1, 1), camera.farClipPlane, Camera.MonoOrStereoscopicEye.Mono, frustumCorners);
@@ -312,6 +324,11 @@ namespace DGX.SRP
                 cornerMatrix.SetRow(i, worldSpaceCorner);
             }
             cmd.SetGlobalMatrix("_WorldSpaceFrustumCorners", cornerMatrix);
+        }
+
+        RenderTargetIdentifier GetTempDepthTexture()
+        {
+            return tempDepthTextureID;
         }
 
         protected override void Render(ScriptableRenderContext context, Camera[] cameras)
@@ -345,12 +362,12 @@ namespace DGX.SRP
                 RenderLights(context, cullingResults);
                 
                 var rt = getCameraRenderTextures(camera);
+                var depthTextureID = rt.Depth_ID;
                 
                 // GBUFFER
                 Shader.SetGlobalTexture("_GT0", rt.GBuffer0);
                 Shader.SetGlobalTexture("_GT1", rt.GBuffer1);
                 //Shader.SetGlobalTexture("_GT2", rt.GBuffer2);
-                Shader.SetGlobalTexture("_Depth", rt.Depth);
                 
                 var clearFlags = camera.clearFlags;
                 
@@ -360,8 +377,11 @@ namespace DGX.SRP
                 cmd.name = "gbuffer";
                 
                 cmd.SetGlobalTexture("_LinearDepth", rt.LinearDepth_ID);
+                cmd.SetGlobalTexture("_Depth", depthTextureID);
+                //RenderTargetIdentifier depthTextureID = rt.Depth_ID;
                 
-                cmd.SetRenderTarget(rt.GBufferIDs, rt.Depth_ID);
+                
+                cmd.SetRenderTarget(rt.GBufferIDs, depthTextureID);
                 cmd.ClearRenderTarget(true, 
                     clearFlags == CameraClearFlags.Color
                     , camera.backgroundColor);
@@ -391,11 +411,11 @@ namespace DGX.SRP
                 context.DrawRenderers(cullingResults, ref drawingSettings, ref filteringSettings);
                 
                 // LINEAR DEPTH
-                cmd = new CommandBuffer();
-                cmd.name = "Linearize depth";
-                cmd.Blit(rt.Depth, rt.LinearDepth);
-                context.ExecuteCommandBuffer(cmd);
-                cmd.Release();
+                // cmd = new CommandBuffer();
+                // cmd.name = "Linearize depth";
+                // cmd.Blit(rt.Depth, rt.LinearDepth);
+                // context.ExecuteCommandBuffer(cmd);
+                // cmd.Release();
                 
                 
                 // DEFERRED LIGHTING
@@ -403,9 +423,22 @@ namespace DGX.SRP
                 cmd.name = "lightpass";
 
                 SetupMatrixConstants(cmd, camera);
-                
-                var colorTexture = rt.Color0_ID;
-                cmd.SetRenderTarget(colorTexture, rt.Depth);
+
+                RenderTexture colorTarget = null;
+                RenderTargetIdentifier colorTextureID;
+
+                if (flipVertical())
+                {
+                    // TODO support gamma space
+                    colorTarget = RenderTexture.GetTemporary(rt.Depth.width, rt.Depth.height, 0, RenderTextureFormat.ARGB32, RenderTextureReadWrite.sRGB);
+                    colorTextureID = colorTarget;
+                }
+                else
+                {
+                    colorTextureID = (RenderTargetIdentifier)BuiltinRenderTextureType.CameraTarget;
+                }
+                // для depth указываем любую другую текстуру, иначе она становится недоступной
+                cmd.SetRenderTarget(colorTextureID, rt.GBuffer0TargetId);
 
                 cmd.DrawMesh(fullscreenMesh, Matrix4x4.identity, LightingPassMaterial, 0, 0);
                 //cmd.DrawMesh(fullscreenMesh, Matrix4x4.identity, LightingPassMaterial, 0, 1);
@@ -418,6 +451,7 @@ namespace DGX.SRP
                 };
                 filteringSettings.renderQueueRange = RenderQueueRange.opaque;
                 
+                cmd.SetRenderTarget(colorTextureID, depthTextureID);
                 context.ExecuteCommandBuffer(cmd);
                 cmd.Release();
 
@@ -432,7 +466,7 @@ namespace DGX.SRP
                 {
                     cmd = new CommandBuffer();
                     cmd.name = "skybox";
-                    cmd.SetRenderTarget(colorTexture, rt.Depth_ID);
+                    cmd.SetRenderTarget(colorTextureID, depthTextureID);
                     context.ExecuteCommandBuffer(cmd);
                     cmd.Release();
                     
@@ -442,7 +476,7 @@ namespace DGX.SRP
                 // FORWARD TRANSPARENTS
                 cmd = new CommandBuffer();
                 cmd.name = "forward transparents";
-                cmd.SetRenderTarget(colorTexture, rt.Depth_ID);
+                cmd.SetRenderTarget(colorTextureID, depthTextureID);
                 context.ExecuteCommandBuffer(cmd);
                 cmd.Release();
                 
@@ -460,16 +494,30 @@ namespace DGX.SRP
                     cullingResults, ref drawingSettings, ref filteringSettings
                 );
 
-                cmd = new CommandBuffer();
-                cmd.name = "final blit";
-                //cmd.SetRenderTarget(BuiltinRenderTextureType.CameraTarget);
-                cmd.Blit(colorTexture, BuiltinRenderTextureType.CameraTarget);
-                context.ExecuteCommandBuffer(cmd);
-                cmd.Release();
+                if (colorTarget)
+                {
+                    cmd = new CommandBuffer();
+                    cmd.name = "final blit";
+                    //cmd.SetRenderTarget(BuiltinRenderTextureType.CameraTarget);
+                    cmd.Blit(colorTarget, BuiltinRenderTextureType.CameraTarget);
+                    context.ExecuteCommandBuffer(cmd);
+                    cmd.Release();
+                }
+                
                 
                 context.Submit();
                 shadows.Cleanup();
+
+                if (colorTarget)
+                {
+                    RenderTexture.ReleaseTemporary(colorTarget);
+                }
             }
+        }
+
+        static bool flipVertical()
+        {
+            return SystemInfo.graphicsUVStartsAtTop;
         }
 
         private void RenderLights(ScriptableRenderContext context, CullingResults cullingResults)
@@ -535,6 +583,9 @@ namespace DGX.SRP
 
                 bool isLinear = QualitySettings.activeColorSpace == ColorSpace.Linear;
 
+                // var gBufferDescriptor = new RenderTextureDescriptor(width, height, RenderTextureFormat.ARGB32);
+                // gBufferDescriptor.sRGB = !isLinear;
+                // gBufferDescriptor.depthBufferBits = 0;
                 var rwMode = isLinear ? RenderTextureReadWrite.sRGB : RenderTextureReadWrite.Linear;
                 
                 rt.GBuffer0 = RenderTexture.GetTemporary(width, height, 0, RenderTextureFormat.ARGB32, rwMode);
@@ -552,11 +603,11 @@ namespace DGX.SRP
                 rt.GBufferIDs[1] = rt.GBuffer1TargetId;
                 //rt.GBufferIDs[2] = rt.GBuffer2TargetId;
 
-                rt.Color0 = RenderTexture.GetTemporary(width, height, 0, RenderTextureFormat.ARGB32,
-                    rwMode);
-                
-                rt.Color0.name = $"Color A ({name})";
-                rt.Color0_ID = rt.Color0;
+                // rt.Color0 = RenderTexture.GetTemporary(width, height, 0, RenderTextureFormat.ARGB32,
+                //     rwMode);
+                //
+                // rt.Color0.name = $"Color A ({name})";
+                // rt.Color0_ID = rt.Color0;
             }
 
             return rt;

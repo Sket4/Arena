@@ -49,6 +49,10 @@ float4 unity_FogParams;
 real4  unity_FogColor;
 float4 _ProjectionParams;
 float4 _DrawScale;
+half4 _SubtractiveShadowColor;
+
+// x - shadow intensity, y - shadow distance
+float4 dgx_MainLightShadowParams;
 
 // low left
 // upper left
@@ -197,28 +201,27 @@ half4 frag (v2f i) : SV_Target
     half4 result = half4(surface.Albedo, surface.Alpha);
     #endif
     
-    half shadowDistance = 20;
+    half shadowDistance = dgx_MainLightShadowParams.y;
     float3 normalBias = surface.NormalWS * 0.1;
     float3 positionSTS = mul(
         _ShadowVP,
         float4(worldPos.xyz + normalBias, 1.0)
     ).xyz;
 
-    half shadow = SAMPLE_TEXTURE2D_SHADOW(
+    half shadowAtten = SAMPLE_TEXTURE2D_SHADOW(
         _DirectionalShadowAtlas, SHADOW_SAMPLER, positionSTS
     ).r;
 
     //half3 L = normalize(half3(_WorldSpaceLightPos0.xyz));
     //half NdotL = saturate(dot(surface.NormalWS, L));
     
-    half shadowStrength = 0.5;
+    half shadowIntensity = dgx_MainLightShadowParams.x;
     half fadeSize = 0.05;
     half distanceFade = saturate((1 - eyeDepth / shadowDistance) / fadeSize);
-    shadow = lerp(1, shadowStrength, (1-shadow) * distanceFade);
+    shadowAtten = lerp(1, shadowAtten, shadowIntensity * distanceFade);
     
-    result.rgb *= shadow;
-
-
+    result.rgb *= lerp(_SubtractiveShadowColor.rgb, half3(1,1,1), shadowAtten);
+    
     float dist = ComputeFogDistance(linDepth);
     half fog = ComputeFogFactorZ0ToFar(dist);
     result.rgb = MixFog(result.rgb, unity_FogColor.rgb, fog);

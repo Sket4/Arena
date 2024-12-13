@@ -34,6 +34,8 @@ namespace DGX.SRP
             commands.GetTemporaryRT(dirShadowAtlasId, atlasSize, atlasSize, 16, FilterMode.Bilinear, RenderTextureFormat.Shadowmap);
             commands.SetRenderTarget(dirShadowAtlasId, RenderBufferLoadAction.DontCare, RenderBufferStoreAction.Store);
             commands.ClearRenderTarget(true, false, Color.clear);
+
+            bool isMainLightRendered = false;
             
             for(int i=0; i<cullingResults.visibleLights.Length; i++)
             {
@@ -76,6 +78,10 @@ namespace DGX.SRP
                 var mtx = projMatrix * viewMatrix;
                 convertShadowMatrix(ref mtx);
                 commands.SetGlobalMatrix("_ShadowVP", mtx);
+                var mainLightShadowParams = new Vector4();
+                mainLightShadowParams.x = light.shadowStrength;
+                mainLightShadowParams.y = settings.MaxDistance;
+                commands.SetGlobalVector("dgx_MainLightShadowParams", mainLightShadowParams);
                 
                 commands.SetGlobalDepthBias(0, light.shadowBias);
                 
@@ -83,7 +89,21 @@ namespace DGX.SRP
                 
                 context.DrawShadows(ref shadowDrawingSettings);
                 commands.SetGlobalDepthBias(0, 0);
+
+                isMainLightRendered = true;
             }
+
+            commands.SetGlobalVector("_SubtractiveShadowColor", RenderSettings.subtractiveShadowColor);
+            
+            if (isMainLightRendered == false)
+            {
+                var mainLightShadowParams = new Vector4();
+                mainLightShadowParams.x = 0;
+                mainLightShadowParams.y = 1;
+                commands.SetGlobalVector("dgx_MainLightShadowParams", mainLightShadowParams);
+            }
+            
+            ExecuteBuffer();
         }
 
         static void convertShadowMatrix(ref Matrix4x4 m)

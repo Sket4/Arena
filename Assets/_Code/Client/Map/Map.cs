@@ -182,7 +182,6 @@ namespace Arena
             SetMinimapMode();
             
             Camera.transform.rotation = Quaternion.LookRotation(Vector3.down);
-            StartCoroutine(render());
             
             // var targetTransform = em.GetComponentData<LocalTransform>(this.targetEntity);
             // var eulers = math.Euler(targetTransform.Rotation);
@@ -221,16 +220,6 @@ namespace Arena
             {
                 RenderTexture.ReleaseTemporary(CameraTexture);
                 CameraTexture = null;
-            }
-        }
-
-        IEnumerator render()
-        {
-            while (true)
-            {
-                yield return null;
-                yield return null;
-                Camera.Render();    
             }
         }
     }

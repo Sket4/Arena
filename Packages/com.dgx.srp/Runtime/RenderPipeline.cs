@@ -1,151 +1,32 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Rendering;
 using UnityEngine.UI;
+using Object = UnityEngine.Object;
 
 namespace DGX.SRP
 {
-    public class Shadows
-    {
-        private const string bufferName = "Shadows";
-        static int dirShadowAtlasId = Shader.PropertyToID("_DirectionalShadowAtlas");
-
-        private CommandBuffer commands = new()
-        {
-            name = bufferName
-        };
-        private ScriptableRenderContext context;
-        private CullingResults cullingResults;
-        private ShadowSettings settings;
-
-        public void Setup(ScriptableRenderContext context, CullingResults cullingResults, ShadowSettings settings)
-        {
-            this.context = context;
-            this.cullingResults = cullingResults;
-            this.settings = settings;
-        }
-
-        public void Render()
-        {
-            renderDirectionalShadows();
-        }
-
-        void renderDirectionalShadows()
-        {
-            var atlasSize = (int)settings.DirectionalMapSize;
-            commands.GetTemporaryRT(dirShadowAtlasId, atlasSize, atlasSize, 16, FilterMode.Bilinear, RenderTextureFormat.Shadowmap);
-            commands.SetRenderTarget(dirShadowAtlasId, RenderBufferLoadAction.DontCare, RenderBufferStoreAction.Store);
-            commands.ClearRenderTarget(true, false, Color.clear);
-            
-            for(int i=0; i<cullingResults.visibleLights.Length; i++)
-            {
-                var visibleLight = cullingResults.visibleLights[i];
-                var light = visibleLight.light;
-
-                if (light.shadows == LightShadows.None || light.shadowStrength <= 0)
-                {
-                    continue;
-                }
-
-                if (cullingResults.GetShadowCasterBounds(i, out var shadowCasterBounds) == false)
-                {
-                    continue;
-                }
-
-                if (light.type != LightType.Directional)
-                {
-                    continue;
-                }
-
-                var lightDir = -visibleLight.localToWorldMatrix.GetColumn(2);
-                var shadowDrawingSettings = new ShadowDrawingSettings(cullingResults, i, BatchCullingProjectionType.Orthographic);
-
-                cullingResults.ComputeDirectionalShadowMatricesAndCullingPrimitives(
-                    i,
-                    0,
-                    1,
-                    Vector3.zero,
-                    atlasSize,
-                    0,
-                    out var viewMatrix,
-                    out var projMatrix,
-                    out var shadowSplitData
-                    );
-
-                shadowDrawingSettings.splitData = shadowSplitData;
-                
-                commands.SetViewProjectionMatrices(viewMatrix, projMatrix);
-                var mtx = projMatrix * viewMatrix;
-                convertShadowMatrix(ref mtx);
-                commands.SetGlobalMatrix("_ShadowVP", mtx);
-                
-                commands.SetGlobalDepthBias(0, light.shadowBias);
-                
-                ExecuteBuffer();
-                
-                context.DrawShadows(ref shadowDrawingSettings);
-                commands.SetGlobalDepthBias(0, 0);
-            }
-        }
-
-        static void convertShadowMatrix(ref Matrix4x4 m)
-        {
-            if (SystemInfo.usesReversedZBuffer)
-            {
-                m.m20 = -m.m20;
-                m.m21 = -m.m21;
-                m.m22 = -m.m22;
-                m.m23 = -m.m23;
-            }
-
-            int split = 1;
-            Vector2 offset = new Vector2(0, 0);
-            
-            float scale = 1f / split;
-            m.m00 = (0.5f * (m.m00 + m.m30) + offset.x * m.m30) * scale;
-            m.m01 = (0.5f * (m.m01 + m.m31) + offset.x * m.m31) * scale;
-            m.m02 = (0.5f * (m.m02 + m.m32) + offset.x * m.m32) * scale;
-            m.m03 = (0.5f * (m.m03 + m.m33) + offset.x * m.m33) * scale;
-            m.m10 = (0.5f * (m.m10 + m.m30) + offset.y * m.m30) * scale;
-            m.m11 = (0.5f * (m.m11 + m.m31) + offset.y * m.m31) * scale;
-            m.m12 = (0.5f * (m.m12 + m.m32) + offset.y * m.m32) * scale;
-            m.m13 = (0.5f * (m.m13 + m.m33) + offset.y * m.m33) * scale;
-            m.m20 = 0.5f * (m.m20 + m.m30);
-            m.m21 = 0.5f * (m.m21 + m.m31);
-            m.m22 = 0.5f * (m.m22 + m.m32);
-            m.m23 = 0.5f * (m.m23 + m.m33);
-        }
-
-        public void Cleanup()
-        {
-            commands.ReleaseTemporaryRT(dirShadowAtlasId);
-            ExecuteBuffer();
-        }
-
-        public void ExecuteBuffer()
-        {
-            context.ExecuteCommandBuffer(commands);
-            commands.Clear();
-        }
-    }
-    
     public class RenderPipeline : UnityEngine.Rendering.RenderPipeline
     {
         public RenderPipelineAsset Asset { get; }
 
         Material LightingPassMaterial;
-        private Mesh fullscreenMesh;
+        private Mesh fullscreenTriangle;
+        private Mesh fullscreenQuad;
         private bool isOpenGL;
-        int _ScreenToWorld = Shader.PropertyToID("_ScreenToWorld");
         static readonly ShaderTagId srpDefaultUnlitShaderTag = new("SRPDefaultUnlit");
         static readonly ShaderTagId dgxForwardShaderTag = new("DGXForward");
+        private const string PBR_RENDERING_ENABLED = "DGX_PBR_RENDERING";
         private Shadows shadows = new();
-        private RenderTexture tempDepthTexture;
-        private RenderTargetIdentifier tempDepthTextureID;
-        
-        class CameraRenderTextures
+        private bool lowResRendering = false;
+        private static readonly Rect fullRect = new Rect(0, 0, 1, 1);
+        class CameraData
         {
             public Camera TargetCamera;
+            public CameraRenderSettingsData RenderSettings;
+            public float LastUpdateTime = -1000;
+            public uint RenderFrameCounter;
             public RenderTexture GBuffer0;
             public RenderTargetIdentifier GBuffer0TargetId;
             public RenderTexture GBuffer1;
@@ -182,7 +63,7 @@ namespace DGX.SRP
             }
         }
 
-        private List<CameraRenderTextures> cameraRenderTextures = new();
+        private List<CameraData> cameraRenderTextures = new();
         
         public RenderPipeline(RenderPipelineAsset asset)
         {
@@ -194,8 +75,18 @@ namespace DGX.SRP
             isOpenGL = SystemInfo.graphicsDeviceType == GraphicsDeviceType.OpenGLCore
                 || SystemInfo.graphicsDeviceType == GraphicsDeviceType.OpenGLES2
                 || SystemInfo.graphicsDeviceType == GraphicsDeviceType.OpenGLES2;
-            
-            Debug.Log($"is vertical flipped: {flipVertical()}");
+
+            lowResRendering = true;
+        }
+
+        public static void EnablePBR(bool enable)
+        {
+            if(enable)
+                Shader.EnableKeyword(PBR_RENDERING_ENABLED);
+            else
+            {
+                Shader.DisableKeyword(PBR_RENDERING_ENABLED);
+            }
         }
 
         void checkResources()
@@ -212,15 +103,10 @@ namespace DGX.SRP
                 }
             }
 
-            if(fullscreenMesh == false)
-                fullscreenMesh = CreateFullscreenMesh();
-
-            if (tempDepthTexture == false)
-            {
-                tempDepthTexture = RenderTexture.GetTemporary(1, 1, 32, RenderTextureFormat.Depth, RenderTextureReadWrite.Linear);
-                tempDepthTexture.name = $"Temp depth";
-                tempDepthTextureID = tempDepthTexture;
-            }
+            if(fullscreenTriangle == false)
+                fullscreenTriangle = CreateFullscreenTriangle();
+            if (fullscreenQuad == false)
+                fullscreenQuad = CreateFullscreenQuad();
         }
 
         protected override void Dispose(bool disposing)
@@ -240,9 +126,8 @@ namespace DGX.SRP
                 destroyObject(ref LightingPassMaterial);
             }
             
-            destroyObject(ref fullscreenMesh);
-            
-            destroyObject(ref tempDepthTexture);
+            destroyObject(ref fullscreenTriangle);
+            destroyObject(ref fullscreenQuad);
         }
 
         static void destroyObject<T>(ref T obj) where T : UnityEngine.Object
@@ -257,18 +142,39 @@ namespace DGX.SRP
             obj = null;
         }
         
-        static Mesh CreateFullscreenMesh()
+        static Mesh CreateFullscreenTriangle()
         {
             // TODO reorder for pre&post-transform cache optimisation.
             // Simple full-screen triangle
             Vector3[] positions =
             {
-                new Vector3(-1.0f,  1.0f, 0.0f),
-                new Vector3(-1.0f, -3.0f, 0.0f),
-                new Vector3(3.0f,  1.0f, 0.0f)
+                new Vector3(0,  2.0f, 0.0f),
+                new Vector3(0, -2.0f, 0.0f),
+                new Vector3(4.0f,  2.0f, 0.0f) 
             };
 
             int[] indices = { 0, 1, 2 };
+
+            Mesh mesh = new Mesh();
+            mesh.indexFormat = IndexFormat.UInt16;
+            mesh.vertices = positions;
+            mesh.triangles = indices;
+
+            return mesh;
+        }
+        
+        static Mesh CreateFullscreenQuad()
+        {
+            // TODO reorder for pre&post-transform cache optimisation.
+            Vector3[] positions =
+            {
+                new Vector3(0,  0.0f, 0.0f),
+                new Vector3(0, 2.0f, 0.0f),
+                new Vector3(2.0f,  2.0f, 0.0f),
+                new Vector3(2.0f,  0.0f, 0.0f),
+            };
+
+            int[] indices = { 0, 1, 2, 2, 3, 0 };
 
             Mesh mesh = new Mesh();
             mesh.indexFormat = IndexFormat.UInt16;
@@ -325,12 +231,7 @@ namespace DGX.SRP
             }
             cmd.SetGlobalMatrix("_WorldSpaceFrustumCorners", cornerMatrix);
         }
-
-        RenderTargetIdentifier GetTempDepthTexture()
-        {
-            return tempDepthTextureID;
-        }
-
+        
         protected override void Render(ScriptableRenderContext context, Camera[] cameras)
         {
             checkResources();
@@ -345,8 +246,45 @@ namespace DGX.SRP
                 }
             }
 
+            var currentTime = Time.realtimeSinceStartup;
+
             foreach (Camera camera in cameras)
             {
+                var rt = getCameraRenderTextures(camera);
+
+                switch (rt.RenderSettings.IntervalMode)
+                {
+                    case CameraRenderIntervalMode.None:
+                        break;
+                    case CameraRenderIntervalMode.Time:
+                    {
+                        var interval = rt.RenderSettings.RenderTimeInverval;
+                        if (interval > 0 && (currentTime - rt.LastUpdateTime < interval))
+                        {
+                            continue;
+                        }
+                    }
+                        break;
+                    case CameraRenderIntervalMode.Frame:
+                    {
+                        var interval = rt.RenderSettings.RenderFrameInverval;
+                        rt.RenderFrameCounter++;
+
+                        if (rt.RenderFrameCounter > interval)
+                        {
+                            rt.RenderFrameCounter = 0;
+                        }
+                        else
+                        {
+                            continue;
+                        }
+                    }
+                        break;
+                    default:
+                        throw new ArgumentOutOfRangeException();
+                }
+                rt.LastUpdateTime = currentTime;
+                
                 // Get the culling parameters from the current Camera
                 if (camera.TryGetCullingParameters(out var cullingParameters) == false)
                 {
@@ -361,7 +299,6 @@ namespace DGX.SRP
                 
                 RenderLights(context, cullingResults);
                 
-                var rt = getCameraRenderTextures(camera);
                 var depthTextureID = rt.Depth_ID;
                 
                 // GBUFFER
@@ -427,16 +364,28 @@ namespace DGX.SRP
                 RenderTexture colorTarget = null;
                 RenderTargetIdentifier colorTextureID;
 
-                if (flipVertical())
+                var cameraRect = camera.rect;
+
+                Mesh fullscreenMesh;
+                
+                if (shouldDrawToDedicatedColorTarget(camera))
                 {
                     // TODO support gamma space
                     colorTarget = RenderTexture.GetTemporary(rt.Depth.width, rt.Depth.height, 0, RenderTextureFormat.ARGB32, RenderTextureReadWrite.sRGB);
                     colorTextureID = colorTarget;
+                    cmd.SetGlobalVector("_DrawScale", new Vector4(1, 1,0,0));
+                    fullscreenMesh = fullscreenTriangle;
                 }
                 else
                 {
                     colorTextureID = (RenderTargetIdentifier)BuiltinRenderTextureType.CameraTarget;
+                    
+                    var drawScale = new Vector4(cameraRect.width, cameraRect.height, 0, 0);
+                    cmd.SetGlobalVector("_DrawScale", drawScale);
+                    bool isFullRect = cameraRect == fullRect;
+                    fullscreenMesh = isFullRect ? fullscreenTriangle : fullscreenQuad;
                 }
+                
                 // для depth указываем любую другую текстуру, иначе она становится недоступной
                 cmd.SetRenderTarget(colorTextureID, rt.GBuffer0TargetId);
 
@@ -444,6 +393,7 @@ namespace DGX.SRP
                 //cmd.DrawMesh(fullscreenMesh, Matrix4x4.identity, LightingPassMaterial, 0, 1);
                 
                 // FORWARD UNLIT
+                //cmd.SetViewport(camera.pixelRect);
                 sortingSettings.criteria = SortingCriteria.CommonOpaque;
                 drawingSettings = new DrawingSettings(srpDefaultUnlitShaderTag, sortingSettings)
                 {
@@ -460,19 +410,8 @@ namespace DGX.SRP
                 );
                 
                 // SKYBOX
-                context.SetupCameraProperties(camera);
-                
-                if (clearFlags == CameraClearFlags.Skybox && RenderSettings.skybox != null)
-                {
-                    cmd = new CommandBuffer();
-                    cmd.name = "skybox";
-                    cmd.SetRenderTarget(colorTextureID, depthTextureID);
-                    context.ExecuteCommandBuffer(cmd);
-                    cmd.Release();
-                    
-                    context.DrawSkybox(camera);
-                }
-                
+                skyboxPass(context, camera, colorTextureID, depthTextureID);
+
                 // FORWARD TRANSPARENTS
                 cmd = new CommandBuffer();
                 cmd.name = "forward transparents";
@@ -499,11 +438,18 @@ namespace DGX.SRP
                     cmd = new CommandBuffer();
                     cmd.name = "final blit";
                     //cmd.SetRenderTarget(BuiltinRenderTextureType.CameraTarget);
-                    cmd.Blit(colorTarget, BuiltinRenderTextureType.CameraTarget);
+                    cmd.Blit(colorTarget, BuiltinRenderTextureType.CameraTarget, new Vector2(1.0f/camera.rect.width, 1.0f/camera.rect.height), new Vector2());
                     context.ExecuteCommandBuffer(cmd);
                     cmd.Release();
                 }
                 
+                #if UNITY_EDITOR
+                if (UnityEditor.Handles.ShouldRenderGizmos()) 
+                {
+                    context.DrawGizmos(camera, GizmoSubset.PreImageEffects);
+                    context.DrawGizmos(camera, GizmoSubset.PostImageEffects);
+                }
+                #endif
                 
                 context.Submit();
                 shadows.Cleanup();
@@ -515,9 +461,24 @@ namespace DGX.SRP
             }
         }
 
-        static bool flipVertical()
+        private static void skyboxPass(ScriptableRenderContext context, Camera camera, RenderTargetIdentifier colorTextureID,
+            RenderTargetIdentifier depthTextureID)
         {
-            return SystemInfo.graphicsUVStartsAtTop;
+            if (camera.clearFlags == CameraClearFlags.Skybox && RenderSettings.skybox != null)
+            {
+                var cmd = new CommandBuffer();
+                cmd.name = "skybox";
+                cmd.SetRenderTarget(colorTextureID, depthTextureID);
+                context.ExecuteCommandBuffer(cmd);
+                cmd.Release();
+
+                context.DrawSkybox(camera);
+            }
+        }
+
+        bool shouldDrawToDedicatedColorTarget(Camera camera)
+        {
+            return SystemInfo.graphicsUVStartsAtTop || camera.rect != fullRect || lowResRendering;
         }
 
         private void RenderLights(ScriptableRenderContext context, CullingResults cullingResults)
@@ -526,9 +487,9 @@ namespace DGX.SRP
             shadows.Render();
         }
 
-        CameraRenderTextures getCameraRenderTextures(Camera camera)
+        CameraData getCameraRenderTextures(Camera camera)
         {
-            CameraRenderTextures rt = null;
+            CameraData rt = null;
 
             foreach (var cameraRenderTexture in cameraRenderTextures)
             {
@@ -541,16 +502,34 @@ namespace DGX.SRP
 
             if (rt == null)
             {
-                rt = new CameraRenderTextures
+                rt = new CameraData
                 {
-                    TargetCamera = camera
+                    TargetCamera = camera,
                 };
+                var settings = camera.GetComponent<CameraRenderSettings>();
+                if (settings)
+                {
+                    rt.RenderSettings = settings.Settings;
+                }
+                else
+                {
+                    rt.RenderSettings = new()
+                    {
+                        IntervalMode = CameraRenderIntervalMode.None
+                    };
+                }
                 cameraRenderTextures.Add(rt);
             }
 
             bool createNew;
             var width = camera.pixelWidth;
             var height = camera.pixelHeight;
+
+            if (lowResRendering)
+            {
+                width /= 2;
+                height /= 2;
+            }
             
             if (rt.Depth)
             {

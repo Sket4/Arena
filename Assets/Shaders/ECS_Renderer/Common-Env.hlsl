@@ -43,19 +43,26 @@ struct v2f
 
 	float3 normalWS : TEXCOORD2;
 	float4 tangentWS : TEXCOORD3;
-	float3 bitangentWS : TEXCOORD4;
 
 	#if USE_UNDERWATER
-	half UnderwaterFade : TEXCOORD5;
+	half UnderwaterFade : TEXCOORD4;
 	#endif
 	
 #if LIGHTMAP_ON
-	TG_DECLARE_LIGHTMAP_UV(6)
+	TG_DECLARE_LIGHTMAP_UV(5)
 #endif
 	UNITY_VERTEX_INPUT_INSTANCE_ID
 
-	#ifndef ARENA_DEFERRED
-	float4 positionWS_fog : TEXCOORD7;
+	#ifdef USE_SURFACE_BLEND
+		#ifdef ARENA_DEFERRED
+			float3 positionWS : TEXCOORD6;
+		#else
+			float4 positionWS : TEXCOORD6;
+		#endif
+	#else
+		#ifndef ARENA_DEFERRED
+		float4 positionWS : TEXCOORD6;
+		#endif
 	#endif
 };
 
@@ -69,28 +76,29 @@ v2f env_vert (appdata v)
 	float3 normalOS = v.normal;
 	float4 tangentOS = v.tangent;
 
-	#ifdef ARENA_DEFERRED
 	float3 positionWS = TransformObjectToWorld(positionOS);
 	o.vertex = TransformWorldToHClip(positionWS);
+	
+	#ifdef ARENA_DEFERRED
+	#ifdef USE_SURFACE_BLEND
+	o.positionWS = positionWS;
+	#endif
+	
 	#else
-	o.positionWS_fog.xyz = TransformObjectToWorld(positionOS);
-	o.vertex = TransformWorldToHClip(o.positionWS_fog.xyz);
-	o.positionWS_fog.w = ComputeFogFactor(o.vertex.z);
+	o.positionWS.xyz = positionWS;
+	o.positionWS.w = ComputeFogFactor(o.vertex.z);
 	#endif
 
 	o.uv = TRANSFORM_TEX(v.uv, _BaseMap);
 
-	real sign = real(tangentOS.w);
 	float3 normalWS = TransformObjectToWorldNormal(normalOS);
 	real3 tangentWS = real3(TransformObjectToWorldDir(tangentOS.xyz));
-	real3 bitangentWS = real3(cross(normalWS, float3(tangentWS))) * sign;
 
 	float4 instanceData = tg_InstanceData;
 	o.instanceData = instanceData;
 
 	o.normalWS = normalWS;
 	o.tangentWS = float4(tangentWS, tangentOS.w);
-	o.bitangentWS = bitangentWS;
 
 	#if LIGHTMAP_ON
 	TG_TRANSFORM_LIGHTMAP_TEX(v.lightmapUV, o.lightmapUV)
@@ -101,7 +109,7 @@ v2f env_vert (appdata v)
 	#endif
 
 	// #if USE_HEIGHT_FOG
-	// o.positionWS_fog.w *= saturate((_FogHeight - o.positionWS_fog.y) * _HeightFogFade); 
+	// o.positionWS.w *= saturate((_FogHeight - o.positionWS_fog.y) * _HeightFogFade); 
 	// #endif
 
 	return o;
@@ -117,17 +125,20 @@ GBufferFragmentOutput env_frag_deferred(v2f i)
 	clip(diffuse.a - _Cutoff);
 	#endif
 
+	#if defined(UG_QUALITY_MED) || defined(UG_QUALITY_HIGH) || defined(USE_SURFACE_BLEND)
 	half3 normalTS = UnpackNormal(tex2D(_BumpMap, i.uv));
-	//normalTS.xy *= 2;
-
-	half3x3 tangentToWorld = half3x3(i.tangentWS.xyz, i.bitangentWS.xyz, i.normalWS.xyz); 
-
+	real sign = real(i.tangentWS.w);
+	real3 bitangentWS = real3(cross(i.normalWS, i.tangentWS.xyz)) * sign;
+	half3x3 tangentToWorld = half3x3(i.tangentWS.xyz, bitangentWS, i.normalWS.xyz); 
 	half3 normalWS = TransformTangentToWorld(normalTS.xyz, tangentToWorld, true);
+	#else
+	half3 normalWS = i.normalWS;
+	#endif
 
 	half3 ambientLight = ARENA_COMPUTE_AMBIENT_LIGHT(i, normalWS);
 	
 	#if USE_SURFACE_BLEND
-	float2 surfaceUV = TRANSFORM_TEX(i.positionWS_fog.xz, _SurfaceMap);
+	float2 surfaceUV = TRANSFORM_TEX(i.positionWS.xz, _SurfaceMap);
 	half4 surfaceColor = tex2D(_SurfaceMap, surfaceUV);
 	float surfaceBlend = saturate(dot(half3(normalWS.x, normalWS.y, normalWS.z), half3(0.0,1,0.0)));
 
@@ -142,7 +153,7 @@ GBufferFragmentOutput env_frag_deferred(v2f i)
 	surface.Albedo = diffuse.rgb;
 	surface.Alpha = diffuse.a;
 	surface.AmbientLight = ambientLight;
-	surface.NormalWS = normalWS;
+	
 	
 	#if defined(UG_QUALITY_MED) || defined(UG_QUALITY_HIGH)
 	half4 mesm = tex2D(_MetallicGlossMap, i.uv);
@@ -153,22 +164,19 @@ GBufferFragmentOutput env_frag_deferred(v2f i)
 
 	surface.EnvCubemapIndex = i.instanceData.y;
 	
+	
 	#else
-
 	surface.Metallic = 0;
 	surface.Roughness = 1;
 	surface.EnvCubemapIndex = 0;
 
 	#endif
-
 	
 	surface.Albedo *= surface.AmbientLight;
-	// #if LIGHTMAP_ON
-	// surface.Albedo.xy = i.lightmapUV.xy;
-	// surface.Albedo.z = 0;
-	// #endif
 	surface.AmbientLight = 1;
-
+	surface.NormalWS = normalWS;
+	
+	
 	#if USE_UNDERWATER
 	surface.Albedo = lerp(surface.Albedo, _Underwater_color.rgb * ambientLight, i.UnderwaterFade);
 	surface.Roughness = lerp(surface.Roughness, 1, i.UnderwaterFade);
@@ -192,14 +200,17 @@ half4 env_frag(v2f i) : SV_Target
 	half3 normalTS = UnpackNormal(tex2D(_BumpMap, i.uv));
 	//normalTS.xy *= 2;
 
-	half3x3 tangentToWorld = half3x3(i.tangentWS.xyz, i.bitangentWS.xyz, i.normalWS.xyz); 
+	real sign = real(i.tangentWS.w);
+	real3 bitangentWS = real3(cross(i.normalWS, i.tangentWS.xyz)) * sign;
+	
+	half3x3 tangentToWorld = half3x3(i.tangentWS.xyz, bitangentWS.xyz, i.normalWS.xyz); 
 
 	half3 normalWS = TransformTangentToWorld(normalTS.xyz, tangentToWorld, true);
 
 	half3 ambientLight = ARENA_COMPUTE_AMBIENT_LIGHT(i, normalWS);
 	
 	#if USE_SURFACE_BLEND
-	float2 surfaceUV = TRANSFORM_TEX(i.positionWS_fog.xz, _SurfaceMap);
+	float2 surfaceUV = TRANSFORM_TEX(i.positionWS.xz, _SurfaceMap);
 	half4 surfaceColor = tex2D(_SurfaceMap, surfaceUV);
 	float surfaceBlend = saturate(dot(half3(normalWS.x, normalWS.y, normalWS.z), half3(0.0,1,0.0)));
 
@@ -217,7 +228,7 @@ half4 env_frag(v2f i) : SV_Target
 	half smoothness = mesm.a * _Smoothness;
 	half roughness = 1 - smoothness;
 
-	half3 viewDirWS = GetWorldSpaceNormalizeViewDir(i.positionWS_fog.xyz);
+	half3 viewDirWS = GetWorldSpaceNormalizeViewDir(i.positionWS.xyz);
 	half3 envMapColor = TG_ReflectionProbe_half(viewDirWS, normalWS, i.instanceData.y,roughness * 4);
 
 	half3 remEnvMapColor = clamp(envMapColor - 0.5, 0, 10);
@@ -227,7 +238,7 @@ half4 env_frag(v2f i) : SV_Target
 	half lum = tg_luminance(ambientLight);
 	envMapColor = lerp(remEnvMapColor, envMapColor, saturate(lum * lum * lum));
 
-	ARENA_DYN_LIGHT(normalWS, i.positionWS_fog.xyz, ambientLight, viewDirWS, envMapColor, true);
+	ARENA_DYN_LIGHT(normalWS, i.positionWS.xyz, ambientLight, viewDirWS, envMapColor, true);
 
 	half4 finalColor = LightingPBR(diffuse, ambientLight, viewDirWS, normalWS, mesm.rrr, roughness, envMapColor);
 
@@ -235,7 +246,7 @@ half4 env_frag(v2f i) : SV_Target
 
 	half4 finalColor = diffuse;
 	half3 envMapColor = 0;
-	ARENA_DYN_LIGHT(normalWS, i.positionWS_fog.xyz, ambientLight, 0,0, true); 
+	ARENA_DYN_LIGHT(normalWS, i.positionWS.xyz, ambientLight, 0,0, true); 
 	finalColor.rgb *= ambientLight;
 
 	#endif
@@ -245,7 +256,7 @@ half4 env_frag(v2f i) : SV_Target
 	#endif
 
 	// apply fog
-	return half4(MixFog(finalColor.rgb, unity_FogColor.rgb, i.positionWS_fog.w), finalColor.a);
+	return half4(MixFog(finalColor.rgb, unity_FogColor.rgb, i.positionWS.w), finalColor.a);
 }
 #endif
 

@@ -61,7 +61,8 @@ Shader"Arena/Character"
 
             #pragma shader_feature TG_USE_ALPHACLIP
             #pragma shader_feature __ ARENA_SKIN_COLOR
-            
+
+            #pragma multi_compile UG_QUALITY_LOW UG_QUALITY_MED UG_QUALITY_HIGH
             #pragma multi_compile _BONECOUNT_ONE _BONECOUNT_FOUR
 
             //#pragma multi_compile_instancing

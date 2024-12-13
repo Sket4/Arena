@@ -158,16 +158,19 @@ namespace Arena
 		                Shader.EnableKeyword(LOW_SHADER_QUALITY);
 		                Shader.DisableKeyword(MEDIUM_SHADER_QUALITY);
 		                Shader.DisableKeyword(HIGH_SHADER_QUALITY);
+		                DGX.SRP.RenderPipeline.EnablePBR(false);
 		                break;
 	                case QualityLevels.Medium:
 		                Shader.DisableKeyword(LOW_SHADER_QUALITY);
 		                Shader.EnableKeyword(MEDIUM_SHADER_QUALITY);
 		                Shader.DisableKeyword(HIGH_SHADER_QUALITY);
+		                DGX.SRP.RenderPipeline.EnablePBR(true);
 		                break;
 	                case QualityLevels.High:
 		                Shader.DisableKeyword(LOW_SHADER_QUALITY);
 		                Shader.EnableKeyword(MEDIUM_SHADER_QUALITY);
 		                Shader.DisableKeyword(HIGH_SHADER_QUALITY);
+		                DGX.SRP.RenderPipeline.EnablePBR(true);
 		                break;
 	                default:
 		                throw new ArgumentOutOfRangeException();

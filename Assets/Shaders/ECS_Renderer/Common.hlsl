@@ -211,31 +211,25 @@ void ApplyDynamicLighting(
     #endif
     
     
-    #ifdef ARENA_USE_ADD_LIGHT
-    Light addLight = GetAdditionalLight(0, positionWS, 1);
-	
-    half3 addLighting = LightingLambert(addLight.color, addLight.direction, normalWS.xyz) * addLight.distanceAttenuation;
-
-    if(useShadowMap)
-    {
-        addLighting *= AdditionalLightRealtimeShadow(0, positionWS, addLight.direction);    
-    }
-    
-    diffuseLight += addLighting;
-
-    #if defined(UG_QUALITY_HIGH) || defined(UG_QUALITY_MED)
-    #if ARENA_USE_DARK_MODE
-    specularLight *= addLight.distanceAttenuation * 16;
-    #endif
-    #endif
-
-    //smoothness = exp2(10 * smoothness + 1);
-    //half3 spec = LightingSpecular(addLight.color, addLight.direction, normalWS.xyz, viewDirWS, 1, smoothness);
-
-    //spec = spec * addLight.distanceAttenuation * 1;
-    //specularLight = spec;
-    
-    #endif
+    // #ifdef ARENA_USE_ADD_LIGHT
+    // Light addLight = GetAdditionalLight(0, positionWS, 1);
+	   //
+    // half3 addLighting = LightingLambert(addLight.color, addLight.direction, normalWS.xyz) * addLight.distanceAttenuation;
+    //
+    // if(useShadowMap)
+    // {
+    //     addLighting *= AdditionalLightRealtimeShadow(0, positionWS, addLight.direction);    
+    // }
+    //
+    // diffuseLight += addLighting;
+    //
+    // #if defined(UG_QUALITY_HIGH) || defined(UG_QUALITY_MED)
+    // #if ARENA_USE_DARK_MODE
+    // specularLight *= addLight.distanceAttenuation * 16;
+    // #endif
+    // #endif
+    //
+    // #endif
 }
 
 #endif

@@ -28,10 +28,9 @@ struct v2f
 
     float3 normalWS : TEXCOORD2;
     float4 tangentWS : TEXCOORD3;
-    float3 bitangentWS : TEXCOORD4;
-    float4 positionWS_fog : TEXCOORD5;
-    #if LIGHTMAP_ON
-    TG_DECLARE_LIGHTMAP_UV(7)
+    float4 positionWS_fog : TEXCOORD4;
+#if LIGHTMAP_ON
+    TG_DECLARE_LIGHTMAP_UV(5)
 #endif
     UNITY_VERTEX_INPUT_INSTANCE_ID
 };
@@ -83,14 +82,12 @@ v2f vert (appdata v)
     float4 instanceData = tg_InstanceData;
     o.instanceData = instanceData;
 
-    real sign = real(tangentOS.w);
+    
     float3 normalWS = TransformObjectToWorldNormal(normalOS);
     real3 tangentWS = real3(TransformObjectToWorldDir(tangentOS.xyz));
-    real3 bitangentWS = real3(cross(normalWS, float3(tangentWS))) * sign;
 
     o.normalWS = normalWS;
     o.tangentWS = float4(tangentWS, tangentOS.w);
-    o.bitangentWS = bitangentWS;
 
 #if LIGHTMAP_ON
     TG_TRANSFORM_LIGHTMAP_TEX(v.lightmapUV, o.lightmapUV)
@@ -136,7 +133,8 @@ GBufferFragmentOutput frag(v2f i)
     // wet sand
     diffuse += color2 * splat.w * 0.75;
     #endif
-    
+
+    #if defined(UG_QUALITY_MED) || defined(UG_QUALITY_HIGH)
     half3 normalTS = UnpackNormal(tex2D(_Normal1, layer1_uv)) * splat.r;
     half3 normal2 = UnpackNormal(tex2D(_Normal2, layer2_uv)); 
     normalTS += normal2 * splat.g;
@@ -149,12 +147,20 @@ GBufferFragmentOutput frag(v2f i)
     #endif
 
     normalTS = normalize(normalTS);
-    half3x3 tangentToWorld = half3x3(i.tangentWS.xyz, i.bitangentWS.xyz, i.normalWS.xyz); 
-
+    real sign = real(i.tangentWS.w);
+    real3 bitangentWS = real3(cross(i.normalWS, i.tangentWS.xyz)) * sign;
+    half3x3 tangentToWorld = half3x3(i.tangentWS.xyz, bitangentWS.xyz, i.normalWS.xyz);
+    half3 normalWS = TransformTangentToWorld(normalTS.xyz, tangentToWorld, true);
+    #else
+    half3 normalWS = i.normalWS;
+    #endif
+    
     SurfaceHalf surface;
-    surface.Albedo = diffuse.rgb;
-    surface.NormalWS = TransformTangentToWorld(normalTS.xyz, tangentToWorld, true);
-    surface.AmbientLight = ARENA_COMPUTE_AMBIENT_LIGHT(i, surface.NormalWS);
+    
+    surface.NormalWS = normalWS;
+    half3 ambientLight = ARENA_COMPUTE_AMBIENT_LIGHT(i, surface.NormalWS);
+    surface.Albedo = diffuse.rgb * ambientLight;
+    surface.AmbientLight = 1;
     surface.Alpha = 0;
     
     //diffuse.rgb = 1;

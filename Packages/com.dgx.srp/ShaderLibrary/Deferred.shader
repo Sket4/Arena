@@ -29,6 +29,7 @@ Shader "Hidden/DGX/DEFERRED"
             #pragma fragment frag
 
             #pragma multi_compile FOG_LINEAR FOG_EXP FOG_EXP2
+            #pragma multi_compile _ DGX_PBR_RENDERING
             #pragma require cubearray
             #pragma exclude_renderers gles
             //#if defined(DGX_USE_PBR)

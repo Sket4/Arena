@@ -42,15 +42,13 @@ sampler2D _GT0;
 sampler2D _GT1;
 sampler2D _GT2;
 
-//TEXTURE2D(_Depth);
-//TEXTURE2D(_LinearDepth);
-
 float4 _WorldSpaceLightPos0;
 float4 _WorldSpaceCameraPos;
 float4 _ZBufferParams;
 float4 unity_FogParams;
 real4  unity_FogColor;
 float4 _ProjectionParams;
+float4 _DrawScale;
 
 // low left
 // upper left
@@ -84,12 +82,6 @@ real ComputeFogFactorZ0ToFar(float z)
     #endif
 }
 
-real ComputeFogFactor(float zPositionCS)
-{
-    float clipZ_0Far = max(((1.0-(zPositionCS)/_ProjectionParams.y)*_ProjectionParams.z),0);
-    return ComputeFogFactorZ0ToFar(clipZ_0Far);
-}
-
 half ComputeFogIntensity(half fogFactor)
 {
     half fogIntensity = half(0.0);
@@ -120,6 +112,13 @@ float3 MixFog(float3 fragColor, float3 fogColor, float fogFactor)
     return fragColor;
 }
 
+float ComputeFogDistance(float depth)
+{
+    float dist = depth * _ProjectionParams.z;
+    dist -= _ProjectionParams.y;
+    return dist;
+}
+
 float lerpCorner(float2 screenUV, int axis)
 {
     float3 lowerLeftCorner = _WorldSpaceFrustumCorners[0].xyz;
@@ -137,20 +136,22 @@ v2f vert (appdata v)
 {
     v2f o;
     //o.vertex = mul(UNITY_MATRIX_VP, mul(UNITY_MATRIX_M, float4(v.vertex.xyz, 1.0)));
-    o.positionCS = float4(v.vertex.xy, UNITY_RAW_FAR_CLIP_VALUE, 1.0); // Force triangle to be on zfar
+    //_DrawScale.xy = 1;
+    o.positionCS = float4(v.vertex.x * _DrawScale.x, v.vertex.y * _DrawScale.y, UNITY_RAW_FAR_CLIP_VALUE, 1.0); // Force triangle to be on zfar
+    o.positionCS.x -= 1;
+    o.positionCS.y -= 1;
 
     o.screenUV.xyz = o.positionCS.xyw;
+    
     #if UNITY_UV_STARTS_AT_TOP
     o.screenUV.xy = o.screenUV.xy * float2(0.5, -0.5) + 0.5 * o.screenUV.z;
     #else
     o.screenUV.xy = o.screenUV.xy * 0.5 + 0.5 * o.screenUV.z;
     #endif
+
+    o.screenUV.x /= _DrawScale.x;
+    o.screenUV.y /= +_DrawScale.y;
     
-    //o.screenUV.y = _ProjectionParams.x == 1.0 ? o.screenUV.y : 1-o.screenUV.y;
-    //o.screenUV.y = 1 - o.screenUV.y;
-
-    //o.screenUV.xy = DynamicScalingApplyScaleBias(o.screenUV.xy, float4(_RTHandleScale.xy, 0.0f, 0.0f));
-
     float3 corner;
     corner.x = lerpCorner(o.screenUV.xy, 0);
     corner.y = lerpCorner(o.screenUV.xy, 1);
@@ -160,8 +161,6 @@ v2f vert (appdata v)
     
     return o;
 }
-
-
 
 half3 Sample_ReflectionProbe_half(half3 viewDir, half3 normalWS, half index, half lod)
 {
@@ -176,9 +175,6 @@ half4 frag (v2f i) : SV_Target
     float2 screen_uv = (i.screenUV.xy / i.screenUV.z);
 
     // Gbuffer
-    //float2 screen_uv2 = float2(screen_uv.x, 1-screen_uv.y);
-    //screen_uv.xy = screen_uv2.xy;
-    
     float4 g0 = tex2D(_GT0, screen_uv.xy);
     float4 g1 = tex2D(_GT1, screen_uv.xy);
     //float4 g2 = tex2D(_GT2, screen_uv);
@@ -186,39 +182,20 @@ half4 frag (v2f i) : SV_Target
     SurfaceHalf surface = GBufferToSurfaceHalf(g0, g1);
 
     float rawDepth = _Depth.Sample(sampler_Depth, screen_uv.xy).r;
-    
     float linDepth = Linear01Depth(rawDepth, _ZBufferParams);
+    float eyeDepth = LinearEyeDepth(rawDepth, _ZBufferParams);
     
-    // #if !UNITY_REVERSED_Z
-    //     linDepth = lerp(UNITY_NEAR_CLIP_VALUE, 1, linDepth);
-    // #endif
-
     //return half4(linDepth.x, 0, 0, 1);
     
     float3 worldPos = _WorldSpaceCameraPos.xyz + i.viewDir * linDepth;
+
+    #ifdef DGX_PBR_RENDERING
     float3 V = normalize(_WorldSpaceCameraPos.xyz - worldPos.xyz);
-
     half3 envMapColor = Sample_ReflectionProbe_half(V, surface.NormalWS, surface.EnvCubemapIndex, surface.Roughness * 4);
-
     half4 result = LightingPBR_Half(surface, V, envMapColor);
-
-    float eyeDepth = LinearEyeDepth(rawDepth, _ZBufferParams);
-    float clip_z = UNITY_MATRIX_P[2][2] * -eyeDepth + UNITY_MATRIX_P[2][3];
-    half fogFactor = ComputeFogFactor(clip_z);
-    
-    //result.rgb = worldPos.xyz;
-    //result.rgb = surface.NormalWS;
-    //result.rgb = depth;
-    // result.r = unity_FogParams.w * 0.875;
-    // result.g = UNITY_MATRIX_P[2][3];
-    // result.b = _ProjectionParams.z;
-    //result.rgb = surface.EnvCubemapIndex;
-
-    //result.rgb * _DirectionalShadowAtlas.Sample(sampler_PointClamp, screen_uv).r;
-
-    
-
-    
+    #else
+    half4 result = half4(surface.Albedo, surface.Alpha);
+    #endif
     
     half shadowDistance = 20;
     float3 normalBias = surface.NormalWS * 0.1;
@@ -231,21 +208,22 @@ half4 frag (v2f i) : SV_Target
         _DirectionalShadowAtlas, SHADOW_SAMPLER, positionSTS
     ).r;
 
-    half3 L = normalize(half3(_WorldSpaceLightPos0.xyz));
-    half NdotL = saturate(dot(surface.NormalWS, L));
-    //surface.AmbientLight += ;
+    //half3 L = normalize(half3(_WorldSpaceLightPos0.xyz));
+    //half NdotL = saturate(dot(surface.NormalWS, L));
     
     half shadowStrength = 0.5;
     half fadeSize = 0.05;
-    
     half distanceFade = saturate((1 - eyeDepth / shadowDistance) / fadeSize);
-
     shadow = lerp(1, shadowStrength, (1-shadow) * distanceFade);
     
     result.rgb *= shadow;
-    
-    result.rgb = MixFog(result.rgb, unity_FogColor.rgb, fogFactor);
+
+
+    float dist = ComputeFogDistance(linDepth);
+    half fog = ComputeFogFactorZ0ToFar(dist);
+    result.rgb = MixFog(result.rgb, unity_FogColor.rgb, fog);
     //result.rgb = worldPos.xyz;
+    
     return result; 
 }
 

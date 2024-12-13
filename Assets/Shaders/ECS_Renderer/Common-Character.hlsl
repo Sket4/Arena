@@ -24,10 +24,12 @@ struct v2f
     half2 uv : TEXCOORD0;
     half4 vertex : SV_POSITION;
     nointerpolation half4 instanceData : TEXCOORD1;
-    
+
     float3 normalWS : TEXCOORD2;
+    
+    #if defined(UG_QUALITY_MED) || defined(UG_QUALITY_HIGH)
     float4 tangentWS : TEXCOORD3;
-    float3 bitangentWS : TEXCOORD4;
+    #endif
     //UNITY_VERTEX_INPUT_INSTANCE_ID
 };
 
@@ -76,14 +78,14 @@ v2f vert (appdata v)
     o.uv = TRANSFORM_TEX(v.uv, _BaseMap);
 
 
-    real sign = real(tangentOS.w);
+    
     float3 normalWS = TransformObjectToWorldNormal(normalOS);
     real3 tangentWS = real3(TransformObjectToWorldDir(tangentOS.xyz));
-    real3 bitangentWS = real3(cross(normalWS, float3(tangentWS))) * sign;
 
     o.normalWS = normalWS;
+    #if defined(UG_QUALITY_MED) || defined(UG_QUALITY_HIGH)
     o.tangentWS = float4(tangentWS, tangentOS.w);
-    o.bitangentWS = bitangentWS;
+    #endif
 
     float4 instanceData = tg_InstanceData;
     o.instanceData = instanceData;
@@ -110,18 +112,25 @@ GBufferFragmentOutput frag (v2f i)
     clip(diffuse.a - _Cutoff);
     #endif
 
+    #if defined(UG_QUALITY_MED) || defined(UG_QUALITY_HIGH)
     half3 normalTS = UnpackNormal(tex2D(_BumpMap, i.uv));
 
-    half3x3 tangentToWorld = half3x3(i.tangentWS.xyz, i.bitangentWS.xyz, i.normalWS.xyz);
+    real sign = real(i.tangentWS.w);
+    real3 bitangentWS = real3(cross(i.normalWS, i.tangentWS.xyz) * sign);
+    half3x3 tangentToWorld = half3x3(i.tangentWS.xyz, bitangentWS, i.normalWS.xyz);
 
     float3 normalWS = TransformTangentToWorld(normalTS.xyz, tangentToWorld, true);
 
-    //mesm.rgb *= _Metallic;
     half4 mesm = tex2D(_MetallicSmoothnessMap, i.uv);
     half3 metallic = mesm.rgb * _Metallic;
     mesm.a *= _Smoothness;
 
     half roughness = 1.0 - mesm.a;
+    #else
+    float3 normalWS = i.normalWS;
+    half metallic = 0;
+    half roughness = 1;
+    #endif
     
     half3 lighting = ARENA_COMPUTE_AMBIENT_LIGHT(i, normalWS);
 

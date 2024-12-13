@@ -66,7 +66,6 @@ Shader "Arena/Environment"
             #pragma target 4.5
             #pragma exclude_renderers nomrt
             #pragma require 2darray
-            #pragma require cubearray
             #pragma exclude_renderers gles //excluded shader from OpenGL ES 2.0 because it uses non-square matrices
             #pragma vertex env_vert
             #pragma fragment env_frag_deferred
@@ -76,7 +75,7 @@ Shader "Arena/Environment"
             #pragma shader_feature_local TG_USE_ALPHACLIP
 			#pragma multi_compile UG_QUALITY_LOW UG_QUALITY_MED UG_QUALITY_HIGH
             #pragma shader_feature_local USE_UNDERWATER
-            #pragma shader_feature_local_fragment USE_SURFACE_BLEND
+            #pragma shader_feature_local USE_SURFACE_BLEND
             
             #pragma multi_compile _ LIGHTMAP_ON
             #pragma multi_compile _ DIRLIGHTMAP_COMBINED
@@ -117,7 +116,7 @@ Shader "Arena/Environment"
             #pragma fragment ShadowPassFragment
             
             #pragma multi_compile _ DOTS_INSTANCING_ON
-            #pragma multi_compile_shadowcaster
+            //#pragma multi_compile_shadowcaster
             
             #include "Input-Env.hlsl"
             #include "ShadowCasterPass.hlsl" 

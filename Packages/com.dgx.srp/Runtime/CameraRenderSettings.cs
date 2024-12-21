@@ -10,11 +10,12 @@ namespace DGX.SRP
     }
     
     [System.Serializable]
-    public struct CameraRenderSettingsData
+    public class CameraRenderSettingsData
     {
         public CameraRenderIntervalMode IntervalMode;
         public float RenderTimeInverval;
         public int RenderFrameInverval;
+        public bool LowResRendering;
     }
     
     public class CameraRenderSettings : MonoBehaviour

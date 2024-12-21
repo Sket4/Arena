@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Rendering;
-using UnityEngine.UI;
 using Object = UnityEngine.Object;
 
 namespace DGX.SRP
@@ -19,7 +18,6 @@ namespace DGX.SRP
         static readonly ShaderTagId dgxForwardShaderTag = new("DGXForward");
         private const string PBR_RENDERING_ENABLED = "DGX_PBR_RENDERING";
         private Shadows shadows = new();
-        private bool lowResRendering = false;
         private static readonly Rect fullRect = new Rect(0, 0, 1, 1);
         class CameraData
         {
@@ -75,8 +73,6 @@ namespace DGX.SRP
             isOpenGL = SystemInfo.graphicsDeviceType == GraphicsDeviceType.OpenGLCore
                 || SystemInfo.graphicsDeviceType == GraphicsDeviceType.OpenGLES2
                 || SystemInfo.graphicsDeviceType == GraphicsDeviceType.OpenGLES2;
-
-            lowResRendering = true;
         }
 
         public static void EnablePBR(bool enable)
@@ -186,50 +182,23 @@ namespace DGX.SRP
         
         void SetupMatrixConstants(CommandBuffer cmd, Camera camera)
         {
-            // Matrix4x4 proj = camera.projectionMatrix;
-            // Matrix4x4 view = camera.worldToCameraMatrix;
-            // Matrix4x4 gpuProj = GL.GetGPUProjectionMatrix(proj, false);
-            //
-            // var width = camera.pixelWidth;
-            // var height = camera.pixelHeight;
-            //
-            // // xy coordinates in range [-1; 1] go to pixel coordinates.
-            // Matrix4x4 toScreen = new Matrix4x4(
-            //     new Vector4(0.5f * width, 0.0f, 0.0f, 0.0f),
-            //     new Vector4(0.0f, 0.5f * height, 0.0f, 0.0f),
-            //     new Vector4(0.0f, 0.0f, 1.0f, 0.0f),
-            //     new Vector4(0.5f * width, 0.5f * height, 0.0f, 1.0f)
-            // );
-            //
-            // Matrix4x4 zScaleBias = Matrix4x4.identity;
-            //     
-            // if (isOpenGL)
-            // {
-            //     // We need to manunally adjust z in NDC space from [-1; 1] to [0; 1] (storage in depth texture).
-            //     zScaleBias = new Matrix4x4(
-            //         new Vector4(1.0f, 0.0f, 0.0f, 0.0f),
-            //         new Vector4(0.0f, 1.0f, 0.0f, 0.0f),
-            //         new Vector4(0.0f, 0.0f, 0.5f, 0.0f),
-            //         new Vector4(0.0f, 0.0f, 0.5f, 1.0f)
-            //     );
-            // }
-            //
-            // var vp = gpuProj * view;
-            // var screenToWorld = Matrix4x4.Inverse(toScreen * zScaleBias * vp);
-            //
-            // cmd.SetGlobalMatrix(_ScreenToWorld, screenToWorld);
+            Matrix4x4 proj = camera.projectionMatrix;
+            Matrix4x4 view = camera.worldToCameraMatrix;
+            Matrix4x4 gpuProj = GL.GetGPUProjectionMatrix(proj, false);
+            var vp = gpuProj * view;
+            cmd.SetGlobalMatrix("unity_MatrixInvVP", Matrix4x4.Inverse(vp));
             
-            var frustumCorners = new Vector3[4];
-            camera.CalculateFrustumCorners(new Rect(0, 0, 1, 1), camera.farClipPlane, Camera.MonoOrStereoscopicEye.Mono, frustumCorners);
-            var cornerMatrix = new Matrix4x4();
-
-            for (int i = 0; i < 4; i++)
-            {
-                var worldSpaceCorner = camera.transform.TransformVector(frustumCorners[i]);
-                Debug.DrawRay(camera.transform.position, worldSpaceCorner, Color.blue);
-                cornerMatrix.SetRow(i, worldSpaceCorner);
-            }
-            cmd.SetGlobalMatrix("_WorldSpaceFrustumCorners", cornerMatrix);
+            // var frustumCorners = new Vector3[4];
+            // camera.CalculateFrustumCorners(new Rect(0, 0, 1, 1), camera.farClipPlane, Camera.MonoOrStereoscopicEye.Mono, frustumCorners);
+            // var cornerMatrix = new Matrix4x4();
+            //
+            // for (int i = 0; i < 4; i++)
+            // {
+            //     var worldSpaceCorner = camera.transform.TransformVector(frustumCorners[i]);
+            //     //Debug.DrawRay(camera.transform.position, worldSpaceCorner, Color.blue);
+            //     cornerMatrix.SetRow(i, worldSpaceCorner);
+            // }
+            // cmd.SetGlobalMatrix("_WorldSpaceFrustumCorners", cornerMatrix);
         }
         
         protected override void Render(ScriptableRenderContext context, Camera[] cameras)
@@ -307,6 +276,7 @@ namespace DGX.SRP
                 //Shader.SetGlobalTexture("_GT2", rt.GBuffer2);
                 
                 var clearFlags = camera.clearFlags;
+                bool shouldClearColor = clearFlags == CameraClearFlags.Color;
                 
                 context.SetupCameraProperties(camera);
                 
@@ -317,11 +287,10 @@ namespace DGX.SRP
                 cmd.SetGlobalTexture("_Depth", depthTextureID);
                 //RenderTargetIdentifier depthTextureID = rt.Depth_ID;
                 
-                
                 cmd.SetRenderTarget(rt.GBufferIDs, depthTextureID);
                 cmd.ClearRenderTarget(true, 
-                    clearFlags == CameraClearFlags.Color
-                    , camera.backgroundColor);
+                    shouldClearColor,
+                    camera.backgroundColor);
                 
                 context.ExecuteCommandBuffer(cmd); 
                 cmd.Release();
@@ -368,7 +337,7 @@ namespace DGX.SRP
 
                 Mesh fullscreenMesh;
                 
-                if (shouldDrawToDedicatedColorTarget(camera))
+                if (shouldDrawToDedicatedColorTarget(camera, rt.RenderSettings))
                 {
                     // TODO support gamma space
                     colorTarget = RenderTexture.GetTemporary(rt.Depth.width, rt.Depth.height, 0, RenderTextureFormat.ARGB32, RenderTextureReadWrite.sRGB);
@@ -388,8 +357,27 @@ namespace DGX.SRP
                 
                 // для depth указываем любую другую текстуру, иначе она становится недоступной
                 cmd.SetRenderTarget(colorTextureID, rt.GBuffer0TargetId);
+                
+                // if (shouldClearColor)
+                // {
+                //     cmd.ClearRenderTarget(false, true, camera.backgroundColor);
+                //     context.ExecuteCommandBuffer(cmd);
+                //     cmd.Clear();
+                // }
 
-                cmd.DrawMesh(fullscreenMesh, Matrix4x4.identity, LightingPassMaterial, 0, 0);
+                int deferredPass;
+                bool isFogEnabled = RenderSettings.fog && camera.orthographic == false;
+                
+                if (isFogEnabled)
+                {
+                    deferredPass = 0;
+                }
+                else
+                {
+                    deferredPass = 1;
+                }
+                
+                cmd.DrawMesh(fullscreenMesh, Matrix4x4.identity, LightingPassMaterial, 0, deferredPass);
                 //cmd.DrawMesh(fullscreenMesh, Matrix4x4.identity, LightingPassMaterial, 0, 1);
                 
                 // FORWARD UNLIT
@@ -443,13 +431,14 @@ namespace DGX.SRP
                     cmd.Release();
                 }
                 
-                #if UNITY_EDITOR
-                if (UnityEditor.Handles.ShouldRenderGizmos()) 
+#if UNITY_EDITOR
+                if (UnityEditor.Handles.ShouldRenderGizmos()  
+                    && camera.sceneViewFilterMode != Camera.SceneViewFilterMode.ShowFiltered) 
                 {
                     context.DrawGizmos(camera, GizmoSubset.PreImageEffects);
                     context.DrawGizmos(camera, GizmoSubset.PostImageEffects);
                 }
-                #endif
+#endif
                 
                 context.Submit();
                 shadows.Cleanup();
@@ -476,9 +465,9 @@ namespace DGX.SRP
             }
         }
 
-        bool shouldDrawToDedicatedColorTarget(Camera camera)
+        bool shouldDrawToDedicatedColorTarget(Camera camera, CameraRenderSettingsData settings)
         {
-            return SystemInfo.graphicsUVStartsAtTop || camera.rect != fullRect || lowResRendering;
+            return SystemInfo.graphicsUVStartsAtTop || camera.rect != fullRect || settings.LowResRendering;
         }
 
         private void RenderLights(ScriptableRenderContext context, CullingResults cullingResults)
@@ -525,7 +514,7 @@ namespace DGX.SRP
             var width = camera.pixelWidth;
             var height = camera.pixelHeight;
 
-            if (lowResRendering)
+            if (rt.RenderSettings != null && rt.RenderSettings.LowResRendering)
             {
                 width /= 2;
                 height /= 2;

@@ -47,7 +47,9 @@ namespace DGX.SRP.Editor.ShaderGraph
 
         public override void Setup(ref TargetSetupContext context)
         {
-            context.AddSubShader(Unlit("Opaque", "Geometry", this));
+            var renderQueue = surfaceType == SurfaceType.Opaque ? "Geometry" : "Transparent";
+            var renderType = surfaceType == SurfaceType.Opaque ? "Opaque" : "Transparent";
+            context.AddSubShader(Unlit(renderType, renderQueue, this));
         }
         
         public static SubShaderDescriptor Unlit(string renderType, string renderQueue, DgxTarget target)

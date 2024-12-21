@@ -24,11 +24,33 @@ Shader "Hidden/DGX/DEFERRED"
 
         Pass
         {
+            Name "fog"
             HLSLPROGRAM
             #pragma vertex vert
             #pragma fragment frag
 
-            #pragma multi_compile FOG_LINEAR FOG_EXP FOG_EXP2
+            #pragma multi_compile_fog
+            #pragma multi_compile _ DGX_PBR_RENDERING
+            #pragma require cubearray
+            #pragma exclude_renderers gles
+            //#if defined(DGX_USE_PBR)
+            //#pragma require cubearray
+            //#endif
+
+            #define DGX_FOG_ENABLED
+            
+            #include "DeferredPass.hlsl"
+            
+            ENDHLSL
+        }
+
+        Pass
+        {
+            Name "no fog"
+            HLSLPROGRAM
+            #pragma vertex vert
+            #pragma fragment frag
+
             #pragma multi_compile _ DGX_PBR_RENDERING
             #pragma require cubearray
             #pragma exclude_renderers gles

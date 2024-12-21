@@ -35,6 +35,7 @@ float4x4 unity_MatrixP;
 float4x4 _InvProjMatrix;
 float4x4 unity_MatrixV;
 float4x4 unity_MatrixInvV;
+float4x4 unity_MatrixInvVP;
 float4x4 _ScreenToWorld;
 float4x4 glstate_matrix_projection;
 
@@ -156,13 +157,6 @@ v2f vert (appdata v)
     o.screenUV.x /= _DrawScale.x;
     o.screenUV.y /= +_DrawScale.y;
     
-    float3 corner;
-    corner.x = lerpCorner(o.screenUV.xy, 0);
-    corner.y = lerpCorner(o.screenUV.xy, 1);
-    corner.z = lerpCorner(o.screenUV.xy, 2);
-
-    o.viewDir = corner - _WorldSpaceCameraPos.xyz;
-    
     return o;
 }
 
@@ -172,6 +166,19 @@ half3 Sample_ReflectionProbe_half(half3 viewDir, half3 normalWS, half index, hal
 
     float4 color = SAMPLE_TEXTURECUBE_ARRAY_LOD(tg_ReflectionProbes, samplertg_ReflectionProbes, reflectVec, index, lod);
     return DecodeHDREnvironment(color, tg_ReflectionProbeDecodeInstructions);
+}
+
+float3 WorldSpacePositionFromDepth(float2 screenUV, float rawDepth)
+{
+    #if UNITY_REVERSED_Z
+    float deviceDepth = rawDepth;
+    #else
+    float deviceDepth = rawDepth * 2.0 - 1.0;
+    #endif
+    
+    float4 positionCS = float4(screenUV.xy * 2 - 1, deviceDepth, 1);
+    float4 hpositionWS = mul(unity_MatrixInvVP, positionCS);
+    return hpositionWS.xyz / hpositionWS.w;
 }
 
 half4 frag (v2f i) : SV_Target
@@ -191,7 +198,7 @@ half4 frag (v2f i) : SV_Target
     
     //return half4(linDepth.x, 0, 0, 1);
     
-    float3 worldPos = _WorldSpaceCameraPos.xyz + i.viewDir * linDepth;
+    float3 worldPos = WorldSpacePositionFromDepth(screen_uv, rawDepth);
 
     #ifdef DGX_PBR_RENDERING
     float3 V = normalize(_WorldSpaceCameraPos.xyz - worldPos.xyz);
@@ -202,7 +209,7 @@ half4 frag (v2f i) : SV_Target
     #endif
     
     half shadowDistance = dgx_MainLightShadowParams.y;
-    float3 normalBias = surface.NormalWS * 0.1;
+    float3 normalBias = surface.NormalWS * 0.01;
     float3 positionSTS = mul(
         _ShadowVP,
         float4(worldPos.xyz + normalBias, 1.0)
@@ -212,19 +219,26 @@ half4 frag (v2f i) : SV_Target
         _DirectionalShadowAtlas, SHADOW_SAMPLER, positionSTS
     ).r;
 
-    //half3 L = normalize(half3(_WorldSpaceLightPos0.xyz));
-    //half NdotL = saturate(dot(surface.NormalWS, L));
+    
     
     half shadowIntensity = dgx_MainLightShadowParams.x;
+
+    // remove shadowmap on back surface
+    half3 L = normalize(half3(_WorldSpaceLightPos0.xyz));
+    half NdotL = saturate(dot(surface.NormalWS, L));
+    //shadowIntensity *= saturate(NdotL * 9999);
+    
     half fadeSize = 0.05;
     half distanceFade = saturate((1 - eyeDepth / shadowDistance) / fadeSize);
     shadowAtten = lerp(1, shadowAtten, shadowIntensity * distanceFade);
     
     result.rgb *= lerp(_SubtractiveShadowColor.rgb, half3(1,1,1), shadowAtten);
-    
+
+    #ifdef DGX_FOG_ENABLED
     float dist = ComputeFogDistance(linDepth);
     half fog = ComputeFogFactorZ0ToFar(dist);
     result.rgb = MixFog(result.rgb, unity_FogColor.rgb, fog);
+    #endif
     //result.rgb = worldPos.xyz;
     
     return result; 

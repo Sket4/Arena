@@ -83,7 +83,7 @@ namespace DGX.SRP
                 mainLightShadowParams.y = settings.MaxDistance;
                 commands.SetGlobalVector("dgx_MainLightShadowParams", mainLightShadowParams);
                 
-                commands.SetGlobalDepthBias(0, light.shadowBias);
+                //commands.SetGlobalDepthBias(0, light.shadowBias);
                 
                 ExecuteBuffer();
                 

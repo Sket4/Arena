@@ -36,6 +36,8 @@ namespace DGX.SRP
             public RenderTargetIdentifier Depth_ID;
             public RenderTexture LinearDepth;
             public RenderTargetIdentifier LinearDepth_ID;
+
+            public bool isHDR;
             // RenderTexture Color0;
             //public RenderTargetIdentifier Color0_ID;
             // public RenderTexture Color1;
@@ -340,7 +342,9 @@ namespace DGX.SRP
                 if (shouldDrawToDedicatedColorTarget(camera, rt.RenderSettings))
                 {
                     // TODO support gamma space
-                    colorTarget = RenderTexture.GetTemporary(rt.Depth.width, rt.Depth.height, 0, RenderTextureFormat.ARGB32, RenderTextureReadWrite.sRGB);
+                    var colorTargetFormat = rt.isHDR ? RenderTextureFormat.DefaultHDR : RenderTextureFormat.Default;
+                    
+                    colorTarget = RenderTexture.GetTemporary(rt.Depth.width, rt.Depth.height, 0, colorTargetFormat, RenderTextureReadWrite.sRGB);
                     colorTextureID = colorTarget;
                     cmd.SetGlobalVector("_DrawScale", new Vector4(1, 1,0,0));
                     fullscreenMesh = fullscreenTriangle;
@@ -555,8 +559,12 @@ namespace DGX.SRP
                 // gBufferDescriptor.sRGB = !isLinear;
                 // gBufferDescriptor.depthBufferBits = 0;
                 var rwMode = isLinear ? RenderTextureReadWrite.sRGB : RenderTextureReadWrite.Linear;
+
+                // TODO TEMP FIX
+                rt.isHDR = camera.name.ToLower().Contains("reflection probe");
+                var gbufferFormat = rt.isHDR ? RenderTextureFormat.DefaultHDR : RenderTextureFormat.Default;
                 
-                rt.GBuffer0 = RenderTexture.GetTemporary(width, height, 0, RenderTextureFormat.ARGB32, rwMode);
+                rt.GBuffer0 = RenderTexture.GetTemporary(width, height, 0, gbufferFormat, rwMode);
                 rt.GBuffer0.name = $"GBuffer 0 ({name})";
                 rt.GBuffer1 = RenderTexture.GetTemporary(width, height, 0, RenderTextureFormat.ARGB32, RenderTextureReadWrite.Linear);
                 rt.GBuffer1.name = $"GBuffer 1 ({name})";

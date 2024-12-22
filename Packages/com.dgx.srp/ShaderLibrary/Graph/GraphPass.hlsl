@@ -2,6 +2,7 @@
 #define DGX_GRAPHPASS_INCLUDED
 
 #include "GraphInput.hlsl"
+#include "Packages/com.unity.render-pipelines.core/ShaderLibrary/MetaPass.hlsl"
 
 Varyings vert (Attributes v)
 {
@@ -42,7 +43,26 @@ half4 frag(Varyings varyings) : SV_Target
 {
     SurfaceDescriptionInputs surfDescInputs = BuildSurfaceDescriptionInputs(varyings);
     SurfaceDescription surface = SurfaceDescriptionFunction(surfDescInputs);
-    return half4(surface.BaseColor, surface.Alpha);
+    return half4(surface.BaseColor + surface.Emission, surface.Alpha);
+}
+
+half4 FragmentMetaCustom(Varyings varyings) : SV_Target
+{
+    SurfaceDescriptionInputs surfDescInputs = BuildSurfaceDescriptionInputs(varyings);
+    SurfaceDescription surface = SurfaceDescriptionFunction(surfDescInputs);
+    
+    UnityMetaInput metaInput;
+    
+    metaInput.Albedo = surface.BaseColor;
+    metaInput.Emission = surface.Emission;
+                
+    #ifdef EDITOR_VISUALIZATION
+    metaInput.VizUV = fragIn.VizUV;
+    metaInput.LightCoord = fragIn.LightCoord;
+    #endif
+
+    half4 result = UnityMetaFragment(metaInput);
+    return result;
 }
 
 #endif

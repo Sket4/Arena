@@ -174,23 +174,24 @@ struct Varyings
 #endif
 #endif
 
-half3 LinearToSRGB(half3 c)
-{
-    #if USE_VERY_FAST_SRGB
-    return sqrt(c);
-    #elif USE_FAST_SRGB
-    return max(1.055 * PositivePow(c, 0.416666667) - 0.055, 0.0);
-    #else
-    half3 sRGBLo = c * 12.92;
-    half3 sRGBHi = (PositivePow(c, half3(1.0 / 2.4, 1.0 / 2.4, 1.0 / 2.4)) * 1.055) - 0.055;
-    half3 sRGB = half3((c.x <= 0.0031308) ? sRGBLo.x : sRGBHi.x, (c.y <= 0.0031308) ? sRGBLo.y : sRGBHi.y, (c.z <= 0.0031308) ? sRGBLo.z : sRGBHi.z);
-    return sRGB;
-    #endif
-}
-
-half4 LinearToSRGB(half4 c)
-{
-    return half4(LinearToSRGB(c.rgb), c.a);
-}
+#include <Packages/com.unity.render-pipelines.core/ShaderLibrary/Color.hlsl>
+// half3 LinearToSRGB(half3 c)
+// {
+//     #if USE_VERY_FAST_SRGB
+//     return sqrt(c);
+//     #elif USE_FAST_SRGB
+//     return max(1.055 * PositivePow(c, 0.416666667) - 0.055, 0.0);
+//     #else
+//     half3 sRGBLo = c * 12.92;
+//     half3 sRGBHi = (PositivePow(c, half3(1.0 / 2.4, 1.0 / 2.4, 1.0 / 2.4)) * 1.055) - 0.055;
+//     half3 sRGB = half3((c.x <= 0.0031308) ? sRGBLo.x : sRGBHi.x, (c.y <= 0.0031308) ? sRGBLo.y : sRGBHi.y, (c.z <= 0.0031308) ? sRGBLo.z : sRGBHi.z);
+//     return sRGB;
+//     #endif
+// }
+//
+// half4 LinearToSRGB(half4 c)
+// {
+//     return half4(LinearToSRGB(c.rgb), c.a);
+// }
 
 #endif

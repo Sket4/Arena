@@ -65,6 +65,7 @@ namespace DGX.SRP.Editor.ShaderGraph
             };
 
             result.passes.Add(UnlitPass(target));
+            result.passes.Add(Meta(target));
             //
             // if (target.mayWriteDepth)
             //     result.passes.Add(CorePasses.DepthOnly(target));
@@ -107,12 +108,53 @@ namespace DGX.SRP.Editor.ShaderGraph
                 includes = Includes,
 
                 // Custom Interpolator Support
-                customInterpolators = CusromInterpolators
+                customInterpolators = CustomInterpolators
             };
             //CorePasses.AddTargetSurfaceControlsToPass(ref result, target);
             return result;
         }
-        public static readonly CustomInterpSubGen.Collection CusromInterpolators = new()
+        public static PassDescriptor Meta(DgxTarget target)
+        {
+            var result = new PassDescriptor()
+            {
+                // Definition
+                displayName = "Meta",
+                referenceName = "SHADERPASS_META",
+                lightMode = "Meta",
+
+                // Template
+                passTemplatePath = "Packages/com.dgx.srp/Editor/Templates/ShaderPass.template",
+                sharedTemplateDirectories = GenerationUtils.GetDefaultSharedTemplateDirectories().Union(
+                    new [] { "Packages/com.dgx.srp/Editor/Templates" }).ToArray(),
+
+                // Port Mask
+                validVertexBlocks = Vertex,
+                validPixelBlocks = FragmentMeta,
+
+                // Fields
+                structs = DefaultStructs,
+                requiredFields = new FieldCollection()
+                {
+                    StructFields.Attributes.uv1,                            // needed for meta vertex position
+                    StructFields.Attributes.uv2,                            //needed for meta vertex position
+                },
+                fieldDependencies = FieldDependencies.Default,
+
+                // Conditional State
+                renderStates = MetaRenderState(),
+                pragmas = MetaPragmas,
+                defines = new DefineCollection(),
+                keywords = new KeywordCollection(),
+                includes = Includes,
+
+                // Custom Interpolator Support
+                customInterpolators = CustomInterpolators
+            };
+
+            //AddMetaControlsToPass(ref result, target);
+            return result;
+        }
+        public static readonly CustomInterpSubGen.Collection CustomInterpolators = new()
         {
             // Custom interpolators are not explicitly defined in the SurfaceDescriptionInputs template.
             // This entry point will let us generate a block of pass-through assignments for each field.
@@ -144,6 +186,26 @@ namespace DGX.SRP.Editor.ShaderGraph
             { Pragma.Fragment("frag") },
             { Pragma.DOTSInstancing },
         };
+        
+        public static readonly PragmaCollection MetaPragmas = new PragmaCollection
+        {
+            { Pragma.Target(ShaderModel.Target45) },
+            { Pragma.MultiCompileInstancing },
+            //{ Pragma.MultiCompileFog },
+            //{ Pragma.MultiCompileForwardBase },
+            { Pragma.Vertex("vert") },
+            { Pragma.Fragment("FragmentMetaCustom") },
+            { Pragma.DOTSInstancing },
+        };
+
+        public static RenderStateCollection MetaRenderState()
+        {
+            return new RenderStateCollection
+            {
+                { RenderState.Cull(Cull.Off) },
+            };
+        }
+        
         public static RenderStateCollection DefaultRenderStates(DgxTarget target)
         {
             var result = new RenderStateCollection();
@@ -192,8 +254,16 @@ namespace DGX.SRP.Editor.ShaderGraph
         public static readonly BlockFieldDescriptor[] FragmentColorAlpha = new BlockFieldDescriptor[]
         {
             BlockFields.SurfaceDescription.BaseColor,
+            BlockFields.SurfaceDescription.Emission,
             BlockFields.SurfaceDescription.Alpha,
-            //BlockFields.SurfaceDescription.AlphaClipThreshold,
+            BlockFields.SurfaceDescription.AlphaClipThreshold,
+        };
+        public static readonly BlockFieldDescriptor[] FragmentMeta = new BlockFieldDescriptor[]
+        {
+            BlockFields.SurfaceDescription.BaseColor,
+            BlockFields.SurfaceDescription.Emission,
+            BlockFields.SurfaceDescription.Alpha,
+            BlockFields.SurfaceDescription.AlphaClipThreshold,
         };
         public static readonly StructCollection DefaultStructs = new StructCollection
         {
@@ -221,6 +291,7 @@ namespace DGX.SRP.Editor.ShaderGraph
             context.AddBlock(BlockFields.VertexDescription.Tangent);
             
             context.AddBlock(BlockFields.SurfaceDescription.BaseColor);
+            context.AddBlock(BlockFields.SurfaceDescription.Emission);
             context.AddBlock(BlockFields.SurfaceDescription.Alpha);
         }
 

@@ -59,6 +59,7 @@ half3 SampleSH(half3 normalWS)
 }
 #endif
 
+
 float3 shadergraph_BakedGI_DGX(float3 positionWS, float3 normalWS, uint2 positionSS, float2 uvStaticLightmap, float2 uvDynamicLightmap, bool applyScaling)
 {
 #ifdef LIGHTMAP_ON
@@ -71,14 +72,15 @@ float3 shadergraph_BakedGI_DGX(float3 positionWS, float3 normalWS, uint2 positio
 #endif
 }
 
-real3 DecodeHDREnvironment(real4 encodedIrradiance, real4 decodeInstructions)
-{
-    // Take into account texture alpha if decodeInstructions.w is true(the alpha value affects the RGB channels)
-    real alpha = max(decodeInstructions.w * (encodedIrradiance.a - 1.0) + 1.0, 0.0);
-
-    // If Linear mode is not supported we can skip exponent part
-    return (decodeInstructions.x * PositivePow(alpha, decodeInstructions.y)) * encodedIrradiance.rgb;
-}
+#include "Packages/com.unity.render-pipelines.core/ShaderLibrary/EntityLighting.hlsl"
+// real3 DecodeHDREnvironment(real4 encodedIrradiance, real4 decodeInstructions)
+// {
+//     // Take into account texture alpha if decodeInstructions.w is true(the alpha value affects the RGB channels)
+//     real alpha = max(decodeInstructions.w * (encodedIrradiance.a - 1.0) + 1.0, 0.0);
+//
+//     // If Linear mode is not supported we can skip exponent part
+//     return (decodeInstructions.x * PositivePow(alpha, decodeInstructions.y)) * encodedIrradiance.rgb;
+// }
 
 float3 shadergraph_ReflectionProbe_DGX(float3 viewDir, float3 normalOS, float lod)
 {

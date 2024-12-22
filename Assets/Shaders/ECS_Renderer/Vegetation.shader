@@ -228,7 +228,7 @@ Shader "Arena/Vegetation"
                 half ao =  i.normalWS_occl.w;
 
             	half3 lighting = ARENA_COMPUTE_AMBIENT_LIGHT(i, normalWS);
-#if !LIGHTMAP_ON
+#ifndef LIGHTMAP_ON
                 lighting *= ao;          
 #endif
 

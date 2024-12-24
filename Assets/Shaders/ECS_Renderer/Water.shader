@@ -268,6 +268,7 @@ Shader"Arena/Water"
                 
                 diffuse.rgb *= lighting;
 
+                //return diffuse.a;
                 diffuse.a *= (i.color.g + i.color.r) * i.color.b;
 
                 half4 finalColor = diffuse;

@@ -46,6 +46,23 @@ real3 MixLightWithRealtimeShadow(real realtimeShadow, real3 ambientLight)
 #include "Packages/com.unity.render-pipelines.core/ShaderLibrary/SpaceTransforms.hlsl"
 #include "Packages/com.unity.render-pipelines.core/ShaderLibrary/Packing.hlsl"
 
+#if UNITY_REVERSED_Z
+	#if (defined(SHADER_API_GLCORE) && !defined(SHADER_API_SWITCH)) || defined(SHADER_API_GLES) || defined(SHADER_API_GLES3)
+		//GL with reversed z => z clip range is [near, -far] -> remapping to [0, far]
+		#define UNITY_Z_0_FAR_FROM_CLIPSPACE(coord) max((coord - _ProjectionParams.y)/(-_ProjectionParams.z-_ProjectionParams.y)*_ProjectionParams.z, 0)
+	#else
+		//D3d with reversed Z => z clip range is [near, 0] -> remapping to [0, far]
+		//max is required to protect ourselves from near plane not being correct/meaningful in case of oblique matrices.
+		#define UNITY_Z_0_FAR_FROM_CLIPSPACE(coord) max(((1.0-(coord)/_ProjectionParams.y)*_ProjectionParams.z),0)
+	#endif
+#elif UNITY_UV_STARTS_AT_TOP
+	//D3d without reversed z => z clip range is [0, far] -> nothing to do
+	#define UNITY_Z_0_FAR_FROM_CLIPSPACE(coord) (coord)
+#else
+	//Opengl => z clip range is [-near, far] -> remapping to [0, far]
+	#define UNITY_Z_0_FAR_FROM_CLIPSPACE(coord) max(((coord + _ProjectionParams.y)/(_ProjectionParams.z+_ProjectionParams.y))*_ProjectionParams.z, 0)
+#endif
+
 // Returns 'true' if the current view performs a perspective projection.
 bool IsPerspectiveProjection()
 {
@@ -93,8 +110,7 @@ float3 GetWorldSpaceViewDir(float3 positionWS)
 
 float3 GetWorldSpaceNormalizeViewDir(float3 positionWS)
 {
-	// TODO fix ortho
-	if (true)//IsPerspectiveProjection())
+	if (IsPerspectiveProjection())
 	{
 		// Perspective
 		float3 V = GetCurrentViewPosition() - positionWS;
@@ -124,7 +140,7 @@ real ComputeFogFactorZ0ToFar(float z)
 
 real ComputeFogFactor(float zPositionCS)
 {
-	float clipZ_0Far = max(((1.0-(zPositionCS)/_ProjectionParams.y)*_ProjectionParams.z),0);
+	float clipZ_0Far = UNITY_Z_0_FAR_FROM_CLIPSPACE(zPositionCS);
 	return ComputeFogFactorZ0ToFar(clipZ_0Far);
 }
 

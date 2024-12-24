@@ -123,6 +123,7 @@ Shader "Arena/Terrain (for beach)"
             #endif
 
             #define ARENA_DEFERRED
+            #define ARENA_UNDERWATER
             
             #include "Terrain-Common.hlsl"
             

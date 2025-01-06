@@ -181,6 +181,26 @@ float3 WorldSpacePositionFromDepth(float2 screenUV, float rawDepth)
     return hpositionWS.xyz / hpositionWS.w;
 }
 
+half hash(half x)
+{
+    return frac(x * 43758.5453);
+}
+
+half3 randomnormal_tangent(half3 x)
+{
+    half3 normal;
+
+    normal.x = hash(x.x);
+    normal.y = hash(x.y);
+    normal.z = hash(x.z);
+
+    normal = normalize(normal);
+
+    normal.y = abs(normal.y);
+
+    return normal;
+}
+
 half4 frag (v2f i) : SV_Target
 {
     float2 screen_uv = (i.screenUV.xy / i.screenUV.z);
@@ -209,7 +229,18 @@ half4 frag (v2f i) : SV_Target
     #endif
     
     half shadowDistance = dgx_MainLightShadowParams.y;
-    float3 normalBias = surface.NormalWS * 0.01;
+    half3 normalBias = dgx_MainLightShadowParams.z * surface.NormalWS;
+
+    // half3 softBias;
+    // softBias.x = hash(surface.NormalWS.x);
+    // softBias.y = hash(surface.NormalWS.y);
+    // softBias.z = hash(surface.NormalWS.z);
+    //
+    // softBias = normalize(softBias);
+    // softBias = abs(softBias);
+    //
+    // normalBias += randomnormal_tangent(surface.NormalWS) * 0.01;
+    
     float3 positionSTS = mul(
         _ShadowVP,
         float4(worldPos.xyz + normalBias, 1.0)
@@ -219,8 +250,6 @@ half4 frag (v2f i) : SV_Target
         _DirectionalShadowAtlas, SHADOW_SAMPLER, positionSTS
     ).r;
 
-    
-    
     half shadowIntensity = dgx_MainLightShadowParams.x;
 
     // remove shadowmap on back surface
@@ -240,7 +269,7 @@ half4 frag (v2f i) : SV_Target
     result.rgb = MixFog(result.rgb, unity_FogColor.rgb, fog);
     #endif
     //result.rgb = worldPos.xyz;
-    
+
     return result; 
 }
 

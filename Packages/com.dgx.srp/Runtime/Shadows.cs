@@ -81,9 +81,27 @@ namespace DGX.SRP
                 var mainLightShadowParams = new Vector4();
                 mainLightShadowParams.x = light.shadowStrength;
                 mainLightShadowParams.y = settings.MaxDistance;
+
+                // TODO
+                int shadowedDirectionalLightCount = 1;
+                int split = shadowedDirectionalLightCount <= 1 ? 1 : 2;
+                int tileSize = atlasSize / split;
+                var cullingSphere = shadowSplitData.cullingSphere;
+                var texelSize = 2f * cullingSphere.w / tileSize;
+                texelSize *= 1.4142136f;
+                
+                // пока поддерживается только один каскад
+                var cascadeData = new Vector4(
+                    1f / cullingSphere.w,
+                    texelSize
+                );
+
+                var normalBias = light.shadowNormalBias * cascadeData.y;
+                mainLightShadowParams.z = normalBias;
+                
                 commands.SetGlobalVector("dgx_MainLightShadowParams", mainLightShadowParams);
                 
-                //commands.SetGlobalDepthBias(0, light.shadowBias);
+                commands.SetGlobalDepthBias(0, light.shadowBias);
                 
                 ExecuteBuffer();
                 

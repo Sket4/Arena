@@ -112,8 +112,13 @@ Varyings ShadowPassVertex(Attributes input)
     #if defined(TG_SKINNING)
     ComputeSkinning_OneBone_NoTangent(input.BoneIndices.x, input.positionOS.xyz, input.normalOS);
     #endif
- 
+
     output.positionCS = GetShadowPositionHClip(input);
+
+    // немного модифицируем позицию для персонажей, чтобы минимизировать артефакты затенения на мелких деталях
+    #if defined(TG_SKINNING)
+    output.positionCS.z *= 0.994;
+    #endif
     return output;
 }
 

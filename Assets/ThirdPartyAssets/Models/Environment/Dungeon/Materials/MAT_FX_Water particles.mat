@@ -21,21 +21,21 @@ Material:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_Name: MAT_FX_Water particles
-  m_Shader: {fileID: 4800000, guid: 0406db5a14f94604a8c57ccfbc9f3b46, type: 3}
+  m_Shader: {fileID: -6465566751694194690, guid: 7b2513736d400bb479e41765581a06a9, type: 3}
   m_Parent: {fileID: 0}
   m_ModifiedSerializedProperties: 0
   m_ValidKeywords:
-  - _COLORADDSUBDIFF_ON
-  - _SURFACE_TYPE_TRANSPARENT
+  - _USE_FOG
   m_InvalidKeywords:
+  - _COLORADDSUBDIFF_ON
   - _FLIPBOOKBLENDING_OFF
+  - _SURFACE_TYPE_TRANSPARENT
   m_LightmapFlags: 4
   m_EnableInstancingVariants: 1
   m_DoubleSidedGI: 0
-  m_CustomRenderQueue: 3001
+  m_CustomRenderQueue: -1
   stringTagMap:
     MotionVector: User
-    RenderType: Transparent
   disabledShaderPasses:
   - MOTIONVECTORS
   - DBufferMesh_M
@@ -357,6 +357,8 @@ Material:
     - _TransparentDepthPrepassEnable: 0
     - _TransparentSortPriority: 2
     - _TransparentWritingMotionVec: 0
+    - _USE_FOG: 1
+    - _USE_HDR: 0
     - _UVBase: 0
     - _UVDetail: 0
     - _UVEmissive: 0
@@ -379,8 +381,9 @@ Material:
     - _BaseColorAddSubDiff: {r: 1, g: 0, b: 0, a: 0}
     - _BaseColorMap_MipInfo: {r: 0, g: 0, b: 0, a: 0}
     - _CameraFadeParams: {r: 0, g: Infinity, b: 0, a: 0}
-    - _Color: {r: 1, g: 1, b: 1, a: 1}
+    - _Color: {r: 0.29559743, g: 0.2769069, b: 0.22030371, a: 1}
     - _ColorAddSubDiff: {r: 1, g: 0, b: 0, a: 0}
+    - _Color_HDR: {r: 1, g: 1, b: 1, a: 1}
     - _DiffusionProfileAsset: {r: -1049.8796, g: 1.1639964e+32, b: 7.557146e+35, a: -5.4523735e-36}
     - _DoubleSidedConstants: {r: 1, g: 1, b: -1, a: 0}
     - _EmissionColor: {r: 1, g: 1, b: 1, a: 1}

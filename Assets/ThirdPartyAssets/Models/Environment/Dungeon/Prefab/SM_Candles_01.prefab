@@ -10,7 +10,6 @@ GameObject:
   m_Component:
   - component: {fileID: 6960124262397975733}
   - component: {fileID: 4172785933798540569}
-  - component: {fileID: 1234942939681913386}
   m_Layer: 0
   m_Name: Point Light
   m_TagString: Untagged
@@ -95,29 +94,6 @@ Light:
   m_UseViewFrustumForShadowCasterCull: 1
   m_ShadowRadius: 0
   m_ShadowAngle: 0
---- !u!114 &1234942939681913386
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3538876971735505399}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 474bcb49853aa07438625e644c072ee6, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_Version: 3
-  m_UsePipelineSettings: 1
-  m_AdditionalLightsShadowResolutionTier: 2
-  m_LightLayerMask: 1
-  m_RenderingLayers: 1
-  m_CustomShadowLayers: 0
-  m_ShadowLayerMask: 1
-  m_ShadowRenderingLayers: 1
-  m_LightCookieSize: {x: 1, y: 1}
-  m_LightCookieOffset: {x: 0, y: 0}
-  m_SoftShadowQuality: 0
 --- !u!1 &4017586245286741244
 GameObject:
   m_ObjectHideFlags: 0
@@ -129,6 +105,7 @@ GameObject:
   - component: {fileID: 4718779911193235217}
   - component: {fileID: 5060664334556975993}
   - component: {fileID: 8562906755491332895}
+  - component: {fileID: 992945651510593428}
   m_Layer: 0
   m_Name: FX_Test (5)
   m_TagString: Untagged
@@ -4908,7 +4885,6 @@ ParticleSystemRenderer:
   m_RendererPriority: 0
   m_Materials:
   - {fileID: 2100000, guid: 9c20dcbb4a40b9e4ba1dc68d40dccaf0, type: 2}
-  - {fileID: 2100000, guid: 1ea571392c272d647acc0f3b1a85f655, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -4961,6 +4937,19 @@ ParticleSystemRenderer:
   m_MeshWeighting2: 1
   m_MeshWeighting3: 1
   m_MaskInteraction: 0
+--- !u!114 &992945651510593428
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4017586245286741244}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6304a1a6d35b58d46b88307b86418eef, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  MaxDistance: 10
 --- !u!1 &4666612841075090663
 GameObject:
   m_ObjectHideFlags: 0
@@ -4972,6 +4961,7 @@ GameObject:
   - component: {fileID: 7347433701917430862}
   - component: {fileID: 6629950946722344889}
   - component: {fileID: 1057878547640652944}
+  - component: {fileID: 860176406648722288}
   m_Layer: 0
   m_Name: FX_Test (3)
   m_TagString: Untagged
@@ -9751,7 +9741,6 @@ ParticleSystemRenderer:
   m_RendererPriority: 0
   m_Materials:
   - {fileID: 2100000, guid: 9c20dcbb4a40b9e4ba1dc68d40dccaf0, type: 2}
-  - {fileID: 2100000, guid: 1ea571392c272d647acc0f3b1a85f655, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -9804,6 +9793,19 @@ ParticleSystemRenderer:
   m_MeshWeighting2: 1
   m_MeshWeighting3: 1
   m_MaskInteraction: 0
+--- !u!114 &860176406648722288
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4666612841075090663}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6304a1a6d35b58d46b88307b86418eef, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  MaxDistance: 10
 --- !u!1 &7594856120722597973
 GameObject:
   m_ObjectHideFlags: 0
@@ -9815,6 +9817,7 @@ GameObject:
   - component: {fileID: 8627242049447198876}
   - component: {fileID: 1111199479278918193}
   - component: {fileID: 6552436298589379641}
+  - component: {fileID: 580873635669150950}
   m_Layer: 0
   m_Name: FX_Test (4)
   m_TagString: Untagged
@@ -14594,7 +14597,6 @@ ParticleSystemRenderer:
   m_RendererPriority: 0
   m_Materials:
   - {fileID: 2100000, guid: 9c20dcbb4a40b9e4ba1dc68d40dccaf0, type: 2}
-  - {fileID: 2100000, guid: 1ea571392c272d647acc0f3b1a85f655, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -14647,6 +14649,19 @@ ParticleSystemRenderer:
   m_MeshWeighting2: 1
   m_MeshWeighting3: 1
   m_MaskInteraction: 0
+--- !u!114 &580873635669150950
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7594856120722597973}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6304a1a6d35b58d46b88307b86418eef, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  MaxDistance: 10
 --- !u!1 &8543870029259053786
 GameObject:
   m_ObjectHideFlags: 0

@@ -16,6 +16,7 @@ Shader"Arena/Water"
         [Toggle(USE_LOWER_NORMAL_FOG)]
         _UseLowerNormalFogByFog("Lower normal strength by fog", Float) = 1
         _Normal_strength("Normal strenght", Float) = 1
+        _Normal_Y_Scale("Normal Y scale", Float) = 1
         
         [Toggle(USE_FOG)]
         _UseFog("Use fog", Float) = 1.0
@@ -112,6 +113,7 @@ Shader"Arena/Water"
                 half _Roughness;
                 half _Rim_mult;
                 half _Normal_strength;
+                half _Normal_Y_Scale;
                 half4 _FoamParameters;
                 half4 _FoamTex_ST;
             CBUFFER_END
@@ -211,9 +213,9 @@ Shader"Arena/Water"
                 NormalStrength_float(normalTS, _Normal_strength * normalFogStr * i.color.b, normalTS);
                 normalTS = normalize(normalTS);
 
-                float3 normalWS = float3(0,1,0);
-                float3 tangentWS = float3(1,0,0);
-                float3 bitangentWS = float3(0,0,1);
+                half3 normalWS = half3(0,1,0);
+                half3 tangentWS = half3(1,0,0);
+                half3 bitangentWS = half3(0,0,1);
 
                 half3 tspace0 = half3(tangentWS.x, bitangentWS.x, normalWS.x);
                 half3 tspace1 = half3(tangentWS.y, bitangentWS.y, normalWS.y);

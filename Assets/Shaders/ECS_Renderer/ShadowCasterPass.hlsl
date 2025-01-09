@@ -117,7 +117,15 @@ Varyings ShadowPassVertex(Attributes input)
 
     // немного модифицируем позицию для персонажей, чтобы минимизировать артефакты затенения на мелких деталях
     #if defined(TG_SKINNING)
-    output.positionCS.z *= 0.994;
+
+    #if UNITY_REVERSED_Z
+    const float bias = -0.004;
+    #else
+    const float bias = 0.004;
+    #endif
+
+    output.positionCS.z += bias;
+    
     #endif
     return output;
 }

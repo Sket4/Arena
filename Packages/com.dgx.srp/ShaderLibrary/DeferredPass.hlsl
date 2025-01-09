@@ -201,6 +201,21 @@ half3 randomnormal_tangent(half3 x)
     return normal;
 }
 
+void softNormalBias(float3 main, inout half3 normalBias)
+{
+    half3 softBias;
+    
+    softBias.x = hash(main.x);
+    softBias.y = hash(main.y);
+    softBias.z = hash(main.z);
+    
+    softBias = normalize(softBias);
+    softBias = abs(softBias);
+    normalBias += softBias * 0.02;
+    //
+    //normalBias += randomnormal_tangent(surface.NormalWS) * 0.02;
+}
+
 half4 frag (v2f i) : SV_Target
 {
     float2 screen_uv = (i.screenUV.xy / i.screenUV.z);
@@ -219,9 +234,11 @@ half4 frag (v2f i) : SV_Target
     //return half4(linDepth.x, 0, 0, 1);
     
     float3 worldPos = WorldSpacePositionFromDepth(screen_uv, rawDepth);
+    float3 viewDirWithDistance = _WorldSpaceCameraPos.xyz - worldPos.xyz;
+    half viewDirDistanceSq = dot(viewDirWithDistance,viewDirWithDistance);
 
     #ifdef DGX_PBR_RENDERING
-    float3 V = normalize(_WorldSpaceCameraPos.xyz - worldPos.xyz);
+    float3 V = normalize(viewDirWithDistance);
     half3 envMapColor = Sample_ReflectionProbe_half(V, surface.NormalWS, surface.EnvCubemapIndex, surface.Roughness * 4);
     half4 result = LightingPBR_Half(surface, V, envMapColor);
     #else
@@ -231,15 +248,8 @@ half4 frag (v2f i) : SV_Target
     half shadowDistance = dgx_MainLightShadowParams.y;
     half3 normalBias = dgx_MainLightShadowParams.z * surface.NormalWS;
 
-    // half3 softBias;
-    // softBias.x = hash(surface.NormalWS.x);
-    // softBias.y = hash(surface.NormalWS.y);
-    // softBias.z = hash(surface.NormalWS.z);
-    //
-    // softBias = normalize(softBias);
-    // softBias = abs(softBias);
-    //
-    // normalBias += randomnormal_tangent(surface.NormalWS) * 0.01;
+    // плохо работает на мобиле, тестил на vulkan (samsung s20)
+    //softNormalBias(worldPos, normalBias);
     
     float3 positionSTS = mul(
         _ShadowVP,
@@ -254,11 +264,16 @@ half4 frag (v2f i) : SV_Target
 
     // remove shadowmap on back surface
     half3 L = normalize(half3(_WorldSpaceLightPos0.xyz));
-    half NdotL = saturate(dot(surface.NormalWS, L));
-    //shadowIntensity *= saturate(NdotL * 9999);
+    half NdotL = dot(surface.NormalWS, L);
+    shadowIntensity *= saturate(NdotL + 0.1);
     
-    half fadeSize = 0.05;
-    half distanceFade = saturate((1 - eyeDepth / shadowDistance) / fadeSize);
+    half fadeSize = 0.1;
+    half shadowDistanceSq = shadowDistance * shadowDistance;
+    half distDiff = shadowDistanceSq - viewDirDistanceSq;
+    half shadowFadePart = shadowDistanceSq * fadeSize;
+    half distanceFade = saturate(distDiff / shadowFadePart);
+    
+    //return half4(shadowAtten, distanceFade, 0,0);
     shadowAtten = lerp(1, shadowAtten, shadowIntensity * distanceFade);
     
     result.rgb *= lerp(_SubtractiveShadowColor.rgb, half3(1,1,1), shadowAtten);

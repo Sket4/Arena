@@ -223,9 +223,9 @@ namespace Arena.Client
                 Debug.Log("Failed to load map plane mesh material");
                 return;    
             }
-            
-            var texture = RenderTexture.GetTemporary(mapRenderData.MapTextureSize, mapRenderData.MapTextureSize, 16, RenderTextureFormat.Default, RenderTextureReadWrite.Default, 8);
-            renderInfo.Material.Result.mainTexture = texture;
+
+            var mapTextureSize = mapRenderData.MapTextureSize;
+            var textureHiRes = RenderTexture.GetTemporary(mapTextureSize*2, mapTextureSize*2, 16, RenderTextureFormat.Default, RenderTextureReadWrite.Default, 8);
 
             var rs = World.GetExistingSystemManaged<RenderingSystem>();
 
@@ -246,7 +246,7 @@ namespace Arena.Client
             camera.cullingMask = mapRenderData.MapRenderLayers;
             camera.orthographicSize = mapRenderData.MapCameraOrthoSize;
             camera.orthographic = true;
-            camera.targetTexture = texture;
+            camera.targetTexture = textureHiRes;
             camera.backgroundColor = Color.black;
             camera.clearFlags = CameraClearFlags.SolidColor;
             camera.transform.position = l2w.Position;
@@ -256,6 +256,11 @@ namespace Arena.Client
             camera.Render();
 
             camera.enabled = false;
+            
+            var texture = RenderTexture.GetTemporary(mapTextureSize, mapTextureSize, 0, RenderTextureFormat.Default, RenderTextureReadWrite.Default, 1);
+            Graphics.Blit(textureHiRes, texture);
+            RenderTexture.ReleaseTemporary(textureHiRes);
+            renderInfo.Material.Result.mainTexture = texture;
 
             var msgEntity = EntityManager.CreateEntity(typeof(Message));
             EntityManager.SetComponentData(msgEntity, Message.CreateFromString("map rendered"));

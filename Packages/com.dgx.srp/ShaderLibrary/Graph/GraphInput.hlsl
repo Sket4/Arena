@@ -154,7 +154,7 @@ struct Varyings
     #endif
 
     #ifdef UNITY_ANY_INSTANCING_ENABLED
-    uint instanceID : SV_INSTANCEID;
+    DEFAULT_UNITY_VERTEX_INPUT_INSTANCE_ID
     #endif
 };
 

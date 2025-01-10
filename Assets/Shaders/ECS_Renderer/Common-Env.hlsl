@@ -54,15 +54,11 @@ struct v2f
 	UNITY_VERTEX_INPUT_INSTANCE_ID
 
 	#ifdef USE_SURFACE_BLEND
-		#ifdef ARENA_DEFERRED
-			float3 positionWS : TEXCOORD6;
-		#else
-			float4 positionWS : TEXCOORD6;
-		#endif
-	#else
-		#ifndef ARENA_DEFERRED
-		float4 positionWS : TEXCOORD6;
-		#endif
+	float2 surfaceBlendUV : TEXCOORD6;
+	#endif
+
+	#ifndef ARENA_DEFERRED
+	float4 positionWS : TEXCOORD7;
 	#endif
 };
 
@@ -81,7 +77,7 @@ v2f env_vert (appdata v)
 	
 	#ifdef ARENA_DEFERRED
 	#ifdef USE_SURFACE_BLEND
-	o.positionWS = positionWS;
+	o.surfaceBlendUV = TRANSFORM_TEX(positionWS.xz, _SurfaceMap);
 	#endif
 	
 	#else
@@ -138,8 +134,7 @@ GBufferFragmentOutput env_frag_deferred(v2f i)
 	half3 ambientLight = ARENA_COMPUTE_AMBIENT_LIGHT(i, normalWS);
 	
 	#if USE_SURFACE_BLEND
-	float2 surfaceUV = TRANSFORM_TEX(i.positionWS.xz, _SurfaceMap);
-	half4 surfaceColor = tex2D(_SurfaceMap, surfaceUV);
+	half4 surfaceColor = tex2D(_SurfaceMap, i.surfaceBlendUV);
 	float surfaceBlend = saturate(dot(half3(normalWS.x, normalWS.y, normalWS.z), half3(0.0,1,0.0)));
 
 	// pow 4

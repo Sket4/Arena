@@ -92,15 +92,20 @@ Shader"Arena/Water"
             struct v2f
             {
                 float4 vertex : SV_POSITION;
-                float2 uv : TEXCOORD0;
-                nointerpolation half2 instanceData : TEXCOORD1;
-                half3 color : TEXCOORD2;
-                half3 foamData : TEXCOORD3;
+                float2 wave1_uv : TEXCOORD0;
+                float2 wave2_uv : TEXCOORD1;
+                nointerpolation half2 instanceData : TEXCOORD2;
+                half3 color : TEXCOORD3;
+                half3 foamData : TEXCOORD4;
 
-                float4 positionWS_fog : TEXCOORD4;
+                float4 positionWS_fog : TEXCOORD5;
+
+                #if defined(USE_THIRD_WAVE)
+                float2 wave3_uv : TEXCOORD6;
+                #endif
 
 #if LIGHTMAP_ON
-                TG_DECLARE_LIGHTMAP_UV(8)
+                TG_DECLARE_LIGHTMAP_UV(7)
 #endif
             };
 
@@ -143,7 +148,17 @@ Shader"Arena/Water"
                 o.positionWS_fog.xyz = TransformObjectToWorld(positionOS);
                 o.vertex = TransformWorldToHClip(o.positionWS_fog.xyz); //This function calculates all the relative spaces of the objects vertices
                 
-                o.uv = v.uv;//TRANSFORM_TEX(v.uv, _Bum);
+                o.wave1_uv = v.uv * _Tiling_and_speed_1.xy;
+                o.wave1_uv += _Tiling_and_speed_1.zw * _Time.y;
+
+                o.wave2_uv = v.uv * _Tiling_and_speed_2.xy;
+                o.wave2_uv += _Tiling_and_speed_2.zw * _Time.y;
+
+                #if defined(USE_THIRD_WAVE)
+                o.wave3_uv = v.uv * _Tiling_and_speed_3.xy;
+                o.wave3_uv += _Tiling_and_speed_3.zw * _Time.y;
+                #endif
+                
                 o.positionWS_fog.a = ComputeFogFactor(o.vertex.z);
                 
                 float4 instanceData = tg_InstanceData;
@@ -183,19 +198,11 @@ Shader"Arena/Water"
 
                 //return half4(i.color.bbb, 1);
 
-                float2 uv1 = i.uv * _Tiling_and_speed_1.xy;
-                uv1 += _Tiling_and_speed_1.zw * _Time.y;
-                float3 normalTS = tex2D(_PackedNormalMap, uv1).xyz;
-
-                 float2 uv2 = i.uv * _Tiling_and_speed_2.xy;
-                 uv2 += _Tiling_and_speed_2.zw * _Time.y;
-                 normalTS.xy += tex2D(_PackedNormalMap, uv2).xy;
+                float3 normalTS = tex2D(_PackedNormalMap, i.wave1_uv).xyz;
+                 normalTS.xy += tex2D(_PackedNormalMap, i.wave2_uv).xy;
 
                 #if defined(USE_THIRD_WAVE)
-                 float2 uv3 = i.uv * _Tiling_and_speed_3.xy;
-                 uv3 += _Tiling_and_speed_3.zw * _Time.y;
-                 normalTS.xy += tex2D(_PackedNormalMap, uv3).xy;
-                
+                 normalTS.xy += tex2D(_PackedNormalMap, i.wave3_uv).xy;
                  normalTS.xy *= 0.333333;
                 #else
                 normalTS.xy *= 0.5;

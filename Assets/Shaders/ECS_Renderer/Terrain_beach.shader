@@ -115,8 +115,8 @@ Shader "Arena/Terrain (for beach)"
             #pragma multi_compile _ LIGHTMAP_ON
             #pragma multi_compile _ DIRLIGHTMAP_COMBINED
 
-            #pragma shader_feature_local_fragment ARENA_SCALE_UV_X
-            #pragma shader_feature_local_fragment ARENA_SCALE_UV_Y
+            #pragma shader_feature_local_vertex ARENA_SCALE_UV_X
+            #pragma shader_feature_local_vertex ARENA_SCALE_UV_Y
 
             #if defined(UG_QUALITY_LOW)
             #undef DIRLIGHTMAP_COMBINED

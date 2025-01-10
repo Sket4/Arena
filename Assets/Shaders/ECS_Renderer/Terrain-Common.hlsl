@@ -23,15 +23,25 @@ struct appdata
 struct v2f
 {
     half4 vertex : SV_POSITION;
-    float2 uv : TEXCOORD0;
+    half2 splatmapUV : TEXCOORD0;
+    
     TG_DECLARE_INSTANCE_DATA(1)
 
     float3 normalWS : TEXCOORD2;
     float4 tangentWS : TEXCOORD3;
     float4 positionWS_fog : TEXCOORD4;
+
+    half2 layer1_uv : TEXCOORD5;
+    half2 layer2_uv : TEXCOORD6;
+    half2 layer3_uv : TEXCOORD7;
+    #ifdef ARENA_USE_FOUR_CHANNEL
+    half2 layer4_uv  : TEXCOORD8;
+    #endif
+    
 #if LIGHTMAP_ON
-    TG_DECLARE_LIGHTMAP_UV(5)
+    TG_DECLARE_LIGHTMAP_UV(9)
 #endif
+    
     UNITY_VERTEX_INPUT_INSTANCE_ID
 };
 
@@ -75,7 +85,7 @@ v2f vert (appdata v)
     o.positionWS_fog.xyz = TransformObjectToWorld(positionOS);
     o.vertex = TransformWorldToHClip(o.positionWS_fog.xyz);
 
-    o.uv = v.uv;
+    o.splatmapUV = v.uv;
     
     o.positionWS_fog.w = ComputeFogFactor(o.vertex.z);
 
@@ -95,17 +105,8 @@ v2f vert (appdata v)
 #endif
 
     //o.color.a = 1;
-    
-    return o;
-}
 
-
-GBufferFragmentOutput frag(v2f i)
-{
-    UNITY_SETUP_INSTANCE_ID(i);
-
-    half4 splat = tex2D(_SplatMap, i.uv);
-    float2 uv = i.uv;
+    float2 uv = v.uv;
 
     #ifdef ARENA_SCALE_UV_X
     uv.x += uv.x;
@@ -115,33 +116,46 @@ GBufferFragmentOutput frag(v2f i)
     uv.y += uv.y;
     #endif
     
-    half2 layer1_uv = uv * _Layers_Tiling.x;
-    half2 layer2_uv = uv * _Layers_Tiling.y;
-    half2 layer3_uv = uv * _Layers_Tiling.z;
+    o.layer1_uv = uv * _Layers_Tiling.x;
+    o.layer2_uv = uv * _Layers_Tiling.y;
+    o.layer3_uv = uv * _Layers_Tiling.z;
+    #ifdef ARENA_USE_FOUR_CHANNEL
+    o.layer4_uv = uv * _Layers_Tiling.w;
+    #endif
     
-    
-    half3 diffuse = tex2D(_Color1, layer1_uv).rgb * splat.x;
+    return o;
+}
 
-    half3 color2 = tex2D(_Color2, layer2_uv).rgb; 
+
+GBufferFragmentOutput frag(v2f i)
+{
+    UNITY_SETUP_INSTANCE_ID(i);
+
+    half4 splat = tex2D(_SplatMap, i.splatmapUV);
+    
+    
+    
+    half3 diffuse = tex2D(_Color1, i.layer1_uv).rgb * splat.x;
+
+    half3 color2 = tex2D(_Color2, i.layer2_uv).rgb; 
     diffuse += color2 * splat.y;
-    diffuse += tex2D(_Color3, layer3_uv).rgb * splat.z;
+    diffuse += tex2D(_Color3, i.layer3_uv).rgb * splat.z;
 
     #ifdef ARENA_USE_FOUR_CHANNEL
-    half2 layer4_uv = uv * _Layers_Tiling.w;
-    diffuse += tex2D(_Color4, layer4_uv).rgb * splat.w;
+    diffuse += tex2D(_Color4, i.layer4_uv).rgb * splat.w;
     #else
     // wet sand
     diffuse += color2 * splat.w * 0.75;
     #endif
 
     #if defined(UG_QUALITY_MED) || defined(UG_QUALITY_HIGH)
-    half3 normalTS = UnpackNormal(tex2D(_Normal1, layer1_uv)) * splat.r;
-    half3 normal2 = UnpackNormal(tex2D(_Normal2, layer2_uv)); 
+    half3 normalTS = UnpackNormal(tex2D(_Normal1, i.layer1_uv)) * splat.r;
+    half3 normal2 = UnpackNormal(tex2D(_Normal2, i.layer2_uv)); 
     normalTS += normal2 * splat.g;
-    normalTS += UnpackNormal(tex2D(_Normal3, layer3_uv)) * splat.b;
+    normalTS += UnpackNormal(tex2D(_Normal3, i.layer3_uv)) * splat.b;
 
     #ifdef ARENA_USE_FOUR_CHANNEL
-    normalTS += UnpackNormal(tex2D(_Normal4, layer4_uv)) * splat.w;
+    normalTS += UnpackNormal(tex2D(_Normal4, i.layer4_uv)) * splat.w;
     #else
     normalTS += normal2 * splat.w * 0.5;
     #endif
@@ -165,13 +179,13 @@ GBufferFragmentOutput frag(v2f i)
     
     //diffuse.rgb = 1;
     #if defined(UG_QUALITY_MED) || defined(UG_QUALITY_HIGH)
-    half4 Sm_AO_HGHT = tex2D(_SAH1, layer1_uv) * splat.r;
-    half4 Sm_AO_HGHT_2 = tex2D(_SAH2, layer2_uv);
+    half4 Sm_AO_HGHT = tex2D(_SAH1, i.layer1_uv) * splat.r;
+    half4 Sm_AO_HGHT_2 = tex2D(_SAH2, i.layer2_uv);
     Sm_AO_HGHT += Sm_AO_HGHT_2 * splat.g;
-    Sm_AO_HGHT += tex2D(_SAH3, layer3_uv) * splat.b;
+    Sm_AO_HGHT += tex2D(_SAH3, i.layer3_uv) * splat.b;
 
     #ifdef ARENA_USE_FOUR_CHANNEL
-    Sm_AO_HGHT += tex2D(_SAH4, layer4_uv) * splat.b;
+    Sm_AO_HGHT += tex2D(_SAH4, i.layer4_uv) * splat.b;
     #else
     // sand
     Sm_AO_HGHT += 0.7 * splat.a;

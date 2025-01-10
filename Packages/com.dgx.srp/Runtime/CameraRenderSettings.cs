@@ -16,6 +16,8 @@ namespace DGX.SRP
         public float RenderTimeInverval;
         public int RenderFrameInverval;
         public bool LowResRendering;
+        public bool RenderShadows = true;
+        public bool SkipDeferredPass = false;
     }
     
     public class CameraRenderSettings : MonoBehaviour

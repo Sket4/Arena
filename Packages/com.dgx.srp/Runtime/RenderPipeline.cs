@@ -267,83 +267,41 @@ namespace DGX.SRP
 
                 // Use the culling parameters to perform a cull operation, and store the results
                 var cullingResults = context.Cull(ref cullingParameters);
-                
-                RenderLights(context, cullingResults);
+
+                if (rt.RenderSettings.RenderShadows)
+                {
+                    RenderLights(context, cullingResults);    
+                }
                 
                 var depthTextureID = rt.Depth_ID;
                 
-                // GBUFFER
-                Shader.SetGlobalTexture("_GT0", rt.GBuffer0);
-                Shader.SetGlobalTexture("_GT1", rt.GBuffer1);
-                //Shader.SetGlobalTexture("_GT2", rt.GBuffer2);
                 
                 var clearFlags = camera.clearFlags;
                 bool shouldClearColor = clearFlags == CameraClearFlags.Color;
                 
                 context.SetupCameraProperties(camera);
                 
-                var cmd = new CommandBuffer();
-                cmd.name = "gbuffer";
-                
-                cmd.SetGlobalTexture("_LinearDepth", rt.LinearDepth_ID);
-                cmd.SetGlobalTexture("_Depth", depthTextureID);
-                //RenderTargetIdentifier depthTextureID = rt.Depth_ID;
-                
-                cmd.SetRenderTarget(rt.GBufferIDs, depthTextureID);
-                cmd.ClearRenderTarget(true, 
-                    shouldClearColor,
-                    camera.backgroundColor);
-                
-                context.ExecuteCommandBuffer(cmd); 
-                cmd.Release();
-                
-                // Tell Unity which geometry to draw, based on its LightMode Pass tag value
-                ShaderTagId shaderTagId = new ShaderTagId("gbuffer");
-
                 // Tell Unity how to sort the geometry, based on the current Camera
                 var sortingSettings = new SortingSettings(camera);
-
-                // Create a DrawingSettings struct that describes which geometry to draw and how to draw it
-                DrawingSettings drawingSettings = new DrawingSettings(shaderTagId, sortingSettings)
-                {
-                    perObjectData = PerObjectData.Lightmaps | PerObjectData.LightProbe,
-                    enableInstancing = true
-                };
-
+                DrawingSettings drawingSettings;
+                
                 // Tell Unity how to filter the culling results, to further specify which geometry to draw
                 // Use FilteringSettings.defaultValue to specify no filtering
-                FilteringSettings filteringSettings = FilteringSettings.defaultValue;
-                filteringSettings.renderQueueRange = RenderQueueRange.opaque;
-        
-                // Schedule a command to draw the geometry, based on the settings you have defined
-                context.DrawRenderers(cullingResults, ref drawingSettings, ref filteringSettings);
-                
-                // LINEAR DEPTH
-                // cmd = new CommandBuffer();
-                // cmd.name = "Linearize depth";
-                // cmd.Blit(rt.Depth, rt.LinearDepth);
-                // context.ExecuteCommandBuffer(cmd);
-                // cmd.Release();
-                
-                
-                // DEFERRED LIGHTING
-                cmd = new CommandBuffer();
-                cmd.name = "lightpass";
+                var filteringSettings = FilteringSettings.defaultValue;
 
-                SetupMatrixConstants(cmd, camera);
-
+                var cmd = new CommandBuffer();
                 RenderTexture colorTarget = null;
                 RenderTargetIdentifier colorTextureID;
-
                 var cameraRect = camera.rect;
+                var useDedicatedColorTarget = shouldDrawToDedicatedColorTarget(camera, rt.RenderSettings);
 
                 Mesh fullscreenMesh;
-                
-                if (shouldDrawToDedicatedColorTarget(camera, rt.RenderSettings))
+                    
+                if (useDedicatedColorTarget)
                 {
                     // TODO support gamma space
                     var colorTargetFormat = rt.isHDR ? RenderTextureFormat.DefaultHDR : RenderTextureFormat.Default;
-                    
+                        
                     colorTarget = RenderTexture.GetTemporary(rt.Depth.width, rt.Depth.height, 0, colorTargetFormat, RenderTextureReadWrite.sRGB);
                     colorTextureID = colorTarget;
                     cmd.SetGlobalVector("_DrawScale", new Vector4(1, 1,0,0));
@@ -351,41 +309,96 @@ namespace DGX.SRP
                 }
                 else
                 {
-                    colorTextureID = (RenderTargetIdentifier)BuiltinRenderTextureType.CameraTarget;
-                    
+                    colorTextureID = BuiltinRenderTextureType.CameraTarget;
+                        
                     var drawScale = new Vector4(cameraRect.width, cameraRect.height, 0, 0);
                     cmd.SetGlobalVector("_DrawScale", drawScale);
                     bool isFullRect = cameraRect == fullRect;
                     fullscreenMesh = isFullRect ? fullscreenTriangle : fullscreenQuad;
                 }
-                
-                // для depth указываем любую другую текстуру, иначе она становится недоступной
-                cmd.SetRenderTarget(colorTextureID, rt.GBuffer0TargetId);
-                
-                // if (shouldClearColor)
-                // {
-                //     cmd.ClearRenderTarget(false, true, camera.backgroundColor);
-                //     context.ExecuteCommandBuffer(cmd);
-                //     cmd.Clear();
-                // }
+                cmd.SetGlobalTexture("_LinearDepth", rt.LinearDepth_ID);
+                cmd.SetGlobalTexture("_Depth", depthTextureID);
 
-                int deferredPass;
-                bool isFogEnabled = RenderSettings.fog && camera.orthographic == false;
-                
-                if (isFogEnabled)
+                if (rt.RenderSettings.SkipDeferredPass == false)
                 {
-                    deferredPass = 0;
+                    // GBUFFER
+                    cmd.name = "gbuffer";
+                    cmd.SetGlobalTexture("_GT0", rt.GBuffer0);
+                    cmd.SetGlobalTexture("_GT1", rt.GBuffer1);
+                
+                    //RenderTargetIdentifier depthTextureID = rt.Depth_ID;
+                
+                    cmd.SetRenderTarget(rt.GBufferIDs, depthTextureID);
+                    cmd.ClearRenderTarget(true, 
+                        shouldClearColor,
+                        camera.backgroundColor);
+                
+                    context.ExecuteCommandBuffer(cmd); 
+                    cmd.Release();
+                
+                    // Tell Unity which geometry to draw, based on its LightMode Pass tag value
+                    var shaderTagId = new ShaderTagId("gbuffer");
+
+                    // Create a DrawingSettings struct that describes which geometry to draw and how to draw it
+                    drawingSettings = new DrawingSettings(shaderTagId, sortingSettings)
+                    {
+                        perObjectData = PerObjectData.Lightmaps | PerObjectData.LightProbe,
+                        enableInstancing = true
+                    };
+
+                    filteringSettings.renderQueueRange = RenderQueueRange.opaque;
+        
+                    // Schedule a command to draw the geometry, based on the settings you have defined
+                    context.DrawRenderers(cullingResults, ref drawingSettings, ref filteringSettings);    
+                    
+                    // LINEAR DEPTH
+                    // cmd = new CommandBuffer();
+                    // cmd.name = "Linearize depth";
+                    // cmd.Blit(rt.Depth, rt.LinearDepth);
+                    // context.ExecuteCommandBuffer(cmd);
+                    // cmd.Release();
+                    
+                    
+                    // DEFERRED LIGHTING
+                    cmd = new CommandBuffer();
+                    cmd.name = "lightpass";
+
+                    SetupMatrixConstants(cmd, camera);
+                    
+                    // для depth указываем любую другую текстуру, иначе она становится недоступной
+                    cmd.SetRenderTarget(colorTextureID, rt.GBuffer0TargetId);
+
+                    int deferredPass;
+                    bool isFogEnabled = RenderSettings.fog && camera.orthographic == false;
+                    
+                    if (isFogEnabled)
+                    {
+                        deferredPass = 0;
+                    }
+                    else
+                    {
+                        deferredPass = 1;
+                    }
+                    
+                    cmd.DrawMesh(fullscreenMesh, Matrix4x4.identity, LightingPassMaterial, 0, deferredPass);
+                    context.ExecuteCommandBuffer(cmd);
+                    cmd.Release();
                 }
                 else
                 {
-                    deferredPass = 1;
+                    cmd.SetRenderTarget(colorTextureID, depthTextureID);
+                    cmd.ClearRenderTarget(true, 
+                        shouldClearColor,
+                        camera.backgroundColor);
+                    
+                    context.ExecuteCommandBuffer(cmd); 
+                    cmd.Release();
                 }
-                
-                cmd.DrawMesh(fullscreenMesh, Matrix4x4.identity, LightingPassMaterial, 0, deferredPass);
-                //cmd.DrawMesh(fullscreenMesh, Matrix4x4.identity, LightingPassMaterial, 0, 1);
                 
                 // FORWARD UNLIT
                 //cmd.SetViewport(camera.pixelRect);
+                cmd = new CommandBuffer();
+                cmd.name = "Forward unlit";
                 sortingSettings.criteria = SortingCriteria.CommonOpaque;
                 drawingSettings = new DrawingSettings(srpDefaultUnlitShaderTag, sortingSettings)
                 {
@@ -445,7 +458,11 @@ namespace DGX.SRP
 #endif
                 
                 context.Submit();
-                shadows.Cleanup();
+
+                if (rt.RenderSettings.RenderShadows)
+                {
+                    shadows.Cleanup();    
+                }
 
                 if (colorTarget)
                 {

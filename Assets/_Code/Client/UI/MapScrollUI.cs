@@ -38,7 +38,10 @@ namespace Arena.Client.UI
         protected override void OnHidden()
         {
             base.OnHidden();
-            cameraRenderSettings.IntervalMode = lastIntervalMode;
+            if (cameraRenderSettings != null)
+            {
+                cameraRenderSettings.IntervalMode = lastIntervalMode;    
+            }
         }
 
         public void OnDrag(PointerEventData eventData)

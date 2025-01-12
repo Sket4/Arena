@@ -45,7 +45,7 @@ SurfaceHalf GBufferToSurfaceHalf(float4 gbuffer0, float4 gbuffer1)
     SurfaceHalf result;
 
     result.Albedo = gbuffer0.rgb;
-    result.AmbientLight = gbuffer1.rgb;
+    result.AmbientLight = 1;
     result.NormalWS = OctahedronDecode(float2(gbuffer1.x, gbuffer1.y));
     result.Metallic = SRGBToLinear(gbuffer0.w);
     result.Roughness = gbuffer1.z;

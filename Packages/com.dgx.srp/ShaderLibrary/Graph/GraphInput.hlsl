@@ -175,6 +175,7 @@ struct Varyings
 #endif
 
 #include <Packages/com.unity.render-pipelines.core/ShaderLibrary/Color.hlsl>
+#include "Packages/com.unity.shadergraph/ShaderGraphLibrary/ShaderVariablesFunctions.hlsl"
 // half3 LinearToSRGB(half3 c)
 // {
 //     #if USE_VERY_FAST_SRGB

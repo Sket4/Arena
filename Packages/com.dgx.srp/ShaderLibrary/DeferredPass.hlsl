@@ -70,7 +70,16 @@ TEXTURE2D_SHADOW(_DirectionalShadowAtlas);
 #define SHADOW_SAMPLER sampler_linear_clamp_compare
 SAMPLER_CMP(SHADOW_SAMPLER);
 
-UNITY_DECLARE_TEX2D_FLOAT(_Depth); 
+UNITY_DECLARE_TEX2D_FLOAT(_Depth);
+
+#ifdef DGX_SPOT_LIGHTS
+float4 _SpotLightDirs[4];
+float4 _SpotLightPositions[4];
+float4 _SpotLightColors[4];
+sampler2D _SpotLightCookieTex;
+half4x4 _SpotLight_M_Inv;
+
+#endif
 
 real ComputeFogFactorZ0ToFar(float z)
 {
@@ -237,10 +246,48 @@ half4 frag (v2f i) : SV_Target
     float3 viewDirWithDistance = _WorldSpaceCameraPos.xyz - worldPos.xyz;
     half viewDirDistanceSq = dot(viewDirWithDistance,viewDirWithDistance);
 
+    #ifdef DGX_SPOT_LIGHTS
+    float3 spotLightPos = _SpotLightPositions[0].xyz;
+    float3 spotLightRayDir = worldPos - spotLightPos;
+    
+    half spotLightAtten = dot(spotLightRayDir,spotLightRayDir);
+    half spotLightRange = _SpotLightDirs[0].w;
+    spotLightRange *= spotLightRange;
+    spotLightAtten = 1-saturate(spotLightAtten / spotLightRange);
+
+    float3 spotLightDir = _SpotLightDirs[0].xyz;
+
+    spotLightRayDir = normalize(spotLightRayDir);
+    half lightRayAngle = saturate(dot(spotLightRayDir, spotLightDir));
+    half angleRange = 1 - (1 - lightRayAngle) * _SpotLightPositions[0].w;
+    angleRange = saturate(angleRange);
+    //return angleRange;
+    spotLightAtten *= angleRange;
+    spotLightAtten *= saturate(-dot(spotLightRayDir, surface.NormalWS));
+    //spotLightAtten *= 10;
+
+    //return spotLightAtten;
+    half2 cookieTexUV;
+
+    half3 localSpotLightDir = mul(_SpotLight_M_Inv, half4(spotLightRayDir, 0)).xyz;
+    
+    cookieTexUV.x = ((localSpotLightDir.x + 1) * 0.5);
+    cookieTexUV.y = ((localSpotLightDir.y + 1) * 0.5);
+
+    //return half4(cookieTexUV, 0, 1);
+    
+    half3 cookieColor = tex2D(_SpotLightCookieTex, cookieTexUV);
+    //return cookieColor.rgbg;
+
+    surface.AmbientLight += _SpotLightColors[0].rgb * cookieColor * spotLightAtten;
+
+    //return surface.AmbientLight.rgbb;
+    #endif
+
     #ifdef DGX_PBR_RENDERING
-    float3 V = normalize(viewDirWithDistance);
-    half3 envMapColor = Sample_ReflectionProbe_half(V, surface.NormalWS, surface.EnvCubemapIndex, surface.Roughness * 4);
-    half4 result = LightingPBR_Half(surface, V, envMapColor);
+    float3 viewDir = normalize(viewDirWithDistance);
+    half3 envMapColor = Sample_ReflectionProbe_half(viewDir, surface.NormalWS, surface.EnvCubemapIndex, surface.Roughness * 4);
+    half4 result = LightingPBR_Half(surface, viewDir, envMapColor);
     #else
     half4 result = half4(surface.Albedo, surface.Alpha);
     #endif

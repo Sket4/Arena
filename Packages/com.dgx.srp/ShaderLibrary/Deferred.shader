@@ -31,6 +31,7 @@ Shader "Hidden/DGX/DEFERRED"
 
             #pragma multi_compile_fog
             #pragma multi_compile _ DGX_PBR_RENDERING
+            #pragma multi_compile_fragment _ DGX_SPOT_LIGHTS
             #pragma require cubearray
             #pragma exclude_renderers gles
             //#if defined(DGX_USE_PBR)
@@ -52,6 +53,7 @@ Shader "Hidden/DGX/DEFERRED"
             #pragma fragment frag
 
             #pragma multi_compile _ DGX_PBR_RENDERING
+            #pragma multi_compile_fragment _ DGX_SPOT_LIGHTS
             #pragma require cubearray
             #pragma exclude_renderers gles
             //#if defined(DGX_USE_PBR)
@@ -62,26 +64,5 @@ Shader "Hidden/DGX/DEFERRED"
             
             ENDHLSL
         }
-
-//        Pass
-//        {
-//            Name "Fog"
-//            HLSLPROGRAM
-//            #pragma vertex vert
-//            #pragma fragment fragFog
-//            #pragma multi_compile FOG_LINEAR FOG_EXP FOG_EXP2
-//            #pragma multi_compile_fragment _ _RENDER_PASS_ENABLED
-//            
-//            //#if defined(DGX_USE_PBR)
-//            //#pragma require cubearray
-//            //#endif
-//
-//            #define _FOG
-//            #define FOG_LINEAR
-//            
-//            #include "DeferredPass.hlsl"
-//            
-//            ENDHLSL
-//        }
     }
 }

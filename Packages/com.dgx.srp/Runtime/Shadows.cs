@@ -1,13 +1,95 @@
-﻿using UnityEngine;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using UnityEngine;
 using UnityEngine.Rendering;
 
 namespace DGX.SRP
 {
-    public class Shadows
+    public struct LightInfo
+    {
+        private Vector4 data1;
+        private Vector4 data2;
+        private Vector4 data3;
+
+        public Light Light { get; private set; }
+        public DgxLightOptions LightOptions { get; private set; }
+
+        public Vector4 DirectionAndRange => data1;
+        public Vector4 PositionAndAngle => data2;
+        public Vector4 Color => data3;
+        public float Intensity => data3.w;
+        public Matrix4x4 LocalToWorld { get; private set; }
+
+        public Vector3 Direction
+        {
+            get => data1;
+            set
+            {
+                data1.x = value.x;
+                data1.y = value.y;
+                data1.z = value.z;
+            }
+        }
+        public Vector3 Position
+        {
+            get => data2;
+            set
+            {
+                data2.x = value.x;
+                data2.y = value.y;
+                data2.z = value.z;
+            }
+        }
+
+        public float Range
+        {
+            get => data1.w;
+            set
+            {
+                data1.w = value;
+            }
+        }
+
+        public LightInfo(VisibleLight light)
+        {
+            Light = light.light;
+            LightOptions = light.light.GetComponent<DgxLightOptions>();
+            
+            LocalToWorld = default;
+            
+            data1 = default;
+            data2 = default;
+            data3 = default;
+            
+            Update(light);
+        }
+
+        public void Update(VisibleLight light)
+        {
+            data1 = light.localToWorldMatrix.GetColumn(2);
+            data1.w = light.range;
+
+            LocalToWorld = light.localToWorldMatrix;
+            data2 = light.localToWorldMatrix.GetPosition();
+            data2.w = 1.0f / ((light.spotAngle * 0.5f) / 180.0f);
+            
+            data3.x = light.finalColor.r;
+            data3.y = light.finalColor.g;
+            data3.z = light.finalColor.b;
+            data3.w = 0;
+        }
+    }
+    public class Shadows : IDisposable
     {
         private const string bufferName = "Shadows";
         static int dirShadowAtlasId = Shader.PropertyToID("_DirectionalShadowAtlas");
-
+        private static int spotLightDirectionId = Shader.PropertyToID("_SpotLightDirs");
+        private static int spotLightPositionId = Shader.PropertyToID("_SpotLightPositions");
+        private static int spotLightColorId = Shader.PropertyToID("_SpotLightColors");
+        private static int spotLightCookieTexId = Shader.PropertyToID("_SpotLightCookieTex");
+        private static int spotLightLocalToWorldInvMatrixId = Shader.PropertyToID("_SpotLight_M_Inv");
+        
         private CommandBuffer commands = new()
         {
             name = bufferName
@@ -16,6 +98,12 @@ namespace DGX.SRP
         private CullingResults cullingResults;
         private ShadowSettings settings;
 
+        private List<LightInfo> visibleSpotLights = new();
+        public IReadOnlyList<LightInfo> VisibleSpotLights => visibleSpotLights;
+        private List<Vector4> tempArray = new();
+
+        private static Texture2D spotLightCookieEmptyTexture;
+
         public void Setup(ScriptableRenderContext context, CullingResults cullingResults, ShadowSettings settings)
         {
             this.context = context;
@@ -23,9 +111,134 @@ namespace DGX.SRP
             this.settings = settings;
         }
 
+        [RuntimeInitializeOnLoadMethod]
+        static void init()
+        {
+            if (spotLightCookieEmptyTexture == null)
+            {
+                spotLightCookieEmptyTexture = new Texture2D(1, 1);
+                spotLightCookieEmptyTexture.name = "default spot light cookie";
+                spotLightCookieEmptyTexture.SetPixel(0,0,Color.white);
+                spotLightCookieEmptyTexture.Apply();
+            }
+        }
+
         public void Render()
         {
             renderDirectionalShadows();
+            renderSpotLightShadows();
+        }
+
+        private void renderSpotLightShadows()
+        {
+            for (var index = visibleSpotLights.Count - 1; index >= 0; index--)
+            {
+                var visibleSpotLight = visibleSpotLights[index];
+                bool contains = false;
+
+                foreach (var light in cullingResults.visibleLights)
+                {
+                    if (light.lightType != LightType.Spot)
+                    {
+                        continue;
+                    }
+
+                    if (visibleSpotLight.Light == light.light)
+                    {
+                        contains = true;
+                    }
+                }
+
+                if (contains == false)
+                {
+                    visibleSpotLights.RemoveAt(index);
+                }
+            }
+
+            foreach (var light in cullingResults.visibleLights)
+            {
+                if (light.lightType != LightType.Spot)
+                {
+                    continue;
+                }
+
+                int lightInfoIndex = -1;
+
+                for (var index = 0; index < visibleSpotLights.Count; index++)
+                {
+                    var visibleSpotLight = visibleSpotLights[index];
+                    
+                    if (visibleSpotLight.Light == light.light)
+                    {
+                        lightInfoIndex = index;
+                    }
+                }
+
+                if (lightInfoIndex >= 0)
+                {
+                    var info = visibleSpotLights[lightInfoIndex];
+                    info.Update(light);
+                    visibleSpotLights[lightInfoIndex] = info;
+                    continue;
+                }
+                
+                var lightInfo = new LightInfo(light);
+                visibleSpotLights.Add(lightInfo);
+            }
+
+            tempArray.Clear();
+            
+            foreach (var visibleSpotLight in visibleSpotLights)
+            {
+                tempArray.Add(visibleSpotLight.DirectionAndRange);    
+            }
+
+            if (tempArray.Count > 0)
+            {
+                commands.SetGlobalVectorArray(spotLightDirectionId, tempArray);
+            }
+            
+            tempArray.Clear();
+            
+            foreach (var visibleSpotLight in visibleSpotLights)
+            {
+                tempArray.Add(visibleSpotLight.PositionAndAngle);    
+            }
+
+            if (tempArray.Count > 0)
+            {
+                commands.SetGlobalVectorArray(spotLightPositionId, tempArray);
+            }
+            
+            tempArray.Clear();
+            
+            foreach (var visibleSpotLight in visibleSpotLights)
+            {
+                tempArray.Add(visibleSpotLight.Color);    
+            }
+
+            if (tempArray.Count > 0)
+            {
+                commands.SetGlobalVectorArray(spotLightColorId, tempArray);
+            }
+
+            if (visibleSpotLights.Count > 0)
+            {
+                var firstVisible = visibleSpotLights[0];
+
+                if (firstVisible.Light.cookie)
+                {
+                    commands.SetGlobalTexture(spotLightCookieTexId, firstVisible.Light.cookie);    
+                }
+                else
+                {
+                    commands.SetGlobalTexture(spotLightCookieTexId, spotLightCookieEmptyTexture);
+                }
+                
+                commands.SetGlobalMatrix(spotLightLocalToWorldInvMatrixId, firstVisible.LocalToWorld.inverse);
+            }
+            
+            ExecuteBuffer();
         }
 
         void renderDirectionalShadows()
@@ -162,6 +375,11 @@ namespace DGX.SRP
         {
             context.ExecuteCommandBuffer(commands);
             commands.Clear();
+        }
+
+        public void Dispose()
+        {
+            commands?.Dispose();
         }
     }
 }

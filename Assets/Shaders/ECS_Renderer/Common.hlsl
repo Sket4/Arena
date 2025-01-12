@@ -189,7 +189,7 @@ half3 Arena_ComputeAmbientLight(
     ambientLight = TG_SAMPLE_LIGHTMAP(lightmapUV, slice, normalWS);
 #else
     #if defined(ARENA_USE_DARK_MODE)
-    ambientLight = 0;
+    ambientLight = 1;
     #else
     ambientLight = TG_ComputeAmbientLight_half(normalWS);
     #endif

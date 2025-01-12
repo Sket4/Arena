@@ -5,7 +5,10 @@ using TzarGames.GameCore.ScriptViz;
 using TzarGames.GameCore.ScriptViz.Commands;
 using TzarGames.MatchFramework;
 using TzarGames.MatchFramework.Server;
+using Unity.Burst;
+using Unity.Collections;
 using Unity.Entities;
+using Unity.Mathematics;
 using UnityEngine;
 using UnityEngine.AI;
 
@@ -22,6 +25,7 @@ namespace Arena
         private EntityQuery startQuestQuery;
         private EntityQuery addGameProgressQuestRequestQuery;
         private EntityQuery getMainCharacterRequestQuery;
+        private EntityQuery getAimPointRequestQuery;
 
         struct NavMeshDataCleanup : ICleanupComponentData
         {
@@ -32,6 +36,7 @@ namespace Arena
         {
             base.OnCreate();
             startQuestQuery = GetEntityQuery(ComponentType.ReadOnly<StartQuestRequest>());
+            getAimPointRequestQuery = GetEntityQuery(ComponentType.ReadOnly<GetAimPointRequest>());
         }
 
         protected override void OnDestroy()
@@ -444,6 +449,29 @@ namespace Arena
                     commands.RemoveComponent<NavMeshDataCleanup>(0, entity);
                     
                 }).Run();
+            
+            if (getAimPointRequestQuery.IsEmpty == false)
+            {
+                commands.DestroyEntity(getAimPointRequestQuery);
+                var requestChunks = CreateArchetypeChunkListAsync(getAimPointRequestQuery).AsDeferredJobArray();
+                
+                var getAimPointJob = new GetAimHitPointJob()
+                {
+                    AimHitPointLookup = GetComponentLookup<AimHitPoint>(true),
+                    DeltaTime = deltaTime,
+                    EntityType = GetEntityTypeHandle(),
+                    Commands = commands,
+                    RequestChunks = requestChunks,
+                    RequestType = GetComponentTypeHandle<GetAimPointRequest>(true),
+                };
+#if TZAR_GAMECORE_THREADS
+                    Dependency = getTransformJob.Schedule(Dependency);
+#else
+                Dependency.Complete();
+                getAimPointJob.Run();
+#endif
+                requestChunks.Dispose(Dependency);
+            }
         }
 
         static void createSavePlayerDataRequest(Owner owner, Entity playerEntity, AuthorizedUser user, UniversalCommandBuffer commands)
@@ -461,6 +489,83 @@ namespace Arena
             {
                 CharacterEntity = owner.Value
             });
+        }
+    }
+    
+    [BurstCompile]
+    partial struct GetAimHitPointJob : IJobEntity
+    {
+        [ReadOnly]
+        public NativeArray<ArchetypeChunk> RequestChunks;
+
+        [ReadOnly] public ComponentTypeHandle<GetAimPointRequest> RequestType;
+        [ReadOnly] public EntityTypeHandle EntityType;
+        [ReadOnly] public ComponentLookup<AimHitPoint> AimHitPointLookup;
+        public float DeltaTime;
+
+        public UniversalCommandBuffer Commands;
+        
+        public void Execute(ScriptVizAspect aspect, [ChunkIndexInQuery] int sortIndex)
+        {
+            ContextDisposeHandle handle = default;
+            
+            foreach (var chunk in RequestChunks)
+            {
+                var requests = chunk.GetNativeArray(ref RequestType);
+                var entities = chunk.GetNativeArray(EntityType);
+
+                for (var i = 0; i < requests.Length; i++)
+                {
+                    var request = requests[i];
+                    
+                    if (request.RequestEntity != aspect.Self)
+                    {
+                        continue;
+                    }
+
+                    var entity = entities[i];
+
+                    if (request.NextCommandAddress.IsInvalid)
+                    {
+                        Debug.LogError(
+                            $"next command address is null, scriptviz entity: {request.RequestEntity.Index}, request: {entity.Index}:{entity.Version}");
+                        return;
+                    }
+
+                    var target = request.TargetEntity;
+                    
+                    if (AimHitPointLookup.TryGetComponent(target, out var point) == false)
+                    {
+                        Debug.LogError(
+                            $"failed to get aim hit point from target {target.Index}, request: {entity.Index}:{entity.Version},  exist: {AimHitPointLookup.EntityExists(target)}");
+                        return;
+                    }
+
+                    if (handle.IsCreated == false)
+                    {
+                        handle = new ContextDisposeHandle(ref aspect, ref Commands, sortIndex, DeltaTime);
+                    }
+
+                    if (request.AimPointAddress.IsValid)
+                    {
+                        handle.Context.WriteToTemp(ref point.Value, request.AimPointAddress);
+                    }
+
+                    var dirFromSource = point.Value - request.SourcePoint;
+                    
+                    if (request.DirFromSourcePointAddress.IsValid)
+                    {
+                        handle.Context.WriteToTemp(math.normalizesafe(dirFromSource), request.DirFromSourcePointAddress);
+                    }
+
+                    if (request.DistanceFromSourcePointAddress.IsValid)
+                    {
+                        handle.Context.WriteToTemp(math.length(dirFromSource), request.DistanceFromSourcePointAddress);
+                    }
+
+                    handle.Execute(request.NextCommandAddress);
+                }
+            }
         }
     }
 }

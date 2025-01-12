@@ -17,8 +17,11 @@ namespace DGX.SRP
         static readonly ShaderTagId srpDefaultUnlitShaderTag = new("SRPDefaultUnlit");
         static readonly ShaderTagId dgxForwardShaderTag = new("DGXForward");
         private const string PBR_RENDERING_ENABLED = "DGX_PBR_RENDERING";
+        private const string SPOT_LIGHTS_ENABLED = "DGX_SPOT_LIGHTS";
+        
         private Shadows shadows = new();
         private static readonly Rect fullRect = new Rect(0, 0, 1, 1);
+        
         class CameraData
         {
             public Camera TargetCamera;
@@ -367,6 +370,15 @@ namespace DGX.SRP
                     
                     // для depth указываем любую другую текстуру, иначе она становится недоступной
                     cmd.SetRenderTarget(colorTextureID, rt.GBuffer0TargetId);
+
+                    if (shadows.VisibleSpotLights.Count > 0)
+                    {
+                        cmd.EnableShaderKeyword(SPOT_LIGHTS_ENABLED);
+                    }
+                    else
+                    {
+                        cmd.DisableShaderKeyword(SPOT_LIGHTS_ENABLED);
+                    }
 
                     int deferredPass;
                     bool isFogEnabled = RenderSettings.fog && camera.orthographic == false;

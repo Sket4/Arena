@@ -33,6 +33,7 @@ namespace DGX.SRP.Editor.ShaderGraph
         [SerializeField] private ZWrite ZWriteMode = ZWrite.On;
         [SerializeField] private SurfaceType surfaceType = SurfaceType.Opaque;
         [SerializeField] private AlphaMode alphaMode = AlphaMode.Alpha;
+        [SerializeField] private Cull cull = Cull.Back;
         
         public DgxTarget()
         {
@@ -220,7 +221,7 @@ namespace DGX.SRP.Editor.ShaderGraph
                 result.Add(RenderState.ZWrite("Off"));
             }
             
-            result.Add(RenderState.Cull("Back"));
+            result.Add(RenderState.Cull(target.cull));
             
             if (target.surfaceType == SurfaceType.Opaque)
             {
@@ -304,6 +305,16 @@ namespace DGX.SRP.Editor.ShaderGraph
 
                 registerUndo("Change z write mode");
                 ZWriteMode = (ZWrite)evt.newValue;
+                onChange();
+            });  
+            
+            context.AddProperty("Cull mode", new EnumField(cull) { value = cull }, (evt) =>
+            {
+                if (Equals(cull, evt.newValue))
+                    return;
+
+                registerUndo("Change cull mode");
+                cull = (Cull)evt.newValue;
                 onChange();
             });  
             

@@ -1,10 +1,10 @@
 using System;
 using System.Collections.Generic;
-using TzarGames.GameCore;
 using TzarGames.GameCore.ScriptViz;
 using TzarGames.GameCore.ScriptViz.Graph;
 using Unity.Burst;
 using Unity.Entities;
+using Unity.Mathematics;
 using UnityEngine;
 
 namespace Arena.ScriptViz
@@ -211,6 +211,121 @@ namespace Arena.ScriptViz
         {
             ref var cmd = ref compilerAllocator.GetCommandData<GetMainCharacterCommand>(currentCommandAddress);
             cmd.OnCharacterLoadedCommandAddress = compilerAllocator.GetFirstConnectedNodeAddress(OnCharacterLoadedSocket);
+        }
+    }
+    
+    public struct GetAimPointRequest : IComponentData
+    {
+        public Entity RequestEntity;
+        public Entity TargetEntity;
+        public Address AimPointAddress;
+        public float3 SourcePoint;
+        public Address DistanceFromSourcePointAddress;
+        public Address DirFromSourcePointAddress;
+        public Address NextCommandAddress;
+    }
+    
+    [BurstCompile]
+    public struct GetAimPointCommand : IScriptVizCommand
+    {
+        public InputEntityVar TargetEntity;
+        public InputVar<float3> SourcePoint;
+        public Address AimPointAddress;
+        public Address DirFromSourcePointAddress;
+        public Address DistanceFromSourcePointAddress;
+        public Address NextCommandAddress;
+
+        [BurstCompile]
+        [AOT.MonoPInvokeCallback(typeof(ScriptVizCommandRegistry.ExecuteDelegate))]
+        public static unsafe void Exec(ref Context context, void* commandData)
+        {
+            var data = (GetAimPointCommand*)commandData;
+            
+            Entity target;
+            
+            if (data->TargetEntity.Address.IsValid)
+            {
+                target = data->TargetEntity.Read(ref context);
+            }
+            else
+            {
+                target = context.OwnerEntity;
+            }
+            
+            if (target == Entity.Null)
+            {
+                Debug.LogError($"Failed to get aim point - target entity is null, scriptviz entity: {context.OwnerEntity.Index}");
+                return;
+            }
+            
+            var requestEntity = context.Commands.CreateEntity(context.SortIndex);
+            
+            var request = new GetAimPointRequest();
+            request.RequestEntity = context.OwnerEntity;
+            request.TargetEntity = target;
+            request.AimPointAddress = data->AimPointAddress;
+            request.DirFromSourcePointAddress = data->DirFromSourcePointAddress;
+            request.DistanceFromSourcePointAddress = data->DistanceFromSourcePointAddress;
+            request.SourcePoint = data->SourcePoint.Read(ref context);
+            request.NextCommandAddress = data->NextCommandAddress;
+            context.Commands.AddComponent(context.SortIndex, requestEntity, request);
+        }
+    }
+    
+    [FriendlyName("Точка прицела (GET)")]
+    [Serializable]
+    public class GetAimPointNode : Node, ICommandNode, IPostWriteCommandNode
+    {
+        [HideInInspector]
+        public EntitySocket TargetSocket = new();
+        [HideInInspector]
+        public Float3Socket AimPointOutSocket = new();
+        [HideInInspector]
+        public Float3Socket SourcePointSocket = new();
+        [HideInInspector]
+        public Float3Socket DirFromSourcePointOutSocket = new();
+        [HideInInspector]
+        public FloatSocket DistanceFromSourcePointOutSocket = new();
+
+        [HideInInspector] public NodeInputSocket InputSocket = new();
+        [HideInInspector] public NodeOutputSocket OutputSocket = new();
+        
+        public void WriteCommand(CompilerAllocator compilerAllocator, out Address commandAddress)
+        {
+            var cmd = new GetAimPointCommand();
+            compilerAllocator.InitializeInputVar(ref cmd.TargetEntity, TargetSocket);
+            cmd.AimPointAddress = compilerAllocator.GetSocketAddress(AimPointOutSocket);
+            cmd.DirFromSourcePointAddress = compilerAllocator.GetSocketAddress(DirFromSourcePointOutSocket);
+            cmd.DistanceFromSourcePointAddress = compilerAllocator.GetSocketAddress(DistanceFromSourcePointOutSocket);
+            compilerAllocator.InitializeInputVar(ref cmd.SourcePoint, SourcePointSocket);
+            
+            commandAddress = compilerAllocator.WriteCommand(ref cmd);
+        }
+
+        public override void DeclareSockets(List<SocketInfo> sockets)
+        {
+            InputSocket.In(sockets, "In");
+            OutputSocket.Out(sockets, "Out");
+            
+            sockets.Add(new SocketInfo(TargetSocket, SocketType.In, "Источник"));
+            sockets.Add(new SocketInfo(SourcePointSocket, SocketType.In, "Исходная точка"));
+            
+            sockets.Add(new SocketInfo(AimPointOutSocket, SocketType.Out, "Точка прицела (*)"));
+            sockets.Add(new SocketInfo(DirFromSourcePointOutSocket, SocketType.Out, "Направление от исходной"));
+            sockets.Add(new SocketInfo(DistanceFromSourcePointOutSocket, SocketType.Out, "Дистанция от исходной"));
+        }
+
+        public override bool ShowEditableProperties => false;
+
+        public override string GetNodeName(ScriptVizGraphPage page)
+        {
+            return "Точка прицела (* DELAYED!)";
+        }
+
+        public void OnPostCommandWrite(CompilerAllocator compilerAllocator, Address currentCommandAddress)
+        {
+            ref var cmd = ref compilerAllocator.GetCommandData<GetAimPointCommand>(currentCommandAddress);
+            cmd.NextCommandAddress = compilerAllocator.GetFirstConnectedNodeAddress(OutputSocket);
         }
     }
 }

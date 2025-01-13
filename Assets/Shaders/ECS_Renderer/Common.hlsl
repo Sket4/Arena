@@ -188,7 +188,7 @@ half3 Arena_ComputeAmbientLight(
 #if LIGHTMAP_ON
     ambientLight = TG_SAMPLE_LIGHTMAP(lightmapUV, slice, normalWS);
 #else
-    #if defined(ARENA_USE_DARK_MODE)
+    #if defined(DGX_DARK_MODE)
     ambientLight = 1;
     #else
     ambientLight = TG_ComputeAmbientLight_half(normalWS);
@@ -240,7 +240,7 @@ void ApplyDynamicLighting(
     // diffuseLight += addLighting;
     //
     // #if defined(UG_QUALITY_HIGH) || defined(UG_QUALITY_MED)
-    // #if ARENA_USE_DARK_MODE
+    // #ifdef DGX_DARK_MODE
     // specularLight *= addLight.distanceAttenuation * 16;
     // #endif
     // #endif

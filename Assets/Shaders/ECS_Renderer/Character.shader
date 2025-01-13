@@ -106,7 +106,7 @@ Shader"Arena/Character"
 //            #pragma shader_feature __ USE_DISTANCE_LIGHT
 //            #pragma multi_compile_fragment __ ARENA_USE_MAIN_LIGHT
 //            #pragma multi_compile_fragment __ ARENA_USE_ADD_LIGHT
-//            #pragma multi_compile_fragment __ ARENA_USE_DARK_MODE
+//            #pragma multi_compile_fragment __ DGX_DARK_MODE
 //            
 //            #pragma multi_compile _BONECOUNT_ONE _BONECOUNT_FOUR
 //

@@ -72,14 +72,12 @@ SAMPLER_CMP(SHADOW_SAMPLER);
 
 UNITY_DECLARE_TEX2D_FLOAT(_Depth);
 
-#ifdef DGX_SPOT_LIGHTS
+// spot lights
 float4 _SpotLightDirs[4];
 float4 _SpotLightPositions[4];
-float4 _SpotLightColors[4];
+half4 _SpotLightColors[4];
 sampler2D _SpotLightCookieTex;
 half4x4 _SpotLight_M_Inv;
-
-#endif
 
 real ComputeFogFactorZ0ToFar(float z)
 {
@@ -225,28 +223,8 @@ void softNormalBias(float3 main, inout half3 normalBias)
     //normalBias += randomnormal_tangent(surface.NormalWS) * 0.02;
 }
 
-half4 frag (v2f i) : SV_Target
+void calculateSpotLightLight(float3 worldPos, inout SurfaceHalf surface)
 {
-    float2 screen_uv = (i.screenUV.xy / i.screenUV.z);
-
-    // Gbuffer
-    float4 g0 = tex2D(_GT0, screen_uv.xy);
-    float4 g1 = tex2D(_GT1, screen_uv.xy);
-    //float4 g2 = tex2D(_GT2, screen_uv);
-
-    SurfaceHalf surface = GBufferToSurfaceHalf(g0, g1);
-
-    float rawDepth = _Depth.Sample(sampler_Depth, screen_uv.xy).r;
-    float linDepth = Linear01Depth(rawDepth, _ZBufferParams);
-    float eyeDepth = LinearEyeDepth(rawDepth, _ZBufferParams);
-    
-    //return half4(linDepth.x, 0, 0, 1);
-    
-    float3 worldPos = WorldSpacePositionFromDepth(screen_uv, rawDepth);
-    float3 viewDirWithDistance = _WorldSpaceCameraPos.xyz - worldPos.xyz;
-    half viewDirDistanceSq = dot(viewDirWithDistance,viewDirWithDistance);
-
-    #ifdef DGX_SPOT_LIGHTS
     float3 spotLightPos = _SpotLightPositions[0].xyz;
     float3 spotLightRayDir = worldPos - spotLightPos;
     
@@ -261,35 +239,60 @@ half4 frag (v2f i) : SV_Target
     half lightRayAngle = saturate(dot(spotLightRayDir, spotLightDir));
     half angleRange = 1 - (1 - lightRayAngle) * _SpotLightPositions[0].w;
     angleRange = saturate(angleRange);
-    //return angleRange;
     spotLightAtten *= angleRange;
     spotLightAtten *= saturate(-dot(spotLightRayDir, surface.NormalWS));
-    //spotLightAtten *= 10;
 
-    //return spotLightAtten;
+    // cookie texture
     half2 cookieTexUV;
 
     half3 localSpotLightDir = mul(_SpotLight_M_Inv, half4(spotLightRayDir, 0)).xyz;
     
     cookieTexUV.x = ((localSpotLightDir.x + 1) * 0.5);
     cookieTexUV.y = ((localSpotLightDir.y + 1) * 0.5);
-
-    //return half4(cookieTexUV, 0, 1);
     
     half3 cookieColor = tex2D(_SpotLightCookieTex, cookieTexUV);
-    //return cookieColor.rgbg;
 
     surface.AmbientLight += _SpotLightColors[0].rgb * cookieColor * spotLightAtten;
 
-    //return surface.AmbientLight.rgbb;
+    // half3 reflectDir = reflect(-spotLightRayDir, surface.NormalWS);
+    // half spec = pow(saturate(dot(-viewDir, reflectDir)), surface.Roughness * 128);
+    // specular += spec * _SpotLightColors[0].rgb * spotLightAtten;
+}
+
+half4 frag (v2f i) : SV_Target
+{
+    float2 screen_uv = (i.screenUV.xy / i.screenUV.z);
+
+    // Gbuffer
+    float4 g0 = tex2D(_GT0, screen_uv.xy);
+    float4 g1 = tex2D(_GT1, screen_uv.xy);
+
+    SurfaceHalf surface = GBufferToSurfaceHalf(g0, g1);
+
+    float rawDepth = _Depth.Sample(sampler_Depth, screen_uv.xy).r;
+    //float eyeDepth = LinearEyeDepth(rawDepth, _ZBufferParams);
+    
+    float3 worldPos = WorldSpacePositionFromDepth(screen_uv, rawDepth);
+
+    #ifdef DGX_SPOT_LIGHTS
+    calculateSpotLightLight(worldPos, surface);
     #endif
+    
+    float3 viewDirWithDistance = _WorldSpaceCameraPos.xyz - worldPos.xyz;
+    half viewDirDistanceSq = dot(viewDirWithDistance,viewDirWithDistance);
 
     #ifdef DGX_PBR_RENDERING
     float3 viewDir = normalize(viewDirWithDistance);
+    
     half3 envMapColor = Sample_ReflectionProbe_half(viewDir, surface.NormalWS, surface.EnvCubemapIndex, surface.Roughness * 4);
+
+    #ifdef DGX_DARK_MODE
+    envMapColor *= surface.AmbientLight;
+    #endif
+    
     half4 result = LightingPBR_Half(surface, viewDir, envMapColor);
     #else
-    half4 result = half4(surface.Albedo, surface.Alpha);
+    half4 result = half4(surface.Albedo * surface.AmbientLight, surface.Alpha);
     #endif
     
     half shadowDistance = dgx_MainLightShadowParams.y;
@@ -326,6 +329,7 @@ half4 frag (v2f i) : SV_Target
     result.rgb *= lerp(_SubtractiveShadowColor.rgb, half3(1,1,1), shadowAtten);
 
     #ifdef DGX_FOG_ENABLED
+    float linDepth = Linear01Depth(rawDepth, _ZBufferParams);
     float dist = ComputeFogDistance(linDepth);
     half fog = ComputeFogFactorZ0ToFar(dist);
     result.rgb = MixFog(result.rgb, unity_FogColor.rgb, fog);

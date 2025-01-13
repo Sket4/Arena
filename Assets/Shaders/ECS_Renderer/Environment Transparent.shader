@@ -71,7 +71,7 @@ Shader "Arena/Environment Transparent"
             
             //#pragma multi_compile_fragment __ ARENA_USE_MAIN_LIGHT
             //#pragma multi_compile_fragment __ ARENA_USE_ADD_LIGHT
-            //#pragma multi_compile_fragment __ ARENA_USE_DARK_MODE
+            //#pragma multi_compile_fragment __ DGX_DARK_MODE
             
             //#pragma multi_compile_fwdbase
             #pragma multi_compile _ LIGHTMAP_ON

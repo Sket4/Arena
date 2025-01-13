@@ -17,7 +17,8 @@ namespace DGX.SRP
         static readonly ShaderTagId srpDefaultUnlitShaderTag = new("SRPDefaultUnlit");
         static readonly ShaderTagId dgxForwardShaderTag = new("DGXForward");
         private const string PBR_RENDERING_ENABLED = "DGX_PBR_RENDERING";
-        private const string SPOT_LIGHTS_ENABLED = "DGX_SPOT_LIGHTS";
+        private const string DARK_MODE = "DGX_DARK_MODE";
+        private const string SPOT_LIGHTS = "DGX_SPOT_LIGHTS";
         
         private Shadows shadows = new();
         private static readonly Rect fullRect = new Rect(0, 0, 1, 1);
@@ -87,6 +88,16 @@ namespace DGX.SRP
             else
             {
                 Shader.DisableKeyword(PBR_RENDERING_ENABLED);
+            }
+        }
+        
+        public static void EnableDarkMode(bool enable)
+        {
+            if(enable)
+                Shader.EnableKeyword(DARK_MODE);
+            else
+            {
+                Shader.DisableKeyword(DARK_MODE);
             }
         }
 
@@ -373,11 +384,11 @@ namespace DGX.SRP
 
                     if (shadows.VisibleSpotLights.Count > 0)
                     {
-                        cmd.EnableShaderKeyword(SPOT_LIGHTS_ENABLED);
+                        cmd.EnableShaderKeyword(SPOT_LIGHTS);
                     }
                     else
                     {
-                        cmd.DisableShaderKeyword(SPOT_LIGHTS_ENABLED);
+                        cmd.DisableShaderKeyword(SPOT_LIGHTS);
                     }
 
                     int deferredPass;

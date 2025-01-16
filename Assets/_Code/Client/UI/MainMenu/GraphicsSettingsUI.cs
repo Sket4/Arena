@@ -18,11 +18,17 @@ namespace Arena.Client.UI.MainMenu
         {
             base.OnVisible();
             qualityDropdown.value = (int)AppSettings.GraphicsSettings.Quality;
+            shadows.isOn = AppSettings.GraphicsSettings.Shadows;
         }
 
         public void OnQualityChanged(int val)
         {
             AppSettings.GraphicsSettings.Quality = (AppSettings.QualityLevels)val;
+        }
+
+        public void OnShadowEnabledChanged(bool enabled)
+        {
+            AppSettings.GraphicsSettings.Shadows = enabled;
         }
     }
 }

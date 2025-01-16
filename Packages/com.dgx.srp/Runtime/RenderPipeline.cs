@@ -17,11 +17,13 @@ namespace DGX.SRP
         static readonly ShaderTagId srpDefaultUnlitShaderTag = new("SRPDefaultUnlit");
         static readonly ShaderTagId dgxForwardShaderTag = new("DGXForward");
         private const string PBR_RENDERING_ENABLED = "DGX_PBR_RENDERING";
+        private const string SHADOWS_ENABLED = "DGX_SHADOWS_ENABLED";
         private const string DARK_MODE = "DGX_DARK_MODE";
         private const string SPOT_LIGHTS = "DGX_SPOT_LIGHTS";
         
         private Shadows shadows = new();
         private static readonly Rect fullRect = new Rect(0, 0, 1, 1);
+        private static bool enableShadows_global = true;
         
         class CameraData
         {
@@ -98,6 +100,18 @@ namespace DGX.SRP
             else
             {
                 Shader.DisableKeyword(DARK_MODE);
+            }
+        }
+        
+        public static void EnableShadows(bool enable)
+        {
+            enableShadows_global = enable;
+            
+            if(enable)
+                Shader.EnableKeyword(SHADOWS_ENABLED);
+            else
+            {
+                Shader.DisableKeyword(SHADOWS_ENABLED);
             }
         }
 
@@ -289,7 +303,9 @@ namespace DGX.SRP
                 // Use the culling parameters to perform a cull operation, and store the results
                 var cullingResults = context.Cull(ref cullingParameters);
 
-                if (rt.RenderSettings.RenderShadows)
+                var shouldRenderShadows = enableShadows_global && rt.RenderSettings.RenderShadows;
+                
+                if (shouldRenderShadows)
                 {
                     RenderLights(context, cullingResults);    
                 }
@@ -489,7 +505,7 @@ namespace DGX.SRP
                 
                 context.Submit();
 
-                if (rt.RenderSettings.RenderShadows)
+                if (shouldRenderShadows)
                 {
                     shadows.Cleanup();    
                 }

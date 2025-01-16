@@ -76,7 +76,6 @@ namespace Arena
         {
             private const string QUALITY = "TOTAL_GRAPHICS_QUALITY";
             private const string SHADOWS = "TOTAL_GRAPHICS_SHADOWS";
-            private const string COLOR_ENHANCE = "TOTAL_GRAPHICS_COLOR_ENHANCE";
 
             [ConsoleCommand]
             public static void SetLowQuality()
@@ -134,19 +133,6 @@ namespace Arena
                 }
             }
 
-            public static bool ColorEnhance
-            {
-                get
-                {
-                    return PlayerPrefs.GetInt(COLOR_ENHANCE, 1) > 0;
-                }
-                set
-                {
-                    PlayerPrefs.SetInt(COLOR_ENHANCE, value ? 1 : 0);
-                    Adjust();
-                }
-            }
-
             [RuntimeInitializeOnLoadMethod]
             public static void Adjust()
             {
@@ -176,7 +162,10 @@ namespace Arena
 		                throw new ArgumentOutOfRangeException();
                 }
                 
+                // applyExpensiveChanges ломает лайтмапы
                 QualitySettings.SetQualityLevel((int)quality);
+                
+                DGX.SRP.RenderPipeline.EnableShadows(Shadows);
             }
         }
 	}

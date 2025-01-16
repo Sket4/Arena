@@ -31,6 +31,7 @@ Shader "Hidden/DGX/DEFERRED"
 
             #pragma multi_compile_fog
             #pragma multi_compile _ DGX_PBR_RENDERING
+            #pragma multi_compile_fragment _ DGX_SHADOWS_ENABLED
             #pragma multi_compile_fragment _ DGX_SPOT_LIGHTS
             #pragma multi_compile_fragment _ DGX_DARK_MODE
             #pragma require cubearray
@@ -54,6 +55,7 @@ Shader "Hidden/DGX/DEFERRED"
             #pragma fragment frag
 
             #pragma multi_compile _ DGX_PBR_RENDERING
+            #pragma multi_compile_fragment _ DGX_SHADOWS_ENABLED
             #pragma multi_compile_fragment _ DGX_SPOT_LIGHTS
             #pragma multi_compile_fragment _ DGX_DARK_MODE
             #pragma require cubearray

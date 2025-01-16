@@ -259,42 +259,8 @@ void calculateSpotLightLight(float3 worldPos, inout SurfaceHalf surface)
     // specular += spec * _SpotLightColors[0].rgb * spotLightAtten;
 }
 
-half4 frag (v2f i) : SV_Target
+void drawShadows(float3 worldPos, half viewDirDistanceSq, SurfaceHalf surface, inout half3 result)
 {
-    float2 screen_uv = (i.screenUV.xy / i.screenUV.z);
-
-    // Gbuffer
-    float4 g0 = tex2D(_GT0, screen_uv.xy);
-    float4 g1 = tex2D(_GT1, screen_uv.xy);
-
-    SurfaceHalf surface = GBufferToSurfaceHalf(g0, g1);
-
-    float rawDepth = _Depth.Sample(sampler_Depth, screen_uv.xy).r;
-    //float eyeDepth = LinearEyeDepth(rawDepth, _ZBufferParams);
-    
-    float3 worldPos = WorldSpacePositionFromDepth(screen_uv, rawDepth);
-
-    #ifdef DGX_SPOT_LIGHTS
-    calculateSpotLightLight(worldPos, surface);
-    #endif
-    
-    float3 viewDirWithDistance = _WorldSpaceCameraPos.xyz - worldPos.xyz;
-    half viewDirDistanceSq = dot(viewDirWithDistance,viewDirWithDistance);
-
-    #ifdef DGX_PBR_RENDERING
-    float3 viewDir = normalize(viewDirWithDistance);
-    
-    half3 envMapColor = Sample_ReflectionProbe_half(viewDir, surface.NormalWS, surface.EnvCubemapIndex, surface.Roughness * 4);
-
-    #ifdef DGX_DARK_MODE
-    envMapColor *= surface.AmbientLight;
-    #endif
-    
-    half4 result = LightingPBR_Half(surface, viewDir, envMapColor);
-    #else
-    half4 result = half4(surface.Albedo * surface.AmbientLight, surface.Alpha);
-    #endif
-    
     half shadowDistance = dgx_MainLightShadowParams.y;
     half3 normalBias = dgx_MainLightShadowParams.z * surface.NormalWS;
 
@@ -326,8 +292,50 @@ half4 frag (v2f i) : SV_Target
     //return half4(shadowAtten, distanceFade, 0,0);
     shadowAtten = lerp(1, shadowAtten, shadowIntensity * distanceFade);
     
-    result.rgb *= lerp(_SubtractiveShadowColor.rgb, half3(1,1,1), shadowAtten);
+    result *= lerp(_SubtractiveShadowColor.rgb, half3(1,1,1), shadowAtten);
+}
 
+half4 frag (v2f i) : SV_Target
+{
+    float2 screen_uv = (i.screenUV.xy / i.screenUV.z);
+
+    // Gbuffer
+    float4 g0 = tex2D(_GT0, screen_uv.xy);
+    float4 g1 = tex2D(_GT1, screen_uv.xy);
+
+    SurfaceHalf surface = GBufferToSurfaceHalf(g0, g1);
+
+    float rawDepth = _Depth.Sample(sampler_Depth, screen_uv.xy).r;
+    //float eyeDepth = LinearEyeDepth(rawDepth, _ZBufferParams);
+    
+    float3 worldPos = WorldSpacePositionFromDepth(screen_uv, rawDepth);
+
+    #ifdef DGX_SPOT_LIGHTS
+    calculateSpotLightLight(worldPos, surface);
+    #endif
+    
+    float3 viewDirWithDistance = _WorldSpaceCameraPos.xyz - worldPos.xyz;
+    
+
+    #ifdef DGX_PBR_RENDERING
+    float3 viewDir = normalize(viewDirWithDistance);
+    
+    half3 envMapColor = Sample_ReflectionProbe_half(viewDir, surface.NormalWS, surface.EnvCubemapIndex, surface.Roughness * 4);
+
+    #ifdef DGX_DARK_MODE
+    envMapColor *= surface.AmbientLight;
+    #endif
+    
+    half4 result = LightingPBR_Half(surface, viewDir, envMapColor);
+    #else
+    half4 result = half4(surface.Albedo * surface.AmbientLight, surface.Alpha);
+    #endif
+
+    #ifdef DGX_SHADOWS_ENABLED
+    half viewDirDistanceSq = dot(viewDirWithDistance,viewDirWithDistance);
+    drawShadows(worldPos, viewDirDistanceSq, surface, result.rgb);
+    #endif
+    
     #ifdef DGX_FOG_ENABLED
     float linDepth = Linear01Depth(rawDepth, _ZBufferParams);
     float dist = ComputeFogDistance(linDepth);

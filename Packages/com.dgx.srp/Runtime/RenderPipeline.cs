@@ -269,6 +269,13 @@ namespace DGX.SRP
                         throw new ArgumentOutOfRangeException();
                 }
                 rt.LastUpdateTime = currentTime;
+
+#if UNITY_EDITOR
+                if (camera.cameraType == CameraType.SceneView) 
+                {
+                    ScriptableRenderContext.EmitWorldGeometryForSceneView(camera);
+                }
+#endif
                 
                 // Get the culling parameters from the current Camera
                 if (camera.TryGetCullingParameters(out var cullingParameters) == false)

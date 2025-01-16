@@ -330,7 +330,7 @@ namespace Arena.Tests
             }
         }
 
-        public Task<bool> StartQuest(QuestGameInfo questGameInfo)
+        public Task<bool> StartLocation(QuestGameInfo questGameInfo)
         {
             launcher.ResetGameLoop();
             initGameLoop(launcher.GameLoop);

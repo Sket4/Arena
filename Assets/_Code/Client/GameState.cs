@@ -30,7 +30,7 @@ namespace Arena.Client
     
     public interface IGameInterface
     {
-        public Task<bool> StartQuest(QuestGameInfo questGameInfo);
+        public Task<bool> StartLocation(QuestGameInfo questGameInfo);
         public void ExitFromMatch();
     }
 
@@ -47,9 +47,9 @@ namespace Arena.Client
         {
         }
 
-        public Task<bool> StartQuest(QuestGameInfo questGameInfo)
+        public Task<bool> StartLocation(QuestGameInfo questGameInfo)
         {
-            return iface.StartQuest(questGameInfo);
+            return iface.StartLocation(questGameInfo);
         }
 
         public void ExitFromMatch()
@@ -1620,7 +1620,7 @@ namespace Arena.Client
             //return currentSaveGame.IsGamePurchased || gameAdsWatched;
         }
 
-        public Task<bool> StartQuest(QuestGameInfo questGameInfo)
+        public Task<bool> StartLocation(QuestGameInfo questGameInfo)
         {
             if (CurrentState is OnlineGame onlineGame)
             {

@@ -1,5 +1,6 @@
 ﻿// Copyright 2012-2017 Dinar Khasanov (E-mail: lespaul@live.ru) All Rights Reserved.
 
+using System;
 using TzarGames.Common;
 using TzarGames.Common.UI;
 using UnityEngine;
@@ -12,6 +13,17 @@ namespace Arena.Client.UI.MainMenu
     {
         [SerializeField] private TextUI version = default;
 
+        [Serializable]
+        struct CategoryTab
+        {
+            public Button Button;
+            public UIBase Window;
+        }
+
+        Sprite defaultCategoryTabSprite;
+        [SerializeField] private Sprite activeCategoryTabSprite;
+        
+        [SerializeField] private CategoryTab[] categoryTabs;
         [SerializeField] private GameObject socialAuthButton = default;
         [SerializeField] private GameObject restorePurchasesButton = default;
 
@@ -37,6 +49,8 @@ namespace Arena.Client.UI.MainMenu
 
         [SerializeField] string privacyPolicyUrl = default;
 
+        private CategoryTab activeCategoryTab;
+
         private void Update()
         {
             if (Time.time - lastCheckTime >= checkUpdateInterval)
@@ -49,6 +63,12 @@ namespace Arena.Client.UI.MainMenu
         float getMixerValue(float volume)
         {
             return -((1.0f - volume) * mixerMinValue);
+        }
+
+        protected override void OnVisible()
+        {
+            base.OnVisible();
+            activateCategory(categoryTabs[0]);
         }
 
         void check()
@@ -67,10 +87,44 @@ namespace Arena.Client.UI.MainMenu
                 musicMixer.SetFloat("volume", getMixerValue(lastMusicVolume));
             }
         }
+
+        void activateCategory(CategoryTab categoryTab)
+        {
+            if (activeCategoryTab.Button == categoryTab.Button)
+            {
+                return;
+            }
+            categoryTab.Button.image.sprite = activeCategoryTabSprite;
+            categoryTab.Window.gameObject.SetActive(true);
+            categoryTab.Window.SetVisible(true);
+
+            foreach (var tab in categoryTabs)
+            {
+                if (tab.Button == categoryTab.Button)
+                {
+                    continue;
+                }
+                tab.Button.image.sprite = defaultCategoryTabSprite;
+                if (tab.Window.IsVisible)
+                {
+                    tab.Window.gameObject.SetActive(false);
+                }
+            }
+        }
         
         protected override void Start()
         {
             base.Start();
+
+            defaultCategoryTabSprite = categoryTabs[0].Button.image.sprite;
+            
+            foreach (var categoryTab in categoryTabs)
+            {
+                categoryTab.Button.onClick.AddListener(() =>
+                {
+                    activateCategory(categoryTab);
+                });
+            }
 
             if(GameState.Instance != null)
                 version.text = GameState.Instance.Version;

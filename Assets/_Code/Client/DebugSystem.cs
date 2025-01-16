@@ -50,6 +50,12 @@ namespace Arena.Client
         }
 
         [ConsoleCommand]
+        public static void EnableDarkMode(bool darkMode)
+        {
+            DGX.SRP.RenderPipeline.EnableDarkMode(darkMode);
+        }
+
+        [ConsoleCommand]
         public void LogSceneTagAndLinked()
         {
             Entities

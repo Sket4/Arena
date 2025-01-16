@@ -97,7 +97,7 @@ namespace Arena.Client
                         ? SystemAPI.GetBuffer<GameParameter>(questEntity).AsNativeArray().ToArray()
                         : null;
 				
-                    _ = gameInterface.StartQuest(new QuestGameInfo
+                    _ = gameInterface.StartLocation(new QuestGameInfo
                     {
                         GameSceneID = SystemAPI.GetComponent<Quests.QuestData>(questEntity).GameSceneID,
                         SpawnPointID = spawnPointId,

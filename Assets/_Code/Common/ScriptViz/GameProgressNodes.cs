@@ -108,7 +108,7 @@ namespace Arena.ScriptViz
     {
         [HideInInspector] public NodeInputSocket InputSocket = new NodeInputSocket();
         
-        public QuestKey QuestKey;
+        public QuestKey questKey;
         
         [HideInInspector]
         public GameProgressSocket ProgressSocket = new();
@@ -125,7 +125,7 @@ namespace Arena.ScriptViz
         {
             var cmd = new QuestActiveCheckCommand();
 
-            cmd.QuestID = QuestKey ? QuestKey.Id : 0;
+            cmd.QuestID = questKey ? questKey.Id : 0;
             
             compilerAllocator.InitializeInputVar(ref cmd.Progress, ProgressSocket);
             commandAddress = compilerAllocator.WriteCommand(ref cmd);
@@ -143,9 +143,9 @@ namespace Arena.ScriptViz
 
         public override string GetNodeName(ScriptVizGraphPage page)
         {
-            if (QuestKey)
+            if (questKey)
             {
-                return $"Статус квеста {QuestKey.name}";
+                return $"Статус квеста {questKey.name}";
             }
             else
             {
@@ -296,29 +296,29 @@ namespace Arena.ScriptViz
     [FriendlyName("Добавить / установить квест")]
     public class AddGameProgressQuestCommandNode : CommandNode
     {
-        public QuestKey QuestKey;
+        public QuestKey questKey;
         public QuestState State;
         
         public override void WriteCommand(CompilerAllocator compilerAllocator, out Address commandAddress)
         {
             var cmd = new SetGameProgressQuestCommand();
-            cmd.QuestKey = QuestKey ? QuestKey.Id : 0;
+            cmd.QuestKey = questKey ? questKey.Id : 0;
             cmd.State = State;
             commandAddress = compilerAllocator.WriteCommand(ref cmd);
         }
 
         public override string GetNodeName(ScriptVizGraphPage page)
         {
-            if (QuestKey)
+            if (questKey)
             {
                 switch (State)
                 {
                     case QuestState.Active:
-                        return $"Добавить квест {QuestKey.name}";
+                        return $"Добавить квест {questKey.name}";
                     case QuestState.Completed:
-                        return $"Закончить квест {QuestKey.name}";
+                        return $"Закончить квест {questKey.name}";
                     case QuestState.Failed:
-                        return $"Провалить квест {QuestKey.name}";
+                        return $"Провалить квест {questKey.name}";
                     default:
                         return $"ошибка";
                 }

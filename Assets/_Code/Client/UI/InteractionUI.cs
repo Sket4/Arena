@@ -177,7 +177,7 @@ namespace Arena.Client.UI
 		                isInteracting = false;
 	                }
 
-	                if (HasData<QuestElement>(overlapping.Entity))
+	                if (HasData<LocationElement>(overlapping.Entity))
 	                {
 		                isInteractingWithQuestHirer = true;
 		                isInteracting = false;

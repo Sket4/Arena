@@ -13,6 +13,7 @@ namespace Arena.Client.UI
         [SerializeField] private UIBase pauseMenuForGame = default;
         [SerializeField] private UIBase exitMenuForGame = default;
         [SerializeField] private UIBase pauseMenuForLobby = default;
+        [SerializeField] private UIBase settingsMenu;
         [SerializeField] private GameObject exitToMainMenuButton;
 
         private bool isPendingShow = true;
@@ -25,6 +26,22 @@ namespace Arena.Client.UI
             pauseMenuForGame.SetVisible(false);
             pauseMenuForLobby.SetVisible(false);
             exitMenuForGame.SetVisible(false);
+        }
+
+        public void ShowSettings(bool show)
+        {
+            settingsMenu.SetVisible(show);
+
+            if (show)
+            {
+                pauseMenuForGame.SetVisible(false);
+                pauseMenuForLobby.SetVisible(false);
+                exitMenuForGame.SetVisible(false);
+            }
+            else
+            {
+                isPendingShow = true;
+            }
         }
 
         public void ReturnToHome()

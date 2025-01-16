@@ -29,29 +29,36 @@ Shader"Arena/Character Fading"
 
         Pass
         {
-            Name "ForwardLit"
+            Name "gbuffer"
             
             Tags
             {
-                "LightMode" = "UniversalForward"
+                "LightMode" = "gbuffer"
             }
+            
+            Stencil 
+            {
+                Ref 128
+                Comp Always
+                Pass Replace
+                Fail Keep
+                ZFail Keep
+            }
+            
             HLSLPROGRAM
             #pragma target 4.5
+            #pragma exclude_renderers gles nomrt//excluded shader from OpenGL ES 2.0 because it uses non-square matrices
             #pragma require 2darray
-            #pragma require cubearray
-            #pragma exclude_renderers gles //excluded shader from OpenGL ES 2.0 because it uses non-square matrices
             #pragma vertex vert
             #pragma fragment frag
-            // make fog work
+            
             #pragma multi_compile_fog
             #pragma multi_compile _ DOTS_INSTANCING_ON
-            #pragma multi_compile _ _MAIN_LIGHT_SHADOWS
-            #pragma multi_compile _ _MAIN_LIGHT_SHADOWS_CASCADE
-            #pragma shader_feature __ USE_RIM
-            #pragma shader_feature __ USE_DISTANCE_LIGHT
+
             #pragma shader_feature __ ARENA_SKIN_COLOR
-            #pragma multi_compile_fragment _ ARENA_USE_MAIN_LIGHT
-            #pragma multi_compile_fragment _ ARENA_USE_ADD_LIGHT
+
+            #pragma multi_compile UG_QUALITY_LOW UG_QUALITY_MED UG_QUALITY_HIGH
+            #pragma multi_compile _BONECOUNT_ONE _BONECOUNT_FOUR
             #pragma multi_compile_fragment _ DGX_DARK_MODE
             
             #pragma multi_compile _BONECOUNT_ONE _BONECOUNT_FOUR

@@ -52,10 +52,9 @@ Shader"Arena/Character"
             #pragma target 4.5
             #pragma exclude_renderers gles nomrt//excluded shader from OpenGL ES 2.0 because it uses non-square matrices
             #pragma require 2darray
-            #pragma require cubearray
             #pragma vertex vert
             #pragma fragment frag
-            // make fog work
+            
             #pragma multi_compile_fog
             #pragma multi_compile _ DOTS_INSTANCING_ON
 
@@ -64,10 +63,6 @@ Shader"Arena/Character"
 
             #pragma multi_compile UG_QUALITY_LOW UG_QUALITY_MED UG_QUALITY_HIGH
             #pragma multi_compile _BONECOUNT_ONE _BONECOUNT_FOUR
-
-            //#pragma multi_compile_instancing
-
-            //#define UNITY_DOTS_INSTANCED_PROP_OVERRIDE_DISABLED_BY_DEFAULT
 
             #define TG_SKINNING
 

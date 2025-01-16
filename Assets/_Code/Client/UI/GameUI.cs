@@ -38,7 +38,7 @@ namespace Arena.Client.UI
         [SerializeField]
         GameUIBase matchStateUI = default;
 
-        [SerializeField] private QuestListUI questListWindow;
+        [SerializeField] private TravelLocationWindowUI locationLocationWindow;
 
         [SerializeField]
         XpPointManagementUI xpManagement = default;
@@ -351,22 +351,22 @@ namespace Arena.Client.UI
         
         public void ShowQuestList()
         {
-            GotoState<QuestListState>();
+            GotoState<LocationWindowState>();
         }
         
-        class QuestListState : UiBaseState
+        class LocationWindowState : UiBaseState
         {
             public override void OnStateBegin(State prevState)
             {
                 base.OnStateBegin(prevState);
-                UI.showMenu(UI.questListWindow, true);
+                UI.showMenu(UI.locationLocationWindow, true);
                 UI.showFadingBackground(true);
             }
 
             public override void OnStateEnd(State nextState)
             {
                 base.OnStateEnd(nextState);
-                UI.showMenu(UI.questListWindow, false);
+                UI.showMenu(UI.locationLocationWindow, false);
                 UI.showFadingBackground(false);
             }
         }

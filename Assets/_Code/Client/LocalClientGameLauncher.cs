@@ -36,7 +36,7 @@ namespace Arena.Client
         [Serializable]
         class DebugQuestEntry
         {
-            public QuestKey QuestKey = default;
+            public QuestKey questKey = default;
             public QuestState State = QuestState.Active;
             public bool Exclude;
         }
@@ -90,13 +90,13 @@ namespace Arena.Client
                 var questList = new List<CharacterGameProgressQuests>();
                 foreach (var debugQuest in debugQuests)
                 {
-                    if (debugQuest == null || debugQuest.QuestKey == false || debugQuest.Exclude)
+                    if (debugQuest == null || debugQuest.questKey == false || debugQuest.Exclude)
                     {
                         continue;
                     }
                     questList.Add(new CharacterGameProgressQuests
                     {
-                        QuestID = (ushort)debugQuest.QuestKey.Id,
+                        QuestID = (ushort)debugQuest.questKey.Id,
                         QuestState = debugQuest.State
                     });
                 }

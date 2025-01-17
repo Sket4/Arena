@@ -21,7 +21,7 @@ namespace DGX.SRP
         private const string DARK_MODE = "DGX_DARK_MODE";
         private const string SPOT_LIGHTS = "DGX_SPOT_LIGHTS";
         
-        private Shadows shadows = new();
+        private LightsRenderer lightRenderer = new();
         private static readonly Rect fullRect = new Rect(0, 0, 1, 1);
         private static bool enableShadows_global = true;
         
@@ -305,16 +305,20 @@ namespace DGX.SRP
 
                 var shouldRenderShadows = enableShadows_global && rt.RenderSettings.RenderShadows;
                 
-                if (shouldRenderShadows)
-                {
-                    RenderLights(context, cullingResults);    
-                }
+                RenderLights(context, cullingResults, shouldRenderShadows);    
                 
                 var depthTextureID = rt.Depth_ID;
                 
                 
                 var clearFlags = camera.clearFlags;
                 bool shouldClearColor = clearFlags == CameraClearFlags.Color;
+                
+#if UNITY_EDITOR
+                if (camera.cameraType == CameraType.Preview)
+                {
+                    shouldClearColor = true;
+                }
+#endif
                 
                 context.SetupCameraProperties(camera);
                 
@@ -405,7 +409,7 @@ namespace DGX.SRP
                     // для depth указываем любую другую текстуру, иначе она становится недоступной
                     cmd.SetRenderTarget(colorTextureID, rt.GBuffer0TargetId);
 
-                    if (shadows.VisibleSpotLights.Count > 0)
+                    if (lightRenderer.VisibleSpotLights.Count > 0)
                     {
                         cmd.EnableShaderKeyword(SPOT_LIGHTS);
                     }
@@ -505,10 +509,7 @@ namespace DGX.SRP
                 
                 context.Submit();
 
-                if (shouldRenderShadows)
-                {
-                    shadows.Cleanup();    
-                }
+                lightRenderer.Cleanup();  
 
                 if (colorTarget)
                 {
@@ -537,10 +538,10 @@ namespace DGX.SRP
             return SystemInfo.graphicsUVStartsAtTop || camera.rect != fullRect || settings.LowResRendering;
         }
 
-        private void RenderLights(ScriptableRenderContext context, CullingResults cullingResults)
+        private void RenderLights(ScriptableRenderContext context, CullingResults cullingResults, bool renderShadows)
         {
-            shadows.Setup(context, cullingResults, Asset.ShadowSettings);
-            shadows.Render();
+            lightRenderer.Setup(context, cullingResults, Asset.ShadowSettings, renderShadows);
+            lightRenderer.Render();
         }
 
         CameraData getCameraRenderTextures(Camera camera)

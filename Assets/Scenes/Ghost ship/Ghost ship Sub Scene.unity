@@ -9237,6 +9237,301 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: ad1f5855a33f0694886cbd301d99cc40, type: 3}
+--- !u!1 &855989404
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 855989405}
+  - component: {fileID: 855989406}
+  m_Layer: 0
+  m_Name: Ghost ship quest
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &855989405
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 855989404}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 2049512219}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &855989406
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 855989404}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 25d87a6b957a60841942c7e71e0c252f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ConversionTargetOptions: -1
+  Graph:
+    rid: 4957392669709697038
+  references:
+    version: 2
+    RefIds:
+    - rid: 4957392669709697038
+      type: {class: ScriptVizGraph, ns: TzarGames.GameCore.ScriptViz.Graph, asm: TzarGames.GameCore}
+      data:
+        pages: []
+        states: []
+        layers:
+        - id: scene
+          pages:
+          - ID:
+              Value:
+                Value:
+                  x: 2584583457
+                  y: 1169872499
+                  z: 3427647897
+                  w: 2525883988
+            Name: 
+            ConversionTargetOptions: 7
+            variables:
+            - rid: 4957392669709697043
+            nodes:
+            - rid: 4957392669709697039
+            - rid: 4957392669709697040
+            - rid: 4957392669709697041
+            - rid: 4957392669709697042
+          states: []
+          variables: []
+        Name: 
+    - rid: 4957392669709697039
+      type: {class: GetMainCharacterCommandNode, ns: Arena.ScriptViz, asm: Arena.Common}
+      data:
+        ID:
+          Value:
+            Value:
+              x: 3606476628
+              y: 1162442448
+              z: 2289287305
+              w: 716274148
+        Position: {x: 400, y: 411.33334}
+        InputSocket:
+          ID:
+            Value:
+              Value:
+                x: 359237473
+                y: 1271174026
+                z: 3815725227
+                w: 1665215383
+          ConnectedSocketIDs:
+          - Value:
+              Value:
+                x: 95629427
+                y: 1233581310
+                z: 25477270
+                w: 4020196595
+        OnCharacterLoadedSocket:
+          ID:
+            Value:
+              Value:
+                x: 2034563735
+                y: 1336645065
+                z: 4041818558
+                w: 1828056436
+          ConnectedSocketIDs:
+          - Value:
+              Value:
+                x: 2917549352
+                y: 1184909102
+                z: 508652456
+                w: 4267220625
+        CharacterSocket:
+          ID:
+            Value:
+              Value:
+                x: 1865534782
+                y: 1189819017
+                z: 2965803182
+                w: 150404614
+          ConnectedSocketIDs:
+          - Value:
+              Value:
+                x: 426847300
+                y: 1257187792
+                z: 2344783233
+                w: 2812034119
+          AuthoringValue: {fileID: 0}
+    - rid: 4957392669709697040
+      type: {class: StartEventNode, ns: TzarGames.GameCore.ScriptViz.Graph, asm: TzarGames.GameCore}
+      data:
+        ID:
+          Value:
+            Value:
+              x: 3688167320
+              y: 1247383734
+              z: 867997572
+              w: 845124012
+        Position: {x: 274.6667, y: 411.33334}
+        output:
+          ID:
+            Value:
+              Value:
+                x: 95629427
+                y: 1233581310
+                z: 25477270
+                w: 4020196595
+          ConnectedSocketIDs:
+          - Value:
+              Value:
+                x: 359237473
+                y: 1271174026
+                z: 3815725227
+                w: 1665215383
+    - rid: 4957392669709697041
+      type: {class: EnableFollowOnDetectNode, ns: TzarGames.GameCore.ScriptViz.Commands, asm: TzarGames.GameCore}
+      data:
+        ID:
+          Value:
+            Value:
+              x: 4171594858
+              y: 1074610343
+              z: 2256644745
+              w: 90910872
+        Position: {x: 1031.3334, y: 411.33334}
+        input:
+          ID:
+            Value:
+              Value:
+                x: 2505136510
+                y: 1321889044
+                z: 2770214062
+                w: 2023301559
+          ConnectedSocketIDs:
+          - Value:
+              Value:
+                x: 4057651905
+                y: 1318293291
+                z: 327866521
+                w: 2132934987
+        output:
+          ID:
+            Value:
+              Value:
+                x: 3316067198
+                y: 1272336194
+                z: 2729551007
+                w: 4062892319
+          ConnectedSocketIDs: []
+        TargetEntity:
+          ID:
+            Value:
+              Value:
+                x: 3080020186
+                y: 1110879681
+                z: 2387720832
+                w: 738310384
+          ConnectedSocketIDs: []
+          AuthoringValue: {fileID: 1241861154}
+        Enable:
+          ID:
+            Value:
+              Value:
+                x: 602165450
+                y: 1088637613
+                z: 1633780880
+                w: 156738251
+          ConnectedSocketIDs: []
+          Value: 1
+    - rid: 4957392669709697042
+      type: {class: SetTargetCommandNode, ns: TzarGames.GameCore.ScriptViz.Graph, asm: TzarGames.GameCore}
+      data:
+        ID:
+          Value:
+            Value:
+              x: 3433648223
+              y: 1219160330
+              z: 516464568
+              w: 1105802841
+        Position: {x: 700.6667, y: 411.33334}
+        input:
+          ID:
+            Value:
+              Value:
+                x: 2917549352
+                y: 1184909102
+                z: 508652456
+                w: 4267220625
+          ConnectedSocketIDs:
+          - Value:
+              Value:
+                x: 2034563735
+                y: 1336645065
+                z: 4041818558
+                w: 1828056436
+        output:
+          ID:
+            Value:
+              Value:
+                x: 4057651905
+                y: 1318293291
+                z: 327866521
+                w: 2132934987
+          ConnectedSocketIDs:
+          - Value:
+              Value:
+                x: 2505136510
+                y: 1321889044
+                z: 2770214062
+                w: 2023301559
+        Entity:
+          ID:
+            Value:
+              Value:
+                x: 3088262158
+                y: 1262056101
+                z: 2842453890
+                w: 2122177087
+          ConnectedSocketIDs: []
+          AuthoringValue: {fileID: 1241861154}
+        TargetEntity:
+          ID:
+            Value:
+              Value:
+                x: 426847300
+                y: 1257187792
+                z: 2344783233
+                w: 2812034119
+          ConnectedSocketIDs:
+          - Value:
+              Value:
+                x: 1865534782
+                y: 1189819017
+                z: 2965803182
+                w: 150404614
+          AuthoringValue: {fileID: 0}
+    - rid: 4957392669709697043
+      type: {class: DynamicArrayVariable, ns: TzarGames.GameCore.ScriptViz.Graph, asm: TzarGames.GameCore}
+      data:
+        ID:
+          Value:
+            Value:
+              x: 746993856
+              y: 1329659390
+              z: 1638187689
+              w: 2978738162
+        Name: _delayed_commands
+        NetSyncEnabled: 0
+        IsHidden: 1
 --- !u!1001 &858837910
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -13219,6 +13514,68 @@ PrefabInstance:
 Transform:
   m_CorrespondingSourceObject: {fileID: 400000, guid: 27bfdb9a40efac94b969eaf77cea92d9, type: 3}
   m_PrefabInstance: {fileID: 1239622780}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1001 &1241861153
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 3724536734463185348, guid: efd21ab1963d79d4d8ba08ffb6421619, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 20.751
+      objectReference: {fileID: 0}
+    - target: {fileID: 3724536734463185348, guid: efd21ab1963d79d4d8ba08ffb6421619, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 3.154
+      objectReference: {fileID: 0}
+    - target: {fileID: 3724536734463185348, guid: efd21ab1963d79d4d8ba08ffb6421619, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 186.823
+      objectReference: {fileID: 0}
+    - target: {fileID: 3724536734463185348, guid: efd21ab1963d79d4d8ba08ffb6421619, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 0.132882
+      objectReference: {fileID: 0}
+    - target: {fileID: 3724536734463185348, guid: efd21ab1963d79d4d8ba08ffb6421619, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3724536734463185348, guid: efd21ab1963d79d4d8ba08ffb6421619, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0.99113196
+      objectReference: {fileID: 0}
+    - target: {fileID: 3724536734463185348, guid: efd21ab1963d79d4d8ba08ffb6421619, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3724536734463185348, guid: efd21ab1963d79d4d8ba08ffb6421619, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3724536734463185348, guid: efd21ab1963d79d4d8ba08ffb6421619, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 164.728
+      objectReference: {fileID: 0}
+    - target: {fileID: 3724536734463185348, guid: efd21ab1963d79d4d8ba08ffb6421619, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 9040673568443925372, guid: efd21ab1963d79d4d8ba08ffb6421619, type: 3}
+      propertyPath: m_Name
+      value: Mage girlfriend
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: efd21ab1963d79d4d8ba08ffb6421619, type: 3}
+--- !u!1 &1241861154 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 9040673568443925372, guid: efd21ab1963d79d4d8ba08ffb6421619, type: 3}
+  m_PrefabInstance: {fileID: 1241861153}
   m_PrefabAsset: {fileID: 0}
 --- !u!1001 &1254390493
 PrefabInstance:
@@ -25923,7 +26280,8 @@ Transform:
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
-  m_Children: []
+  m_Children:
+  - {fileID: 855989405}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &2059054118
@@ -27942,5 +28300,6 @@ SceneRoots:
   - {fileID: 1687241023}
   - {fileID: 1501930243}
   - {fileID: 1036426586}
+  - {fileID: 1241861153}
   - {fileID: 1694130992}
   - {fileID: 1423880220}

@@ -10,7 +10,6 @@ GameObject:
   m_Component:
   - component: {fileID: 746036611584478839}
   - component: {fileID: 3687088663618691928}
-  - component: {fileID: 1981012085768395921}
   m_Layer: 0
   m_Name: Directional Light
   m_TagString: Untagged
@@ -95,29 +94,6 @@ Light:
   m_UseViewFrustumForShadowCasterCull: 1
   m_ShadowRadius: 0
   m_ShadowAngle: 0
---- !u!114 &1981012085768395921
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5242656541072650415}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 474bcb49853aa07438625e644c072ee6, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_Version: 3
-  m_UsePipelineSettings: 1
-  m_AdditionalLightsShadowResolutionTier: 2
-  m_LightLayerMask: 1
-  m_RenderingLayers: 1
-  m_CustomShadowLayers: 0
-  m_ShadowLayerMask: 1
-  m_ShadowRenderingLayers: 1
-  m_LightCookieSize: {x: 1, y: 1}
-  m_LightCookieOffset: {x: 0, y: 0}
-  m_SoftShadowQuality: 0
 --- !u!1 &7140358261588287791
 GameObject:
   m_ObjectHideFlags: 0
@@ -180,7 +156,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 31321ba15b8f8eb4c954353edc038b1d, type: 2}
+  - {fileID: 2100000, guid: cd24829a78bff4748a18c1d6d8d59345, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -782,6 +758,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: -5.7271576
       objectReference: {fileID: 0}
+    - target: {fileID: 3853268898807207900, guid: d216789bbf4a81e48a325e3005fd5843, type: 3}
+      propertyPath: m_Materials.Array.data[0]
+      value: 
+      objectReference: {fileID: 2100000, guid: 4f094743ed2163647b0939242976c0e2, type: 2}
     - target: {fileID: 4747904710347621765, guid: d216789bbf4a81e48a325e3005fd5843, type: 3}
       propertyPath: m_LocalEulerAnglesHint.x
       value: 24.130936
@@ -854,6 +834,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 33.458313
       objectReference: {fileID: 0}
+    - target: {fileID: 6148737315974723067, guid: d216789bbf4a81e48a325e3005fd5843, type: 3}
+      propertyPath: m_Materials.Array.data[0]
+      value: 
+      objectReference: {fileID: 2100000, guid: 4f094743ed2163647b0939242976c0e2, type: 2}
     - target: {fileID: 6341119541397085964, guid: d216789bbf4a81e48a325e3005fd5843, type: 3}
       propertyPath: m_LocalEulerAnglesHint.x
       value: 40.220936

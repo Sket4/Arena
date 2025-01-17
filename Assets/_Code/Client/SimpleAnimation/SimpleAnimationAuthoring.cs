@@ -32,12 +32,85 @@ public struct AnimationIdData : IComponentData
     public int Value;
 }
 
-[DisallowMultipleComponent]
-public class SimpleAnimationAuthoring : ComponentDataBehaviourBase, IAnimationStateMachineAuthoring
+[Serializable]
+public struct CopyAnimStatesFrom : IComponentData
 {
+    public Entity SourceEntity;
+}
+
+[DisallowMultipleComponent]
+public class SimpleAnimationAuthoring : ComponentDataBehaviourBase
+{
+    public SimpleAnimationAuthoring OptionalCopyFrom;
     public GameObject AnimationRoot;
     public int DefaultClipIndex = 0;
-    public List<SimpleAnimationClipAuthoring> Clips = new List<SimpleAnimationClipAuthoring>();
+    public List<SimpleAnimationClipAuthoring> Clips = new();
+
+    class Proxy : IAnimationStateMachineAuthoring
+    {
+        public GameObject AnimationRoot { get; private set; }
+        public int DefaultClipIndex { get; private set; }
+        public List<SimpleAnimationClipAuthoring> Clips  { get; private set; }
+        public IRemapper Remapper { get; private set; }
+
+        public Proxy(GameObject animRoot, int defaultClipIndex, List<SimpleAnimationClipAuthoring> clips, IRemapper remapper)
+        {
+            AnimationRoot = animRoot;
+            DefaultClipIndex = defaultClipIndex;
+            Clips = clips;
+            Remapper = remapper;
+        }
+        
+        public void ConvertAnimationState(int index, ref TzarGames.AnimationFramework.AnimationState state, IAnimationClip originalClip, IBaker baker)
+        {
+            var clip = originalClip as SimpleAnimationClipAuthoring;
+        
+            if(clip == null)
+            {
+                Debug.LogError($"Animation clip is null, baking object: {baker.GetName()}");
+                return;
+            }
+
+            if(clip.ID == null)
+            {
+                Debug.LogError($"Animation clip {clip.Clip.name} ID is null, baking object: {baker.GetName()}");
+                return;
+            }
+
+            state.SpeedScale = clip.SpeedScale;
+
+            if(index == DefaultClipIndex)
+            {
+                state.Weight = 1;
+            }
+            baker.AppendToBuffer(new ClipIdToIndexMapping { ID = clip.ID.Id, Index = index });
+        }
+
+        public GameObject GetAnimationRootGameObject()
+        {
+            return AnimationRoot;
+            //if (AnimationRoot) return AnimationRoot;
+            //return gameObject;
+        }
+
+        public IAnimationClip[] GetReferencedAnimationClips()
+        {
+            var list = new List<IAnimationClip>();
+
+            foreach (var clip in Clips)
+            {
+                list.Add(clip);
+            }
+
+            return list.ToArray();
+        }
+
+        public IRemapper GetRemapper()
+        {
+            return Remapper;
+            //return GetComponent<RetargetComponent>();
+        }
+    }
 
     protected override void PreBake<T>(T baker)
     {
@@ -77,57 +150,24 @@ public class SimpleAnimationAuthoring : ComponentDataBehaviourBase, IAnimationSt
         //dstManager.AddComponent<DisableRootTransformReadWriteTag>(entity);
         baker.AddBuffer<ClipIdToIndexMapping>();
 
-        AnimationBakingSystem.Bake(this, baker.UnityBaker);
+        var retarget = GetComponent<RetargetComponent>();
+        var clips = OptionalCopyFrom ? OptionalCopyFrom.Clips : Clips;
+        var defaultClipIndex = OptionalCopyFrom ? OptionalCopyFrom.DefaultClipIndex : DefaultClipIndex;
+        var proxy = new Proxy((AnimationRoot ? AnimationRoot : gameObject), defaultClipIndex, clips, retarget);
+
+        if (OptionalCopyFrom)
+        {
+            baker.AddComponent(new CopyAnimStatesFrom()
+            {
+                SourceEntity = baker.GetEntity(OptionalCopyFrom)
+            });
+        }
+        
+        AnimationBakingSystem.Bake(proxy, baker.UnityBaker);
 #endif
     }
 
-    public void ConvertAnimationState(int index, ref TzarGames.AnimationFramework.AnimationState state, IAnimationClip originalClip, IBaker baker)
-    {
-        var clip = originalClip as SimpleAnimationClipAuthoring;
-        
-        if(clip == null)
-        {
-            Debug.LogError($"Animation clip is null, baking object: {baker.GetName()}");
-            return;
-        }
-
-        if(clip.ID == null)
-        {
-            Debug.LogError($"Animation clip {clip.Clip.name} ID is null, baking object: {baker.GetName()}");
-            return;
-        }
-
-        state.SpeedScale = clip.SpeedScale;
-
-        if(index == DefaultClipIndex)
-        {
-            state.Weight = 1;
-        }
-        baker.AppendToBuffer(new ClipIdToIndexMapping { ID = clip.ID.Id, Index = index });
-    }
-
-    public GameObject GetAnimationRootGameObject()
-    {
-        if (AnimationRoot) return AnimationRoot;
-        return gameObject;
-    }
-
-    public IAnimationClip[] GetReferencedAnimationClips()
-    {
-        var list = new List<IAnimationClip>();
-
-        foreach (var clip in Clips)
-        {
-            list.Add(clip);
-        }
-
-        return list.ToArray();
-    }
-
-    public IRemapper GetRemapper()
-    {
-        return GetComponent<RetargetComponent>();
-    }
+    
     
     #if UNITY_EDITOR
     [ContextMenu("Add animations to the animation component")]

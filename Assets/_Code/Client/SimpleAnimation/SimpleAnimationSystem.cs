@@ -1,6 +1,5 @@
 using TzarGames.AnimationFramework;
 using Unity.Entities;
-using Unity.Jobs;
 using Unity.Mathematics;
 using UnityEngine;
 using AnimationState = TzarGames.AnimationFramework.AnimationState;
@@ -15,6 +14,7 @@ public partial class SimpleAnimationSystem : SystemBase
         float deltaTime = World.Time.DeltaTime;
 
         Entities
+            .WithNone<CopyAnimStatesFrom>()
             .ForEach((
                 Entity entity,
                 DynamicBuffer<AnimationState> animStates,
@@ -70,6 +70,31 @@ public partial class SimpleAnimationSystem : SystemBase
                 }
 
             }).Run();
+        
+        Entities.ForEach((ref DynamicBuffer<AnimationState> states, in CopyAnimStatesFrom copyFrom) =>
+        {
+            var originalStates = GetBuffer<AnimationState>(copyFrom.SourceEntity);
+
+            if (originalStates.Length != states.Length)
+            {
+                Debug.LogError("state count mismatch");
+                return;
+            }
+
+            for (int i = 0; i < states.Length; i++)
+            {
+                var state = states[i];
+                var origState = originalStates[i];
+
+                state.SpeedScale = origState.SpeedScale;
+                state.Weight = origState.Weight;
+                state.SetDeltaTime(origState.DeltaTime);
+                state.PreviousTime = origState.PreviousTime;
+
+                states[i] = state;
+            }
+
+        }).Run();
     }
 
     public static void NormalizeWeights(in SimpleAnimation simpleAnimation, ref DynamicBuffer<AnimationState> animationClipDataBuffer)

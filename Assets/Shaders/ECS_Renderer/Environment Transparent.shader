@@ -71,15 +71,15 @@ Shader "Arena/Environment Transparent"
             
             //#pragma multi_compile_fragment __ ARENA_USE_MAIN_LIGHT
             //#pragma multi_compile_fragment __ ARENA_USE_ADD_LIGHT
-            //#pragma multi_compile_fragment __ DGX_DARK_MODE
+           #pragma multi_compile_fragment _ DGX_DARK_MODE
             
             //#pragma multi_compile_fwdbase
             #pragma multi_compile _ LIGHTMAP_ON
-            #pragma multi_compile _ DIRLIGHTMAP_COMBINED
+            #pragma multi_compile_fragment _ DIRLIGHTMAP_COMBINED
 
-            #pragma multi_compile_fragment _ _SHADOWS_SOFT
-            #pragma multi_compile_fragment _ _SHADOWS_SOFT_LOW _SHADOWS_SOFT_MEDIUM _SHADOWS_SOFT_HIGH
-            #pragma multi_compile_fragment _ _LIGHT_COOKIES
+            //#pragma multi_compile_fragment _ _SHADOWS_SOFT
+            //#pragma multi_compile_fragment _ _SHADOWS_SOFT_LOW _SHADOWS_SOFT_MEDIUM _SHADOWS_SOFT_HIGH
+            //#pragma multi_compile_fragment _ _LIGHT_COOKIES
 
             #define TG_TRANSPARENT
 

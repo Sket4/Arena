@@ -53,6 +53,9 @@ Shader "Arena/Environment"
                 "LightMode" = "gbuffer"
             }
             
+            Cull[_Cull]
+            ZWrite[_ZWrite]
+            
             Stencil 
             {
                 Ref 128

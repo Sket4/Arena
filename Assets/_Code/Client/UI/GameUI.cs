@@ -232,7 +232,7 @@ namespace Arena.Client.UI
                 }
                 else
                 {
-                    UI.settingsButton.gameObject.SetActive(false);
+                    UI.settingsButton.gameObject.SetActive(true);
                     UI.inventoryButton.gameObject.SetActive(true);
                 }
             }

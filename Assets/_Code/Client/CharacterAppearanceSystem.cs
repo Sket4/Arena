@@ -3,6 +3,7 @@ using Unity.Transforms;
 using UnityEngine;
 using TzarGames.GameCore;
 using Unity.Collections;
+using Unity.Jobs;
 using Unity.Mathematics;
 
 namespace Arena.Client
@@ -12,33 +13,18 @@ namespace Arena.Client
         public Entity Owner;
         public Entity Instance;
     }
+    
+    struct CharacterEquipmentAppearanceState : IComponentData
+    {
+        public Entity ArmorSetEntity;
+        public Entity HeadModelEntity;
+    }
 
     [DisableAutoCreation]
     [UpdateAfter(typeof(GameCommandBufferSystem))]
     //[UpdateBefore(typeof(TransformSystemGroup))]
     public partial class CharacterAppearanceSystem : SystemBase
     {
-        struct CharacterEquipmentAppearanceState : IComponentData
-        {
-            public Entity ArmorSetEntity;
-            public Entity HeadModelEntity;
-        }
-
-        private ComponentLookup<PrefabID> prefabIdLookup;
-        private ComponentLookup<Parent> parentLookup;
-        private ComponentLookup<LocalTransform> transformLookup;
-        private ComponentLookup<PostTransformMatrix> postTransformLookup;
-
-        protected override void OnCreate()
-        {
-            base.OnCreate();
-            prefabIdLookup = GetComponentLookup<PrefabID>(true);
-            parentLookup = GetComponentLookup<Parent>(true);
-            transformLookup = GetComponentLookup<LocalTransform>(true);
-            postTransformLookup = GetComponentLookup<PostTransformMatrix>(true);
-            RequireForUpdate<MainDatabaseTag>();
-        }
-
         void destroyItemAppearance(Entity entity, CharacterAppearanceState state)
         {
             EntityManager.RemoveComponent<CharacterAppearanceState>(entity);
@@ -100,7 +86,7 @@ namespace Arena.Client
 
                 if(EntityManager.HasComponent<CharacterAppearanceState>(equipment.RightHandWeapon))
                 {
-                    destroyItemAppearance(equipment.RightHandWeapon, EntityManager.GetComponentObject<CharacterAppearanceState>(equipment.RightHandWeapon));
+                    destroyItemAppearance(equipment.RightHandWeapon, EntityManager.GetComponentData<CharacterAppearanceState>(equipment.RightHandWeapon));
                 }
 
             }).Run();
@@ -282,77 +268,167 @@ namespace Arena.Client
                     }
 
                 }).Run();
-            
-            prefabIdLookup.Update(this);
-            postTransformLookup.Update(this);
-            transformLookup.Update(this);
-            parentLookup.Update(this);
+        }
+    }
+    
+    [DisableAutoCreation]
+    [UpdateAfter(typeof(CharacterAppearanceSystem))]
+    partial struct CharacterAppearanceNativeSystem : ISystem
+    {
+        private ComponentLookup<PrefabID> prefabIdLookup;
+        private ComponentLookup<Parent> parentLookup;
+        private ComponentLookup<LocalTransform> transformLookup;
+        private ComponentLookup<PostTransformMatrix> postTransformLookup;
+
+        private EntityQuery characterHeadQuery;
+
+        private ComponentType appearanceStateType;
+        private ComponentType characterHeadType;
+        
+        ComponentTypeHandle<CharacterEquipmentAppearanceState> appearanceStateTypeHandle;
+                    ComponentTypeHandle<CharacterHead> characterHeadTypeHandle;
+                    ComponentTypeHandle<Gender> genderTypeHandle;
+        
+        public void OnCreate(ref SystemState state)
+        {
+            prefabIdLookup = state.GetComponentLookup<PrefabID>(true);
+            parentLookup = state.GetComponentLookup<Parent>(true);
+            transformLookup = state.GetComponentLookup<LocalTransform>(true);
+            postTransformLookup = state.GetComponentLookup<PostTransformMatrix>(true);
+            state.RequireForUpdate<MainDatabaseTag>();
+
+            appearanceStateType = ComponentType.ReadWrite<CharacterEquipmentAppearanceState>();
+            characterHeadType = ComponentType.ReadOnly<CharacterHead>();
+
+            appearanceStateTypeHandle = state.GetComponentTypeHandle<CharacterEquipmentAppearanceState>(false);
+            characterHeadTypeHandle = state.GetComponentTypeHandle<CharacterHead>(true);
+            genderTypeHandle = state.GetComponentTypeHandle<Gender>(true);
+
+            characterHeadQuery = state.GetEntityQuery(new EntityQueryDesc
+            {
+                All = new []
+                {
+                    appearanceStateType,
+                    characterHeadType,
+                    ComponentType.ReadOnly<Gender>()
+                }
+            });
+        }
+
+        public void OnUpdate(ref SystemState state)
+        {
+            // prefabIdLookup.Update(ref state);
+            // postTransformLookup.Update(ref state);
+            // transformLookup.Update(ref state);
+            // parentLookup.Update(ref state);
             
             var dbEntity = SystemAPI.GetSingletonEntity<MainDatabaseTag>();
             var db = SystemAPI.GetBuffer<IdToEntity>(dbEntity).ToNativeArray(Allocator.Temp);
             
-            Entities
-                .WithStructuralChanges()
-                .WithChangeFilter<CharacterHead>()
-                .WithReadOnly(db)
-                .ForEach((ref CharacterEquipmentAppearanceState appearance, in CharacterHead head, in Gender gender) =>
-                {
-                    processHeadModel(ref appearance, prefabIdLookup, ref parentLookup, ref transformLookup, ref postTransformLookup, head, db, gender);
-                }).Run();
+            characterHeadQuery.SetChangedVersionFilter(characterHeadType);
+            processQuery(ref state, in db);
             
-            Entities
-                .WithStructuralChanges()
-                .WithChangeFilter<CharacterEquipmentAppearanceState>()
-                .WithReadOnly(db)
-                .ForEach((ref CharacterEquipmentAppearanceState appearance, in CharacterHead head, in Gender gender) =>
-                {
-                    processHeadModel(ref appearance, prefabIdLookup, ref parentLookup, ref transformLookup, ref postTransformLookup, head, db, gender);
-                }).Run();
+            characterHeadQuery.SetChangedVersionFilter(appearanceStateType);
+            processQuery(ref state, in db);
         }
 
-        private void processHeadModel(ref CharacterEquipmentAppearanceState appearance, 
-            in ComponentLookup<PrefabID> prefabIdLookup, 
-            ref ComponentLookup<Parent> parentLookup,
-            ref ComponentLookup<LocalTransform> transformLookup,
-            ref ComponentLookup<PostTransformMatrix> postTransformLookup,
-            CharacterHead head,
-            NativeArray<IdToEntity> db, 
-            Gender gender)
+        void processQuery(ref SystemState state, in NativeArray<IdToEntity> db)
         {
-            bool needInstance = false;
-            bool alreadyHasHeadModelInstance = false;
+            var chunks = characterHeadQuery.ToArchetypeChunkArray(Allocator.Temp);
+
+            foreach (var chunk in chunks)
+            {
+                appearanceStateTypeHandle.Update(ref state);
+                characterHeadTypeHandle.Update(ref state);
+                genderTypeHandle.Update(ref state);
+                
+                var appearances = chunk.GetNativeArray(ref appearanceStateTypeHandle);
+                var heads = chunk.GetNativeArray(ref characterHeadTypeHandle);
+                var genders = chunk.GetNativeArray(ref genderTypeHandle);
+
+                for (int c = 0; c < chunk.Count; c++)
+                {
+                    var appearance = appearances[c];
+                    var head = heads[c];
+                    var gender = genders[c];
+                    
+                    processHeadModel(ref state, ref appearance, in head, in gender, in db);
+                    
+                    appearanceStateTypeHandle.Update(ref state);
+                    appearances = chunk.GetNativeArray(ref appearanceStateTypeHandle);
+                    appearances[c] = appearance;
+                }
+            }
+        }
+        
+        private void processHeadModel(
+            ref SystemState state, 
+            ref CharacterEquipmentAppearanceState appearance,
+            in CharacterHead head, 
+            in Gender gender,
+            in NativeArray<IdToEntity> db)
+        {
+            bool shouldProcess = false;
+            var existingHeadInstance = Entity.Null;
+            var needChangeHead = false;
+            
+            var armorSetAppearanceState = state.EntityManager.GetComponentData<CharacterAppearanceState>(appearance.ArmorSetEntity);
+            var armorSetAppearance =
+                state.EntityManager.GetComponentData<ArmorSetAppearance>(armorSetAppearanceState.Instance);
 
             if (appearance.HeadModelEntity != Entity.Null)
             {
+                prefabIdLookup.Update(ref state);
+                
                 if (prefabIdLookup.TryGetComponent(appearance.HeadModelEntity, out var headModelID))
                 {
-                    alreadyHasHeadModelInstance = true;
-
+                    existingHeadInstance = appearance.HeadModelEntity;
+                    
                     if (headModelID.Value != head.ModelID.Value)
                     {
-                        needInstance = true;
+                        needChangeHead = true;
+                        shouldProcess = true;
+                    }
+                    else
+                    {
+                        parentLookup.Update(ref state);
+                        
+                        if (parentLookup.TryGetComponent(existingHeadInstance, out var existingHeadParent))
+                        {
+                            if (existingHeadParent.Value != armorSetAppearance.HeadSocket)
+                            {
+                                needChangeHead = true;
+                                shouldProcess = true;
+                            }
+                        }
+                        else
+                        {
+                            // почему то у головы не оказалось сокета-родителя, поэтому нужен сброс и пересборка
+                            needChangeHead = true;
+                            shouldProcess = true;
+                        }
                     }
                 }
                 else
                 {
                     Debug.LogWarning($"Head model instance not found, entity: {appearance.HeadModelEntity.Index}");
                     appearance.HeadModelEntity = Entity.Null;
-                    needInstance = true;
+                    shouldProcess = true;
                 }
             }
             else
             {
-                needInstance = true;
+                shouldProcess = true;
             }
 
-            if (needInstance == false)
+            if (shouldProcess == false)
             {
                 return;
             }
 
-            if (alreadyHasHeadModelInstance)
+            if (existingHeadInstance != Entity.Null && needChangeHead)
             {
-                EntityManager.DestroyEntity(appearance.HeadModelEntity);
+                state.EntityManager.DestroyEntity(existingHeadInstance);
                 appearance.HeadModelEntity = Entity.Null;
             }
 
@@ -386,45 +462,41 @@ namespace Arena.Client
                 return;
             }
 
-            var headInstance = EntityManager.Instantiate(headPrefab);
+            var headInstance = state.EntityManager.Instantiate(headPrefab);
             appearance.HeadModelEntity = headInstance;
 
-            var armorSetAppearanceState = EntityManager.GetComponentData<CharacterAppearanceState>(appearance.ArmorSetEntity);
-            var armorSetAppearance =
-                EntityManager.GetComponentData<ArmorSetAppearance>(armorSetAppearanceState.Instance);
+            state.EntityManager.AddComponentData(headInstance, new Parent { Value = armorSetAppearance.HeadSocket });
+            state.EntityManager.SetComponentData(headInstance, LocalTransform.Identity);
 
-            EntityManager.AddComponentData(headInstance, new Parent { Value = armorSetAppearance.HeadSocket });
-            EntityManager.SetComponentData(headInstance, LocalTransform.Identity);
-
-            var armorSetInstanceRig = EntityManager.GetComponentData<HumanRig>(armorSetAppearanceState.Instance);
-            var headRig = EntityManager.GetComponentData<HumanRig>(headInstance);
-            var headPrefabRig = EntityManager.GetComponentData<HumanRig>(headPrefab);
+            var armorSetInstanceRig = state.EntityManager.GetComponentData<HumanRig>(armorSetAppearanceState.Instance);
+            var headRig = state.EntityManager.GetComponentData<HumanRig>(headInstance);
+            var headPrefabRig = state.EntityManager.GetComponentData<HumanRig>(headPrefab);
 
             var armorSetAppearancePrefab =
-                EntityManager.GetComponentData<ActivatedItemAppearance>(appearance.ArmorSetEntity).Prefab;
-            var armorSetPrefabRig = EntityManager.GetComponentData<HumanRig>(armorSetAppearancePrefab);
-            var armorSetPrefabAppearance = EntityManager.GetComponentData<ArmorSetAppearance>(armorSetAppearancePrefab);
+                state.EntityManager.GetComponentData<ActivatedItemAppearance>(appearance.ArmorSetEntity).Prefab;
+            var armorSetPrefabRig = state.EntityManager.GetComponentData<HumanRig>(armorSetAppearancePrefab);
+            var armorSetPrefabAppearance = state.EntityManager.GetComponentData<ArmorSetAppearance>(armorSetAppearancePrefab);
             var armorSetPrefabHeadSocket = armorSetPrefabAppearance.HeadSocket;
-            var armorSetPrefabHeadSocketTransform =
-                EntityManager.GetComponentData<LocalTransform>(armorSetPrefabHeadSocket);
-            var positionDisp = armorSetPrefabHeadSocketTransform.Position;
             
             ///
-            postTransformLookup.Update(this);
-            transformLookup.Update(this);
-            parentLookup.Update(this);
-            /// 
+            postTransformLookup.Update(ref state);
+            transformLookup.Update(ref state);
+            parentLookup.Update(ref state);
+            ///
             
-            transformBone(armorSetPrefabRig.Head, headPrefabRig.Head, positionDisp, armorSetInstanceRig.Head, headRig.Head);
-            transformBone(armorSetPrefabRig.Neck, headPrefabRig.Neck, positionDisp, armorSetInstanceRig.Neck, headRig.Neck);
-            transformBone(armorSetPrefabRig.UpperChest, headPrefabRig.UpperChest, positionDisp, armorSetInstanceRig.UpperChest, headRig.UpperChest);
-            transformBone(armorSetPrefabRig.LeftShoulder, headPrefabRig.LeftShoulder, positionDisp, armorSetInstanceRig.LeftShoulder, headRig.LeftShoulder);
-            transformBone(armorSetPrefabRig.LeftUpperArm, headPrefabRig.LeftUpperArm, positionDisp, armorSetInstanceRig.LeftUpperArm, headRig.LeftUpperArm);
-            transformBone(armorSetPrefabRig.RightShoulder, headPrefabRig.RightShoulder, positionDisp, armorSetInstanceRig.RightShoulder, headRig.RightShoulder);
-            transformBone(armorSetPrefabRig.RightUpperArm, headPrefabRig.RightUpperArm, positionDisp, armorSetInstanceRig.RightUpperArm, headRig.RightUpperArm);
+            TransformHelpers.ComputeWorldTransformMatrix(armorSetPrefabHeadSocket, out var armorSetPrefabHeadSocketTransform, ref transformLookup, ref parentLookup, ref postTransformLookup);
+            var positionDisp = armorSetPrefabHeadSocketTransform.Translation();
+            
+            transformBone(ref state, armorSetPrefabRig.Head, headPrefabRig.Head, positionDisp, armorSetInstanceRig.Head, headRig.Head);
+            transformBone(ref state, armorSetPrefabRig.Neck, headPrefabRig.Neck, positionDisp, armorSetInstanceRig.Neck, headRig.Neck);
+            transformBone(ref state, armorSetPrefabRig.UpperChest, headPrefabRig.UpperChest, positionDisp, armorSetInstanceRig.UpperChest, headRig.UpperChest);
+            transformBone(ref state, armorSetPrefabRig.LeftShoulder, headPrefabRig.LeftShoulder, positionDisp, armorSetInstanceRig.LeftShoulder, headRig.LeftShoulder);
+            transformBone(ref state, armorSetPrefabRig.LeftUpperArm, headPrefabRig.LeftUpperArm, positionDisp, armorSetInstanceRig.LeftUpperArm, headRig.LeftUpperArm);
+            transformBone(ref state, armorSetPrefabRig.RightShoulder, headPrefabRig.RightShoulder, positionDisp, armorSetInstanceRig.RightShoulder, headRig.RightShoulder);
+            transformBone(ref state, armorSetPrefabRig.RightUpperArm, headPrefabRig.RightUpperArm, positionDisp, armorSetInstanceRig.RightUpperArm, headRig.RightUpperArm);
         }
 
-        void transformBone(Entity armorPrefabBone, Entity headPrefabBone, float3 positionDisp, Entity parent, Entity instanceBone)
+        void transformBone(ref SystemState state, Entity armorPrefabBone, Entity headPrefabBone, float3 positionDisp, Entity parent, Entity instanceBone)
         {
             TransformHelpers.ComputeWorldTransformMatrix(armorPrefabBone, out var prefabHeadL2W, ref transformLookup, ref parentLookup, ref postTransformLookup);
             TransformHelpers.ComputeWorldTransformMatrix(headPrefabBone, out var boneL2W, ref transformLookup, ref parentLookup, ref postTransformLookup);
@@ -436,9 +508,9 @@ namespace Arena.Client
             boneL2W = float4x4.TRS(boneL2W.Translation() + positionDisp, boneL2W.Rotation(), boneL2W.Scale());
             var prefabSpaceBoneTransform = math.mul(prefabBoneW2L, boneL2W);
             
-            EntityManager.SetComponentData(instanceBone, new Parent { Value = parent });
+            state.EntityManager.SetComponentData(instanceBone, new Parent { Value = parent });
             var newLT = LocalTransform.FromPositionRotationScale(prefabSpaceBoneTransform.Translation(), prefabSpaceBoneTransform.Rotation(), prefabSpaceBoneTransform.Scale().x);
-            EntityManager.SetComponentData(instanceBone, newLT);
+            state.EntityManager.SetComponentData(instanceBone, newLT);
         }
     }
 }

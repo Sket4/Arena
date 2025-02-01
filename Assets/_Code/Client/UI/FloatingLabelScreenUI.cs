@@ -392,7 +392,7 @@ namespace Arena.Client.UI
             }
             else
             {
-                label.Text = EntityManager.GetSharedComponentManaged<ItemName>(itemEntity).Value;
+                label.Text = EntityManager.GetSharedComponentManaged<ItemName>(itemEntity).ToString();
                 label.Color = Color.white;
             }
 

@@ -4,7 +4,8 @@ namespace Arena
 {
     public class CharacterTemplate
     {
-        public int BaseArmorID;
+        public int BaseArmorID_Female;
+        public int BaseArmorID_Male;
         public int BaseWeaponID;
 
         public int[] AbilityIDs;
@@ -14,7 +15,8 @@ namespace Arena
     {
         public static readonly CharacterTemplate Archer = new CharacterTemplate
         {
-            BaseArmorID = 35,
+            BaseArmorID_Male = 35,
+            BaseArmorID_Female = 35, // TODO
             BaseWeaponID = 42,
             AbilityIDs = new int[]
             {
@@ -28,7 +30,8 @@ namespace Arena
 
         public static readonly CharacterTemplate Knight = new CharacterTemplate
         {
-            BaseArmorID = 36,
+            BaseArmorID_Male = 36,
+            BaseArmorID_Female = 118,
             BaseWeaponID = 38,
             AbilityIDs = new int[]
             {
@@ -121,7 +124,9 @@ namespace Arena
                 data.ItemsData.Bags.Add(new ItemBagData());
             }
 
-            addItem(data, template.BaseArmorID, 0, true);
+            var isMale = data.Gender == Genders.Male;
+
+            addItem(data, isMale ? template.BaseArmorID_Male : template.BaseArmorID_Female, 0, true);
             addItem(data, template.BaseWeaponID, 0, true);
 
             if(data.AbilityData == null)

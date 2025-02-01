@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using TzarGames.GameCore;
 using TzarGames.GameCore.ScriptViz;
 using TzarGames.GameCore.ScriptViz.Graph;
 using Unity.Burst;
@@ -140,6 +141,69 @@ namespace Arena.ScriptViz
             else
             {
                 return "Скрыть сообщение";
+            }
+        }
+    }
+    
+    [BurstCompile]
+    public struct SetCharacterHeadCommand : IScriptVizCommand
+    {
+        public CharacterHead Head;
+        public InputEntityVar Target;
+
+        [BurstCompile]
+        [AOT.MonoPInvokeCallback(typeof(ScriptVizCommandRegistry.ExecuteDelegate))]
+        public static unsafe void Exec(ref Context context, void* commandData)
+        {
+            var data = (SetCharacterHeadCommand*)commandData;
+
+            var target = data->Target.Read(ref context);
+
+            if (target == Entity.Null)
+            {
+                Debug.LogError("target head is null");
+                return;
+            }
+            
+            context.Commands.SetComponent(context.SortIndex, target, data->Head);
+        }
+    }
+    
+    [FriendlyName("Сменить голову персонажа")]
+    [Serializable]
+    public class SetCharacterHeadNode : CommandNode
+    {
+        public HeadKey HeadID;
+        [HideInInspector]
+        public EntitySocket TargetSocket = new();
+        
+        public override void WriteCommand(CompilerAllocator compilerAllocator, out Address commandAddress)
+        {
+            var cmd = new SetCharacterHeadCommand();
+            compilerAllocator.InitializeInputVar(ref cmd.Target, TargetSocket);
+            cmd.Head = new CharacterHead
+            {
+                ModelID = new PrefabID(HeadID != null ? HeadID.Id : 0)
+            };
+            
+            commandAddress = compilerAllocator.WriteCommand(ref cmd);
+        }
+
+        public override void DeclareSockets(List<SocketInfo> sockets)
+        {
+            base.DeclareSockets(sockets);
+            sockets.Add(new SocketInfo(TargetSocket, SocketType.In, "Персонаж"));
+        }
+
+        public override string GetNodeName(ScriptVizGraphPage page)
+        {
+            if (HeadID)
+            {
+                return $"Установить голову '{HeadID.name}'";
+            }
+            else
+            {
+                return "Установить голову";
             }
         }
     }

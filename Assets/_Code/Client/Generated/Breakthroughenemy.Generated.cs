@@ -76,8 +76,8 @@ namespace TzarGames.GameCore.Abilities.Generated
 		public TzarGames.GameCore.Abilities.DurationJob _DurationJob;
 		public TzarGames.GameCore.Abilities.ConvertOwnerInputToRotationOnStartAbilityJob _ConvertOwnerInputToRotationOnStartAbilityJob;
 		public TzarGames.GameCore.Abilities.CopyOwnerTransformToAbilityOnStartJob _CopyOwnerTransformToAbilityOnStartJob;
-		public Arena.Client.Abilities.AnimationAbilityComponentStopJob _AnimationAbilityComponentStopJob;
 		public Arena.Client.Abilities.AnimationAbilityComponentStartJob _AnimationAbilityComponentStartJob;
+		public Arena.Client.Abilities.AnimationAbilityComponentStopJob _AnimationAbilityComponentStopJob;
 		public TzarGames.GameCore.HitFlagAbilityComponentJob _HitFlagAbilityComponentJob;
 		public TzarGames.GameCore.Abilities.ScriptVizAbilityJob _ScriptVizAbilityJob;
 
@@ -438,9 +438,9 @@ namespace TzarGames.GameCore.Abilities.Generated
 
 			job._CopyOwnerTransformToAbilityOnStartJob.TransformFromEntity = ComponentLookupLocalTransform;
 
-
 			job._AnimationAbilityComponentStartJob.StopAnimType = ComponentTypeHandleAnimationAbilityStopComponentData;
 			job._AnimationAbilityComponentStartJob.DurationType = ComponentTypeHandleDuration;
+
 
 
 			job._ScriptVizAbilityJob.StartEventType = BufferTypeHandleOnAbilityStartEventCommandData;
@@ -504,9 +504,9 @@ namespace TzarGames.GameCore.Abilities.Generated
 
 			job._CopyOwnerTransformToAbilityOnStartJob.TransformFromEntity.Update(ref state);
 
-
 			job._AnimationAbilityComponentStartJob.StopAnimType.Update(ref state);
 			job._AnimationAbilityComponentStartJob.DurationType.Update(ref state);
+
 
 
 			job._ScriptVizAbilityJob.StartEventType.Update(ref state);

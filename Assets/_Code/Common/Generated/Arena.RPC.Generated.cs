@@ -20,13 +20,12 @@ namespace TzarGames.MultiplayerKit.Generated
 
 		public bool GetRpcCode(System.Type rpcHandlerType, MethodInfo method, out RemoteCallInfo info)
 		{
-			if( typeof(Arena.IServerArenaCommands).IsAssignableFrom(rpcHandlerType))
+			if(rpcHandlerType == typeof(Arena.HitSyncSystem))
 			{
-				info = new RemoteCallInfo(0,0, ChannelType.Reliable, MessageDeliveryOptions.Default, 1);
+				info = new RemoteCallInfo(15,0, ChannelType.Reliable, MessageDeliveryOptions.Default, 1);
 				switch(method.Name)
 				{
-					case "RequestContinueGame": info.MethodCode = 2; info.Channel = ChannelType.Reliable; info.Options = MessageDeliveryOptions.Default; info.RepeatCount = 1; return true;
-					case "NotifyExitingFromGame": info.MethodCode = 3; info.Channel = ChannelType.Reliable; info.Options = MessageDeliveryOptions.Default; info.RepeatCount = 1; return true;
+					case "SendHitsToClient": info.MethodCode = 0; info.Channel = ChannelType.Reliable; info.Options = MessageDeliveryOptions.Default; info.RepeatCount = 1; return true;
 				}
 			}
 			if( typeof(Arena.IInputSyncSystem).IsAssignableFrom(rpcHandlerType))
@@ -45,6 +44,15 @@ namespace TzarGames.MultiplayerKit.Generated
 					case "CorrectPositionOnClient": info.MethodCode = 0; info.Channel = ChannelType.Unreliable; info.Options = MessageDeliveryOptions.Default; info.RepeatCount = 1; return true;
 				}
 			}
+			if( typeof(Arena.IServerArenaCommands).IsAssignableFrom(rpcHandlerType))
+			{
+				info = new RemoteCallInfo(0,0, ChannelType.Reliable, MessageDeliveryOptions.Default, 1);
+				switch(method.Name)
+				{
+					case "NotifyExitingFromGame": info.MethodCode = 3; info.Channel = ChannelType.Reliable; info.Options = MessageDeliveryOptions.Default; info.RepeatCount = 1; return true;
+					case "RequestContinueGame": info.MethodCode = 2; info.Channel = ChannelType.Reliable; info.Options = MessageDeliveryOptions.Default; info.RepeatCount = 1; return true;
+				}
+			}
 			if(rpcHandlerType == typeof(Arena.StoreSystem))
 			{
 				info = new RemoteCallInfo(13,0, ChannelType.Reliable, MessageDeliveryOptions.Default, 1);
@@ -54,44 +62,46 @@ namespace TzarGames.MultiplayerKit.Generated
 					case "PurchaseResultRPC": info.MethodCode = 0; info.Channel = ChannelType.Reliable; info.Options = MessageDeliveryOptions.Default; info.RepeatCount = 1; return true;
 				}
 			}
-			if(rpcHandlerType == typeof(Arena.HitSyncSystem))
-			{
-				info = new RemoteCallInfo(15,0, ChannelType.Reliable, MessageDeliveryOptions.Default, 1);
-				switch(method.Name)
-				{
-					case "SendHitsToClient": info.MethodCode = 0; info.Channel = ChannelType.Reliable; info.Options = MessageDeliveryOptions.Default; info.RepeatCount = 1; return true;
-				}
-			}
 			info = default;
 			return false;
 		}
 
 		public bool Call(NetworkPlayer owner, Entity senderEntity, NetworkPlayer sender, byte handlerCode, byte rpcCode, INetworkObject target, bool isServer, ref DataStreamReader reader, EntityCommandBuffer commands)
 		{
-			if(handlerCode == 0)
+			if(handlerCode == 15)
 			{
-				if(target is Arena.IServerArenaCommands == false)
+				if(target.GetType() != typeof(Arena.HitSyncSystem))
 				{
 					return false;
 				}
 				switch(rpcCode)
 				{
-					#if UNITY_SERVER || UNITY_EDITOR
-					case 2:
+					#if !UNITY_SERVER
+					case 0:
 					{
+						if(isServer) return false;
 						var stream = new ReadStream(ref reader);
-						TzarGames.MultiplayerKit.NetMessageInfo info = new NetMessageInfo() { Sender = sender, SenderEntity = senderEntity };
-						(target as Arena.IServerArenaCommands).RequestContinueGame(info);
-						return true;
-					}
-					#endif
-					#if UNITY_SERVER || UNITY_EDITOR
-					case 3:
-					{
-						var stream = new ReadStream(ref reader);
-						System.Boolean requestMatchFinish = stream.ReadStruct<System.Boolean>();
-						TzarGames.MultiplayerKit.NetMessageInfo info = new NetMessageInfo() { Sender = sender, SenderEntity = senderEntity };
-						(target as Arena.IServerArenaCommands).NotifyExitingFromGame(requestMatchFinish,info);
+						Unity.Collections.NativeArray<Arena.HitSyncSystem.HitInfo> hitInfos;
+						var arraySize = stream.ReadUShort();
+						hitInfos = new Unity.Collections.NativeArray<Arena.HitSyncSystem.HitInfo>(arraySize, Unity.Collections.Allocator.Temp);
+						unsafe
+						{
+							var size = sizeof(Arena.HitSyncSystem.HitInfo) * arraySize;
+							stream.ReadBytes((byte*)hitInfos.GetUnsafePtr(), size);
+						}
+
+
+						try
+						{
+							(target as Arena.HitSyncSystem).SendHitsToClient(hitInfos,commands);
+						}
+						catch(System.Exception ex)
+						{
+							Debug.LogException(ex);
+						}
+						finally
+						{
+						};
 						return true;
 					}
 					#endif
@@ -133,6 +143,35 @@ namespace TzarGames.MultiplayerKit.Generated
 						System.Int32 inputCommandIndex = stream.ReadInt();
 						Arena.CharacterContollerStateData controllerInternalData = stream.ReadStruct<Arena.CharacterContollerStateData>();
 						(target as Arena.IServerCorrectionSystem).CorrectPositionOnClient(inputCommandIndex,controllerInternalData);
+						return true;
+					}
+					#endif
+				}
+			}
+			if(handlerCode == 0)
+			{
+				if(target is Arena.IServerArenaCommands == false)
+				{
+					return false;
+				}
+				switch(rpcCode)
+				{
+					#if UNITY_SERVER || UNITY_EDITOR
+					case 3:
+					{
+						var stream = new ReadStream(ref reader);
+						System.Boolean requestMatchFinish = stream.ReadStruct<System.Boolean>();
+						TzarGames.MultiplayerKit.NetMessageInfo info = new NetMessageInfo() { Sender = sender, SenderEntity = senderEntity };
+						(target as Arena.IServerArenaCommands).NotifyExitingFromGame(requestMatchFinish,info);
+						return true;
+					}
+					#endif
+					#if UNITY_SERVER || UNITY_EDITOR
+					case 2:
+					{
+						var stream = new ReadStream(ref reader);
+						TzarGames.MultiplayerKit.NetMessageInfo info = new NetMessageInfo() { Sender = sender, SenderEntity = senderEntity };
+						(target as Arena.IServerArenaCommands).RequestContinueGame(info);
 						return true;
 					}
 					#endif
@@ -184,45 +223,6 @@ namespace TzarGames.MultiplayerKit.Generated
 						Arena.PurchaseRequestStatus requestResult = stream.ReadStruct<Arena.PurchaseRequestStatus>();
 						System.Guid requestGuid = stream.ReadStruct<System.Guid>();
 						(target as Arena.StoreSystem).PurchaseResultRPC(requestResult,requestGuid);
-						return true;
-					}
-					#endif
-				}
-			}
-			if(handlerCode == 15)
-			{
-				if(target.GetType() != typeof(Arena.HitSyncSystem))
-				{
-					return false;
-				}
-				switch(rpcCode)
-				{
-					#if !UNITY_SERVER
-					case 0:
-					{
-						if(isServer) return false;
-						var stream = new ReadStream(ref reader);
-						Unity.Collections.NativeArray<Arena.HitSyncSystem.HitInfo> hitInfos;
-						var arraySize = stream.ReadUShort();
-						hitInfos = new Unity.Collections.NativeArray<Arena.HitSyncSystem.HitInfo>(arraySize, Unity.Collections.Allocator.Temp);
-						unsafe
-						{
-							var size = sizeof(Arena.HitSyncSystem.HitInfo) * arraySize;
-							stream.ReadBytes((byte*)hitInfos.GetUnsafePtr(), size);
-						}
-
-
-						try
-						{
-							(target as Arena.HitSyncSystem).SendHitsToClient(hitInfos,commands);
-						}
-						catch(System.Exception ex)
-						{
-							Debug.LogException(ex);
-						}
-						finally
-						{
-						};
 						return true;
 					}
 					#endif

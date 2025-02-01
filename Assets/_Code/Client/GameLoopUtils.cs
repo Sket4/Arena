@@ -48,6 +48,7 @@ namespace Arena.Client
                 
                 gameLoop.AddGameSystem<DropAnimationSystem>();
                 gameLoop.AddGameSystem<CharacterAppearanceSystem>();
+                gameLoop.AddGameSystemUnmanaged<CharacterAppearanceNativeSystem>();
 
                 gameLoop.AddGameSystem<ThirdPersonCameraSystem>(presentGroup);
                 gameLoop.AddGameSystem<AlertSystem>();

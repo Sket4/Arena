@@ -556,6 +556,11 @@ public static class Tools
             }
         }
 
+        public static Transform findBone(Avatar avatar, Transform root, string boneName)
+        {
+            return HumanRigTools.FindBoneByAvatar(avatar, root, boneName);
+        }
+
         static void setupRagdoll(StringBuilder sb, GameObject obj, Avatar avatar,
             RetargetComponent retargetCmp)
         {
@@ -604,9 +609,10 @@ public static class Tools
                     armorSetCmp.RightFoot = setupArmorSetBone("RightFoot");
                 }
                 
-                Func<string, string, Transform> setupArmorSetSocket = (string boneName, string socketName) =>
+                Func<string, string, Transform> setupArmorSetSocket = (boneName, socketName) =>
                 {
-                    var bone = findBone(avatar, retargetCmp.RetargetRootTransform, boneName);
+                    var bone = HumanRigTools.FindBoneByAvatar(avatar, retargetCmp.RetargetRootTransform, boneName);
+                    
                     if (bone)
                     {
                         var socket = new GameObject($"{boneName} {socketName}");
@@ -631,20 +637,6 @@ public static class Tools
                 }
 
                 sb.AppendLine("Настройка завершена");
-        }
-
-        static Transform findBone(Avatar avatar, Transform root, string boneName)
-        {
-            var bones = avatar.humanDescription.human;
-
-            foreach (var humanBone in bones)
-            {
-                if (humanBone.humanName == boneName)
-                {
-                    return RetargetComponent.FindChild(root, humanBone.boneName);
-                }
-            }
-            return null;
         }
         
         [MenuItem("Arena/Утилиты/Обработать нормали травы в OBJ файле")]

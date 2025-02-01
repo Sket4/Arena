@@ -70,6 +70,12 @@ message GameProgress
 	repeated QuestEntry Quests = 6;
 }
 
+enum Genders
+{
+	Male = 0;
+	Female = 1;
+}
+
 message CharacterData
 {
 	int32 ID = 1;
@@ -82,6 +88,9 @@ message CharacterData
 	ItemsData ItemsData = 6;
 	AbilitiesData AbilityData = 7;
 	GameProgress Progress = 8;
+
+	Genders Gender = 9;
+	int32 HeadID = 10;
 }
 
 message GameData

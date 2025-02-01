@@ -86,6 +86,8 @@ namespace FrontendApp
             createRequest.AccountId = userId;
             createRequest.Class = request.Class;
             createRequest.Name = request.Name;
+            createRequest.Gender = request.Gender;
+            createRequest.HeadID = request.HeadID;
 
             var result = await dbClient.CreateCharacterForAccountAsync(createRequest);
 

@@ -18,23 +18,6 @@ namespace Arena.Client.Anima
         {
             return SourceRigPrefab.transform;
         }
-
-        public static Transform FindChild(Transform root, string childName)
-        {
-            foreach (Transform child in root)
-            {
-                if (child.name == childName)
-                {
-                    return child;
-                }
-                var otherChild = FindChild(child, childName);
-                if (otherChild)
-                {
-                    return otherChild;
-                }
-            }
-            return null;
-        }
         
         RemapData CreateRemapData(Transform srcRig, Transform dstRig, Avatar sourceAvatar, Avatar retargetAvatar)
         {
@@ -97,14 +80,14 @@ namespace Arena.Client.Anima
                     continue;
                 }
 
-                var sourceBoneTransform = FindChild(srcRig, sourceBoneName);
+                var sourceBoneTransform = HumanRigTools.FindChild(srcRig, sourceBoneName);
 
                 if (sourceBoneTransform == false)
                 {
                     continue;
                 }
                 
-                var targetBoneTransform = FindChild(dstRig, targetBoneName);
+                var targetBoneTransform = HumanRigTools.FindChild(dstRig, targetBoneName);
 
                 if (targetBoneTransform == false)
                 {

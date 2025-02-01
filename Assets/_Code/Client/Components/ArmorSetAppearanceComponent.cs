@@ -7,6 +7,7 @@ namespace Arena.Client
     [System.Serializable]
     public struct ArmorSetAppearance : IComponentData
     {
+        public Entity HeadSocket;
         public Entity RightHandWeaponSocket;
         public Entity LeftHandBowSocket;
         public Entity LeftFoot;
@@ -15,6 +16,7 @@ namespace Arena.Client
 
     public class ArmorSetAppearanceComponent : ComponentDataBehaviourBase
     {
+        public Transform HeadSocket;
         public Transform RightHandWeaponSocket;
         public Transform LeftHandBowSocket;
         public Transform LeftFoot;
@@ -24,6 +26,7 @@ namespace Arena.Client
         {
             var data = new ArmorSetAppearance
             {
+                HeadSocket = baker.GetEntity(HeadSocket),
                 RightHandWeaponSocket = RightHandWeaponSocket != null ? baker.GetEntity(RightHandWeaponSocket) : Entity.Null,
                 LeftHandBowSocket = LeftHandBowSocket != null ? baker.GetEntity(LeftHandBowSocket) : Entity.Null,
                 RightFoot = RightFoot != null ? baker.GetEntity(RightFoot) : Entity.Null,

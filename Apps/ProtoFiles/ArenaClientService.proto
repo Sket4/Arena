@@ -39,6 +39,8 @@ message CreateCharacterRequest
 {
 	string Name = 1;
 	int32 Class = 2;
+	Genders Gender = 3;
+	int32 HeadID = 4;
 }
 
 message CreateCharacterResult

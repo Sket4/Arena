@@ -49,7 +49,7 @@ namespace DatabaseApp
                     return new CreateCharacterResult { Result = DatabaseResultTypes.AlreadyCreated };
                 }
 
-                var characterData = Arena.SharedUtility.CreateDefaultCharacterData((CharacterClass)request.Class, request.Name);
+                var characterData = Arena.SharedUtility.CreateDefaultCharacterData((CharacterClass)request.Class, request.Name, request.Gender, request.HeadID);
                 var character = DatabaseConversion.ConvertToDbCharacter(characterData);
 
                 var result = await db.CreateCharacterAsync(request.AccountId, character);

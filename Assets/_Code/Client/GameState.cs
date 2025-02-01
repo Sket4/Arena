@@ -293,11 +293,11 @@ namespace Arena.Client
 			get { return 12; }
 		}
 
-        public async Task<CreateCharacterResult> CreateCharacter(string name, CharacterClass classType)
+        public async Task<CreateCharacterResult> CreateCharacter(string name, CharacterClass classType, Genders gender, int headID)
         {
             if (IsOfflineMode)
             {
-                var localCharacter = Arena.SharedUtility.CreateDefaultCharacterData(classType, name);
+                var localCharacter = Arena.SharedUtility.CreateDefaultCharacterData(classType, name, gender, headID);
                 PlayerData.Characters.Add(localCharacter);
                 SaveLocalGame();
                 return new CreateCharacterResult { Character = localCharacter, Success = true };

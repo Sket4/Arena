@@ -43,6 +43,9 @@ namespace Arena
         public static readonly int DefaultStartLocationID = 56;     // port village
         public static readonly int DefaultStartLocationSpawnPointID = 134; // причал
 
+        public static readonly int DefaultMaleHeadID = 115;
+        public static readonly int DefaultFemaleHeadID = 116;
+
         public static readonly int[] SafeZoneLocations = new int[]
         {
             63 // main city
@@ -74,11 +77,13 @@ namespace Arena
             return false;
         }
 
-        public static CharacterData CreateDefaultCharacterData(CharacterClass characterClass, string characterName)
+        public static CharacterData CreateDefaultCharacterData(CharacterClass characterClass, string characterName, Genders gender, int headID)
         {
             var data = new CharacterData();
             data.Name = characterName;
             data.Class = (int)characterClass;
+            data.HeadID = headID;
+            data.Gender = gender;
 
             data.Progress = new GameProgress
             {

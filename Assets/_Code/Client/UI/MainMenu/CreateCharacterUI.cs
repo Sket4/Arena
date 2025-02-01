@@ -58,6 +58,8 @@ namespace Arena.Client.UI.MainMenu
         public CharacterData LastCreatedCharacter { get; private set; }
         
         CharacterClass currentClass;
+        private Genders selectedGender = Genders.Male;
+        private int selectedHeadID = -1;
         bool classIsChosen = false;
 
         protected override void Start()
@@ -143,7 +145,17 @@ namespace Arena.Client.UI.MainMenu
             statusText.text = pleaseWaitText;
             statusButton.SetActive(false);
             onStartWaitCreate.Invoke();
-            var result = await GameState.Instance.CreateCharacter(input.Text, currentClass);
+
+            if (selectedHeadID < 0)
+            {
+                Debug.LogError("invalid head ID");
+                
+                selectedHeadID = selectedGender == Genders.Female
+                    ? Identifiers.DefaultFemaleHeadID
+                    : Identifiers.DefaultMaleHeadID;
+            }
+            
+            var result = await GameState.Instance.CreateCharacter(input.Text, currentClass, selectedGender, selectedHeadID);
 
             var elapsedTime = Time.realtimeSinceStartup - startWaitTime;
 

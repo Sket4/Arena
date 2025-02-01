@@ -108,7 +108,7 @@ namespace Arena.Client.UI.MainMenu
 
             gameLauncher.GameLoop.World.GetExistingSystemManaged<CharacterRotationSystem>().Enabled = false;
             
-            gameLauncher.GameLoop.AddGameSystem<CharacterItemAppearanceSystem>();
+            gameLauncher.GameLoop.AddGameSystem<CharacterAppearanceSystem>();
             gameLauncher.GameLoop.AddGameSystem<AnimationSystem>();
             gameLauncher.GameLoop.AddGameSystem<CharacterModelSmoothMovementSystem>();
             gameLauncher.GameLoop.AddGameSystem<MaterialRenderingSystem>(gameLauncher.GameLoop.World.GetExistingSystemManaged<PresentationSystemGroup>());

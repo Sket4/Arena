@@ -26,6 +26,7 @@ namespace DatabaseApp.DB
         public int HairstyleID { get; set; }
         public int SkinColor { get; set; }
         public int HairColor { get; set; }
+        public int EyeColor { get; set; }
         public byte[] AbilityData { get; set; }
         public byte[] ItemData { get; set; }
 
@@ -76,6 +77,7 @@ namespace DatabaseApp.DB
                 HairColor = characterData.HairColor,
                 HairstyleID = characterData.HairstyleID,
                 SkinColor = characterData.SkinColor,
+                EyeColor = characterData.EyeColor,
 
                 GameProgress = progress.ToByteArray(),
             };
@@ -120,6 +122,11 @@ namespace DatabaseApp.DB
             newCharacter.XP = dbCharacter.XP;
             newCharacter.Class = dbCharacter.Class;
             newCharacter.Name = dbCharacter.Name;
+            newCharacter.EyeColor = dbCharacter.EyeColor;
+            newCharacter.SkinColor = dbCharacter.SkinColor;
+            newCharacter.HeadID = dbCharacter.HeadID;
+            newCharacter.HairstyleID = dbCharacter.HairstyleID;
+            newCharacter.HairColor = dbCharacter.HairColor;
 
             if (dbCharacter.ItemData != null)
             {

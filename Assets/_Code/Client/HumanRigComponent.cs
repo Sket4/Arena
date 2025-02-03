@@ -1,5 +1,6 @@
 using System;
 using TzarGames.GameCore;
+using TzarGames.GameCore.Baking;
 using Unity.Entities;
 using UnityEngine;
 
@@ -64,6 +65,11 @@ namespace Arena.Client
                 return;
             }
             entity = baker.GetEntity(bone);
+        }
+
+        protected override ConversionTargetOptions GetDefaultConversionOptions()
+        {
+            return LocalAndClient();
         }
     }
 

@@ -64,6 +64,9 @@ namespace Arena
             data.Gender = manager.GetComponentData<Gender>(entity).Value;
             data.HeadID = manager.GetComponentData<CharacterHead>(entity).ModelID.Value;
             data.HairstyleID = manager.GetComponentData<CharacterHairstyle>(entity).ID.Value;
+            data.HairColor = manager.GetComponentData<CharacterHairColor>(entity).Value.rgba;
+            data.EyeColor = manager.GetComponentData<CharacterEyeColor>(entity).Value.rgba;
+            data.SkinColor = manager.GetComponentData<CharacterSkinColor>(entity).Value.rgba;
             
             data.ItemsData = new ItemsData();
             

@@ -9,6 +9,7 @@ Shader "Arena/Environment"
 
         [Enum(UnityEngine.Rendering.CullMode)] _Cull("Cull", int) = 2
 
+        [Toggle(USE_BASECOLOR_INSTANCE)] _UseBaseColorInstance("Use color instance", Float) = 0.0
         _BaseColor("Color tint", Color) = (1,1,1,1)
         _BaseMap ("Main color", 2D) = "white" {}
         _BumpMap ("Normal map", 2D) = "bump" {}
@@ -80,6 +81,7 @@ Shader "Arena/Environment"
             #pragma multi_compile_fragment _ DGX_DARK_MODE
             #pragma shader_feature_local USE_UNDERWATER
             #pragma shader_feature_local USE_SURFACE_BLEND
+            #pragma shader_feature_local_fragment USE_BASECOLOR_INSTANCE
             
             #pragma multi_compile _ LIGHTMAP_ON
             #pragma multi_compile _ DIRLIGHTMAP_COMBINED

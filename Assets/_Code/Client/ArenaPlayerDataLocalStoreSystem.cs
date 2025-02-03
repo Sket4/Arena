@@ -66,8 +66,9 @@ namespace Arena.Client
                 var hairColor = new PackedColor((byte)random.NextInt(0,256),(byte)random.NextInt(0,256),(byte)random.NextInt(0,256));
 
                 var skinColor = Identifiers.SkinColors[random.NextInt(0, Identifiers.SkinColors.Length)];
+                var eyeColor = new PackedColor((byte)random.NextInt(0,256),(byte)random.NextInt(0,256),(byte)random.NextInt(0,256));
                 
-                data = SharedUtility.CreateDefaultCharacterData(DebugCharacterClass, "Player", DebugGender, headID, hairstyle, skinColor.rgba, hairColor.rgba);
+                data = SharedUtility.CreateDefaultCharacterData(DebugCharacterClass, "Player", DebugGender, headID, hairstyle, skinColor.rgba, hairColor.rgba, eyeColor.rgba);
                 if (DebugQuests != null)
                 {
                     foreach (var debugQuest in DebugQuests)

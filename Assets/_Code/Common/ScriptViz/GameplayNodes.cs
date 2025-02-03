@@ -146,6 +146,63 @@ namespace Arena.ScriptViz
     }
     
     [BurstCompile]
+    public struct SetCharacterHairColorCommand : IScriptVizCommand
+    {
+        public CharacterHairColor Color;
+        public InputEntityVar Target;
+
+        [BurstCompile]
+        [AOT.MonoPInvokeCallback(typeof(ScriptVizCommandRegistry.ExecuteDelegate))]
+        public static unsafe void Exec(ref Context context, void* commandData)
+        {
+            var data = (SetCharacterHairColorCommand*)commandData;
+
+            var target = data->Target.Read(ref context);
+
+            if (target == Entity.Null)
+            {
+                Debug.LogError("target is null");
+                return;
+            }
+            
+            context.Commands.SetComponent(context.SortIndex, target, data->Color);
+        }
+    }
+    
+    [FriendlyName("Сменить цвет волос персонажа")]
+    [Serializable]
+    public class SetCharacterHairColorNode : CommandNode
+    {
+        public Color Color;
+        [HideInInspector]
+        public EntitySocket TargetSocket = new();
+        
+        public override void WriteCommand(CompilerAllocator compilerAllocator, out Address commandAddress)
+        {
+            var cmd = new SetCharacterHairColorCommand();
+            compilerAllocator.InitializeInputVar(ref cmd.Target, TargetSocket);
+            var c = (Color32)Color;
+            cmd.Color = new CharacterHairColor
+            {
+                Value = new PackedColor(c.r, c.g, c.b, c.a)
+            };
+            
+            commandAddress = compilerAllocator.WriteCommand(ref cmd);
+        }
+
+        public override void DeclareSockets(List<SocketInfo> sockets)
+        {
+            base.DeclareSockets(sockets);
+            sockets.Add(new SocketInfo(TargetSocket, SocketType.In, "Персонаж"));
+        }
+
+        public override string GetNodeName(ScriptVizGraphPage page)
+        {
+            return "Установить цвет волос";
+        }
+    }
+    
+    [BurstCompile]
     public struct SetCharacterHeadCommand : IScriptVizCommand
     {
         public CharacterHead Head;

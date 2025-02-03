@@ -211,6 +211,10 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 5832928984969550004}
     - target: {fileID: 1983259648279014177, guid: 9c3e42f1ab5ba3349841a89e916121dd, type: 3}
+      propertyPath: SkinModel1
+      value: 
+      objectReference: {fileID: 2587052296479538241}
+    - target: {fileID: 1983259648279014177, guid: 9c3e42f1ab5ba3349841a89e916121dd, type: 3}
       propertyPath: LeftHandBowSocket
       value: 
       objectReference: {fileID: 2512934744344238645}
@@ -2159,6 +2163,9 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 100000, guid: 8cfd547f55b23334c8437c37aa5f43c2, type: 3}
       insertIndex: -1
       addedObject: {fileID: 1863685933120062044}
+    - targetCorrespondingSourceObject: {fileID: 100340, guid: 8cfd547f55b23334c8437c37aa5f43c2, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 4843425291436673009}
     - targetCorrespondingSourceObject: {fileID: 100206, guid: 8cfd547f55b23334c8437c37aa5f43c2, type: 3}
       insertIndex: -1
       addedObject: {fileID: 1015881067841685890}
@@ -2256,6 +2263,11 @@ PrefabInstance:
       insertIndex: -1
       addedObject: {fileID: 7266927383407186301}
   m_SourcePrefab: {fileID: 100100000, guid: 8cfd547f55b23334c8437c37aa5f43c2, type: 3}
+--- !u!137 &2587052296479538241 stripped
+SkinnedMeshRenderer:
+  m_CorrespondingSourceObject: {fileID: 13700010, guid: 8cfd547f55b23334c8437c37aa5f43c2, type: 3}
+  m_PrefabInstance: {fileID: 2587052296493103083}
+  m_PrefabAsset: {fileID: 0}
 --- !u!4 &2587052296492968993 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 400330, guid: 8cfd547f55b23334c8437c37aa5f43c2, type: 3}
@@ -2838,6 +2850,26 @@ MonoBehaviour:
   MaxPerpendicularAngle: 40
   MinTwistAngle: -5
   MaxTwistAngle: 5
+--- !u!1 &2587052296493199391 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 100340, guid: 8cfd547f55b23334c8437c37aa5f43c2, type: 3}
+  m_PrefabInstance: {fileID: 2587052296493103083}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &4843425291436673009
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2587052296493199391}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4749921f3e678e94290b937424103103, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ConversionTargetOptions: 5
+  Value:
+    Value: {r: 1, g: 1, b: 1, a: 1}
 --- !u!1 &2587052296493199413 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 100318, guid: 8cfd547f55b23334c8437c37aa5f43c2, type: 3}

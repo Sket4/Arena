@@ -82,6 +82,9 @@ namespace FrontendApp
         {
             var userId = TzarGames.MatchFramework.Frontend.Server.Utils.CheckUserIdAndThrowExceptionWhenFailed(context);
 
+
+            // TODO check IDs
+
             var createRequest = new CharacterCreateRequest();
             createRequest.AccountId = userId;
             createRequest.Class = request.Class;
@@ -89,6 +92,9 @@ namespace FrontendApp
             createRequest.Gender = request.Gender;
             createRequest.HeadID = request.HeadID;
             createRequest.HairstyleID = request.HairstyleID;
+            createRequest.EyeColor = request.EyeColor;
+            createRequest.SkinColor = request.SkinColor;
+            createRequest.HairColor = request.HairColor;
 
             var result = await dbClient.CreateCharacterForAccountAsync(createRequest);
 

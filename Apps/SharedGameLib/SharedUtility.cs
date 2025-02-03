@@ -47,6 +47,15 @@ namespace Arena
             this.b = b;
             this.a = 255;
         }
+        public PackedColor(int rgba)
+        {
+            r = g = b = a = 0;
+            this.rgba = rgba;
+        }
+
+        public static readonly PackedColor White = new PackedColor(255,255,255);
+        public static readonly PackedColor Black = new PackedColor(0, 0, 0);
+        public static readonly PackedColor Clear = new PackedColor(0, 0, 0, 0);
     }
 
     public static class Identifiers
@@ -135,7 +144,7 @@ namespace Arena
             return false;
         }
 
-        public static CharacterData CreateDefaultCharacterData(CharacterClass characterClass, string characterName, Genders gender, int headID, int hairstyleID, int skinColor, int hairColor)
+        public static CharacterData CreateDefaultCharacterData(CharacterClass characterClass, string characterName, Genders gender, int headID, int hairstyleID, int skinColor, int hairColor, int eyeColor)
         {
             var data = new CharacterData();
             data.Name = characterName;
@@ -145,6 +154,7 @@ namespace Arena
             data.HairstyleID = hairstyleID;
             data.SkinColor = skinColor;
             data.HairColor = hairColor;
+            data.EyeColor = eyeColor;
 
             data.Progress = new GameProgress
             {

@@ -12,6 +12,9 @@ namespace Arena.Client
         public Entity LeftHandBowSocket;
         public Entity LeftFoot;
         public Entity RightFoot;
+
+        public Entity SkinModel1;
+        public Entity SkinModel2;
     }
 
     public class ArmorSetAppearanceComponent : ComponentDataBehaviourBase
@@ -22,6 +25,9 @@ namespace Arena.Client
         public Transform LeftFoot;
         public Transform RightFoot;
 
+        public Renderer SkinModel1;
+        public Renderer SkinModel2;
+
         protected override void PreBake<T>(T baker)
         {
             var data = new ArmorSetAppearance
@@ -30,7 +36,9 @@ namespace Arena.Client
                 RightHandWeaponSocket = RightHandWeaponSocket != null ? baker.GetEntity(RightHandWeaponSocket) : Entity.Null,
                 LeftHandBowSocket = LeftHandBowSocket != null ? baker.GetEntity(LeftHandBowSocket) : Entity.Null,
                 RightFoot = RightFoot != null ? baker.GetEntity(RightFoot) : Entity.Null,
-                LeftFoot = LeftFoot != null ? baker.GetEntity(LeftFoot) : Entity.Null
+                LeftFoot = LeftFoot != null ? baker.GetEntity(LeftFoot) : Entity.Null,
+                SkinModel1 = baker.GetEntity(SkinModel1),
+                SkinModel2 = baker.GetEntity(SkinModel2)
             };
             baker.AddComponent(data);
         }

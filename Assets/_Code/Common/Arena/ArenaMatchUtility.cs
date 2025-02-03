@@ -39,6 +39,9 @@ namespace Arena.Server
             commands.SetComponent(entity, new UniqueID { Value = data.ID });
             commands.SetComponent(entity, new CharacterHead { ModelID = new PrefabID(data.HeadID) });
             commands.SetComponent(entity, new CharacterHairstyle { ID = new PrefabID(data.HairstyleID) });
+            commands.SetComponent(entity, new CharacterSkinColor { Value = new PackedColor(data.SkinColor) });
+            commands.SetComponent(entity, new CharacterHairColor { Value = new PackedColor(data.HairColor) });
+            commands.SetComponent(entity, new CharacterEyeColor { Value = new PackedColor(data.EyeColor) });
             commands.SetComponent(entity, new Gender(data.Gender));
 
             commands.AddBuffer<InventoryElement>(entity);

@@ -63,6 +63,7 @@ namespace Arena.Client.UI.MainMenu
         private int selectedSkinColor = -1;
         private int selectedHairColor = -1;
         private int selectedHairstyleID = -1;
+        private int selectedEyeColor = -1;
         bool classIsChosen = false;
 
         protected override void Start()
@@ -164,7 +165,7 @@ namespace Arena.Client.UI.MainMenu
                 selectedHairstyleID = 0;
             }
             
-            var result = await GameState.Instance.CreateCharacter(input.Text, currentClass, selectedGender, selectedHeadID, selectedHairstyleID, selectedHairColor, selectedSkinColor);
+            var result = await GameState.Instance.CreateCharacter(input.Text, currentClass, selectedGender, selectedHeadID, selectedHairstyleID, selectedHairColor, selectedSkinColor, selectedEyeColor);
 
             var elapsedTime = Time.realtimeSinceStartup - startWaitTime;
 

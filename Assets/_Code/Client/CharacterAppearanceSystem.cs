@@ -4,7 +4,6 @@ using UnityEngine;
 using TzarGames.GameCore;
 using Unity.Burst;
 using Unity.Collections;
-using Unity.Jobs;
 using Unity.Mathematics;
 
 namespace Arena.Client
@@ -153,6 +152,17 @@ namespace Arena.Client
                     var animation = EntityManager.GetComponentData<CharacterAnimation>(item.Owner);
                     animation.AnimatorEntity = instance;
                     EntityManager.SetComponentData(item.Owner, animation);
+
+                    var ownerSkinColor = EntityManager.GetComponentData<CharacterSkinColor>(item.Owner);
+                    var armorSetAppearance = EntityManager.GetComponentData<ArmorSetAppearance>(instance);
+                    if (armorSetAppearance.SkinModel1 != Entity.Null)
+                    {
+                        EntityManager.SetComponentData(armorSetAppearance.SkinModel1, new SkinColor(ownerSkinColor.Value));
+                    }
+                    if (armorSetAppearance.SkinModel2 != Entity.Null)
+                    {
+                        EntityManager.SetComponentData(armorSetAppearance.SkinModel2, new SkinColor(ownerSkinColor.Value));
+                    }
                 }
                 catch (System.Exception ex)
                 {
@@ -282,6 +292,8 @@ namespace Arena.Client
         private ComponentLookup<Parent> parentLookup;
         private ComponentLookup<LocalTransform> transformLookup;
         private ComponentLookup<PostTransformMatrix> postTransformLookup;
+        private ComponentLookup<HeadAppearance> headAppearanceLookup;
+        private ComponentLookup<ArmorSetAppearance> armorSetAppearanceLookup;
 
         private EntityQuery characterQuery;
 
@@ -292,6 +304,9 @@ namespace Arena.Client
         ComponentTypeHandle<CharacterEquipmentAppearanceState> appearanceStateTypeHandle;
         ComponentTypeHandle<CharacterHead> characterHeadTypeHandle;
         ComponentTypeHandle<CharacterHairstyle> hairstyleTypeHandle;
+        ComponentTypeHandle<CharacterHairColor> hairColorTypeHandle;
+        ComponentTypeHandle<CharacterSkinColor> skinColorTypeHandle;
+        ComponentTypeHandle<CharacterEyeColor> eyeColorTypeHandle;
         ComponentTypeHandle<Gender> genderTypeHandle;
         
         public void OnCreate(ref SystemState state)
@@ -300,6 +315,9 @@ namespace Arena.Client
             parentLookup = state.GetComponentLookup<Parent>(true);
             transformLookup = state.GetComponentLookup<LocalTransform>(true);
             postTransformLookup = state.GetComponentLookup<PostTransformMatrix>(true);
+            headAppearanceLookup = state.GetComponentLookup<HeadAppearance>(true);
+            armorSetAppearanceLookup = state.GetComponentLookup<ArmorSetAppearance>(true);
+            
             state.RequireForUpdate<MainDatabaseTag>();
 
             appearanceStateType = ComponentType.ReadWrite<CharacterEquipmentAppearanceState>();
@@ -309,6 +327,9 @@ namespace Arena.Client
             appearanceStateTypeHandle = state.GetComponentTypeHandle<CharacterEquipmentAppearanceState>(false);
             characterHeadTypeHandle = state.GetComponentTypeHandle<CharacterHead>(true);
             hairstyleTypeHandle = state.GetComponentTypeHandle<CharacterHairstyle>(true);
+            hairColorTypeHandle = state.GetComponentTypeHandle<CharacterHairColor>(true);
+            eyeColorTypeHandle = state.GetComponentTypeHandle<CharacterEyeColor>(true);
+            skinColorTypeHandle = state.GetComponentTypeHandle<CharacterSkinColor>(true);
             genderTypeHandle = state.GetComponentTypeHandle<Gender>(true);
 
             characterQuery = state.GetEntityQuery(new EntityQueryDesc
@@ -321,6 +342,82 @@ namespace Arena.Client
                     ComponentType.ReadOnly<Gender>()
                 }
             });
+        }
+
+        [BurstCompile]
+        [WithChangeFilter(typeof(CharacterHairColor))]
+        partial struct HairColorChangeJob : IJobEntity
+        {
+            public EntityCommandBuffer Commands;
+
+            [ReadOnly]
+            public ComponentLookup<HeadAppearance> HeadAppearanceLookup;
+            
+            public void Execute(in CharacterHairColor hairColor, in CharacterEquipmentAppearanceState appearance)
+            {
+                if (appearance.HairModelEntity != Entity.Null)
+                {
+                    Debug.Log("changed hair color");
+                    Commands.SetComponent(appearance.HairModelEntity, new ColorData(hairColor.Value));    
+                }
+
+                if (HeadAppearanceLookup.TryGetComponent(appearance.HeadModelEntity, out var headAppearance))
+                {
+                    Commands.SetComponent(headAppearance.BrowsModel, new ColorData(hairColor.Value));
+                }
+            }
+        }
+        
+        [BurstCompile]
+        [WithChangeFilter(typeof(CharacterSkinColor))]
+        partial struct SkinColorChangeJob : IJobEntity
+        {
+            public EntityCommandBuffer Commands;
+
+            [ReadOnly] public ComponentLookup<HeadAppearance> HeadAppearanceLookup;
+            [ReadOnly] public ComponentLookup<ArmorSetAppearance> ArmorSetAppearLookup;
+            
+            public void Execute(in CharacterSkinColor skinColor, in CharacterEquipmentAppearanceState appearance)
+            {
+                Debug.Log("skin color changed");
+                
+                if (HeadAppearanceLookup.TryGetComponent(appearance.HeadModelEntity, out var headAppearance))
+                {
+                    Commands.SetComponent(headAppearance.HeadModel, new SkinColor(skinColor.Value));
+                }
+
+                if (ArmorSetAppearLookup.TryGetComponent(appearance.ArmorSetEntity, out var armorSetAppearance))
+                {
+                    if (armorSetAppearance.SkinModel1 != Entity.Null)
+                    {
+                        Commands.SetComponent(armorSetAppearance.SkinModel1, new SkinColor(skinColor.Value));
+                    }
+                    if (armorSetAppearance.SkinModel2 != Entity.Null)
+                    {
+                        Commands.SetComponent(armorSetAppearance.SkinModel2, new SkinColor(skinColor.Value));
+                    }
+                }
+            }
+        }
+        
+        [BurstCompile]
+        [WithChangeFilter(typeof(CharacterEyeColor))]
+        partial struct EyeColorChangeJob : IJobEntity
+        {
+            public EntityCommandBuffer Commands;
+
+            [ReadOnly]
+            public ComponentLookup<HeadAppearance> HeadAppearanceLookup;
+            
+            public void Execute(in CharacterEyeColor eyeColor, in CharacterEquipmentAppearanceState appearance)
+            {
+                if (HeadAppearanceLookup.TryGetComponent(appearance.HeadModelEntity, out var headAppearance) == false)
+                {
+                    return;
+                }
+                Debug.Log("eye color changed");
+                Commands.SetComponent(headAppearance.EyesModel, new SkinColor(eyeColor.Value));
+            }
         }
 
         public void OnUpdate(ref SystemState state)
@@ -337,6 +434,42 @@ namespace Arena.Client
             
             characterQuery.SetChangedVersionFilter(hairstyleType);
             processHairstyleQuery(ref state, in db);
+            
+            using (var ecb = new EntityCommandBuffer(Allocator.TempJob))
+            {
+                headAppearanceLookup.Update(ref state);
+                armorSetAppearanceLookup.Update(ref state);
+                
+                // TODO совместить эти 3 джоба в один и работать через Chunk и DidChange
+                
+                // hair color
+                var hairColorChangedJob = new HairColorChangeJob
+                {
+                    Commands = ecb,
+                    HeadAppearanceLookup = headAppearanceLookup
+                };
+                hairColorChangedJob.Run();
+                
+                // skin color
+                var skinColorChangeJob = new SkinColorChangeJob
+                {
+                    Commands = ecb,
+                    HeadAppearanceLookup = headAppearanceLookup,
+                    ArmorSetAppearLookup = armorSetAppearanceLookup
+                };
+                skinColorChangeJob.Run();
+                
+                // eye color
+                var eyeColorChangeJob = new EyeColorChangeJob
+                {
+                    Commands = ecb,
+                    HeadAppearanceLookup = headAppearanceLookup,
+                };
+                eyeColorChangeJob.Run();
+                
+                ecb.Playback(state.EntityManager);
+                ecb.Dispose();
+            }
         }
         
         void processHairstyleQuery(ref SystemState state, in NativeArray<IdToEntity> db)
@@ -347,16 +480,19 @@ namespace Arena.Client
             {
                 appearanceStateTypeHandle.Update(ref state);
                 hairstyleTypeHandle.Update(ref state);
+                hairColorTypeHandle.Update(ref state);
                 
                 var appearances = chunk.GetNativeArray(ref appearanceStateTypeHandle);
                 var hairstyles = chunk.GetNativeArray(ref hairstyleTypeHandle);
+                var haircolors = chunk.GetNativeArray(ref hairColorTypeHandle);
 
                 for (int c = 0; c < chunk.Count; c++)
                 {
                     var appearance = appearances[c];
                     var hairstyle = hairstyles[c];
+                    var haircolor = haircolors[c];
                     
-                    processHairstyleModel(ref state, ref appearance, in hairstyle, in db);
+                    processHairstyleModel(ref state, ref appearance, in hairstyle, in haircolor, in db);
                     
                     appearanceStateTypeHandle.Update(ref state);
                     appearances = chunk.GetNativeArray(ref appearanceStateTypeHandle);
@@ -365,7 +501,7 @@ namespace Arena.Client
             }
         }
 
-        private void processHairstyleModel(ref SystemState state, ref CharacterEquipmentAppearanceState appearance, in CharacterHairstyle hairstyle, in NativeArray<IdToEntity> db)
+        private void processHairstyleModel(ref SystemState state, ref CharacterEquipmentAppearanceState appearance, in CharacterHairstyle hairstyle, in CharacterHairColor hairColor, in NativeArray<IdToEntity> db)
         {
             var removeHairAndExit = hairstyle.ID.Value == 0;
 
@@ -406,7 +542,7 @@ namespace Arena.Client
                 return;
             }
 
-            if (state.EntityManager.HasComponent<HairSocket>(appearance.HeadModelEntity) == false)
+            if (state.EntityManager.HasComponent<HeadAppearance>(appearance.HeadModelEntity) == false)
             {
                 Debug.LogError($"no head socket in head {appearance.HeadModelEntity.Index}");
                 return;
@@ -414,7 +550,7 @@ namespace Arena.Client
 
             Debug.Log($"changing or updating hairstyle {hairstyle.ID.Value}");
             
-            var hairSocket = state.EntityManager.GetComponentData<HairSocket>(appearance.HeadModelEntity);
+            var hairSocket = state.EntityManager.GetComponentData<HeadAppearance>(appearance.HeadModelEntity);
             
             if (needChangeHairstyle)
             {
@@ -429,11 +565,13 @@ namespace Arena.Client
                     state.EntityManager.DestroyEntity(appearance.HairModelEntity);    
                 }
                 appearance.HairModelEntity = state.EntityManager.Instantiate(hairstylePrefab);
-                state.EntityManager.AddComponentData(appearance.HairModelEntity, new Parent { Value = hairSocket.SocketEntity });
+                state.EntityManager.AddComponentData(appearance.HairModelEntity, new Parent { Value = hairSocket.HairSocketEntity });
+                
+                state.EntityManager.SetComponentData(appearance.HairModelEntity, new ColorData(hairColor.Value));
             }
             else
             {
-                state.EntityManager.SetComponentData(appearance.HairModelEntity, new Parent { Value = hairSocket.SocketEntity });
+                state.EntityManager.SetComponentData(appearance.HairModelEntity, new Parent { Value = hairSocket.HairSocketEntity });
             }
         }
 
@@ -446,18 +584,27 @@ namespace Arena.Client
                 appearanceStateTypeHandle.Update(ref state);
                 characterHeadTypeHandle.Update(ref state);
                 genderTypeHandle.Update(ref state);
+                eyeColorTypeHandle.Update(ref state);
+                skinColorTypeHandle.Update(ref state);
+                hairColorTypeHandle.Update(ref state);
                 
                 var appearances = chunk.GetNativeArray(ref appearanceStateTypeHandle);
                 var heads = chunk.GetNativeArray(ref characterHeadTypeHandle);
                 var genders = chunk.GetNativeArray(ref genderTypeHandle);
+                var skinColors = chunk.GetNativeArray(ref skinColorTypeHandle);
+                var eyeColors = chunk.GetNativeArray(ref eyeColorTypeHandle);
+                var hairColors = chunk.GetNativeArray(ref hairColorTypeHandle);
 
                 for (int c = 0; c < chunk.Count; c++)
                 {
                     var appearance = appearances[c];
                     var head = heads[c];
                     var gender = genders[c];
+                    var skinColor = skinColors[c];
+                    var eyeColor = eyeColors[c];
+                    var hairColor = hairColors[c];
                     
-                    processHeadModel(ref state, ref appearance, in head, in gender, in db);
+                    processHeadModel(ref state, ref appearance, in head, in hairColor, in skinColor, in eyeColor, in gender, in db);
                     
                     appearanceStateTypeHandle.Update(ref state);
                     appearances = chunk.GetNativeArray(ref appearanceStateTypeHandle);
@@ -470,6 +617,9 @@ namespace Arena.Client
             ref SystemState state, 
             ref CharacterEquipmentAppearanceState appearance,
             in CharacterHead head, 
+            in CharacterHairColor haircolor,
+            in CharacterSkinColor skincolor,
+            in CharacterEyeColor eyecolor,
             in Gender gender,
             in NativeArray<IdToEntity> db)
         {
@@ -572,6 +722,11 @@ namespace Arena.Client
 
             state.EntityManager.AddComponentData(headInstance, new Parent { Value = armorSetAppearance.HeadSocket });
             state.EntityManager.SetComponentData(headInstance, LocalTransform.Identity);
+
+            var headAppearance = state.EntityManager.GetComponentData<HeadAppearance>(headInstance);
+            state.EntityManager.SetComponentData(headAppearance.BrowsModel, new ColorData(haircolor.Value));
+            state.EntityManager.SetComponentData(headAppearance.HeadModel, new SkinColor(skincolor.Value));
+            state.EntityManager.SetComponentData(headAppearance.EyesModel, new SkinColor(skincolor.Value));
 
             var armorSetInstanceRig = state.EntityManager.GetComponentData<HumanRig>(armorSetAppearanceState.Instance);
             var headRig = state.EntityManager.GetComponentData<HumanRig>(headInstance);

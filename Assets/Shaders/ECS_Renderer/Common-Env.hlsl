@@ -13,6 +13,22 @@
 #include "Packages/com.dgx.srp/ShaderLibrary/Lighting.hlsl"
 //#endif
 
+#if defined(DOTS_INSTANCING_ON)
+	 UNITY_DOTS_INSTANCING_START(UserPropertyMetadata)
+#ifdef USE_BASECOLOR_INSTANCE
+			UNITY_DOTS_INSTANCED_PROP_OVERRIDE_REQUIRED(float4, _BaseColor)
+#endif
+	 UNITY_DOTS_INSTANCING_END(UserPropertyMetadata)
+#endif
+
+#if defined(DOTS_INSTANCING_ON) & defined(USE_BASECOLOR_INSTANCE)
+#define BASE_COLOR UNITY_ACCESS_DOTS_INSTANCED_PROP(float4, _BaseColor)
+#else
+#define BASE_COLOR _BaseColor
+#endif
+
+
+
 sampler2D _BaseMap;
 sampler2D _SurfaceMap;
 sampler2D _BumpMap;
@@ -115,7 +131,7 @@ GBufferFragmentOutput env_frag_deferred(v2f i)
 {
 	UNITY_SETUP_INSTANCE_ID(i);
 
-	half4 diffuse = tex2D(_BaseMap, i.uv) * _BaseColor;
+	half4 diffuse = tex2D(_BaseMap, i.uv) * BASE_COLOR;
 
 	#if defined(TG_USE_ALPHACLIP)
 	clip(diffuse.a - _Cutoff);
@@ -186,7 +202,7 @@ half4 env_frag(v2f i) : SV_Target
 {
 	UNITY_SETUP_INSTANCE_ID(i);
 
-	half4 diffuse = tex2D(_BaseMap, i.uv) * _BaseColor;
+	half4 diffuse = tex2D(_BaseMap, i.uv) * BASE_COLOR;
 
 	#if defined(TG_USE_ALPHACLIP)
 	clip(diffuse.a - _Cutoff);

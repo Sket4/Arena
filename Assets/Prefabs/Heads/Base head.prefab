@@ -261,6 +261,7 @@ GameObject:
   - component: {fileID: 2589333518008098092}
   - component: {fileID: 4458412734320648455}
   - component: {fileID: 4701710405364427333}
+  - component: {fileID: 6422316778906427522}
   m_Layer: 0
   m_Name: brows
   m_TagString: Untagged
@@ -333,6 +334,21 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!114 &6422316778906427522
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1284016328535134981}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1e6cca92264446849b381f1b082b5411, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ConversionTargetOptions: 5
+  Value:
+    Color: {r: 1, g: 1, b: 1, a: 1}
 --- !u!1 &3746474272572079751
 GameObject:
   m_ObjectHideFlags: 0
@@ -1535,7 +1551,15 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: -922993156113499362, guid: c07c4b2733d0e2e449d8c1e3ae81071a, type: 3}
       insertIndex: -1
       addedObject: {fileID: 5161413165247077289}
+    - targetCorrespondingSourceObject: {fileID: -2602182564390092553, guid: c07c4b2733d0e2e449d8c1e3ae81071a, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1655836698090640496}
   m_SourcePrefab: {fileID: 100100000, guid: c07c4b2733d0e2e449d8c1e3ae81071a, type: 3}
+--- !u!137 &904234594721122806 stripped
+SkinnedMeshRenderer:
+  m_CorrespondingSourceObject: {fileID: 2771228308609457388, guid: c07c4b2733d0e2e449d8c1e3ae81071a, type: 3}
+  m_PrefabInstance: {fileID: 3096539085994759450}
+  m_PrefabAsset: {fileID: 0}
 --- !u!4 &2479742845690230659 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: -8606153356379282791, guid: c07c4b2733d0e2e449d8c1e3ae81071a, type: 3}
@@ -1573,7 +1597,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 658d7a4f265ec5a4dbc539c3b555271c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  ConversionTargetOptions: -1
+  ConversionTargetOptions: -3
   Avatar: {fileID: 9000000, guid: c07c4b2733d0e2e449d8c1e3ae81071a, type: 3}
 --- !u!114 &7270846411641012647
 MonoBehaviour:
@@ -1587,8 +1611,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7ef42f37424bed649bb1a16e313aebaa, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  ConversionTargetOptions: -1
-  SocketTransform: {fileID: 9182357891672817438}
+  ConversionTargetOptions: -3
+  HairSocket: {fileID: 9182357891672817438}
+  HeadModel: {fileID: 8869582939697579331}
+  BrowsModel: {fileID: 4701710405364427333}
+  EyesModel: {fileID: 904234594721122806}
 --- !u!1 &6469917264730156548 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: -922993156113499362, guid: c07c4b2733d0e2e449d8c1e3ae81071a, type: 3}
@@ -1646,6 +1673,26 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 8361300581561185713, guid: c07c4b2733d0e2e449d8c1e3ae81071a, type: 3}
   m_PrefabInstance: {fileID: 3096539085994759450}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &8149876343958722029 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: -2602182564390092553, guid: c07c4b2733d0e2e449d8c1e3ae81071a, type: 3}
+  m_PrefabInstance: {fileID: 3096539085994759450}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &1655836698090640496
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8149876343958722029}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4749921f3e678e94290b937424103103, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ConversionTargetOptions: -3
+  Value:
+    Value: {r: 1, g: 1, b: 1, a: 1}
 --- !u!4 &8411792393654127303 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 6793026348995764189, guid: c07c4b2733d0e2e449d8c1e3ae81071a, type: 3}
@@ -1668,6 +1715,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4749921f3e678e94290b937424103103, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  ConversionTargetOptions: -1
+  ConversionTargetOptions: -3
   Value:
     Value: {r: 1, g: 1, b: 1, a: 1}
+--- !u!137 &8869582939697579331 stripped
+SkinnedMeshRenderer:
+  m_CorrespondingSourceObject: {fileID: -3319703416843890599, guid: c07c4b2733d0e2e449d8c1e3ae81071a, type: 3}
+  m_PrefabInstance: {fileID: 3096539085994759450}
+  m_PrefabAsset: {fileID: 0}

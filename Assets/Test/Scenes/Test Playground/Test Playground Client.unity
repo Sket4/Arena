@@ -2820,6 +2820,7 @@ Transform:
   m_Children:
   - {fileID: 1728452923}
   - {fileID: 383236415}
+  - {fileID: 1317001323}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1138507188
@@ -2909,6 +2910,230 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &1317001322
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1317001323}
+  - component: {fileID: 1317001324}
+  m_Layer: 0
+  m_Name: Set hair color
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1317001323
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1317001322}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 967085519}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1317001324
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1317001322}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 25d87a6b957a60841942c7e71e0c252f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ConversionTargetOptions: -1
+  Graph:
+    rid: 5852174912391217152
+  references:
+    version: 2
+    RefIds:
+    - rid: 5852174912391217152
+      type: {class: ScriptVizGraph, ns: TzarGames.GameCore.ScriptViz.Graph, asm: TzarGames.GameCore}
+      data:
+        pages: []
+        states: []
+        layers:
+        - id: scene
+          pages:
+          - ID:
+              Value:
+                Value:
+                  x: 3614805205
+                  y: 1134091245
+                  z: 2291181193
+                  w: 3530430668
+            Name: 
+            ConversionTargetOptions: 7
+            variables:
+            - rid: 5852174912391217157
+            nodes:
+            - rid: 5852174912391217153
+            - rid: 5852174912391217154
+            - rid: 5852174912391217156
+          states: []
+          variables: []
+        Name: 
+    - rid: 5852174912391217153
+      type: {class: StartEventNode, ns: TzarGames.GameCore.ScriptViz.Graph, asm: TzarGames.GameCore}
+      data:
+        ID:
+          Value:
+            Value:
+              x: 1330639638
+              y: 1280051409
+              z: 1680316816
+              w: 2672929606
+        Position: {x: 507.33337, y: 465.33334}
+        output:
+          ID:
+            Value:
+              Value:
+                x: 307760886
+                y: 1291587056
+                z: 2756417193
+                w: 217754798
+          ConnectedSocketIDs:
+          - Value:
+              Value:
+                x: 1451223092
+                y: 1109358638
+                z: 2414577579
+                w: 1500254165
+    - rid: 5852174912391217154
+      type: {class: GetMainCharacterCommandNode, ns: Arena.ScriptViz, asm: Arena.Common}
+      data:
+        ID:
+          Value:
+            Value:
+              x: 3750698490
+              y: 1291366708
+              z: 488675976
+              w: 4080405513
+        Position: {x: 634, y: 465.33334}
+        InputSocket:
+          ID:
+            Value:
+              Value:
+                x: 1451223092
+                y: 1109358638
+                z: 2414577579
+                w: 1500254165
+          ConnectedSocketIDs:
+          - Value:
+              Value:
+                x: 307760886
+                y: 1291587056
+                z: 2756417193
+                w: 217754798
+        OnCharacterLoadedSocket:
+          ID:
+            Value:
+              Value:
+                x: 2015937021
+                y: 1158749657
+                z: 3002344351
+                w: 1117153997
+          ConnectedSocketIDs:
+          - Value:
+              Value:
+                x: 2356509770
+                y: 1193502672
+                z: 2597639567
+                w: 1576743061
+        CharacterSocket:
+          ID:
+            Value:
+              Value:
+                x: 4231117178
+                y: 1288611511
+                z: 1523435177
+                w: 3469911754
+          ConnectedSocketIDs:
+          - Value:
+              Value:
+                x: 3230952322
+                y: 1159309787
+                z: 814375054
+                w: 2355433202
+          AuthoringValue: {fileID: 0}
+    - rid: 5852174912391217156
+      type: {class: SetCharacterHairColorNode, ns: Arena.ScriptViz, asm: Arena.Common}
+      data:
+        ID:
+          Value:
+            Value:
+              x: 3886382486
+              y: 1222709492
+              z: 776807829
+              w: 1728346293
+        Position: {x: 925.3333, y: 465.33334}
+        input:
+          ID:
+            Value:
+              Value:
+                x: 2356509770
+                y: 1193502672
+                z: 2597639567
+                w: 1576743061
+          ConnectedSocketIDs:
+          - Value:
+              Value:
+                x: 2015937021
+                y: 1158749657
+                z: 3002344351
+                w: 1117153997
+        output:
+          ID:
+            Value:
+              Value:
+                x: 364081762
+                y: 1126360054
+                z: 2441559212
+                w: 900305136
+          ConnectedSocketIDs: []
+        Color: {r: 0.4745098, g: 0, b: 0.79286385, a: 1}
+        TargetSocket:
+          ID:
+            Value:
+              Value:
+                x: 3230952322
+                y: 1159309787
+                z: 814375054
+                w: 2355433202
+          ConnectedSocketIDs:
+          - Value:
+              Value:
+                x: 4231117178
+                y: 1288611511
+                z: 1523435177
+                w: 3469911754
+          AuthoringValue: {fileID: 0}
+    - rid: 5852174912391217157
+      type: {class: DynamicArrayVariable, ns: TzarGames.GameCore.ScriptViz.Graph, asm: TzarGames.GameCore}
+      data:
+        ID:
+          Value:
+            Value:
+              x: 1503373204
+              y: 1084349992
+              z: 1009513364
+              w: 3538019081
+        Name: _delayed_commands
+        NetSyncEnabled: 0
+        IsHidden: 1
 --- !u!1 &1375399247
 GameObject:
   m_ObjectHideFlags: 0

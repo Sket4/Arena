@@ -58,7 +58,8 @@ namespace DatabaseApp
                     request.HeadID, 
                     request.HairstyleID,
                     request.SkinColor,
-                    request.HairColor
+                    request.HairColor,
+                    request.EyeColor
                     );
 
                 var character = DatabaseConversion.ConvertToDbCharacter(characterData);

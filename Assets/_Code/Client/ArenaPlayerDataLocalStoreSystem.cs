@@ -1,16 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using Arena;
-using Arena.Quests;
 using Arena.Server;
-using JetBrains.Annotations;
 using TzarGames.GameCore;
 using TzarGames.MatchFramework;
 using TzarGames.MatchFramework.Server;
 using Unity.Entities;
-using Unity.Mathematics;
-using Random = UnityEngine.Random;
 
 namespace Arena.Client
 {
@@ -19,6 +14,7 @@ namespace Arena.Client
     public partial class ArenaPlayerDataLocalStoreSystem : PlayerDataLocalStoreBaseSystem
     {        
         public CharacterClass DebugCharacterClass = CharacterClass.Knight;
+        public Genders DebugGender = Genders.Male;
         public IEnumerable<CharacterGameProgressQuests> DebugQuests = default;
         public IEnumerable<CharacterGameProgressKeyValue> DebugGameProgressIntKeys = default;
 
@@ -48,23 +44,30 @@ namespace Arena.Client
             else
             {
                 var random = Unity.Mathematics.Random.CreateFromIndex((uint)DateTime.Now.Millisecond);
-                
-                var gender = random.NextBool() ? Genders.Female : Genders.Male;
-                int headID;
 
-                switch (gender)
+                int headID;
+                int[] hairstyles;
+
+                switch (DebugGender)
                 {
                     case Genders.Male:
                         headID = Identifiers.DefaultMaleHeadID;
+                        hairstyles = Identifiers.MaleHairStyles;
                         break;
                     case Genders.Female:
                         headID = Identifiers.DefaultFemaleHeadID;
+                        hairstyles = Identifiers.FemaleHairStyles;
                         break;
                     default:
                         throw new ArgumentOutOfRangeException();
                 }
+
+                var hairstyle = hairstyles[random.NextInt(0, hairstyles.Length)];
+                var hairColor = new PackedColor((byte)random.NextInt(0,256),(byte)random.NextInt(0,256),(byte)random.NextInt(0,256));
+
+                var skinColor = Identifiers.SkinColors[random.NextInt(0, Identifiers.SkinColors.Length)];
                 
-                data = SharedUtility.CreateDefaultCharacterData(DebugCharacterClass, "Player", gender, headID);
+                data = SharedUtility.CreateDefaultCharacterData(DebugCharacterClass, "Player", DebugGender, headID, hairstyle, skinColor.rgba, hairColor.rgba);
                 if (DebugQuests != null)
                 {
                     foreach (var debugQuest in DebugQuests)

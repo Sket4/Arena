@@ -2,6 +2,7 @@ using Unity.Entities;
 using Unity.Transforms;
 using UnityEngine;
 using TzarGames.GameCore;
+using Unity.Burst;
 using Unity.Collections;
 using Unity.Jobs;
 using Unity.Mathematics;
@@ -18,6 +19,7 @@ namespace Arena.Client
     {
         public Entity ArmorSetEntity;
         public Entity HeadModelEntity;
+        public Entity HairModelEntity;
     }
 
     [DisableAutoCreation]
@@ -273,6 +275,7 @@ namespace Arena.Client
     
     [DisableAutoCreation]
     [UpdateAfter(typeof(CharacterAppearanceSystem))]
+    [BurstCompile]
     partial struct CharacterAppearanceNativeSystem : ISystem
     {
         private ComponentLookup<PrefabID> prefabIdLookup;
@@ -280,14 +283,16 @@ namespace Arena.Client
         private ComponentLookup<LocalTransform> transformLookup;
         private ComponentLookup<PostTransformMatrix> postTransformLookup;
 
-        private EntityQuery characterHeadQuery;
+        private EntityQuery characterQuery;
 
         private ComponentType appearanceStateType;
         private ComponentType characterHeadType;
+        private ComponentType hairstyleType;
         
         ComponentTypeHandle<CharacterEquipmentAppearanceState> appearanceStateTypeHandle;
-                    ComponentTypeHandle<CharacterHead> characterHeadTypeHandle;
-                    ComponentTypeHandle<Gender> genderTypeHandle;
+        ComponentTypeHandle<CharacterHead> characterHeadTypeHandle;
+        ComponentTypeHandle<CharacterHairstyle> hairstyleTypeHandle;
+        ComponentTypeHandle<Gender> genderTypeHandle;
         
         public void OnCreate(ref SystemState state)
         {
@@ -299,17 +304,20 @@ namespace Arena.Client
 
             appearanceStateType = ComponentType.ReadWrite<CharacterEquipmentAppearanceState>();
             characterHeadType = ComponentType.ReadOnly<CharacterHead>();
+            hairstyleType = ComponentType.ReadOnly<CharacterHairstyle>();
 
             appearanceStateTypeHandle = state.GetComponentTypeHandle<CharacterEquipmentAppearanceState>(false);
             characterHeadTypeHandle = state.GetComponentTypeHandle<CharacterHead>(true);
+            hairstyleTypeHandle = state.GetComponentTypeHandle<CharacterHairstyle>(true);
             genderTypeHandle = state.GetComponentTypeHandle<Gender>(true);
 
-            characterHeadQuery = state.GetEntityQuery(new EntityQueryDesc
+            characterQuery = state.GetEntityQuery(new EntityQueryDesc
             {
                 All = new []
                 {
                     appearanceStateType,
                     characterHeadType,
+                    hairstyleType,
                     ComponentType.ReadOnly<Gender>()
                 }
             });
@@ -317,24 +325,121 @@ namespace Arena.Client
 
         public void OnUpdate(ref SystemState state)
         {
-            // prefabIdLookup.Update(ref state);
-            // postTransformLookup.Update(ref state);
-            // transformLookup.Update(ref state);
-            // parentLookup.Update(ref state);
-            
             var dbEntity = SystemAPI.GetSingletonEntity<MainDatabaseTag>();
             var db = SystemAPI.GetBuffer<IdToEntity>(dbEntity).ToNativeArray(Allocator.Temp);
             
-            characterHeadQuery.SetChangedVersionFilter(characterHeadType);
-            processQuery(ref state, in db);
+            characterQuery.SetChangedVersionFilter(characterHeadType);
+            processHeadQuery(ref state, in db);
             
-            characterHeadQuery.SetChangedVersionFilter(appearanceStateType);
-            processQuery(ref state, in db);
+            characterQuery.SetChangedVersionFilter(appearanceStateType);
+            processHeadQuery(ref state, in db);
+            processHairstyleQuery(ref state, in db);
+            
+            characterQuery.SetChangedVersionFilter(hairstyleType);
+            processHairstyleQuery(ref state, in db);
+        }
+        
+        void processHairstyleQuery(ref SystemState state, in NativeArray<IdToEntity> db)
+        {
+            var chunks = characterQuery.ToArchetypeChunkArray(Allocator.Temp);
+
+            foreach (var chunk in chunks)
+            {
+                appearanceStateTypeHandle.Update(ref state);
+                hairstyleTypeHandle.Update(ref state);
+                
+                var appearances = chunk.GetNativeArray(ref appearanceStateTypeHandle);
+                var hairstyles = chunk.GetNativeArray(ref hairstyleTypeHandle);
+
+                for (int c = 0; c < chunk.Count; c++)
+                {
+                    var appearance = appearances[c];
+                    var hairstyle = hairstyles[c];
+                    
+                    processHairstyleModel(ref state, ref appearance, in hairstyle, in db);
+                    
+                    appearanceStateTypeHandle.Update(ref state);
+                    appearances = chunk.GetNativeArray(ref appearanceStateTypeHandle);
+                    appearances[c] = appearance;
+                }
+            }
         }
 
-        void processQuery(ref SystemState state, in NativeArray<IdToEntity> db)
+        private void processHairstyleModel(ref SystemState state, ref CharacterEquipmentAppearanceState appearance, in CharacterHairstyle hairstyle, in NativeArray<IdToEntity> db)
         {
-            var chunks = characterHeadQuery.ToArchetypeChunkArray(Allocator.Temp);
+            var removeHairAndExit = hairstyle.ID.Value == 0;
+
+            if (removeHairAndExit)
+            {
+                if (appearance.HairModelEntity != Entity.Null)
+                {
+                    state.EntityManager.DestroyEntity(appearance.HairModelEntity);
+                    appearance.HairModelEntity = Entity.Null;
+                }
+                return;
+            }
+
+            var needChangeHairstyle = true;
+
+            if (appearance.HairModelEntity != Entity.Null)
+            {
+                if (state.EntityManager.HasComponent<PrefabID>(appearance.HairModelEntity))
+                {
+                    var currentHairstyleID =
+                        state.EntityManager.GetComponentData<PrefabID>(appearance.HairModelEntity);
+
+                    if (currentHairstyleID == hairstyle.ID)
+                    {
+                        needChangeHairstyle = false;
+                    }
+                }
+                else
+                {
+                    Debug.LogError($"invalid existing hairstyle with entity {appearance.HairModelEntity.Index}");
+                    appearance.HairModelEntity = Entity.Null;
+                }
+            }
+
+            if (appearance.HeadModelEntity == Entity.Null)
+            {
+                Debug.LogError("failed to change hairstyle - no head instance");
+                return;
+            }
+
+            if (state.EntityManager.HasComponent<HairSocket>(appearance.HeadModelEntity) == false)
+            {
+                Debug.LogError($"no head socket in head {appearance.HeadModelEntity.Index}");
+                return;
+            }
+
+            Debug.Log($"changing or updating hairstyle {hairstyle.ID.Value}");
+            
+            var hairSocket = state.EntityManager.GetComponentData<HairSocket>(appearance.HeadModelEntity);
+            
+            if (needChangeHairstyle)
+            {
+                if (IdToEntity.TryGetEntityById(db, hairstyle.ID.Value, out var hairstylePrefab) == false)
+                {
+                    Debug.LogError($"failed to find hairstyle prefab with id {hairstyle.ID.Value}");
+                    return;       
+                }
+
+                if (appearance.HairModelEntity != Entity.Null)
+                {
+                    state.EntityManager.DestroyEntity(appearance.HairModelEntity);    
+                }
+                appearance.HairModelEntity = state.EntityManager.Instantiate(hairstylePrefab);
+                state.EntityManager.AddComponentData(appearance.HairModelEntity, new Parent { Value = hairSocket.SocketEntity });
+            }
+            else
+            {
+                state.EntityManager.SetComponentData(appearance.HairModelEntity, new Parent { Value = hairSocket.SocketEntity });
+            }
+        }
+
+        void processHeadQuery(ref SystemState state, in NativeArray<IdToEntity> db)
+        {
+            var chunks = characterQuery.ToArchetypeChunkArray(Allocator.Temp);
 
             foreach (var chunk in chunks)
             {

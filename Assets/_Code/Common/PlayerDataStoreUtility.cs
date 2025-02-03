@@ -61,6 +61,9 @@ namespace Arena
             data.Name = manager.GetComponentData<Name30>(entity).ToString();
             data.XP = (int)manager.GetComponentData<XP>(entity).Value;
             data.Class = (int)manager.GetComponentData<CharacterClassData>(entity).Value;
+            data.Gender = manager.GetComponentData<Gender>(entity).Value;
+            data.HeadID = manager.GetComponentData<CharacterHead>(entity).ModelID.Value;
+            data.HairstyleID = manager.GetComponentData<CharacterHairstyle>(entity).ID.Value;
             
             data.ItemsData = new ItemsData();
             

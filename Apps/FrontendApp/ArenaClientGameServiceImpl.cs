@@ -88,6 +88,7 @@ namespace FrontendApp
             createRequest.Name = request.Name;
             createRequest.Gender = request.Gender;
             createRequest.HeadID = request.HeadID;
+            createRequest.HairstyleID = request.HairstyleID;
 
             var result = await dbClient.CreateCharacterForAccountAsync(createRequest);
 

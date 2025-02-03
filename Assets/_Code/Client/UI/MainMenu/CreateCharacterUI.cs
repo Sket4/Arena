@@ -60,6 +60,9 @@ namespace Arena.Client.UI.MainMenu
         CharacterClass currentClass;
         private Genders selectedGender = Genders.Male;
         private int selectedHeadID = -1;
+        private int selectedSkinColor = -1;
+        private int selectedHairColor = -1;
+        private int selectedHairstyleID = -1;
         bool classIsChosen = false;
 
         protected override void Start()
@@ -154,8 +157,14 @@ namespace Arena.Client.UI.MainMenu
                     ? Identifiers.DefaultFemaleHeadID
                     : Identifiers.DefaultMaleHeadID;
             }
+
+            if (selectedHairstyleID < 0)
+            {
+                Debug.LogError("invalid hairstyle id");
+                selectedHairstyleID = 0;
+            }
             
-            var result = await GameState.Instance.CreateCharacter(input.Text, currentClass, selectedGender, selectedHeadID);
+            var result = await GameState.Instance.CreateCharacter(input.Text, currentClass, selectedGender, selectedHeadID, selectedHairstyleID, selectedHairColor, selectedSkinColor);
 
             var elapsedTime = Time.realtimeSinceStartup - startWaitTime;
 

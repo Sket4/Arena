@@ -30,6 +30,8 @@ namespace Arena.Client
         [SerializeField]
         CharacterClass debugCharacterClass;
 
+        [SerializeField] private Genders debugGender = Genders.Male; 
+
         [SerializeField] private GameSceneKey debugGameSceneKey = default;
         [SerializeField] private SpawnPointID debugSpawnPointID = default;
 
@@ -84,6 +86,7 @@ namespace Arena.Client
 
             var storeSystem = gameLoop.World.GetExistingSystemManaged<ArenaPlayerDataLocalStoreSystem>();
             storeSystem.DebugCharacterClass = debugCharacterClass;
+            storeSystem.DebugGender = debugGender;
 
             if (debugQuests != null && debugQuests.Length > 0)
             {

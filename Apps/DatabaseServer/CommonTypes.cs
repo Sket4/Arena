@@ -22,6 +22,10 @@ namespace DatabaseApp.DB
 
         public int XP { get; set; }
         public int Class { get; set; }
+        public int HeadID { get; set; }
+        public int HairstyleID { get; set; }
+        public int SkinColor { get; set; }
+        public int HairColor { get; set; }
         public byte[] AbilityData { get; set; }
         public byte[] ItemData { get; set; }
 
@@ -67,6 +71,11 @@ namespace DatabaseApp.DB
                 XP = characterData.XP,
                 ItemData = itemBytes,
                 AbilityData = abilityBytes,
+                
+                HeadID = characterData.HeadID,
+                HairColor = characterData.HairColor,
+                HairstyleID = characterData.HairstyleID,
+                SkinColor = characterData.SkinColor,
 
                 GameProgress = progress.ToByteArray(),
             };

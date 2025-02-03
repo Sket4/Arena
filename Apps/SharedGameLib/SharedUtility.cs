@@ -1,4 +1,6 @@
-﻿using TzarGames.MatchFramework;
+﻿using System.Runtime.InteropServices;
+using System;
+using TzarGames.MatchFramework;
 
 namespace Arena
 {
@@ -9,6 +11,42 @@ namespace Arena
         public int BaseWeaponID;
 
         public int[] AbilityIDs;
+    }
+
+    [StructLayout(LayoutKind.Explicit)]
+    public struct PackedColor
+    {
+        [FieldOffset(0)]
+        public int rgba;
+
+        [FieldOffset(0)]
+        public byte r;
+
+        [FieldOffset(1)]
+        public byte g;
+
+        [FieldOffset(2)]
+        public byte b;
+
+        [FieldOffset(3)]
+        public byte a;
+
+        public PackedColor(byte r, byte g, byte b, byte a)
+        {
+            this.rgba = 0;
+            this.r = r;
+            this.g = g;
+            this.b = b;
+            this.a = a;
+        }
+        public PackedColor(byte r, byte g, byte b)
+        {
+            this.rgba = 0;
+            this.r = r;
+            this.g = g;
+            this.b = b;
+            this.a = 255;
+        }
     }
 
     public static class Identifiers
@@ -53,6 +91,23 @@ namespace Arena
         {
             63 // main city
         };
+
+        public static readonly int[] MaleHairStyles = new int[]
+        {
+            130
+        };
+
+        public static readonly int[] FemaleHairStyles = new int[]
+        {
+            129
+        };
+
+        public static readonly PackedColor[] SkinColors = new PackedColor[]
+        {
+            new PackedColor(255,255,255),       // white
+            new PackedColor(203,167,142),       // neutral
+            new PackedColor(34,23,21),        // black
+        };
     }
 
     public static class MetaDataKeys
@@ -80,13 +135,16 @@ namespace Arena
             return false;
         }
 
-        public static CharacterData CreateDefaultCharacterData(CharacterClass characterClass, string characterName, Genders gender, int headID)
+        public static CharacterData CreateDefaultCharacterData(CharacterClass characterClass, string characterName, Genders gender, int headID, int hairstyleID, int skinColor, int hairColor)
         {
             var data = new CharacterData();
             data.Name = characterName;
             data.Class = (int)characterClass;
             data.HeadID = headID;
             data.Gender = gender;
+            data.HairstyleID = hairstyleID;
+            data.SkinColor = skinColor;
+            data.HairColor = hairColor;
 
             data.Progress = new GameProgress
             {

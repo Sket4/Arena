@@ -1,3 +1,4 @@
+using Google.Protobuf.WellKnownTypes;
 using Unity.Entities;
 using Unity.Transforms;
 using UnityEngine;
@@ -147,6 +148,9 @@ namespace Arena.Client
                     var instance = EntityManager.Instantiate(prefab);
 
                     EntityManager.SetComponentData(instance, new Owner(item.Owner));
+                    var ownerTransform = EntityManager.GetComponentData<LocalTransform>(item.Owner);
+                    EntityManager.SetComponentData(instance, ownerTransform);
+                    EntityManager.SetComponentData(instance, new LocalToWorld { Value = ownerTransform.ToMatrix() });
                     EntityManager.AddComponentData(itemEntity, new CharacterAppearanceState { Instance = instance, Owner = item.Owner });
 
                     var animation = EntityManager.GetComponentData<CharacterAnimation>(item.Owner);
@@ -717,16 +721,25 @@ namespace Arena.Client
                 return;
             }
 
-            var headInstance = state.EntityManager.Instantiate(headPrefab);
-            appearance.HeadModelEntity = headInstance;
+            Entity headInstance;
 
-            state.EntityManager.AddComponentData(headInstance, new Parent { Value = armorSetAppearance.HeadSocket });
+            if (existingHeadInstance != Entity.Null && needChangeHead == false)
+            {
+                headInstance = existingHeadInstance;
+            }
+            else
+            {
+                headInstance = state.EntityManager.Instantiate(headPrefab);
+                state.EntityManager.AddComponentData(headInstance, new Parent { Value = armorSetAppearance.HeadSocket });
+            }
+            
+            appearance.HeadModelEntity = headInstance;
             state.EntityManager.SetComponentData(headInstance, LocalTransform.Identity);
 
             var headAppearance = state.EntityManager.GetComponentData<HeadAppearance>(headInstance);
             state.EntityManager.SetComponentData(headAppearance.BrowsModel, new ColorData(haircolor.Value));
             state.EntityManager.SetComponentData(headAppearance.HeadModel, new SkinColor(skincolor.Value));
-            state.EntityManager.SetComponentData(headAppearance.EyesModel, new SkinColor(skincolor.Value));
+            state.EntityManager.SetComponentData(headAppearance.EyesModel, new SkinColor(eyecolor.Value));
 
             var armorSetInstanceRig = state.EntityManager.GetComponentData<HumanRig>(armorSetAppearanceState.Instance);
             var headRig = state.EntityManager.GetComponentData<HumanRig>(headInstance);

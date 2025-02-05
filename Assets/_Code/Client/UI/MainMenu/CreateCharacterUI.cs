@@ -215,8 +215,8 @@ namespace Arena.Client.UI.MainMenu
                 selectedArmorColor = armorColorVariants[Random.Range(0, armorColorVariants.Length)];
             }
 
-            colorPicker.S = 1;
-            colorPicker.V = 1;
+            colorPicker.S = 0.7f;
+            colorPicker.V = 0.7f;
             
             colorPicker.onValueChanged.AddListener((color) =>
             {

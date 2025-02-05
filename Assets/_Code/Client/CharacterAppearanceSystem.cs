@@ -416,16 +416,16 @@ namespace Arena.Client
             [ReadOnly] public ComponentLookup<HeadAppearance> HeadAppearanceLookup;
             [ReadOnly] public ComponentLookup<ArmorSetAppearance> ArmorSetAppearLookup;
             
-            public void Execute(in CharacterSkinColor skinColor, in CharacterEquipmentAppearanceState appearance)
+            public void Execute(in CharacterSkinColor skinColor, in CharacterAnimation animation, in CharacterEquipmentAppearanceState appearanceState)
             {
                 Debug.Log("skin color changed");
                 
-                if (HeadAppearanceLookup.TryGetComponent(appearance.HeadModelEntity, out var headAppearance))
+                if (HeadAppearanceLookup.TryGetComponent(appearanceState.HeadModelEntity, out var headAppearance))
                 {
                     Commands.SetComponent(headAppearance.HeadModel, new SkinColor(skinColor.Value));
                 }
 
-                if (ArmorSetAppearLookup.TryGetComponent(appearance.ArmorSetEntity, out var armorSetAppearance))
+                if (ArmorSetAppearLookup.TryGetComponent(animation.AnimatorEntity, out var armorSetAppearance))
                 {
                     if (armorSetAppearance.SkinModel1 != Entity.Null)
                     {

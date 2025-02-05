@@ -31,6 +31,10 @@ struct v2f
     float4 tangentWS : TEXCOORD3;
     #endif
     //UNITY_VERTEX_INPUT_INSTANCE_ID
+
+    #ifdef ARENA_SKIN_COLOR
+    nointerpolation half3 skinColor : TEXCOORD4;
+    #endif
 };
 
 #include "Packages/com.tzargames.rendering/Shaders/Lighting.hlsl"
@@ -89,6 +93,10 @@ v2f vert (appdata v)
 
     float4 instanceData = tg_InstanceData;
     o.instanceData = instanceData;
+
+    #ifdef ARENA_SKIN_COLOR
+    o.skinColor = SKIN_COLOR.rgb;
+    #endif
     
     return o;
 }
@@ -100,7 +108,7 @@ GBufferFragmentOutput frag (v2f i)
     half4 diffuse = tex2D(_BaseMap, i.uv);
 
     #if defined(ARENA_SKIN_COLOR)
-    diffuse.rgb = lerp(diffuse.rgb, diffuse.rgb * SKIN_COLOR.rgb, diffuse.a); 
+    diffuse.rgb = lerp(diffuse.rgb, diffuse.rgb * i.skinColor.rgb, diffuse.a);
     #endif
 
     #if defined(TG_FADING)

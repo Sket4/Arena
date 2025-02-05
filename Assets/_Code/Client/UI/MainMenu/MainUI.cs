@@ -4,13 +4,16 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using Arena.Client;
+using Arena.Server;
 using TzarGames.Common.UI;
 using TzarGames.GameCore;
 using TzarGames.GameCore.Client;
 using TzarGames.GameCore.ScriptViz;
 using TzarGames.MatchFramework.Client;
 using TzarGames.Rendering;
+using Unity.Collections;
 using Unity.Entities;
+using Unity.Transforms;
 using UnityEngine;
 using UnityEngine.Events;
 
@@ -18,8 +21,6 @@ namespace Arena.Client.UI.MainMenu
 {
     public class MainUI : MonoBehaviour
     {
-        public static readonly string EnableCharactersMessage = "characters_enable";
-        public static readonly string DisableCharactersMessage = "characters_disable";
         string uiWindowTag = "UI Window";
 
         [SerializeField]
@@ -93,6 +94,30 @@ namespace Arena.Client.UI.MainMenu
             }
         }
         
+        public static Entity CreateCharacter(UtilitySystem utilSystem, CharacterData characterData)
+        {
+            var playerPrefab = utilSystem.GetSingleton<PlayerPrefab>().Value;
+            var databaseEntity = utilSystem.GetSingletonEntity<MainDatabaseTag>();
+            var database = utilSystem.EntityManager.GetBuffer<IdToEntity>(databaseEntity).ToNativeArray(Allocator.Temp);
+            var commands = new EntityCommandBuffer(Allocator.Temp);
+            var playerSpawnPointEntity = utilSystem.GetSingletonEntity<PlayerSpawnPoint>();
+            var spawnPos = utilSystem.EntityManager.GetComponentData<LocalToWorld>(playerSpawnPointEntity);
+            var menuPlayerEntity = utilSystem.EntityManager.CreateEntity();
+            utilSystem.EntityManager.SetName(menuPlayerEntity, "Menu player");
+            var characterEntity = ArenaMatchUtility.CreateCharacter(playerPrefab, menuPlayerEntity, spawnPos.Position, default, database, characterData, commands);
+            commands.AddComponent(characterEntity, new Parent { Value = playerSpawnPointEntity });
+                    
+            commands.Playback(utilSystem.EntityManager);
+
+            var characterInstance = utilSystem.GetSingletonEntity<PlayerController>();
+            utilSystem.EntityManager.SetComponentData(characterInstance, LocalTransform.FromPositionRotation(spawnPos.Position, spawnPos.Rotation));
+                    
+            Debug.Log($"Current character entity: {characterInstance}");
+            utilSystem.EntityManager.SetName(characterInstance, $"Character {characterData.Name}");
+
+            return characterInstance;
+        }
+        
         private void OnDestroy()
         {
             if (GameState.Instance != null)
@@ -109,6 +134,7 @@ namespace Arena.Client.UI.MainMenu
             gameLauncher.GameLoop.World.GetExistingSystemManaged<CharacterRotationSystem>().Enabled = false;
             
             gameLauncher.GameLoop.AddGameSystem<CharacterAppearanceSystem>();
+            gameLauncher.GameLoop.AddGameSystemUnmanaged<CharacterAppearanceNativeSystem>();
             gameLauncher.GameLoop.AddGameSystem<AnimationSystem>();
             gameLauncher.GameLoop.AddGameSystem<CharacterModelSmoothMovementSystem>();
             gameLauncher.GameLoop.AddGameSystem<MaterialRenderingSystem>(gameLauncher.GameLoop.World.GetExistingSystemManaged<PresentationSystemGroup>());

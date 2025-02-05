@@ -45,16 +45,16 @@ namespace Arena.Client.UI.MainMenu
         {
             base.OnVisible();
             
+            if (GameState.Instance == null)
+            {
+                return;
+            }
+            
             var mainUI = FindObjectOfType<MainUI>();
+            
             StartCoroutine(mainUI.WaitForSceneGameLoop((gameLoop) =>
             {
-                var utilSystem = gameLoop.World.GetExistingSystemManaged<UtilitySystem>(); 
-                utilSystem.SendMessage(MainUI.DisableCharactersMessage);
-                
-                if (GameState.Instance == null)
-                {
-                    return;
-                }
+                var utilSystem = gameLoop.World.GetExistingSystemManaged<UtilitySystem>();
 
                 var selectedCharacter = GameState.Instance.SelectedCharacter;
 
@@ -82,25 +82,13 @@ namespace Arena.Client.UI.MainMenu
                 {
                     characterNameLabel.text = selectedCharacter.Name;
 
-                    var playerPrefab = utilSystem.GetSingleton<PlayerPrefab>().Value;
-                    var databaseEntity = utilSystem.GetSingletonEntity<MainDatabaseTag>();
-                    var database = utilSystem.EntityManager.GetBuffer<IdToEntity>(databaseEntity).ToNativeArray(Allocator.Temp);
-                    var commands = new EntityCommandBuffer(Allocator.Temp);
-                    var playerSpawnPointEntity = utilSystem.GetSingletonEntity<PlayerSpawnPoint>();
-                    var spawnPos = utilSystem.EntityManager.GetComponentData<LocalToWorld>(playerSpawnPointEntity);
-                    var menuPlayerEntity = utilSystem.EntityManager.CreateEntity();
-                    utilSystem.EntityManager.SetName(menuPlayerEntity, "Menu player");
-                    var characterEntity = ArenaMatchUtility.CreateCharacter(playerPrefab, menuPlayerEntity, spawnPos.Position, default, database, selectedCharacter, commands);
-                    commands.AddComponent(characterEntity, new Parent { Value = playerSpawnPointEntity });
+                    if (utilSystem.HasSingleton<PlayerController>())
+                    {
+                        var character = utilSystem.GetSingletonEntity<PlayerController>();
+                        utilSystem.EntityManager.DestroyEntity(character);
+                    }
                     
-                    commands.Playback(utilSystem.EntityManager);
-
-                    currentCharacter = selectedCharacter;
-                    currentCharacterEntity = utilSystem.GetSingletonEntity<PlayerController>();
-                    utilSystem.EntityManager.SetComponentData(currentCharacterEntity, LocalTransform.FromPositionRotation(spawnPos.Position, spawnPos.Rotation));
-                    
-                    Debug.Log($"Current character entity: {currentCharacterEntity}");
-                    utilSystem.EntityManager.SetName(currentCharacterEntity, $"Character {selectedCharacter.Name}");
+                    MainUI.CreateCharacter(utilSystem, selectedCharacter);  
                 }
             }));
         }

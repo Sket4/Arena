@@ -120,7 +120,20 @@ namespace Arena.Client
                 {
                     return null;
                 }
-                return PlayerData.SelectedCharacterIndex >= 0 ? PlayerData.Characters[PlayerData.SelectedCharacterIndex] : null;
+
+                foreach (var character in PlayerData.Characters)
+                {
+                    if (string.IsNullOrEmpty(character.Name))
+                    {
+                        continue;
+                    }
+
+                    if (character.Name.Equals(PlayerData.SelectedCharacterName))
+                    {
+                        return character;
+                    }
+                }
+                return null;
             }
         }
 
@@ -239,7 +252,7 @@ namespace Arena.Client
                     var character = PlayerData.Characters[index];
                     if (character.Name.Equals(characterName))
                     {
-                        PlayerData.SelectedCharacterIndex = index;
+                        PlayerData.SelectedCharacterName = characterName;
                         SaveLocalGame();
                         break;
                     }
@@ -261,7 +274,7 @@ namespace Arena.Client
                         var character = PlayerData.Characters[index];
                         if (character.Name.Equals(characterName))
                         {
-                            PlayerData.SelectedCharacterIndex = index;
+                            PlayerData.SelectedCharacterName = characterName;
                             break;
                         }
                     }
@@ -293,11 +306,15 @@ namespace Arena.Client
 			get { return 12; }
 		}
 
-        public async Task<CreateCharacterResult> CreateCharacter(string name, CharacterClass classType, Genders gender, int headID, int hairstyleID, int hairColor, int skinColor, int eyeColor)
+        public async Task<CreateCharacterResult> CreateCharacter(string name, CharacterClass classType, Genders gender, int headID, int hairstyleID, int hairColorID, int skinColorID, int eyeColorID, int armorColor)
         {
             if (IsOfflineMode)
             {
-                var localCharacter = Arena.SharedUtility.CreateDefaultCharacterData(classType, name, gender, headID, hairstyleID, skinColor, hairColor, eyeColor);
+                var hairColor = Identifiers.HairColors[hairColorID].rgba;
+                var skinColor = Identifiers.SkinColors[skinColorID].rgba;
+                var eyeColor = Identifiers.EyeColors[eyeColorID].rgba;
+                
+                var localCharacter = Arena.SharedUtility.CreateDefaultCharacterData(classType, name, gender, headID, hairstyleID, skinColor, hairColor, eyeColor, armorColor);
                 PlayerData.Characters.Add(localCharacter);
                 SaveLocalGame();
                 return new CreateCharacterResult { Character = localCharacter, Success = true };
@@ -306,7 +323,13 @@ namespace Arena.Client
             var result = await gameService.Service.CreateCharacterAsync(new CreateCharacterRequest
             {
                 Class = (int)classType,
-                Name = name
+                Name = name,
+                SkinColor = skinColorID,
+                HairColor = hairColorID,
+                EyeColor = eyeColorID,
+                Gender = gender,
+                HairstyleID = hairstyleID,
+                HeadID = headID,
                 
             }).ResponseAsync;
             

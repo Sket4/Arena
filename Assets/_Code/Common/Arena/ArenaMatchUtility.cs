@@ -116,6 +116,11 @@ namespace Arena.Server
                             {
                                 commands.AddComponent(itemEntity, new ActivatedState(activated));
                             }
+
+                            if (item.Data.IntKeyValues.TryGet(ItemMetaKeys.Color.ToString(), out var color))
+                            {
+                                commands.AddComponent(itemEntity, new SyncedColor(color));
+                            }
                         }
                     }
 

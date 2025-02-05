@@ -15,6 +15,9 @@ namespace Arena.Client
 
         public Entity SkinModel1;
         public Entity SkinModel2;
+        
+        public Entity ColoredModel1;
+        public Entity ColoredModel2;
     }
 
     public class ArmorSetAppearanceComponent : ComponentDataBehaviourBase
@@ -27,6 +30,8 @@ namespace Arena.Client
 
         public Renderer SkinModel1;
         public Renderer SkinModel2;
+        public Renderer ColoredModel1;
+        public Renderer ColoredModel2;
 
         protected override void PreBake<T>(T baker)
         {
@@ -38,7 +43,10 @@ namespace Arena.Client
                 RightFoot = RightFoot != null ? baker.GetEntity(RightFoot) : Entity.Null,
                 LeftFoot = LeftFoot != null ? baker.GetEntity(LeftFoot) : Entity.Null,
                 SkinModel1 = baker.GetEntity(SkinModel1),
-                SkinModel2 = baker.GetEntity(SkinModel2)
+                SkinModel2 = baker.GetEntity(SkinModel2),
+                
+                ColoredModel1 = baker.GetEntity(ColoredModel1),
+                ColoredModel2 = baker.GetEntity(ColoredModel2),
             };
             baker.AddComponent(data);
         }

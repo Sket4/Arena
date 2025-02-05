@@ -9,7 +9,8 @@
 
     public enum ItemMetaKeys
     {
-        Activated
+        Activated,
+        Color
     }
 
     public enum GameLocationType

@@ -13,6 +13,11 @@ namespace Arena
             if (data == null) data = new MetaData();
             data.BoolKeyValues.Add(new BoolKeyValuePair { Key = key.ToString(), Value = value });
         }
+        static void addIntPair(ref MetaData data, ItemMetaKeys key, int value)
+        {
+            if (data == null) data = new MetaData();
+            data.IntKeyValues.Add(new IntKeyValuePair { Key = key.ToString(), Value = value });
+        }
 
         static object createDataFromItemEntity(Entity itemEntity, EntityManager manager)
         {
@@ -30,6 +35,11 @@ namespace Arena
             if(manager.HasComponent<ActivatedState>(itemEntity))
             {
                 addBoolPair(ref itemData, ItemMetaKeys.Activated, manager.GetComponentData<ActivatedState>(itemEntity).Activated);
+            }
+
+            if (manager.HasComponent<SyncedColor>(itemEntity))
+            {
+                addIntPair(ref itemData, ItemMetaKeys.Color, manager.GetComponentData<SyncedColor>(itemEntity).Value.rgba);
             }
 
             if (manager.HasComponent<Consumable>(itemEntity))

@@ -42,7 +42,7 @@ namespace Arena
         [HideInAuthoring]
         public PackedColor Value;
     }
-    
+
     public class CharacterVisualComponent : ComponentDataBehaviour<CharacterHead>
     {
         protected override void Bake<K>(ref CharacterHead serializedData, K baker)

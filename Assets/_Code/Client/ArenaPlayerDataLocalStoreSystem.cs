@@ -6,6 +6,7 @@ using TzarGames.GameCore;
 using TzarGames.MatchFramework;
 using TzarGames.MatchFramework.Server;
 using Unity.Entities;
+using UnityEngine;
 
 namespace Arena.Client
 {
@@ -68,7 +69,9 @@ namespace Arena.Client
                 var skinColor = Identifiers.SkinColors[random.NextInt(0, Identifiers.SkinColors.Length)];
                 var eyeColor = new PackedColor((byte)random.NextInt(0,256),(byte)random.NextInt(0,256),(byte)random.NextInt(0,256));
                 
-                data = SharedUtility.CreateDefaultCharacterData(DebugCharacterClass, "Player", DebugGender, headID, hairstyle, skinColor.rgba, hairColor.rgba, eyeColor.rgba);
+                var armorColor = new PackedColor((byte)random.NextInt(0,256),(byte)random.NextInt(0,256),(byte)random.NextInt(0,256));
+                
+                data = SharedUtility.CreateDefaultCharacterData(DebugCharacterClass, "Player", DebugGender, headID, hairstyle, skinColor.rgba, hairColor.rgba, eyeColor.rgba, armorColor.rgba);
                 if (DebugQuests != null)
                 {
                     foreach (var debugQuest in DebugQuests)
@@ -103,7 +106,15 @@ namespace Arena.Client
             {
                 var characterData = playerData["CharacterData"] as CharacterData;
 
-                GameState.Instance.PlayerData.Characters[GameState.Instance.PlayerData.SelectedCharacterIndex] =
+                var index = GameState.Instance.PlayerData.Characters.IndexOf(GameState.Instance.SelectedCharacter);
+
+                if (index < 0 || index >= GameState.Instance.PlayerData.Characters.Count)
+                {
+                    Debug.LogError("wrong index");
+                    return Task.FromResult(new object());
+                }
+                
+                GameState.Instance.PlayerData.Characters[index] =
                     characterData;
                 
                 GameState.Instance.SaveLocalGame();

@@ -119,6 +119,10 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 6790406120225507427}
     - target: {fileID: 1983259648279014177, guid: 9c3e42f1ab5ba3349841a89e916121dd, type: 3}
+      propertyPath: ColoredModel1
+      value: 
+      objectReference: {fileID: 1613817345370523867}
+    - target: {fileID: 1983259648279014177, guid: 9c3e42f1ab5ba3349841a89e916121dd, type: 3}
       propertyPath: LeftHandBowSocket
       value: 
       objectReference: {fileID: 2512934744344238645}
@@ -1171,7 +1175,15 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 100012, guid: bbe8759efd966ab419535e5f34e42cb4, type: 3}
       insertIndex: -1
       addedObject: {fileID: 7228366860198137535}
+    - targetCorrespondingSourceObject: {fileID: 100152, guid: bbe8759efd966ab419535e5f34e42cb4, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 5730559139148042555}
   m_SourcePrefab: {fileID: 100100000, guid: bbe8759efd966ab419535e5f34e42cb4, type: 3}
+--- !u!137 &1613817345370523867 stripped
+SkinnedMeshRenderer:
+  m_CorrespondingSourceObject: {fileID: 13700012, guid: bbe8759efd966ab419535e5f34e42cb4, type: 3}
+  m_PrefabInstance: {fileID: 1613817345384219511}
+  m_PrefabAsset: {fileID: 0}
 --- !u!4 &1613817345384093797 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 400146, guid: bbe8759efd966ab419535e5f34e42cb4, type: 3}
@@ -1754,6 +1766,26 @@ MonoBehaviour:
   MaxPerpendicularAngle: 20
   MinTwistAngle: -5
   MaxTwistAngle: 5
+--- !u!1 &1613817345384121423 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 100152, guid: bbe8759efd966ab419535e5f34e42cb4, type: 3}
+  m_PrefabInstance: {fileID: 1613817345384219511}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &5730559139148042555
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1613817345384121423}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4749921f3e678e94290b937424103103, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ConversionTargetOptions: 5
+  Value:
+    Value: {r: 1, g: 1, b: 1, a: 1}
 --- !u!1 &1613817345384121443 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 100116, guid: bbe8759efd966ab419535e5f34e42cb4, type: 3}

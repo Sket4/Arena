@@ -4,7 +4,6 @@ using Arena.Server;
 using Grpc.Core;
 using NLog;
 using System;
-using System.Net;
 using System.Threading.Tasks;
 using TzarGames.MatchFramework;
 using TzarGames.MatchFramework.Database;
@@ -80,10 +79,28 @@ namespace FrontendApp
 
         public override async Task<Arena.Client.CreateCharacterResult> CreateCharacter(CreateCharacterRequest request, ServerCallContext context)
         {
+            if (request.Gender != Genders.Male || request.Gender != Genders.Female)
+            {
+                log.Error("invalied gender");
+                return null;
+            }
+            if(request.EyeColor < 0 || Identifiers.EyeColors.Length <= request.EyeColor)
+            {
+                log.Error("invalid eye color");
+                return null;
+            }
+            if(request.HairColor < 0 || Identifiers.HairColors.Length <= request.HairColor)
+            {
+                log.Error("invalid hair color");
+                return null;
+            }
+            if(request.SkinColor < 0 || Identifiers.SkinColors.Length <= request.SkinColor)
+            {
+                log.Error("invalid skin color");
+                return null;
+            }
+
             var userId = TzarGames.MatchFramework.Frontend.Server.Utils.CheckUserIdAndThrowExceptionWhenFailed(context);
-
-
-            // TODO check IDs
 
             var createRequest = new CharacterCreateRequest();
             createRequest.AccountId = userId;
@@ -95,6 +112,7 @@ namespace FrontendApp
             createRequest.EyeColor = request.EyeColor;
             createRequest.SkinColor = request.SkinColor;
             createRequest.HairColor = request.HairColor;
+            createRequest.ArmorColor = request.ArmorColor;
 
             var result = await dbClient.CreateCharacterForAccountAsync(createRequest);
 

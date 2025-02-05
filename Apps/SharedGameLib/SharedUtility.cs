@@ -96,6 +96,25 @@ namespace Arena
         public static readonly int DefaultMaleHeadID = 115;
         public static readonly int DefaultFemaleHeadID = 116;
 
+        public static readonly int[] MaleHeadIDs = new int[]
+        {
+            115,
+            124,
+            125,
+            126,
+            127,
+            128
+        };
+        public static readonly int[] FemaleHeadIDs = new int[]
+        {
+            116,
+            119,
+            120,
+            121,
+            122,
+            123
+        };
+
         public static readonly int[] SafeZoneLocations = new int[]
         {
             63 // main city
@@ -116,6 +135,24 @@ namespace Arena
             new PackedColor(255,255,255),       // white
             new PackedColor(203,167,142),       // neutral
             new PackedColor(34,23,21),        // black
+        };
+
+        public static readonly PackedColor[] EyeColors = new PackedColor[]
+        {
+            new PackedColor(100,100,100),       // серый
+            new PackedColor(80,105,40),       // зеленый
+            new PackedColor(32,42,16),          // темно зеленый
+            new PackedColor(26,59,83),       // синий
+            new PackedColor(59,101,129),       // голубой
+            new PackedColor(96,47,21),       // карий
+            new PackedColor(41,20,10),       // т.карий
+            new PackedColor(21,11,5),       // черный
+        };
+
+        public static readonly PackedColor[] HairColors = new PackedColor[]
+        {
+            new PackedColor(255,255,255),       // белый
+            new PackedColor(50,50,50),       // черный
         };
     }
 
@@ -144,7 +181,7 @@ namespace Arena
             return false;
         }
 
-        public static CharacterData CreateDefaultCharacterData(CharacterClass characterClass, string characterName, Genders gender, int headID, int hairstyleID, int skinColor, int hairColor, int eyeColor)
+        public static CharacterData CreateDefaultCharacterData(CharacterClass characterClass, string characterName, Genders gender, int headID, int hairstyleID, int skinColor, int hairColor, int eyeColor, int armorColor)
         {
             var data = new CharacterData();
             data.Name = characterName;
@@ -166,12 +203,12 @@ namespace Arena
             switch (characterClass)
             {
                 case CharacterClass.Knight:
-                    initCharacterData(data, Identifiers.Knight);
+                    initCharacterData(data, Identifiers.Knight, armorColor);
                     break;
                 case CharacterClass.Mage:
                     break;
                 case CharacterClass.Archer:
-                    initCharacterData(data, Identifiers.Archer);
+                    initCharacterData(data, Identifiers.Archer, armorColor);
                     break;
             }
 
@@ -184,7 +221,7 @@ namespace Arena
             return data;
         }
 
-        static void initCharacterData(CharacterData data, CharacterTemplate template)
+        static void initCharacterData(CharacterData data, CharacterTemplate template, int armorColor)
         {
             if(data.ItemsData == null)
             {
@@ -194,7 +231,9 @@ namespace Arena
 
             var isMale = data.Gender == Genders.Male;
 
-            addItem(data, isMale ? template.BaseArmorID_Male : template.BaseArmorID_Female, 0, true);
+            var armorItem = addItem(data, isMale ? template.BaseArmorID_Male : template.BaseArmorID_Female, 0, true);
+            armorItem.Data.IntKeyValues.Add(new IntKeyValuePair { Key = ItemMetaKeys.Color.ToString(), Value = armorColor });
+
             addItem(data, template.BaseWeaponID, 0, true);
 
             if(data.AbilityData == null)
@@ -214,7 +253,7 @@ namespace Arena
             data.AbilityData.Abilities.Add(abilityData);
         }
 
-        static void addItem(CharacterData data, int typeId, int bagIndex, bool activated = false)
+        static ItemData addItem(CharacterData data, int typeId, int bagIndex, bool activated = false)
         {
             if(data.ItemsData.Bags.Count <= bagIndex)
             {
@@ -229,7 +268,10 @@ namespace Arena
                 itemData.BoolKeyValues.Add(ItemMetaKeys.Activated.ToString(), true);
             }
 
-            data.ItemsData.Bags[bagIndex].Items.Add(new ItemData { TypeID = typeId, Data = itemData });
+            var result = new ItemData { TypeID = typeId, Data = itemData };
+            data.ItemsData.Bags[bagIndex].Items.Add(result);
+
+            return result;
         }
     }
 }

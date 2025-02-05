@@ -90,7 +90,7 @@ namespace DatabaseApp.DB
             var result = new Arena.GameData();
 
             result.ID = dbGameData.Id;
-            result.SelectedCharacterIndex = -1;
+            result.SelectedCharacterName = null;
             
             if(dbGameData.Characters != null)
             {
@@ -100,7 +100,7 @@ namespace DatabaseApp.DB
 
                     if (dbCharacter.Id == dbGameData.SelectedCharacter.Id)
                     {
-                        result.SelectedCharacterIndex = i;
+                        result.SelectedCharacterName = dbCharacter.Name;
                     }
                     var character = ConvertToCharacterData(dbCharacter);
                     result.Characters.Add(character);

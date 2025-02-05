@@ -190,7 +190,18 @@ namespace Arena.Client.UI
                 childItems[index].gameObject.SetActive(true);
             }
 
-            itemScroll.AddChilds(childItems);
+            // костыль для избежания поэлементного добавления
+            var scrollRect = itemScroll.GetComponent<ScrollRect>();
+            var container = scrollRect.content;
+
+            var lastIndex = childItems.Length - 1;
+            for (var index = 0; index < lastIndex; index++)
+            {
+                var child = childItems[index];
+                child.transform.SetParent(container, false);   
+            }
+            itemScroll.AddChild(childItems[childItems.Length-1]);
+            
             itemScroll.UpdateLayout();
 
             var buttons = tabContainer.GetComponentsInChildren<Button>();

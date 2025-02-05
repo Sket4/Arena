@@ -123,7 +123,7 @@ namespace Arena.Client
                 .WithStructuralChanges()
                 .WithoutBurst()
                 .WithNone<CharacterAppearanceState>()
-                .ForEach((Entity itemEntity, ref Item item, ref ArmorSet armorSet, in ActivatedItemAppearance itemAppearance, in ActivatedState state) =>
+                .ForEach((Entity itemEntity, ref Item item, ref ArmorSet armorSet, in ActivatedItemAppearance itemAppearance, in ActivatedState state, in SyncedColor syncedColor) =>
             {
                 if(item.Owner == Entity.Null)
                 {
@@ -166,6 +166,14 @@ namespace Arena.Client
                     if (armorSetAppearance.SkinModel2 != Entity.Null)
                     {
                         EntityManager.SetComponentData(armorSetAppearance.SkinModel2, new SkinColor(ownerSkinColor.Value));
+                    }
+                    if (armorSetAppearance.ColoredModel1 != Entity.Null)
+                    {
+                        EntityManager.SetComponentData(armorSetAppearance.ColoredModel1, new SkinColor(syncedColor.Value));
+                    }
+                    if (armorSetAppearance.ColoredModel2 != Entity.Null)
+                    {
+                        EntityManager.SetComponentData(armorSetAppearance.ColoredModel2, new SkinColor(syncedColor.Value));
                     }
                 }
                 catch (System.Exception ex)
@@ -347,6 +355,33 @@ namespace Arena.Client
                 }
             });
         }
+        
+        [BurstCompile]
+        [WithChangeFilter(typeof(SyncedColor))]
+        [WithAll(typeof(ArmorSet))]
+        partial struct ArmorSetColorChangedJob : IJobEntity
+        {
+            [ReadOnly]
+            public ComponentLookup<ArmorSetAppearance> AppearanceLookup;
+            public EntityCommandBuffer Commands;
+            
+            public void Execute(in CharacterAppearanceState appearanceState, in SyncedColor color)
+            {
+                if (AppearanceLookup.TryGetComponent(appearanceState.Instance, out var armorSetAppearance) == false)
+                {
+                    return;
+                }
+
+                if (armorSetAppearance.ColoredModel1 != Entity.Null)
+                {
+                    Commands.SetComponent(armorSetAppearance.ColoredModel1, new SkinColor(color.Value));
+                }
+                if (armorSetAppearance.ColoredModel2 != Entity.Null)
+                {
+                    Commands.SetComponent(armorSetAppearance.ColoredModel2, new SkinColor(color.Value));
+                }
+            }
+        }
 
         [BurstCompile]
         [WithChangeFilter(typeof(CharacterHairColor))]
@@ -423,6 +458,22 @@ namespace Arena.Client
                 Commands.SetComponent(headAppearance.EyesModel, new SkinColor(eyeColor.Value));
             }
         }
+        
+        [BurstCompile]
+        [WithNone(typeof(Parent))]
+        partial struct CleanupHeadJob : IJobEntity
+        {
+            public EntityCommandBuffer Commands;
+            
+            public void Execute(Entity entity, in HeadAppearance head)
+            {
+                Commands.DestroyEntity(entity);
+                if (head.HairInstance != Entity.Null)
+                {
+                    Commands.DestroyEntity(head.HairInstance);    
+                }
+            }
+        }
 
         public void OnUpdate(ref SystemState state)
         {
@@ -470,6 +521,21 @@ namespace Arena.Client
                     HeadAppearanceLookup = headAppearanceLookup,
                 };
                 eyeColorChangeJob.Run();
+                
+                // cleanup head
+                var cleanupHeadJob = new CleanupHeadJob
+                {
+                    Commands = ecb
+                };
+                cleanupHeadJob.Run();
+                
+                // armor color
+                var armorColorChangedJob = new ArmorSetColorChangedJob
+                {
+                    Commands = ecb,
+                    AppearanceLookup = armorSetAppearanceLookup,
+                };
+                armorColorChangedJob.Run();
                 
                 ecb.Playback(state.EntityManager);
                 ecb.Dispose();
@@ -554,7 +620,7 @@ namespace Arena.Client
 
             Debug.Log($"changing or updating hairstyle {hairstyle.ID.Value}");
             
-            var hairSocket = state.EntityManager.GetComponentData<HeadAppearance>(appearance.HeadModelEntity);
+            var headAppearance = state.EntityManager.GetComponentData<HeadAppearance>(appearance.HeadModelEntity);
             
             if (needChangeHairstyle)
             {
@@ -569,14 +635,17 @@ namespace Arena.Client
                     state.EntityManager.DestroyEntity(appearance.HairModelEntity);    
                 }
                 appearance.HairModelEntity = state.EntityManager.Instantiate(hairstylePrefab);
-                state.EntityManager.AddComponentData(appearance.HairModelEntity, new Parent { Value = hairSocket.HairSocketEntity });
+                state.EntityManager.AddComponentData(appearance.HairModelEntity, new Parent { Value = headAppearance.HairSocketEntity });
                 
                 state.EntityManager.SetComponentData(appearance.HairModelEntity, new ColorData(hairColor.Value));
             }
             else
             {
-                state.EntityManager.SetComponentData(appearance.HairModelEntity, new Parent { Value = hairSocket.HairSocketEntity });
+                state.EntityManager.SetComponentData(appearance.HairModelEntity, new Parent { Value = headAppearance.HairSocketEntity });
             }
+
+            headAppearance.HairInstance = appearance.HairModelEntity;
+            state.EntityManager.SetComponentData(appearance.HeadModelEntity, headAppearance);
         }
 
         void processHeadQuery(ref SystemState state, in NativeArray<IdToEntity> db)

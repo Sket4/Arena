@@ -12,6 +12,8 @@ namespace Arena.Client
         public Entity HeadModel;
         public Entity BrowsModel;
         public Entity EyesModel;
+        
+        public Entity HairInstance;
     }
     
     [UseDefaultInspector]

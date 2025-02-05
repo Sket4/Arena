@@ -50,7 +50,7 @@ namespace Arena.Client.UI.MainMenu
 				var entry = Instantiate(characterEntryPrefab);
 				entry.CharacterName = characterInfo.Name;
 				entry.transform.SetParent(listContainer, false);
-				entry.Selected = i == GameState.Instance.PlayerData.SelectedCharacterIndex;
+				entry.Selected = characterInfo.Name.Equals(GameState.Instance.PlayerData.SelectedCharacterName);
 				if (entry.Selected)
 				{
 					lastSelected = entry;

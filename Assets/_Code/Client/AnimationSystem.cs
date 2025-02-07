@@ -68,7 +68,7 @@ namespace Arena.Client
 
                 var animStates = SystemAPI.GetBuffer<TzarGames.AnimationFramework.AnimationState>(target.Value);
 
-                animation.TransitionTo(index, 0, 1.0f, ref animStates, false);
+                animation.TransitionTo(index, 0, 1.0f, ref animStates, true);
                 SystemAPI.SetComponent(target.Value, animation);
 
             }).Run();

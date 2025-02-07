@@ -132,9 +132,12 @@ namespace Arena
 
         public static readonly PackedColor[] SkinColors = new PackedColor[]
         {
-            new PackedColor(255,255,255),       // white
-            new PackedColor(203,167,142),       // neutral
-            new PackedColor(34,23,21),        // black
+            new PackedColor(255,255,255),
+            new PackedColor(20,14,14),
+            new PackedColor(68,47,43),
+            new PackedColor(255,190,178),
+            new PackedColor(128,128,128),
+            new PackedColor(145,128,60),
         };
 
         public static readonly PackedColor[] EyeColors = new PackedColor[]
@@ -152,7 +155,15 @@ namespace Arena
         public static readonly PackedColor[] HairColors = new PackedColor[]
         {
             new PackedColor(255,255,255),       // белый
-            new PackedColor(50,50,50),       // черный
+            new PackedColor(0,0,0),             // черный
+            new PackedColor(57,57,57),             // серый
+            new PackedColor(117,46,0),             // рыжий
+            new PackedColor(65,19,4),             // темно рыжий
+            new PackedColor(39,31,21),             // русый
+            new PackedColor(122,94,56),             // св. русый
+            new PackedColor(22,12,0),             // шатен
+            new PackedColor(241,211,116),             // блонд
+            new PackedColor(254,231,162),             // блонд 2
         };
     }
 

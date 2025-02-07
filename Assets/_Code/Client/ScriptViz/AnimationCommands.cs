@@ -34,7 +34,7 @@ namespace Arena.Client.ScriptViz
             context.Commands.AddComponent(context.SortIndex, animEvent, new AnimationPlayEvent
             {
                 AnimationID = animId,
-                AutoDestroy = true
+                AutoDestroy = true,
             });
             context.Commands.AddComponent(context.SortIndex, animEvent, new Target { Value = targetAnimator });
             

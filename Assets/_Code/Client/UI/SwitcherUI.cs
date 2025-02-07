@@ -10,6 +10,7 @@ namespace Arena.Client.UI
         [SerializeField] private Button nextButton;
         [SerializeField] private TMPro.TextMeshProUGUI label;
         [SerializeField] private TMPro.TextMeshProUGUI text;
+        [SerializeField] private Image image;
         
         public UnityEvent OnPrev;
         public UnityEvent OnNext;
@@ -22,10 +23,19 @@ namespace Arena.Client.UI
 
         public Color Color
         {
-            get => text.color;
-            set => text.color = value;
+            get
+            {
+                return text.color;
+            }
+            set
+            {
+                if(text.gameObject.activeInHierarchy)
+                    text.color = value;
+                if(image.gameObject.activeInHierarchy)
+                    image.color = value;
+            }
         }
-        
+
         public string Label
         {
             get => label.text;

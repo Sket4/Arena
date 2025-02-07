@@ -2,6 +2,7 @@
 
 using System;
 using System.Threading.Tasks;
+using Cinemachine;
 using TzarGames.Common;
 using TzarGames.Common.UI;
 using TzarGames.GameCore;
@@ -17,12 +18,6 @@ namespace Arena.Client.UI.MainMenu
 {
     public class CreateCharacterUI : TzarGames.Common.UI.UIBase
     {
-        [SerializeField]
-        Color selectedClassColor = Color.blue;
-
-        [SerializeField]
-        Color unselectedClassColor = Color.white;
-
         [SerializeField] private TextUI statusText;
         [SerializeField] private GameObject statusButton;
 
@@ -36,6 +31,11 @@ namespace Arena.Client.UI.MainMenu
         [SerializeField] private SwitcherUI hairstyleSwitcher;
         [SerializeField] private SwitcherUI eyeColorSwitcher;
         [SerializeField] private ColorPickerControl colorPicker;
+        [SerializeField] private Color skinColorMultiplier;
+
+        [SerializeField] private CinemachineVirtualCamera defaultViewCamera;
+        [SerializeField] private CinemachineVirtualCamera faceViewCamera;
+        private bool isDefualtView = true;
 
         [SerializeField]
         InputFieldUI input = default;
@@ -88,8 +88,6 @@ namespace Arena.Client.UI.MainMenu
         {
             base.Start();
             AutoSelectCharacter = true;
-
-            createButton.interactable = classIsChosen;
 
             if(GameState.Instance == null)
             {
@@ -145,6 +143,7 @@ namespace Arena.Client.UI.MainMenu
             hairColorSwitcher.OnPrev.AddListener(() =>
             {
                 selectedHairColor--;
+                SetFaceView();
                 updateHairColorSwitcher();
                 updateCharacterInstance();
             });
@@ -152,6 +151,7 @@ namespace Arena.Client.UI.MainMenu
             hairColorSwitcher.OnNext.AddListener(() =>
             {
                 selectedHairColor++;
+                SetFaceView();
                 updateHairColorSwitcher();
                 updateCharacterInstance();
             });
@@ -163,6 +163,7 @@ namespace Arena.Client.UI.MainMenu
             eyeColorSwitcher.OnPrev.AddListener(() =>
             {
                 selectedEyeColor--;
+                SetFaceView();
                 updateEyeColorSwitcher();
                 updateCharacterInstance();
             });
@@ -170,6 +171,7 @@ namespace Arena.Client.UI.MainMenu
             eyeColorSwitcher.OnNext.AddListener(() =>
             {
                 selectedEyeColor++;
+                SetFaceView();
                 updateEyeColorSwitcher();
                 updateCharacterInstance();
             });
@@ -181,6 +183,7 @@ namespace Arena.Client.UI.MainMenu
             headSwitcher.OnPrev.AddListener(() =>
             {
                 selectedHead--;
+                SetFaceView();
                 updateHeadSwitcher();
                 updateCharacterInstance();
             });
@@ -188,6 +191,7 @@ namespace Arena.Client.UI.MainMenu
             headSwitcher.OnNext.AddListener(() =>
             {
                 selectedHead++;
+                SetFaceView();
                 updateHeadSwitcher();
                 updateCharacterInstance();
             });
@@ -199,6 +203,7 @@ namespace Arena.Client.UI.MainMenu
             hairstyleSwitcher.OnPrev.AddListener(() =>
             {
                 selectedHairstyle--;
+                SetFaceView();
                 updateHairstyleSwitcher();
                 updateCharacterInstance();
             });
@@ -206,6 +211,7 @@ namespace Arena.Client.UI.MainMenu
             hairstyleSwitcher.OnNext.AddListener(() =>
             {
                 selectedHairstyle++;
+                SetFaceView();
                 updateHairstyleSwitcher();
                 updateCharacterInstance();
             });
@@ -223,6 +229,32 @@ namespace Arena.Client.UI.MainMenu
                 storePickedColor(color);
                 updateCharacterInstance();
             });
+        }
+
+        public void ToggleCameraView()
+        {
+            isDefualtView = !isDefualtView;
+            
+            if (isDefualtView)
+            {
+                SetDefaultView();
+            }
+            else
+            {
+                SetFaceView();
+            }
+        }
+
+        public void SetDefaultView()
+        {
+            defaultViewCamera.Priority = 10;
+            faceViewCamera.Priority = 0;
+        }
+
+        public void SetFaceView()
+        {
+            defaultViewCamera.Priority = 0;
+            faceViewCamera.Priority = 10;
         }
 
         void storePickedColor(Color color)
@@ -410,7 +442,7 @@ namespace Arena.Client.UI.MainMenu
             var color = Identifiers.SkinColors[selectedSkinColor];
             
             skinColorSwitcher.Text = numberSwitcherText(selectedSkinColor);
-            skinColorSwitcher.Color = (Color)new Color32(color.r, color.g, color.b, color.a);
+            skinColorSwitcher.Color = new Color32(color.r, color.g, color.b, color.a) * skinColorMultiplier;
         }
 
         string numberSwitcherText(int number)
@@ -628,6 +660,14 @@ namespace Arena.Client.UI.MainMenu
             updateHairColorSwitcher();
             
             updateCharacterInstance();
+            
+            SetDefaultView();
+        }
+
+        protected override void OnHidden()
+        {
+            base.OnHidden();
+            SetDefaultView();
         }
 
         void GetUtilitySystem(Action<UtilitySystem> callback)

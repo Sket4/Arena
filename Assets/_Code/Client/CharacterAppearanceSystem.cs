@@ -1,3 +1,4 @@
+using Arena.Client.Presentation;
 using Google.Protobuf.WellKnownTypes;
 using Unity.Entities;
 using Unity.Transforms;
@@ -636,6 +637,7 @@ namespace Arena.Client
                 }
                 appearance.HairModelEntity = state.EntityManager.Instantiate(hairstylePrefab);
                 state.EntityManager.AddComponentData(appearance.HairModelEntity, new Parent { Value = headAppearance.HairSocketEntity });
+                state.EntityManager.SetComponentData(appearance.HairModelEntity, new CopyAmbientLight { Source = headAppearance.HeadModel });
                 
                 state.EntityManager.SetComponentData(appearance.HairModelEntity, new ColorData(hairColor.Value));
             }
@@ -808,6 +810,16 @@ namespace Arena.Client
             var headAppearance = state.EntityManager.GetComponentData<HeadAppearance>(headInstance);
             state.EntityManager.SetComponentData(headAppearance.BrowsModel, new ColorData(haircolor.Value));
             state.EntityManager.SetComponentData(headAppearance.HeadModel, new SkinColor(skincolor.Value));
+            
+            var ambientLightSource = Entity.Null;
+
+            if (armorSetAppearance.ColoredModel1 != Entity.Null)
+                ambientLightSource = armorSetAppearance.ColoredModel1;
+            if (armorSetAppearance.SkinModel1 != Entity.Null)
+                ambientLightSource = armorSetAppearance.SkinModel1;
+            
+            state.EntityManager.SetComponentData(headAppearance.HeadModel, new CopyAmbientLight { Source = ambientLightSource });
+            state.EntityManager.SetComponentData(headAppearance.EyesModel, new CopyAmbientLight { Source = ambientLightSource });
             state.EntityManager.SetComponentData(headAppearance.EyesModel, new SkinColor(eyecolor.Value));
 
             var armorSetInstanceRig = state.EntityManager.GetComponentData<HumanRig>(armorSetAppearanceState.Instance);

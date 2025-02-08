@@ -126,23 +126,50 @@ v2f vert (appdata v)
     return o;
 }
 
+#ifdef ARENA_MAP_RENDER
+#define DETILING(texture,original,uv) \
+    half3 _##texture = tex2D(##texture, ##uv + half2(##original.x, ##original.y) * 10).rgb; \
+    _##texture += tex2D(##texture, ##uv + half2(##original.z, ##original.x) * 10).rgb; \
+    _##texture += tex2D(##texture, ##uv + half2(##original.y, ##original.z) * 10).rgb; \
+    _##texture += tex2D(##texture, ##uv + half2(##original.z, ##original.y) * 10).rgb; \
+    _##texture += tex2D(##texture, ##uv + half2(##original.x, ##original.z) * 10).rgb; \
+    _##texture += tex2D(##texture, ##uv + half2(##original.y, ##original.x) * 10).rgb; \
+    ##original = (_##texture + ##original) * (1.0 / 7);
+#else
+#define DETILING(texture,original,uv)
+#endif
 
 GBufferFragmentOutput frag(v2f i)
 {
     UNITY_SETUP_INSTANCE_ID(i);
 
     half4 splat = tex2D(_SplatMap, i.splatmapUV);
-    
-    
-    
-    half3 diffuse = tex2D(_Color1, i.layer1_uv).rgb * splat.x;
 
-    half3 color2 = tex2D(_Color2, i.layer2_uv).rgb; 
+    #ifdef ARENA_MAP_RENDER
+    half smoothScale = 0.001;
+    splat += tex2D(_SplatMap, i.splatmapUV + half2(smoothScale,smoothScale));
+    splat += tex2D(_SplatMap, i.splatmapUV + half2(-smoothScale,-smoothScale));
+    splat += tex2D(_SplatMap, i.splatmapUV + half2(smoothScale,-smoothScale));
+    splat += tex2D(_SplatMap, i.splatmapUV + half2(-smoothScale,smoothScale));
+    splat *= 0.2;
+    #endif
+
+    half3 color1 = tex2D(_Color1, i.layer1_uv).rgb;
+    DETILING(_Color1, color1, i.layer1_uv)
+    
+    half3 diffuse = color1 * splat.x;
+    half3 color2 = tex2D(_Color2, i.layer2_uv).rgb;
+    DETILING(_Color2, color2, i.layer2_uv)
+    
     diffuse += color2 * splat.y;
-    diffuse += tex2D(_Color3, i.layer3_uv).rgb * splat.z;
+    half3 color3 = tex2D(_Color3, i.layer3_uv).rgb;
+    DETILING(_Color3, color3, i.layer3_uv)
+    diffuse += color3 * splat.z;
 
     #ifdef ARENA_USE_FOUR_CHANNEL
-    diffuse += tex2D(_Color4, i.layer4_uv).rgb * splat.w;
+    half3 color4 = tex2D(_Color4, i.layer4_uv).rgb;
+    DETILING(_Color4, color4, i.layer4_uv)
+    diffuse += color4 * splat.w; 
     #else
     // wet sand
     diffuse += color2 * splat.w * 0.75;
@@ -178,7 +205,7 @@ GBufferFragmentOutput frag(v2f i)
     surface.Alpha = 0;
     
     //diffuse.rgb = 1;
-    #if defined(UG_QUALITY_MED) || defined(UG_QUALITY_HIGH)
+    #if !defined(ARENA_MAP_RENDER) && (defined(UG_QUALITY_MED) || defined(UG_QUALITY_HIGH))
     half4 Sm_AO_HGHT = tex2D(_SAH1, i.layer1_uv) * splat.r;
     half4 Sm_AO_HGHT_2 = tex2D(_SAH2, i.layer2_uv);
     Sm_AO_HGHT += Sm_AO_HGHT_2 * splat.g;

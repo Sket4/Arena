@@ -63,6 +63,7 @@ Shader"Arena/Water"
             #pragma shader_feature __ USE_FOAM
             #pragma multi_compile _ LIGHTMAP_ON
             #pragma multi_compile _ DIRLIGHTMAP_COMBINED
+            #pragma multi_compile_fragment _ ARENA_MAP_RENDER
 
             #pragma multi_compile _ _MAIN_LIGHT_SHADOWS
             #pragma multi_compile _ _MAIN_LIGHT_SHADOWS_CASCADE
@@ -265,16 +266,17 @@ Shader"Arena/Water"
                 diffuse.rgb = lerp(diffuse.rgb, diffuse.rgb + foam.rrr, waterEdgeFadeInv);
                 #endif
                 
-
-                
-#if LIGHTMAP_ON
-                half3 lighting = TG_SAMPLE_LIGHTMAP(i.lightmapUV, i.instanceData.x, normalWS);
-#else
+#ifdef ARENA_MAP_RENDER
                 half3 lighting = half3(1,1,1);
+#else
+    #if LIGHTMAP_ON
+                    half3 lighting = TG_SAMPLE_LIGHTMAP(i.lightmapUV, i.instanceData.x, normalWS);
+    #else
+                    half3 lighting = half3(1,1,1);
+    #endif
+                    ARENA_DYN_LIGHT(normalWS, i.positionWS_fog.xyz, lighting, viewDirWS, reflColor, true);
 #endif
 
-                ARENA_DYN_LIGHT(normalWS, i.positionWS_fog.xyz, lighting, viewDirWS, reflColor, true);
-                
                 diffuse.rgb *= lighting;
 
                 //return diffuse.a;

@@ -16,7 +16,7 @@ using Random = UnityEngine.Random;
 
 namespace Arena.Client.UI.MainMenu
 {
-    public class CreateCharacterUI : TzarGames.Common.UI.UIBase
+    public class CreateCharacterUI : UIBase
     {
         [SerializeField] private TextUI statusText;
         [SerializeField] private GameObject statusButton;
@@ -247,12 +247,14 @@ namespace Arena.Client.UI.MainMenu
 
         public void SetDefaultView()
         {
+            isDefualtView = true;
             defaultViewCamera.Priority = 10;
             faceViewCamera.Priority = 0;
         }
 
         public void SetFaceView()
         {
+            isDefualtView = false;
             defaultViewCamera.Priority = 0;
             faceViewCamera.Priority = 10;
         }

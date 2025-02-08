@@ -185,15 +185,23 @@ half3 Arena_ComputeAmbientLight(
 {
     half3 ambientLight;
     
-#if LIGHTMAP_ON
-    ambientLight = TG_SAMPLE_LIGHTMAP(lightmapUV, slice, normalWS);
-#else
-    #if defined(DGX_DARK_MODE)
-    ambientLight = 1;
-    #else
-    ambientLight = TG_ComputeAmbientLight_half(normalWS);
-    #endif
-#endif
+
+
+	#ifdef ARENA_MAP_RENDER
+	ambientLight = 1;
+	#else
+
+	#if LIGHTMAP_ON
+	ambientLight = TG_SAMPLE_LIGHTMAP(lightmapUV, slice, normalWS);
+	#else
+	#if defined(DGX_DARK_MODE)
+	ambientLight = 1;
+	#else
+	ambientLight = TG_ComputeAmbientLight_half(normalWS);
+	#endif
+	#endif
+	
+	#endif
 	
     return ambientLight;
 }

@@ -79,6 +79,7 @@ Shader "Arena/Environment"
             #pragma shader_feature_local TG_USE_ALPHACLIP
 			#pragma multi_compile UG_QUALITY_LOW UG_QUALITY_MED UG_QUALITY_HIGH
             #pragma multi_compile_fragment _ DGX_DARK_MODE
+            #pragma multi_compile_fragment _ ARENA_MAP_RENDER
             #pragma shader_feature_local USE_UNDERWATER
             #pragma shader_feature_local USE_SURFACE_BLEND
             #pragma shader_feature_local_fragment USE_BASECOLOR_INSTANCE

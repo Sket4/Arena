@@ -114,6 +114,7 @@ Shader "Arena/Terrain (for beach)"
             #pragma multi_compile __ ARENA_USE_ADD_LIGHT
             #pragma multi_compile _ LIGHTMAP_ON
             #pragma multi_compile _ DIRLIGHTMAP_COMBINED
+            #pragma multi_compile_fragment _ ARENA_MAP_RENDER
 
             #pragma shader_feature_local_vertex ARENA_SCALE_UV_X
             #pragma shader_feature_local_vertex ARENA_SCALE_UV_Y

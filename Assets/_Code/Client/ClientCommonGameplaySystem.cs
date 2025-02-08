@@ -244,6 +244,7 @@ namespace Arena.Client
             var cameroGO = new GameObject("map render camera");
             var camera = cameroGO.AddComponent<Camera>();
             camera.cullingMask = mapRenderData.MapRenderLayers;
+            camera.farClipPlane = 200;
             camera.orthographicSize = mapRenderData.MapCameraOrthoSize;
             camera.orthographic = true;
             camera.targetTexture = textureHiRes;
@@ -252,10 +253,37 @@ namespace Arena.Client
             camera.transform.position = l2w.Position;
             camera.transform.rotation = l2w.Rotation;
             camera.transparencySortMode = TransparencySortMode.Orthographic;
+            
+            Shader.EnableKeyword("ARENA_MAP_RENDER");
                     
             camera.Render();
+            
+            Shader.DisableKeyword("ARENA_MAP_RENDER");
 
             camera.enabled = false;
+
+            if (mapRenderData.MapPostprocessMaterial.LoadingStatus == ObjectLoadingStatus.None)
+            {
+                mapRenderData.MapPostprocessMaterial.LoadAsync();
+            }
+
+            while (mapRenderData.MapPostprocessMaterial.LoadingStatus != ObjectLoadingStatus.Completed 
+                   && mapRenderData.MapPostprocessMaterial.LoadingStatus != ObjectLoadingStatus.Error)
+            {
+                await Task.Yield();
+            }
+
+            if (mapRenderData.MapPostprocessMaterial.Result != null)
+            {
+                var temp = RenderTexture.GetTemporary(textureHiRes.descriptor);
+                Graphics.Blit(textureHiRes, temp, mapRenderData.MapPostprocessMaterial.Result);
+                RenderTexture.ReleaseTemporary(textureHiRes);
+                textureHiRes = temp;
+            }
+            else
+            {
+                Debug.LogError("failed to load map postprocess material"); 
+            }
             
             var texture = RenderTexture.GetTemporary(mapTextureSize, mapTextureSize, 0, RenderTextureFormat.Default, RenderTextureReadWrite.Default, 1);
             Graphics.Blit(textureHiRes, texture);

@@ -158,10 +158,11 @@ namespace Arena
             new PackedColor(0,0,0),             // черный
             new PackedColor(57,57,57),             // серый
             new PackedColor(117,46,0),             // рыжий
+            new PackedColor(145,80,58),             // св. рыжий
             new PackedColor(65,19,4),             // темно рыжий
-            new PackedColor(39,31,21),             // русый
+            new PackedColor(28,20,10),             // русый
             new PackedColor(122,94,56),             // св. русый
-            new PackedColor(22,12,0),             // шатен
+            new PackedColor(22,10,0),             // шатен
             new PackedColor(241,211,116),             // блонд
             new PackedColor(254,231,162),             // блонд 2
         };

@@ -80,6 +80,7 @@ Shader "Arena/Vegetation"
             #pragma multi_compile _ DIRLIGHTMAP_COMBINED
             
             #pragma multi_compile UG_QUALITY_LOW UG_QUALITY_MED UG_QUALITY_HIGH
+            #pragma multi_compile_fragment _ ARENA_MAP_RENDER
 
             
             #include "Common.hlsl"
@@ -211,7 +212,9 @@ Shader "Arena/Vegetation"
                 #endif
                 
             	half4 diffuse = tex2D(_BaseMap, i.uv);
+            	#ifndef ARENA_MAP_RENDER
                 diffuse.rgb *= _BaseColor.rgb * _BaseColorMult;
+            	#endif
 
 #if defined(TG_USE_ALPHACLIP)
                 clip(diffuse.a - _Cutoff);
@@ -228,7 +231,8 @@ Shader "Arena/Vegetation"
                 half ao =  i.normalWS_occl.w;
 
             	half3 lighting = ARENA_COMPUTE_AMBIENT_LIGHT(i, normalWS);
-#ifndef LIGHTMAP_ON
+            	
+#if !defined(LIGHTMAP_ON) && !defined(ARENA_MAP_RENDER)
                 lighting *= ao;          
 #endif
 
@@ -239,7 +243,7 @@ Shader "Arena/Vegetation"
             	surface.AmbientLight = 0;
             	
 
-                #if defined(UG_QUALITY_MED) || defined(UG_QUALITY_HIGH)
+                #if !defined(ARENA_MAP_RENDER) && (defined(UG_QUALITY_MED) || defined(UG_QUALITY_HIGH))
                 half4 mesm = tex2D(_MetallicGlossMap, i.uv);
                 mesm.rgb *= _Metallic;
 

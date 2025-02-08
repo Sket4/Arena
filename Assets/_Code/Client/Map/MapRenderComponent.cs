@@ -1,5 +1,6 @@
 using TzarGames.GameCore;
 using Unity.Entities;
+using Unity.Entities.Content;
 using UnityEngine;
 
 namespace Arena.Client.MapWorks
@@ -11,6 +12,7 @@ namespace Arena.Client.MapWorks
         [HideInAuthoring] public int MapRenderLayers;
         public int MapTextureSize;
         [HideInAuthoring] public Entity MapPlaneMesh;
+        [HideInAuthoring] public WeakObjectReference<Material> MapPostprocessMaterial;
     }
     
     [UseDefaultInspector(true)]
@@ -33,6 +35,7 @@ namespace Arena.Client.MapWorks
         }
 
         [SerializeField] private MeshRenderer mapPlaneMesh;
+        [SerializeField] private Material mapPostprocessMaterial;
 
         protected override void Bake<K>(ref MapRender serializedData, K baker)
         {
@@ -46,6 +49,9 @@ namespace Arena.Client.MapWorks
             }
             
             serializedData.MapPlaneMesh = baker.GetEntity(mapPlaneMesh, TransformUsageFlags.Renderable);
+            #if UNITY_EDITOR
+            serializedData.MapPostprocessMaterial = new WeakObjectReference<Material>(mapPostprocessMaterial);
+            #endif
         }
     }
 }

@@ -371,6 +371,7 @@ namespace DGX.SRP
 
         public void Cleanup()
         {
+            visibleSpotLights.Clear();
             commands.ReleaseTemporaryRT(dirShadowAtlasId);
             ExecuteBuffer();
         }

@@ -17,6 +17,7 @@ Shader "Arena/Environment Transparent"
         _Metallic("Metallic", Range(0,1)) = 1.0
     	_Smoothness ("Smoothness", Range(0,1)) = 0.5
         _HighlightRemove("Highlight remove", Float) = 0
+        //[Toggle(USE_SCALE_REFLECTIONS)] _ScaleReflections("Scale reflections", Float) = 0.0
         [HDR] _EmissionColor("Emission color", Color) = (0,0,0)
         
         [Toggle(USE_UNDERWATER)]
@@ -67,24 +68,21 @@ Shader "Arena/Environment Transparent"
             // make fog work
             #pragma multi_compile_fog
             #pragma multi_compile _ DOTS_INSTANCING_ON
-            #pragma shader_feature TG_USE_ALPHACLIP
+            //#pragma shader_feature TG_USE_ALPHACLIP
 			#pragma multi_compile UG_QUALITY_LOW UG_QUALITY_MED UG_QUALITY_HIGH
-            #pragma shader_feature USE_UNDERWATER
-            #pragma shader_feature DIFFUSE_ALPHA_AS_SMOOTHNESS
-            #pragma shader_feature USE_SURFACE_BLEND
+            //#pragma shader_feature USE_UNDERWATER
+            //#pragma shader_feature DIFFUSE_ALPHA_AS_SMOOTHNESS
+            //#pragma shader_feature USE_SURFACE_BLEND
             #pragma shader_feature_local_fragment USE_BASECOLOR_INSTANCE
             
             //#pragma multi_compile_fragment __ ARENA_USE_MAIN_LIGHT
             //#pragma multi_compile_fragment __ ARENA_USE_ADD_LIGHT
-           #pragma multi_compile_fragment _ DGX_DARK_MODE
+            #pragma multi_compile_fragment _ DGX_DARK_MODE
+            #pragma multi_compile_fragment _ DGX_SPOT_LIGHTS
             
             //#pragma multi_compile_fwdbase
             #pragma multi_compile _ LIGHTMAP_ON
             #pragma multi_compile_fragment _ DIRLIGHTMAP_COMBINED
-
-            //#pragma multi_compile_fragment _ _SHADOWS_SOFT
-            //#pragma multi_compile_fragment _ _SHADOWS_SOFT_LOW _SHADOWS_SOFT_MEDIUM _SHADOWS_SOFT_HIGH
-            //#pragma multi_compile_fragment _ _LIGHT_COOKIES
 
             #define TG_TRANSPARENT
 

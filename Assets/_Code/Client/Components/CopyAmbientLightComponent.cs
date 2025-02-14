@@ -1,5 +1,6 @@
 using System;
 using TzarGames.GameCore;
+using TzarGames.GameCore.Baking;
 using TzarGames.Rendering;
 using Unity.Collections;
 using Unity.Entities;
@@ -22,6 +23,16 @@ namespace Arena.Client.Presentation
             base.Bake(ref serializedData, baker);
             serializedData.Source = baker.GetEntity(Source);
         }
+
+        public override bool ShouldBeConverted(IGCBaker baker)
+        {
+            return ShouldBeConverted(ConversionTargetOptions.LocalAndClient, baker.GetSceneConversionTargetOptions());
+        }
+
+        protected override ConversionTargetOptions GetDefaultConversionOptions()
+        {
+            return ConversionTargetOptions.LocalAndClient;
+        }
     }
 
     [WorldSystemFilter(WorldSystemFilterFlags.BakingSystem)]
@@ -33,7 +44,7 @@ namespace Arena.Client.Presentation
             
             Entities
                 .WithEntityQueryOptions(EntityQueryOptions.IncludePrefab | EntityQueryOptions.IncludeDisabledEntities)
-                .WithAll<CopyAmbientLight>()
+                .WithAll<CopyAmbientLight, LightProbeInterpolation>()
                 .ForEach((Entity entity) =>
             {
                 ecb.RemoveComponent<LightProbeInterpolation>(entity);

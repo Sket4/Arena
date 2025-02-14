@@ -122,7 +122,8 @@ namespace Arena
 
         public static readonly int[] MaleHairStyles = new int[]
         {
-            130
+            130,
+            131
         };
 
         public static readonly int[] FemaleHairStyles = new int[]
@@ -155,7 +156,7 @@ namespace Arena
         public static readonly PackedColor[] HairColors = new PackedColor[]
         {
             new PackedColor(255,255,255),       // белый
-            new PackedColor(0,0,0),             // черный
+            new PackedColor(8,8,8),             // черный
             new PackedColor(57,57,57),             // серый
             new PackedColor(117,46,0),             // рыжий
             new PackedColor(145,80,58),             // св. рыжий

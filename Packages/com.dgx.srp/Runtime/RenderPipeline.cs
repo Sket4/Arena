@@ -24,6 +24,8 @@ namespace DGX.SRP
         private LightsRenderer lightRenderer = new();
         private static readonly Rect fullRect = new Rect(0, 0, 1, 1);
         private static bool enableShadows_global = true;
+        private static bool enableLights_global = true;
+        public static bool IsLightsEnabled => enableLights_global;
         
         class CameraData
         {
@@ -113,6 +115,11 @@ namespace DGX.SRP
             {
                 Shader.DisableKeyword(SHADOWS_ENABLED);
             }
+        }
+        
+        public static void EnableLights(bool enable)
+        {
+            enableLights_global = enable;
         }
 
         void checkResources()
@@ -304,8 +311,11 @@ namespace DGX.SRP
                 var cullingResults = context.Cull(ref cullingParameters);
 
                 var shouldRenderShadows = enableShadows_global && rt.RenderSettings.RenderShadows;
-                
-                RenderLights(context, cullingResults, shouldRenderShadows);    
+
+                if (enableLights_global)
+                {
+                    RenderLights(context, cullingResults, shouldRenderShadows);    
+                }
                 
                 var depthTextureID = rt.Depth_ID;
                 
@@ -509,7 +519,10 @@ namespace DGX.SRP
                 
                 context.Submit();
 
-                lightRenderer.Cleanup();  
+                if (enableLights_global)
+                {
+                    lightRenderer.Cleanup();    
+                }
 
                 if (colorTarget)
                 {

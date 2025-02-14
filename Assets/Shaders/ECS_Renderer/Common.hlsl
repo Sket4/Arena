@@ -15,6 +15,11 @@
 #endif
 #endif
 
+
+#ifdef DGX_SPOT_LIGHTS
+#include "Packages/com.dgx.srp/ShaderLibrary/SpotLights.hlsl"
+#endif
+
 #if defined(UG_QUALITY_HIGH) || defined(UG_QUALITY_MED)
 #define ARENA_DYN_LIGHT(normalWS, positionWS, lighting, viewDirWS, envMapColor, useShadowMap) ApplyDynamicLighting(normalWS, positionWS, lighting, viewDirWS, envMapColor, useShadowMap)
 #else
@@ -195,14 +200,18 @@ half3 Arena_ComputeAmbientLight(
 	ambientLight = TG_SAMPLE_LIGHTMAP(lightmapUV, slice, normalWS);
 	#else
 	#if defined(DGX_DARK_MODE)
+	#ifdef TG_TRANSPARENT
+	ambientLight = 0;
+	#else
 	ambientLight = 1;
+	#endif
 	#else
 	ambientLight = TG_ComputeAmbientLight_half(normalWS);
 	#endif
 	#endif
 	
 	#endif
-	
+
     return ambientLight;
 }
 
@@ -233,27 +242,12 @@ void ApplyDynamicLighting(
         diffuseLight = MixLightWithRealtimeShadow(shadow, diffuseLight);    
     }
     #endif
-    
-    
-    // #ifdef ARENA_USE_ADD_LIGHT
-    // Light addLight = GetAdditionalLight(0, positionWS, 1);
-	   //
-    // half3 addLighting = LightingLambert(addLight.color, addLight.direction, normalWS.xyz) * addLight.distanceAttenuation;
-    //
-    // if(useShadowMap)
-    // {
-    //     addLighting *= AdditionalLightRealtimeShadow(0, positionWS, addLight.direction);    
-    // }
-    //
-    // diffuseLight += addLighting;
-    //
-    // #if defined(UG_QUALITY_HIGH) || defined(UG_QUALITY_MED)
-    // #ifdef DGX_DARK_MODE
-    // specularLight *= addLight.distanceAttenuation * 16;
-    // #endif
-    // #endif
-    //
-    // #endif
+
+	#ifdef TG_TRANSPARENT
+	#ifdef DGX_SPOT_LIGHTS
+	diffuseLight += calculateSpotLight(positionWS, normalWS);
+	#endif
+	#endif
 }
 
 #endif

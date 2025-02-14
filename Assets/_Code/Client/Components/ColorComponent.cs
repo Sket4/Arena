@@ -23,7 +23,7 @@ namespace Arena.Client
     {
         protected override ConversionTargetOptions GetDefaultConversionOptions()
         {
-            return LocalAndClient();
+            return ConversionTargetOptions.LocalAndClient;
         }
     }
 }

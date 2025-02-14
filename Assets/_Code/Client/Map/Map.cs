@@ -92,7 +92,7 @@ namespace Arena
             
             var newPos = targetPosition + rotDisp;
 
-            if(hasMapBounds)
+            if(isInExtendedMode && hasMapBounds)
             {
                 var tmp = newPos;
                 if(clampBounds(ref newPos))

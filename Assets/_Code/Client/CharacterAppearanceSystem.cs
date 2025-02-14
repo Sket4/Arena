@@ -475,7 +475,6 @@ namespace Arena.Client
                 }
             }
         }
-
         public void OnUpdate(ref SystemState state)
         {
             var dbEntity = SystemAPI.GetSingletonEntity<MainDatabaseTag>();
@@ -497,7 +496,6 @@ namespace Arena.Client
                 armorSetAppearanceLookup.Update(ref state);
                 
                 // TODO совместить эти 3 джоба в один и работать через Chunk и DidChange
-                
                 // hair color
                 var hairColorChangedJob = new HairColorChangeJob
                 {

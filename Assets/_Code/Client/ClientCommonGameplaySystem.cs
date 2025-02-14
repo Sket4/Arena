@@ -241,6 +241,17 @@ namespace Arena.Client
                 }
             }
             
+            if (mapRenderData.MapPostprocessMaterial.LoadingStatus == ObjectLoadingStatus.None)
+            {
+                mapRenderData.MapPostprocessMaterial.LoadAsync();
+            }
+
+            while (mapRenderData.MapPostprocessMaterial.LoadingStatus != ObjectLoadingStatus.Completed 
+                   && mapRenderData.MapPostprocessMaterial.LoadingStatus != ObjectLoadingStatus.Error)
+            {
+                await Task.Yield();
+            }
+            
             var cameroGO = new GameObject("map render camera");
             var camera = cameroGO.AddComponent<Camera>();
             camera.cullingMask = mapRenderData.MapRenderLayers;
@@ -255,24 +266,14 @@ namespace Arena.Client
             camera.transparencySortMode = TransparencySortMode.Orthographic;
             
             Shader.EnableKeyword("ARENA_MAP_RENDER");
-                    
+
+            var lightsEnabled = DGX.SRP.RenderPipeline.IsLightsEnabled;
+            DGX.SRP.RenderPipeline.EnableLights(false);
             camera.Render();
+            DGX.SRP.RenderPipeline.EnableLights(lightsEnabled);
             
             Shader.DisableKeyword("ARENA_MAP_RENDER");
-
-            camera.enabled = false;
-
-            if (mapRenderData.MapPostprocessMaterial.LoadingStatus == ObjectLoadingStatus.None)
-            {
-                mapRenderData.MapPostprocessMaterial.LoadAsync();
-            }
-
-            while (mapRenderData.MapPostprocessMaterial.LoadingStatus != ObjectLoadingStatus.Completed 
-                   && mapRenderData.MapPostprocessMaterial.LoadingStatus != ObjectLoadingStatus.Error)
-            {
-                await Task.Yield();
-            }
-
+            
             if (mapRenderData.MapPostprocessMaterial.Result != null)
             {
                 var temp = RenderTexture.GetTemporary(textureHiRes.descriptor);
@@ -284,6 +285,7 @@ namespace Arena.Client
             {
                 Debug.LogError("failed to load map postprocess material"); 
             }
+            camera.enabled = false;
             
             var texture = RenderTexture.GetTemporary(mapTextureSize, mapTextureSize, 0, RenderTextureFormat.Default, RenderTextureReadWrite.Default, 1);
             Graphics.Blit(textureHiRes, texture);

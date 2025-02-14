@@ -21,6 +21,7 @@ struct v2f
 #include "Common.hlsl"
 #include "Lighting.hlsl"
 #include "PBR.hlsl"
+#include "SpotLights.hlsl"
 
 #define UNITY_MATRIX_VP unity_MatrixVP
 #define UNITY_MATRIX_P OptimizeProjectionMatrix(glstate_matrix_projection)
@@ -71,13 +72,6 @@ TEXTURE2D_SHADOW(_DirectionalShadowAtlas);
 SAMPLER_CMP(SHADOW_SAMPLER);
 
 UNITY_DECLARE_TEX2D_FLOAT(_Depth);
-
-// spot lights
-float4 _SpotLightDirs[4];
-float4 _SpotLightPositions[4];
-half4 _SpotLightColors[4];
-sampler2D _SpotLightCookieTex;
-half4x4 _SpotLight_M_Inv;
 
 real ComputeFogFactorZ0ToFar(float z)
 {
@@ -223,42 +217,6 @@ void softNormalBias(float3 main, inout half3 normalBias)
     //normalBias += randomnormal_tangent(surface.NormalWS) * 0.02;
 }
 
-void calculateSpotLightLight(float3 worldPos, inout SurfaceHalf surface)
-{
-    float3 spotLightPos = _SpotLightPositions[0].xyz;
-    float3 spotLightRayDir = worldPos - spotLightPos;
-    
-    half spotLightAtten = dot(spotLightRayDir,spotLightRayDir);
-    half spotLightRange = _SpotLightDirs[0].w;
-    spotLightRange *= spotLightRange;
-    spotLightAtten = 1-saturate(spotLightAtten / spotLightRange);
-
-    float3 spotLightDir = _SpotLightDirs[0].xyz;
-
-    spotLightRayDir = normalize(spotLightRayDir);
-    half lightRayAngle = saturate(dot(spotLightRayDir, spotLightDir));
-    half angleRange = 1 - (1 - lightRayAngle) * _SpotLightPositions[0].w;
-    angleRange = saturate(angleRange);
-    spotLightAtten *= angleRange;
-    spotLightAtten *= saturate(-dot(spotLightRayDir, surface.NormalWS));
-
-    // cookie texture
-    half2 cookieTexUV;
-
-    half3 localSpotLightDir = mul(_SpotLight_M_Inv, half4(spotLightRayDir, 0)).xyz;
-    
-    cookieTexUV.x = ((localSpotLightDir.x + 1) * 0.5);
-    cookieTexUV.y = ((localSpotLightDir.y + 1) * 0.5);
-    
-    half3 cookieColor = tex2D(_SpotLightCookieTex, cookieTexUV);
-
-    surface.AmbientLight += _SpotLightColors[0].rgb * cookieColor * spotLightAtten;
-
-    // half3 reflectDir = reflect(-spotLightRayDir, surface.NormalWS);
-    // half spec = pow(saturate(dot(-viewDir, reflectDir)), surface.Roughness * 128);
-    // specular += spec * _SpotLightColors[0].rgb * spotLightAtten;
-}
-
 void drawShadows(float3 worldPos, half viewDirDistanceSq, SurfaceHalf surface, inout half3 result)
 {
     half shadowDistance = dgx_MainLightShadowParams.y;
@@ -311,7 +269,7 @@ half4 frag (v2f i) : SV_Target
     float3 worldPos = WorldSpacePositionFromDepth(screen_uv, rawDepth);
 
     #ifdef DGX_SPOT_LIGHTS
-    calculateSpotLightLight(worldPos, surface);
+    calculateSpotLightForSurface(worldPos, surface);
     #endif
     
     float3 viewDirWithDistance = _WorldSpaceCameraPos.xyz - worldPos.xyz;

@@ -2,18 +2,15 @@
 
 using System;
 using System.Collections.Generic;
-using Arena;
-using Arena.Client;
 using Arena.Items;
 using TzarGames.Common;
 using TzarGames.Common.UI;
 using TzarGames.GameCore;
-using TzarGames.GameFramework;
-using UniRx;
 using Unity.Collections;
 using Unity.Entities;
 using UnityEngine;
 using UnityEngine.Events;
+using UnityEngine.Localization.Settings;
 using UnityEngine.UI;
 
 namespace Arena.Client.UI
@@ -32,8 +29,6 @@ namespace Arena.Client.UI
         [SerializeField]
         Button buyButton = default;
 
-        [SerializeField] private GameObject itemRestrictButton = default;
-
         [SerializeField]
         TextUI goldText = default;
 
@@ -47,75 +42,42 @@ namespace Arena.Client.UI
         LocalizedStringAsset requiredLevelText = default;
 
         [SerializeField] private Transform tabContainer = default;
-        [SerializeField] private Button weaponTabButton = default;
-
-        [SerializeField]
-        private GameObject shieldsTabButton = default;
-
+        [SerializeField] private GameObject tabPrefab;
+        
         int currentSelectedItem = -1;
 
-        List<ShopItemUI> availableItems = new List<ShopItemUI>();
-        List<ShopItemUI> selectedItems = new List<ShopItemUI>();
+        List<ShopItemUI> availableItems = new();
+        List<ShopItemUI> selectedItems = new();
 
         [SerializeField]
-        UnityEngine.Events.UnityEvent onNotEnoughGold = default;
+        UnityEvent onNotEnoughGold = default;
 
         [SerializeField]
-        UnityEngine.Events.UnityEvent onNotEnoughRuby = default;
+        UnityEvent onNotEnoughRuby = default;
 
         [SerializeField] private UnityEvent onBuy = default;
 
-        private bool initialized = false;
-        private bool pendingShowFirstTab = true;
         private Entity itemDatabaseEntity;
+        private Entity currentStoreEntity = Entity.Null;
 
         protected override void OnVisible()
         {
             base.OnVisible();
-            
-            if(pendingShowFirstTab)
+
+            var store = getCurrentStore();
+
+            if (currentStoreEntity != store)
             {
                 InitializeItems();
-                pendingShowFirstTab = false;
-                ShowWeapons(weaponTabButton);
+                showItems(true, 0);
             }
-
-            //var template = (CharacterOwner as PlayerCharacter).PlayerTemplateInstance;
-
-            //shieldsTabButton.SetActive(template.CanWearItemType(typeof(Shield)));
 
             updateUI();
         }
 
-        public void ShowWeapons(Button button)
-        {
-            showItemsOfType<OneHandedItem>(button, true);
-        }
-
-        public void ShowArmor(Button button)
-        {
-            showItemsOfType<ArmorSet>(button, true);
-        }
-
-        public void ShowShields(Button button)
-        {
-            //showItemsOfType<GameFramework.Shield>(button, true);
-        }
-        
-        public void ShowOtherItems(Button button)
-        {
-            showItemsOfType<OtherCategoryStoreTag>(button, false);
-        }
-
-        public void ShowArtefacts(Button button)
-        {
-            //
-        }
-
-        private void showItemsOfType<T>(Button selectedTab, bool sort, Type[] attributeTypes = null) where T : struct, IComponentData
+        private void showItems(bool sort, byte groupID)
         {
             currentSelectedItem = 0;
-            GameObject[] tmp;
             var defaultScale = Vector3.one;
             var classData = GetData<CharacterClassData>();
 
@@ -130,12 +92,12 @@ namespace Arena.Client.UI
                 }
                 tr.SetParent(null, false);
 
-                DontDestroyOnLoad(availableItem.gameObject);
+                //DontDestroyOnLoad(availableItem.gameObject);
             }
 			
             try
 			{
-				itemScroll.RemoveAllChildren(out tmp);
+				itemScroll.RemoveAllChildren(out _);
 			}
 			catch (System.Exception ex)
 			{
@@ -146,12 +108,11 @@ namespace Arena.Client.UI
             
             foreach (var availableItem in availableItems)
             {
-                var itemEntity = availableItem.Item;
-                
-                if (HasData<T>(itemEntity) == false)
+                if (availableItem.GroupID != groupID)
                 {
                     continue;
                 }
+                var itemEntity = availableItem.Item;
 
                 if (HasData<ClassUsage>(itemEntity))
                 {
@@ -163,6 +124,12 @@ namespace Arena.Client.UI
                 }
 
                 selectedItems.Add(availableItem);
+            }
+
+            if (selectedItems.Count == 0)
+            {
+                Debug.LogError("no selected store items");
+                return;
             }
 
             // if (sort)
@@ -205,9 +172,11 @@ namespace Arena.Client.UI
             itemScroll.UpdateLayout();
 
             var buttons = tabContainer.GetComponentsInChildren<Button>();
-            foreach (var button in buttons)
+            for (var index = 0; index < buttons.Length; index++)
             {
-                if (selectedTab == button)
+                var button = buttons[index];
+                
+                if (index == groupID)
                 {
                     button.interactable = false;
                 }
@@ -216,16 +185,12 @@ namespace Arena.Client.UI
                     button.interactable = true;
                 }
             }
-            
+
             updateUI();
         }
 
         public void InitializeItems()
         {
-            if (initialized)
-            {
-                return;
-            }
             try
             {
 				refreshItems();
@@ -239,7 +204,6 @@ namespace Arena.Client.UI
             {
                 Debug.LogException(ex);
             }
-            initialized = true;
         }
 
         Entity getCurrentStore()
@@ -296,6 +260,8 @@ namespace Arena.Client.UI
             {
                 itemDatabaseEntity = EntityManager.World.GetExistingSystemManaged<UISystem>().GetSingletonEntity<MainDatabaseTag>();
             }
+            
+            Utility.DestroyAllChilds(tabContainer);
 
             var storeEntity = getCurrentStore();
             
@@ -305,14 +271,32 @@ namespace Arena.Client.UI
                 return;
             }
 
-            var itemDatabase = EntityManager.GetBuffer<IdToEntity>(itemDatabaseEntity);
-            var items = EntityManager.GetBuffer<StoreItems>(storeEntity);
+            currentStoreEntity = storeEntity;
+            
+            var groups = GetBuffer<StoreGroups>(storeEntity);
+            
+            for (byte index = 0; index < groups.Length; index++)
+            {
+                var group = groups[index];
+                var localizedGroupName = LocalizationSettings.StringDatabase.GetLocalizedString(group.LocalizationID);
+                var tabInstance = Instantiate(tabPrefab, tabContainer);
+                tabInstance.GetComponentInChildren<TMPro.TextMeshProUGUI>().text = localizedGroupName;
+                var groupID = index;
+                tabInstance.GetComponent<Button>().onClick.AddListener(() =>
+                {
+                    showItems(true, groupID);
+                });
+                tabInstance.SetActive(true);
+            }
+            
+            var itemDatabase = GetBuffer<IdToEntity>(itemDatabaseEntity);
+            var items = GetBuffer<StoreItems>(storeEntity);
             var inventory = GetBuffer<InventoryElement>();
             
             foreach (var item in items)
             {
                 var itemEntity = IdToEntity.GetEntityByID(itemDatabase, item.ItemID);
-                var newItem = createInstance(itemEntity, inventory);
+                var newItem = createInstance(itemEntity, item.GroupID, inventory);
                 if (newItem != null)
                 {
                     availableItems.Add(newItem);   
@@ -332,7 +316,6 @@ namespace Arena.Client.UI
 
             //var item = availableItems[currentSelectedItem];
             
-            itemRestrictButton.SetActive(false);//!localPlayer.PlayerTemplateInstance.IsLevelRestrictionDisabled);
             var inventory = GetBuffer<InventoryElement>();
             uint currentMoney = 0;
             if (inventory.TryGetItemWithComponent<MainCurrency>(EntityManager, out Entity moneyEntity))
@@ -350,14 +333,14 @@ namespace Arena.Client.UI
             }
         }
 
-        ShopItemUI createInstance(Entity item, DynamicBuffer<InventoryElement> inventory)
+        ShopItemUI createInstance(Entity item, byte groupID, DynamicBuffer<InventoryElement> inventory)
         {
             try
             {
                 var newItem = Instantiate(shopItemPrefab);
                 var level = EntityManager.GetComponentData<Level>(OwnerEntity);
                 newItem.UpdateData(item, level.Value, EntityManager);// requiredLevelText);
-
+                newItem.GroupID = groupID;
                 newItem.Disabled = false;
             
                 updateItemExistance(newItem, inventory);

@@ -1,4 +1,4 @@
-#include <HLSLSupport.cginc>
+//#include <HLSLSupport.cginc>
 #ifndef DGX_DEFERRED_INCLUDED
 #define DGX_DEFERRED_INCLUDED
 
@@ -71,6 +71,7 @@ TEXTURE2D_SHADOW(_DirectionalShadowAtlas);
 #define SHADOW_SAMPLER sampler_linear_clamp_compare
 SAMPLER_CMP(SHADOW_SAMPLER);
 
+#define UNITY_DECLARE_TEX2D_FLOAT(tex) TEXTURE2D_FLOAT(tex); SAMPLER(sampler##tex)
 UNITY_DECLARE_TEX2D_FLOAT(_Depth);
 
 real ComputeFogFactorZ0ToFar(float z)

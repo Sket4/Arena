@@ -148,7 +148,14 @@ namespace Arena.Client.UI.MainMenu
                 
             sfxMixer.SetFloat("volume", getMixerValue(lastSfxVolume));
 
-            lobbyMultiplayerToggle.isOn = AppSettings.AllowMultiplayerInLobby;
+            if (lobbyMultiplayerToggle)
+            {
+                lobbyMultiplayerToggle.isOn = AppSettings.AllowMultiplayerInLobby;    
+            }
+            else
+            {
+                Debug.LogError("lobbyMultiplayerToggle is null");
+            }
         }
 
         public void OnLobbyMultiplayerToggleChanged(bool on)

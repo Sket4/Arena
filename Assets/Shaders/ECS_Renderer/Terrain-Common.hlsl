@@ -245,9 +245,9 @@ GBufferFragmentOutput frag(v2f i)
 
     #ifdef ARENA_UNDERWATER
     // water height
-    half heightAlpha = saturate(_WaterHeight - i.positionWS_fog.y * _WaterHeightFade);
-    surface.Albedo.rgb = lerp(surface.Albedo.rgb, _UnderwaterColor.rgb, heightAlpha);
-    surface.Roughness = lerp(surface.Roughness, 1, heightAlpha);
+    half heightAlpha = saturate((i.positionWS_fog.y - _WaterHeight) * _WaterHeightFade);
+    surface.Albedo.rgb = lerp(_UnderwaterColor.rgb, surface.Albedo.rgb, heightAlpha);
+    surface.Roughness = lerp(1, surface.Roughness, heightAlpha);
     #endif
 
     return SurfaceToGBufferOutputHalf(surface);

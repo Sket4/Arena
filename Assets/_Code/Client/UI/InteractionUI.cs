@@ -17,18 +17,6 @@ namespace Arena.Client.UI
     public class InteractionUI : TzarGames.GameFramework.UI.GameUIBase 
 	{
 		[SerializeField]
-		Button openShopButton = default;
-
-        [SerializeField]
-        Button readyButton = default;
-
-        [SerializeField]
-		Button openForgeButton = default;
-		
-		[SerializeField]
-		Button openTaskListButton = default;
-		
-		[SerializeField]
 		Button interactButton = default;
 
 		[SerializeField] private Image interactIcon;
@@ -39,10 +27,6 @@ namespace Arena.Client.UI
 		protected override void Start()
 		{
 			base.Start();
-			
-			ShowOpenShopButton (false);
-			ShowOpenForgeButton (false);
-			ShowTaskListButton(false);
 			interactButton.gameObject.SetActive(false);
 		}
 
@@ -58,19 +42,6 @@ namespace Arena.Client.UI
 					break;
 				}
 			}
-		}
-
-		public void ShowOpenShopButton(bool show)
-		{
-			openShopButton.gameObject.SetActive (show);
-		}
-		public void ShowOpenForgeButton(bool show)
-		{
-			openForgeButton.gameObject.SetActive (show);
-		}
-		public void ShowTaskListButton(bool show)
-		{
-			openTaskListButton.gameObject.SetActive (show);
 		}
 
         IEnumerator loadSprite(Image image, WeakObjectReference<Sprite> sprite)
@@ -89,31 +60,52 @@ namespace Arena.Client.UI
 	        {
 		        image.sprite = sprite.Result;
 	        }
+	        
+	        interactButton.gameObject.SetActive(true);
         }
 
         public void OnInteractButtonPressed()
         {
-	        if (currentInteractingEntity != Entity.Null && EntityManager.HasComponent<InteractionEventCommand>(currentInteractingEntity))
+	        if (currentInteractingEntity != Entity.Null)
 	        {
-		        var eventCommands = GetBuffer<InteractionEventCommand>(currentInteractingEntity);
-		        var aspect = EntityManager.GetAspect<ScriptVizAspect>(currentInteractingEntity);
-		        var ecb = new EntityCommandBuffer(Allocator.Temp);
-		        var commands = new UniversalCommandBuffer(ecb);
-		        var handle = new ContextDisposeHandle(ref aspect, ref commands, 0, Time.deltaTime);
-		        
-		        foreach (var eventCommand in eventCommands)
+		        if (HasData<StoreItems>(currentInteractingEntity))
 		        {
-			        if (eventCommand.CommandAddress.IsInvalid)
-			        {
-				        continue;
-			        }
-			        if (eventCommand.InteractorEntityOutputAddress.IsValid)
-			        {
-						handle.Context.WriteToTemp(OwnerEntity, eventCommand.InteractorEntityOutputAddress);	       
-			        }
-			        handle.Execute(eventCommand.CommandAddress);
+			        FindObjectOfType<GameUI>().ShowItemShop();
 		        }
-		        ecb.Playback(EntityManager);
+		        else if (HasData<CraftReceipts>(currentInteractingEntity))
+		        {
+			        Debug.LogError("not implemented");
+		        }
+		        else if (HasData<LocationElement>(currentInteractingEntity))
+		        {
+			        FindObjectOfType<GameUI>().ShowLocationSelectWindow();
+		        }
+		        else if(EntityManager.HasComponent<InteractionEventCommand>(currentInteractingEntity))
+		        {
+			        var eventCommands = GetBuffer<InteractionEventCommand>(currentInteractingEntity);
+			        var aspect = EntityManager.GetAspect<ScriptVizAspect>(currentInteractingEntity);
+			        var ecb = new EntityCommandBuffer(Allocator.Temp);
+			        var commands = new UniversalCommandBuffer(ecb);
+			        var handle = new ContextDisposeHandle(ref aspect, ref commands, 0, Time.deltaTime);
+		        
+			        foreach (var eventCommand in eventCommands)
+			        {
+				        if (eventCommand.CommandAddress.IsInvalid)
+				        {
+					        continue;
+				        }
+				        if (eventCommand.InteractorEntityOutputAddress.IsValid)
+				        {
+					        handle.Context.WriteToTemp(OwnerEntity, eventCommand.InteractorEntityOutputAddress);	       
+				        }
+				        handle.Execute(eventCommand.CommandAddress);
+			        }
+			        ecb.Playback(EntityManager);    
+		        }
+		        else
+		        {
+			        Debug.LogError("failed to interact");
+		        }
 	        }
         }
 
@@ -125,30 +117,8 @@ namespace Arena.Client.UI
             {
                 return;
             }
-
-            //var playerEntity = GetData<PlayerController>(OwnerEntity).Value;
-
-
-            //if (EntityManager.HasComponent<ArenaPlayerMatchData>(playerEntity) == false)
-            //{
-            //    return;
-            //}
-
-            //var matchState = EntityManager.GetComponentData<ArenaPlayerMatchData>(playerEntity);
-
-            //if(matchState.InFight)
-            //{
-            //    readyButton.gameObject.SetActive(false);
-            //    openShopButton.gameObject.SetActive(false);
-            //}
-            //else
             {
-                //readyButton.gameObject.SetActive(true);
-
                 var interactingObjects = GetBuffer<OverlappingEntities>(interactorEntity);
-                bool isInteractingWithShop = false;
-                bool isInteractingWithForge = false;
-                bool isInteractingWithQuestHirer = false;
                 bool isInteracting = false;
                 ItemIcon icon = default;
                 
@@ -164,33 +134,15 @@ namespace Arena.Client.UI
 			                icon = GetData<ItemIcon>(overlapping.Entity);
 		                }
 	                }
-	                
-	                if (HasData<StoreItems>(overlapping.Entity))
-	                {
-		                isInteractingWithShop = true;
-		                isInteracting = false;
-	                }
-
-	                if (HasData<CraftReceipts>(overlapping.Entity))
-	                {
-		                isInteractingWithForge = true;
-		                isInteracting = false;
-	                }
-
-	                if (HasData<LocationElement>(overlapping.Entity))
-	                {
-		                isInteractingWithQuestHirer = true;
-		                isInteracting = false;
-	                }
                 }
-                openShopButton.gameObject.SetActive(isInteractingWithShop);
-                openForgeButton.gameObject.SetActive(isInteractingWithForge);
-                openTaskListButton.gameObject.SetActive(isInteractingWithQuestHirer);
-                interactButton.gameObject.SetActive(isInteracting);
 
                 if (isInteracting && icon.Sprite.IsReferenceValid)
                 {
 	                StartCoroutine(loadSprite(interactIcon, icon.Sprite));
+                }
+                else
+                {
+	                interactButton.gameObject.SetActive(false);
                 }
             }
         }

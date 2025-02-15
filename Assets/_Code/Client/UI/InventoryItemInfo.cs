@@ -674,7 +674,7 @@ namespace Arena.Client.UI
 	        }
 
 	        //Debug.Log($"Finished loading sprite ref {spriteRef} for item {itemUI.ItemEntity}");
-	        if (ItemIcon == false)
+	        if (spriteRef.Result == false)
 	        {
 		        yield break;
 	        }

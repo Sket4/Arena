@@ -349,7 +349,7 @@ namespace Arena.Client.UI
             }
         }
         
-        public void ShowQuestList()
+        public void ShowLocationSelectWindow()
         {
             GotoState<LocationWindowState>();
         }

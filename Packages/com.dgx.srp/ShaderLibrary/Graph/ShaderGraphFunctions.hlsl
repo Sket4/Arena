@@ -46,7 +46,7 @@ float3 shadergraph_LWSampleSceneColor(float2 uv)
 
 half3 SampleSH(half3 normalWS)
 {
-    half4 SHCoefficients[7];
+    float4 SHCoefficients[7];
     SHCoefficients[0] = unity_SHAr;
     SHCoefficients[1] = unity_SHAg;
     SHCoefficients[2] = unity_SHAb;

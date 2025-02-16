@@ -128,7 +128,8 @@ namespace Arena
 
         public static readonly int[] FemaleHairStyles = new int[]
         {
-            129
+            129,
+            133
         };
 
         public static readonly PackedColor[] SkinColors = new PackedColor[]

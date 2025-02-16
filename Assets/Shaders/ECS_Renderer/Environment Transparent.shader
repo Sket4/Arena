@@ -19,6 +19,8 @@ Shader "Arena/Environment Transparent"
         _HighlightRemove("Highlight remove", Float) = 0
         //[Toggle(USE_SCALE_REFLECTIONS)] _ScaleReflections("Scale reflections", Float) = 0.0
         [HDR] _EmissionColor("Emission color", Color) = (0,0,0)
+        [Toggle(USE_SPECULAR_MULT)] _UseSpecularMult("Use specular multiplier", Float) = 0.0
+        _SpecularMultiplier("Specular multiplier", Float) = 1.0
         
         [Toggle(USE_UNDERWATER)]
         _UseUnderwater("Underwater", Float) = 0
@@ -74,10 +76,12 @@ Shader "Arena/Environment Transparent"
             //#pragma shader_feature DIFFUSE_ALPHA_AS_SMOOTHNESS
             //#pragma shader_feature USE_SURFACE_BLEND
             #pragma shader_feature_local_fragment USE_BASECOLOR_INSTANCE
+            #pragma multi_compile_local_fragment USE_SPECULAR_MULT
             
             //#pragma multi_compile_fragment __ ARENA_USE_MAIN_LIGHT
             //#pragma multi_compile_fragment __ ARENA_USE_ADD_LIGHT
             #pragma multi_compile_fragment _ DGX_DARK_MODE
+            
             #pragma multi_compile_fragment _ DGX_SPOT_LIGHTS
             
             //#pragma multi_compile_fwdbase

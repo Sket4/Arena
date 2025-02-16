@@ -242,6 +242,10 @@ half4 env_frag(v2f i) : SV_Target
 	half3 viewDirWS = GetWorldSpaceNormalizeViewDir(i.positionWS.xyz);
 	half3 envMapColor = TG_ReflectionProbe_half(viewDirWS, normalWS, i.instanceData.y,roughness * 4);
 
+	#ifdef USE_SPECULAR_MULT
+	envMapColor = lerp(envMapColor * smoothness, envMapColor, _SpecularMultiplier);
+	#endif
+
 	half3 remEnvMapColor = clamp(envMapColor - 0.5, 0, 10);
 	remEnvMapColor = remEnvMapColor * _HighlightRemove;
 	remEnvMapColor = envMapColor - remEnvMapColor;

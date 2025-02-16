@@ -16,6 +16,11 @@ half _Cutoff;
 half _HighlightRemove;
 half _HeightFogFade;
 half _FogHeight;
+
+#ifdef USE_SPECULAR_MULT
+half _SpecularMultiplier;
+#endif
+
 CBUFFER_END
  
 #endif //UG_INPUT_INCLUDED

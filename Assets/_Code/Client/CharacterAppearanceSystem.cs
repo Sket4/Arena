@@ -91,6 +91,10 @@ namespace Arena.Client
                 {
                     destroyItemAppearance(equipment.RightHandWeapon, EntityManager.GetComponentData<CharacterAppearanceState>(equipment.RightHandWeapon));
                 }
+                if(EntityManager.HasComponent<CharacterAppearanceState>(equipment.LeftHandShield))
+                {
+                    destroyItemAppearance(equipment.LeftHandShield, EntityManager.GetComponentData<CharacterAppearanceState>(equipment.LeftHandShield));
+                }
 
             }).Run();
 
@@ -236,6 +240,57 @@ namespace Arena.Client
                 }
 
             }).Run();
+            
+            // добавление щита
+            Entities
+                .WithStructuralChanges()
+                .WithoutBurst()
+                .WithAll<Shield>()
+                .WithNone<CharacterAppearanceState>()
+                .ForEach((Entity itemEntity, in Item item, in ActivatedItemAppearance itemAppearance, in ActivatedState state) =>
+                {
+                    if (item.Owner == Entity.Null)
+                    {
+                        return;
+                    }
+
+                    if (state.Activated == false)
+                    {
+                        return;
+                    }
+
+                    if (EntityManager.HasComponent<CharacterEquipment>(item.Owner) == false)
+                    {
+                        return;
+                    }
+
+                    var prefab = itemAppearance.Prefab;
+
+                    if (EntityManager.Exists(prefab) == false)
+                    {
+                        Debug.LogError($"Prefab {prefab} not found");
+                        return;
+                    }
+
+                    var equipment = EntityManager.GetComponentData<CharacterEquipment>(item.Owner);
+                    var armorSetAppearanceEntity = EntityManager.GetComponentData<CharacterAppearanceState>(equipment.ArmorSet).Instance;
+                    var socket = EntityManager.GetComponentData<ArmorSetAppearance>(armorSetAppearanceEntity).ShieldSocket;
+
+                    try
+                    {
+                        var instance = EntityManager.Instantiate(prefab);
+
+                        EntityManager.AddComponentData(instance, new Parent { Value = socket });
+                        EntityManager.SetComponentData(instance, LocalTransform.Identity);
+
+                        EntityManager.AddComponentData(itemEntity, new CharacterAppearanceState { Instance = instance, Owner = item.Owner });
+                    }
+                    catch (System.Exception ex)
+                    {
+                        Debug.LogException(ex);
+                    }
+
+                }).Run();
             
             // добавление лука
             Entities

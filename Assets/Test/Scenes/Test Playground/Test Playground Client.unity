@@ -424,7 +424,7 @@ MonoBehaviour:
           states: []
           variables:
           - rid: 4957392988169043992
-        Name: 
+        Name: Set heads
     - rid: 4957392988169043990
       type: {class: MessageEventNode, ns: TzarGames.GameCore.ScriptViz.Graph, asm: TzarGames.GameCore}
       data:
@@ -2515,7 +2515,7 @@ MonoBehaviour:
             - rid: 5852174912391217160
           states: []
           variables: []
-        Name: 
+        Name: Set eyes color
     - rid: 5852174912391217153
       type: {class: StartEventNode, ns: TzarGames.GameCore.ScriptViz.Graph, asm: TzarGames.GameCore}
       data:
@@ -2789,6 +2789,250 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &688931654
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 688931655}
+  - component: {fileID: 688931656}
+  m_Layer: 0
+  m_Name: Add shield
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &688931655
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 688931654}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 967085519}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &688931656
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 688931654}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 25d87a6b957a60841942c7e71e0c252f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ConversionTargetOptions: -1
+  Graph:
+    rid: 4957392988169043979
+  references:
+    version: 2
+    RefIds:
+    - rid: 4957392988169043979
+      type: {class: ScriptVizGraph, ns: TzarGames.GameCore.ScriptViz.Graph, asm: TzarGames.GameCore}
+      data:
+        pages: []
+        states: []
+        layers:
+        - id: scene
+          pages:
+          - ID:
+              Value:
+                Value:
+                  x: 1598617476
+                  y: 1213096918
+                  z: 314669963
+                  w: 2294881228
+            Name: 
+            ConversionTargetOptions: 7
+            variables:
+            - rid: 4957392988169043984
+            nodes:
+            - rid: 4957392988169043980
+            - rid: 4957392988169043981
+            - rid: 4957392988169043983
+          states: []
+          variables: []
+        Name: Add armor set
+    - rid: 4957392988169043980
+      type: {class: StartEventNode, ns: TzarGames.GameCore.ScriptViz.Graph, asm: TzarGames.GameCore}
+      data:
+        ID:
+          Value:
+            Value:
+              x: 1271784454
+              y: 1307739393
+              z: 2528990124
+              w: 2391805546
+        Position: {x: 507.5, y: 465.5}
+        output:
+          ID:
+            Value:
+              Value:
+                x: 2971064149
+                y: 1074995677
+                z: 3357525925
+                w: 1862854655
+          ConnectedSocketIDs:
+          - Value:
+              Value:
+                x: 2378803772
+                y: 1165456153
+                z: 548560258
+                w: 1158895406
+    - rid: 4957392988169043981
+      type: {class: GetMainCharacterCommandNode, ns: Arena.ScriptViz, asm: Arena.Common}
+      data:
+        ID:
+          Value:
+            Value:
+              x: 377240645
+              y: 1316797472
+              z: 814690439
+              w: 2735628782
+        Position: {x: 644, y: 465.5}
+        InputSocket:
+          ID:
+            Value:
+              Value:
+                x: 2378803772
+                y: 1165456153
+                z: 548560258
+                w: 1158895406
+          ConnectedSocketIDs:
+          - Value:
+              Value:
+                x: 2971064149
+                y: 1074995677
+                z: 3357525925
+                w: 1862854655
+        OnCharacterLoadedSocket:
+          ID:
+            Value:
+              Value:
+                x: 1851777884
+                y: 1107543481
+                z: 2397933468
+                w: 2718449207
+          ConnectedSocketIDs:
+          - Value:
+              Value:
+                x: 1454035710
+                y: 1164583208
+                z: 845876155
+                w: 3660604089
+        CharacterSocket:
+          ID:
+            Value:
+              Value:
+                x: 2527005451
+                y: 1213954975
+                z: 3618975637
+                w: 3943569786
+          ConnectedSocketIDs:
+          - Value:
+              Value:
+                x: 3349725431
+                y: 1327114336
+                z: 4107983539
+                w: 2739981659
+          AuthoringValue: {fileID: 0}
+    - rid: 4957392988169043983
+      type: {class: InventoryTransactionNode, ns: TzarGames.GameCore.ScriptViz.Commands, asm: TzarGames.GameCore}
+      data:
+        ID:
+          Value:
+            Value:
+              x: 3870444744
+              y: 1210968723
+              z: 567741579
+              w: 496985915
+        Position: {x: 952.5, y: 465.5}
+        input:
+          ID:
+            Value:
+              Value:
+                x: 1454035710
+                y: 1164583208
+                z: 845876155
+                w: 3660604089
+          ConnectedSocketIDs:
+          - Value:
+              Value:
+                x: 1851777884
+                y: 1107543481
+                z: 2397933468
+                w: 2718449207
+        output:
+          ID:
+            Value:
+              Value:
+                x: 993949130
+                y: 1157840042
+                z: 3898271140
+                w: 179236361
+          ConnectedSocketIDs: []
+        InventoryEntity:
+          ID:
+            Value:
+              Value:
+                x: 3349725431
+                y: 1327114336
+                z: 4107983539
+                w: 2739981659
+          ConnectedSocketIDs:
+          - Value:
+              Value:
+                x: 2527005451
+                y: 1213954975
+                z: 3618975637
+                w: 3943569786
+          AuthoringValue: {fileID: 0}
+        CountSocket:
+          ID:
+            Value:
+              Value:
+                x: 626131514
+                y: 1107270569
+                z: 2082172320
+                w: 1743222228
+          ConnectedSocketIDs: []
+          Value: 1
+        AddOrRemoveSocket:
+          ID:
+            Value:
+              Value:
+                x: 444668077
+                y: 1236300712
+                z: 2770800512
+                w: 601363326
+          ConnectedSocketIDs: []
+          Value: 1
+        ItemKey: {fileID: -535011815543148037, guid: 709759d6d50fadb4ab72406e658ed872, type: 2}
+    - rid: 4957392988169043984
+      type: {class: DynamicArrayVariable, ns: TzarGames.GameCore.ScriptViz.Graph, asm: TzarGames.GameCore}
+      data:
+        ID:
+          Value:
+            Value:
+              x: 1093641723
+              y: 1154595325
+              z: 1588943022
+              w: 1920405068
+        Name: _delayed_commands
+        NetSyncEnabled: 0
+        IsHidden: 1
 --- !u!1 &866070211
 GameObject:
   m_ObjectHideFlags: 0
@@ -3043,6 +3287,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 1728452923}
+  - {fileID: 688931655}
   - {fileID: 383236415}
   - {fileID: 1317001323}
   - {fileID: 488742281}
@@ -3210,7 +3455,7 @@ MonoBehaviour:
             - rid: 5852174912391217156
           states: []
           variables: []
-        Name: 
+        Name: Set hair color
     - rid: 5852174912391217153
       type: {class: StartEventNode, ns: TzarGames.GameCore.ScriptViz.Graph, asm: TzarGames.GameCore}
       data:

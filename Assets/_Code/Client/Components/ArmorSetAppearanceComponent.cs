@@ -10,6 +10,7 @@ namespace Arena.Client
         public Entity HeadSocket;
         public Entity RightHandWeaponSocket;
         public Entity LeftHandBowSocket;
+        public Entity ShieldSocket;
         public Entity LeftFoot;
         public Entity RightFoot;
 
@@ -25,6 +26,7 @@ namespace Arena.Client
         public Transform HeadSocket;
         public Transform RightHandWeaponSocket;
         public Transform LeftHandBowSocket;
+        public Transform ShieldSocket;
         public Transform LeftFoot;
         public Transform RightFoot;
 
@@ -40,6 +42,7 @@ namespace Arena.Client
                 HeadSocket = baker.GetEntity(HeadSocket),
                 RightHandWeaponSocket = RightHandWeaponSocket != null ? baker.GetEntity(RightHandWeaponSocket) : Entity.Null,
                 LeftHandBowSocket = LeftHandBowSocket != null ? baker.GetEntity(LeftHandBowSocket) : Entity.Null,
+                ShieldSocket = baker.GetEntity(ShieldSocket),
                 RightFoot = RightFoot != null ? baker.GetEntity(RightFoot) : Entity.Null,
                 LeftFoot = LeftFoot != null ? baker.GetEntity(LeftFoot) : Entity.Null,
                 SkinModel1 = baker.GetEntity(SkinModel1),

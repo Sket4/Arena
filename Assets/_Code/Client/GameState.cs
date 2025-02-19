@@ -13,6 +13,9 @@ using TzarGames.MatchFramework.Client;
 using UniRx;
 using Unity.Entities;
 using UnityEngine;
+using UnityEngine.Localization.Settings;
+using UnityEngine.Localization.Tables;
+using UnityEngine.ResourceManagement.AsyncOperations;
 using UnityEngine.SceneManagement;
 using static TzarGames.MatchFramework.Client.ClientUtility;
 
@@ -556,7 +559,7 @@ namespace Arena.Client
 			#endif
 		}
 
-		void OnDestroy()
+        void OnDestroy()
 		{
 			if(_instance == this)
 			{
@@ -719,10 +722,24 @@ namespace Arena.Client
         [UnityEngine.Scripting.Preserve]
         class Initial : GameStateBase
         {
+            private AsyncOperationHandle<LocalizationSettings> localizationInitHandle;
+            
             public override void OnStateBegin(State prevState)
             {
                 base.OnStateBegin(prevState);
+                localizationInitHandle = LocalizationSettings.InitializationOperation;
+                GameState.StartCoroutine(update());
+            }
 
+            IEnumerator update()
+            {
+                while (localizationInitHandle.IsDone == false)
+                {
+                    yield return null;
+                }
+                
+                Debug.Log($"Localization system init is done, default table: {LocalizationSettings.StringDatabase?.DefaultTable}");
+                    
                 if (IsOfflineMode)
                 {
                     Debug.Log("Инициализация локальной игры...");
@@ -735,7 +752,7 @@ namespace Arena.Client
                 }
             }
 
-	        public override void OnStateEnd(State nextState)
+            public override void OnStateEnd(State nextState)
 	        {
 		        base.OnStateEnd(nextState);
 		        try

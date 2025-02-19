@@ -71,6 +71,15 @@ namespace Arena.Client
                 }).Run();
         }
 
+        static async void loadLocalizationForText(TMPro.TextMeshPro text, LocalizedString str)
+        {
+            var result = await str.GetLocalizedStringAsync().Task;
+            if (text)
+            {
+                text.text = result;
+            }
+        }
+
         protected override void OnUpdate()
         {
             localizedEntityQuery.SetChangedVersionFilter(ComponentType.ReadOnly<LocalizeStringEvent>());
@@ -82,8 +91,7 @@ namespace Arena.Client
                 {
                     Debug.Log($"resetting localized entity {loc.name}");
                     loc.RefreshString();
-                    var localized = loc.StringReference.GetLocalizedString();
-                    tmpro.text = localized;
+                    loadLocalizationForText(tmpro, loc.StringReference);
                     var bounds = data.Bounds;
                     bounds.center = tmpro.transform.position;
                     tmpro.renderer.bounds = bounds;
@@ -161,24 +169,8 @@ namespace Arena.Client
                         Debug.LogError("Failed to find UI entity");
                         return;
                     }
-                    
-                    var localizedMessage = LocalizationSettings.StringDatabase.GetLocalizedString(message.LocalizedStringID);
 
-                    var answerList = new List<DialogueAnswerData>();
-
-                    foreach (var answer in answers)
-                    {
-                        var localizedAnswer = LocalizationSettings.StringDatabase.GetLocalizedString(answer.LocalizedStringID);
-                        answerList.Add(new DialogueAnswerData
-                        {
-                            Text = localizedAnswer,
-                            CommandAddress = answer.AnswerAddress
-                        });
-                    }
-                    
-                    ui.ShowDialogueWindow(true);
-                    ui.DialogueUI.ShowDialogue(message.Player, message.DialogueEntity, localizedMessage, answerList);
-                    
+                    showDialogueMessageAsync(message, answers, ui);
                 }).Run();
             
             EntityManager.DestroyEntity(dialogueQuery);
@@ -294,6 +286,34 @@ namespace Arena.Client
                     ui.HUD.EnableMinimap(false);
                 }
             }).Run();
+        }
+
+        private static async void showDialogueMessageAsync(DialogueMessage message, DynamicBuffer<DialogueAnswer> answers, GameUI ui)
+        {
+            var loadTask = LocalizationSettings.StringDatabase.GetLocalizedStringAsync(message.LocalizedStringID).Task;
+            await loadTask;
+
+            var answerList = new List<DialogueAnswerData>();
+
+            foreach (var answer in answers)
+            {
+                var localizedAnswerTask = LocalizationSettings.StringDatabase.GetLocalizedStringAsync(answer.LocalizedStringID).Task;
+                await localizedAnswerTask;
+                
+                answerList.Add(new DialogueAnswerData
+                {
+                    Text = localizedAnswerTask.Result,
+                    CommandAddress = answer.AnswerAddress
+                });
+            }
+
+            if (ui == false)
+            {
+                return;
+            }
+            
+            ui.ShowDialogueWindow(true);
+            ui.DialogueUI.ShowDialogue(message.Player, message.DialogueEntity, loadTask.Result, answerList);
         }
 
         protected override void OnDestroy()

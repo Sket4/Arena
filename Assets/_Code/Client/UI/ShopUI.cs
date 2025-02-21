@@ -2,6 +2,7 @@
 
 using System;
 using System.Collections.Generic;
+using Arena.Client.PreviewRendering;
 using Arena.Items;
 using TzarGames.Common;
 using TzarGames.Common.UI;
@@ -18,13 +19,10 @@ namespace Arena.Client.UI
     public class ShopUI : TzarGames.GameFramework.UI.GameUIBase
     {
         [SerializeField]
-        ShopItemUI shopItemPrefab = default;
+        ShopItemUI shopItemInfo;
 
         [SerializeField] private UIBase shopWindow = default;
         [SerializeField] private UIBase dialogWindow = default;
-
-        [SerializeField]
-        UnityEngine.UI.Extensions.HorizontalScrollSnap itemScroll = default;
 
         [SerializeField]
         Button buyButton = default;
@@ -44,10 +42,16 @@ namespace Arena.Client.UI
         [SerializeField] private Transform tabContainer = default;
         [SerializeField] private GameObject tabPrefab;
         
-        int currentSelectedItem = -1;
+        int currentSelectedItemIndex = -1;
 
-        List<ShopItemUI> availableItems = new();
-        List<ShopItemUI> selectedItems = new();
+        struct ShopItemEntry
+        {
+            public StoreItems ItemData;
+            public Entity ItemPrefab;
+        }
+
+        List<ShopItemEntry> availableItems = new();
+        List<ShopItemEntry> selectedItems = new();
 
         [SerializeField]
         UnityEvent onNotEnoughGold = default;
@@ -64,6 +68,8 @@ namespace Arena.Client.UI
         {
             base.OnVisible();
 
+            PreviewRenderGameWorldLauncher.Instance.EnableRendering = true;
+
             var store = getCurrentStore();
 
             if (currentStoreEntity != store)
@@ -75,44 +81,26 @@ namespace Arena.Client.UI
             updateUI();
         }
 
+        protected override void OnHidden()
+        {
+            base.OnHidden();
+            PreviewRenderGameWorldLauncher.Instance.EnableRendering = false;
+        }
+
         private void showItems(bool sort, byte groupID)
         {
-            currentSelectedItem = 0;
-            var defaultScale = Vector3.one;
+            currentSelectedItemIndex = 0;
             var classData = GetData<CharacterClassData>();
-
-            for (int i = 0; i < availableItems.Count; i++)
-            {
-                var availableItem = availableItems[i];
-                availableItem.gameObject.SetActive(false);
-                var tr = availableItem.transform;
-                if(tr.localScale != defaultScale)
-                {
-                    tr.localScale = defaultScale;
-                }
-                tr.SetParent(null, false);
-
-                //DontDestroyOnLoad(availableItem.gameObject);
-            }
-			
-            try
-			{
-				itemScroll.RemoveAllChildren(out _);
-			}
-			catch (System.Exception ex)
-			{
-				Debug.LogException(ex);
-			}
             
             selectedItems.Clear();
             
             foreach (var availableItem in availableItems)
             {
-                if (availableItem.GroupID != groupID)
+                if (availableItem.ItemData.GroupID != groupID)
                 {
                     continue;
                 }
-                var itemEntity = availableItem.Item;
+                var itemEntity = availableItem.ItemPrefab;
 
                 if (HasData<ClassUsage>(itemEntity))
                 {
@@ -147,29 +135,6 @@ namespace Arena.Client.UI
             //         return 0;
             //     });    
             // }
-            
-            
-            var childItems = new GameObject[selectedItems.Count];
-            for (var index = 0; index < selectedItems.Count; index++)
-            {
-                var selectedItem = selectedItems[index];
-                childItems[index] = selectedItem.gameObject;
-                childItems[index].gameObject.SetActive(true);
-            }
-
-            // костыль для избежания поэлементного добавления
-            var scrollRect = itemScroll.GetComponent<ScrollRect>();
-            var container = scrollRect.content;
-
-            var lastIndex = childItems.Length - 1;
-            for (var index = 0; index < lastIndex; index++)
-            {
-                var child = childItems[index];
-                child.transform.SetParent(container, false);   
-            }
-            itemScroll.AddChild(childItems[childItems.Length-1]);
-            
-            itemScroll.UpdateLayout();
 
             var buttons = tabContainer.GetComponentsInChildren<Button>();
             for (var index = 0; index < buttons.Length; index++)
@@ -194,11 +159,6 @@ namespace Arena.Client.UI
             try
             {
 				refreshItems();
-                for (int i = 0; i < availableItems.Count; i++)
-                {
-                    ShopItemUI availableItem = availableItems[i];
-                    availableItem.gameObject.SetActive(false);
-                }
             }
             catch(Exception ex)
             {
@@ -238,23 +198,8 @@ namespace Arena.Client.UI
 
         void refreshItems()
         {
-            foreach (var availableItem in availableItems)
-            {
-                availableItem.transform.localScale = Vector3.one;
-                Destroy(availableItem.gameObject);
-            }
-
             availableItems.Clear();
             selectedItems.Clear();
-            GameObject[] tmp;
-            try
-            {
-                itemScroll.RemoveAllChildren(out tmp);    
-            }
-            catch(System.Exception ex)
-            {
-                Debug.LogException(ex);
-            }
 
             if (itemDatabaseEntity == Entity.Null)
             {
@@ -296,14 +241,19 @@ namespace Arena.Client.UI
             foreach (var item in items)
             {
                 var itemEntity = IdToEntity.GetEntityByID(itemDatabase, item.ItemID);
-                var newItem = createInstance(itemEntity, item.GroupID, inventory);
-                if (newItem != null)
+                var newItem = new ShopItemEntry
                 {
-                    availableItems.Add(newItem);   
-                }
+                    ItemPrefab = itemEntity,
+                    ItemData = item,
+                };
+                availableItems.Add(newItem);
             }
-            itemScroll.UpdateLayout();
-            currentSelectedItem = 0;
+
+            if (currentSelectedItemIndex < 0)
+            {
+                currentSelectedItemIndex = 0;
+                showItems(true, 0);    
+            }
             updateUI();
         }
 
@@ -314,8 +264,6 @@ namespace Arena.Client.UI
                 return;
             }
 
-            //var item = availableItems[currentSelectedItem];
-            
             var inventory = GetBuffer<InventoryElement>();
             uint currentMoney = 0;
             if (inventory.TryGetItemWithComponent<MainCurrency>(EntityManager, out Entity moneyEntity))
@@ -325,54 +273,38 @@ namespace Arena.Client.UI
             
             goldText.text = currentMoney.ToString();
             rubyText.text = "0";    
+
+            var currentSelectedItem = selectedItems[currentSelectedItemIndex];
             
-            foreach (var selectedItem in selectedItems)
-            {
-                selectedItem.RefreshIcon(EntityManager);
-                updateItemExistance(selectedItem, inventory);
-            }
+            var level = GetData<Level>(OwnerEntity);
+            shopItemInfo.UpdateData(currentSelectedItem.ItemPrefab, level.Value, EntityManager);
+            shopItemInfo.Disabled = false;
+            shopItemInfo.PreviewImage = PreviewRenderGameWorldLauncher.Instance.PreviewCameraTexture;
+            updateItemExistance(inventory);
+            
+            var item = GetData<Item>(currentSelectedItem.ItemPrefab);
+            PreviewRenderGameWorldLauncher.Instance.ShowPreviewItem(item.ID);
         }
 
-        ShopItemUI createInstance(Entity item, byte groupID, DynamicBuffer<InventoryElement> inventory)
+        void updateItemExistance(in DynamicBuffer<InventoryElement> inventory)
         {
-            try
-            {
-                var newItem = Instantiate(shopItemPrefab);
-                var level = EntityManager.GetComponentData<Level>(OwnerEntity);
-                newItem.UpdateData(item, level.Value, EntityManager);// requiredLevelText);
-                newItem.GroupID = groupID;
-                newItem.Disabled = false;
-            
-                updateItemExistance(newItem, inventory);
-
-                return newItem;
-            }
-            catch (Exception e)
-            {
-                Debug.LogException(e);
-                return null;
-            }
-        }        
-
-        void updateItemExistance(ShopItemUI itemUi, in DynamicBuffer<InventoryElement> inventory)
-        {
-            var itemEntity = itemUi.Item;
+            var itemEntity = shopItemInfo.Item;
 
             foreach (var inventoryElement in inventory)
             {
                 if (GetData<Item>(itemEntity).ID == GetData<Item>(inventoryElement.Entity).ID)
                 {
-                    itemUi.ExistInInventory = true;
+                    shopItemInfo.ExistInInventory = true;
                     return;
                 }
             }
 
-            itemUi.ExistInInventory = false;
+            shopItemInfo.ExistInInventory = false;
         }
 
         public void NotifyItemIndexChanged(int index)
         {
-            currentSelectedItem = index;
+            currentSelectedItemIndex = index;
             updateUI();
         }
 
@@ -390,8 +322,8 @@ namespace Arena.Client.UI
 
         public void OnBuyClick()
         {
-            var itemUi = selectedItems[currentSelectedItem];
-            var itemEntity = itemUi.Item;
+            var itemUi = selectedItems[currentSelectedItemIndex];
+            var itemEntity = itemUi.ItemPrefab;
 
             if (HasData<OneHandedItem>(itemEntity) || HasData<ArmorSet>(itemEntity))
             {
@@ -415,8 +347,8 @@ namespace Arena.Client.UI
                     return;
                 }
                 
-                var itemUi = selectedItems[currentSelectedItem];
-                var itemEntity = itemUi.Item;
+                var itemUi = selectedItems[currentSelectedItemIndex];
+                var itemEntity = itemUi.ItemPrefab;
 
                 var itemID = GetData<Item>(itemEntity).ID;
 

@@ -12,8 +12,6 @@ namespace Arena.Client.UI
 
 		[SerializeField] private TextUI existInInventory = default;
 
-		public byte GroupID { get; set; }
-
 		public bool Disabled
 		{
 			get 

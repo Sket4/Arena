@@ -61,6 +61,26 @@ namespace Arena
                         }
                     }
                     
+                    if(SystemAPI.HasComponent<Shield>(itemEntity))
+                    {
+                        if(state.Activated)
+                        {
+                            if(equipment.LeftHandShield == Entity.Null)
+                            {
+                                equipment.LeftHandShield = itemEntity;
+                                equipmentChanged = true;
+                            }
+                        }
+                        else
+                        {
+                            if(equipment.LeftHandShield == itemEntity)
+                            {
+                                equipment.LeftHandShield = Entity.Null;
+                                equipmentChanged = true;
+                            }
+                        }
+                    }
+                    
                     if(SystemAPI.HasComponent<Bow>(itemEntity))
                     {
                         if(state.Activated)
@@ -190,6 +210,30 @@ namespace Arena
                         if(equipment.RightHandWeapon == request.Item)
                         {
                             request.State = ActivateItemRequestState.Cancelled;
+                        }
+                    }
+                }
+                
+                if(SystemAPI.HasComponent<Shield>(request.Item))
+                {
+                    if(request.Activate)
+                    {
+                        if(equipment.LeftHandShield != Entity.Null
+                           && equipment.LeftHandShield != request.Item
+                           && SystemAPI.HasComponent<ActivatedState>(equipment.LeftHandShield))
+                        {
+                            SystemAPI.SetComponent(equipment.LeftHandShield, new ActivatedState(false));
+                        }
+
+                        equipment.LeftHandShield = request.Item;
+                        equipmentChanged = true;
+                    }
+                    else
+                    {
+                        if(equipment.LeftHandShield == request.Item)
+                        {
+                            equipment.LeftHandShield = Entity.Null;
+                            equipmentChanged = true;
                         }
                     }
                 }

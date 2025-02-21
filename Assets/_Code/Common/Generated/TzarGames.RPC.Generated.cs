@@ -29,14 +29,6 @@ namespace TzarGames.MultiplayerKit.Generated
 					case "NotifyAbilityStopped": info.MethodCode = 1; info.Channel = ChannelType.Reliable; info.Options = MessageDeliveryOptions.SendToAllExceptTarget; info.RepeatCount = 1; return true;
 				}
 			}
-			if( typeof(TzarGames.GameCore.IItemTakenRpcHandler).IsAssignableFrom(rpcHandlerType))
-			{
-				info = new RemoteCallInfo(8,0, ChannelType.Reliable, MessageDeliveryOptions.Default, 1);
-				switch(method.Name)
-				{
-					case "NotifyDroppedItemTaken": info.MethodCode = 0; info.Channel = ChannelType.Reliable; info.Options = MessageDeliveryOptions.Default; info.RepeatCount = 1; return true;
-				}
-			}
 			if(rpcHandlerType == typeof(TzarGames.GameCore.ActivateItemRequestSystem))
 			{
 				info = new RemoteCallInfo(16,0, ChannelType.Reliable, MessageDeliveryOptions.Default, 1);
@@ -45,20 +37,28 @@ namespace TzarGames.MultiplayerKit.Generated
 					case "OnServer_ActivateItem": info.MethodCode = 0; info.Channel = ChannelType.Reliable; info.Options = MessageDeliveryOptions.Default; info.RepeatCount = 1; return true;
 				}
 			}
-			if( typeof(TzarGames.GameCore.INetworkSceneLoadingRpc).IsAssignableFrom(rpcHandlerType))
-			{
-				info = new RemoteCallInfo(12,0, ChannelType.Reliable, MessageDeliveryOptions.Default, 1);
-				switch(method.Name)
-				{
-					case "NotifySceneLoadingStateChanged": info.MethodCode = 0; info.Channel = ChannelType.Reliable; info.Options = MessageDeliveryOptions.Default; info.RepeatCount = 1; return true;
-				}
-			}
 			if(rpcHandlerType == typeof(TzarGames.GameCore.LevelSystem))
 			{
 				info = new RemoteCallInfo(11,0, ChannelType.Reliable, MessageDeliveryOptions.Default, 1);
 				switch(method.Name)
 				{
 					case "OnLevelUpEvent": info.MethodCode = 0; info.Channel = ChannelType.Reliable; info.Options = MessageDeliveryOptions.Default; info.RepeatCount = 1; return true;
+				}
+			}
+			if( typeof(TzarGames.GameCore.IItemTakenRpcHandler).IsAssignableFrom(rpcHandlerType))
+			{
+				info = new RemoteCallInfo(8,0, ChannelType.Reliable, MessageDeliveryOptions.Default, 1);
+				switch(method.Name)
+				{
+					case "NotifyDroppedItemTaken": info.MethodCode = 0; info.Channel = ChannelType.Reliable; info.Options = MessageDeliveryOptions.Default; info.RepeatCount = 1; return true;
+				}
+			}
+			if( typeof(TzarGames.GameCore.INetworkSceneLoadingRpc).IsAssignableFrom(rpcHandlerType))
+			{
+				info = new RemoteCallInfo(12,0, ChannelType.Reliable, MessageDeliveryOptions.Default, 1);
+				switch(method.Name)
+				{
+					case "NotifySceneLoadingStateChanged": info.MethodCode = 0; info.Channel = ChannelType.Reliable; info.Options = MessageDeliveryOptions.Default; info.RepeatCount = 1; return true;
 				}
 			}
 			if(rpcHandlerType == typeof(TzarGames.GameCore.MessageDispatcherSystem))
@@ -116,28 +116,6 @@ namespace TzarGames.MultiplayerKit.Generated
 					#endif
 				}
 			}
-			if(handlerCode == 8)
-			{
-				if(target is TzarGames.GameCore.IItemTakenRpcHandler == false)
-				{
-					return false;
-				}
-				switch(rpcCode)
-				{
-					#if !UNITY_SERVER
-					case 0:
-					{
-						if(isServer) return false;
-						var stream = new ReadStream(ref reader);
-						System.Int32 itemId = stream.ReadInt();
-						Unity.Mathematics.float3 position = stream.ReadFloat3();
-						System.UInt32 count = stream.ReadUInt();
-						(target as TzarGames.GameCore.IItemTakenRpcHandler).NotifyDroppedItemTaken(itemId,position,count);
-						return true;
-					}
-					#endif
-				}
-			}
 			if(handlerCode == 16)
 			{
 				if(target.GetType() != typeof(TzarGames.GameCore.ActivateItemRequestSystem))
@@ -154,27 +132,6 @@ namespace TzarGames.MultiplayerKit.Generated
 						System.Boolean activate = stream.ReadStruct<System.Boolean>();
 						TzarGames.MultiplayerKit.NetMessageInfo callData = new NetMessageInfo() { Sender = sender, SenderEntity = senderEntity };
 						(target as TzarGames.GameCore.ActivateItemRequestSystem).OnServer_ActivateItem(itemNetId,activate,callData);
-						return true;
-					}
-					#endif
-				}
-			}
-			if(handlerCode == 12)
-			{
-				if(target is TzarGames.GameCore.INetworkSceneLoadingRpc == false)
-				{
-					return false;
-				}
-				switch(rpcCode)
-				{
-					#if UNITY_SERVER || UNITY_EDITOR
-					case 0:
-					{
-						var stream = new ReadStream(ref reader);
-						TzarGames.GameCore.PrefabID sceneId = stream.ReadStruct<TzarGames.GameCore.PrefabID>();
-						System.Boolean isLoaded = stream.ReadStruct<System.Boolean>();
-						TzarGames.MultiplayerKit.NetMessageInfo messageInfo = new NetMessageInfo() { Sender = sender, SenderEntity = senderEntity };
-						(target as TzarGames.GameCore.INetworkSceneLoadingRpc).NotifySceneLoadingStateChanged(sceneId,isLoaded,messageInfo);
 						return true;
 					}
 					#endif
@@ -197,6 +154,49 @@ namespace TzarGames.MultiplayerKit.Generated
 						System.UInt16 prevLevel = stream.ReadUShort();
 						System.UInt16 currentLevel = stream.ReadUShort();
 						(target as TzarGames.GameCore.LevelSystem).OnLevelUpEvent(networkID,prevLevel,currentLevel);
+						return true;
+					}
+					#endif
+				}
+			}
+			if(handlerCode == 8)
+			{
+				if(target is TzarGames.GameCore.IItemTakenRpcHandler == false)
+				{
+					return false;
+				}
+				switch(rpcCode)
+				{
+					#if !UNITY_SERVER
+					case 0:
+					{
+						if(isServer) return false;
+						var stream = new ReadStream(ref reader);
+						System.Int32 itemId = stream.ReadInt();
+						Unity.Mathematics.float3 position = stream.ReadFloat3();
+						System.UInt32 count = stream.ReadUInt();
+						(target as TzarGames.GameCore.IItemTakenRpcHandler).NotifyDroppedItemTaken(itemId,position,count);
+						return true;
+					}
+					#endif
+				}
+			}
+			if(handlerCode == 12)
+			{
+				if(target is TzarGames.GameCore.INetworkSceneLoadingRpc == false)
+				{
+					return false;
+				}
+				switch(rpcCode)
+				{
+					#if UNITY_SERVER || UNITY_EDITOR
+					case 0:
+					{
+						var stream = new ReadStream(ref reader);
+						TzarGames.GameCore.PrefabID sceneId = stream.ReadStruct<TzarGames.GameCore.PrefabID>();
+						System.Boolean isLoaded = stream.ReadStruct<System.Boolean>();
+						TzarGames.MultiplayerKit.NetMessageInfo messageInfo = new NetMessageInfo() { Sender = sender, SenderEntity = senderEntity };
+						(target as TzarGames.GameCore.INetworkSceneLoadingRpc).NotifySceneLoadingStateChanged(sceneId,isLoaded,messageInfo);
 						return true;
 					}
 					#endif

@@ -61,6 +61,26 @@ namespace Arena
                         }
                     }
                     
+                    if(SystemAPI.HasComponent<Shield>(itemEntity))
+                    {
+                        if(state.Activated)
+                        {
+                            if(equipment.LeftHandShield == Entity.Null)
+                            {
+                                equipment.LeftHandShield = itemEntity;
+                                equipmentChanged = true;
+                            }
+                        }
+                        else
+                        {
+                            if(equipment.LeftHandShield == itemEntity)
+                            {
+                                equipment.LeftHandShield = Entity.Null;
+                                equipmentChanged = true;
+                            }
+                        }
+                    }
+                    
                     if(SystemAPI.HasComponent<Bow>(itemEntity))
                     {
                         if(state.Activated)

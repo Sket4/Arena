@@ -35,7 +35,9 @@ namespace Arena.Client.Presentation
         }
     }
 
+    #if UNITY_EDITOR
     [WorldSystemFilter(WorldSystemFilterFlags.BakingSystem)]
+    [UpdateAfter(typeof(TzarGames.Rendering.Baking.RendererBakingSystem))]
     partial class CopyAmbientLightBakingSystem : SystemBase
     {
         protected override void OnUpdate()
@@ -44,6 +46,7 @@ namespace Arena.Client.Presentation
             
             Entities
                 .WithEntityQueryOptions(EntityQueryOptions.IncludePrefab | EntityQueryOptions.IncludeDisabledEntities)
+                .WithDisabled<LightProbeInterpolation>()
                 .WithAll<CopyAmbientLight, LightProbeInterpolation>()
                 .ForEach((Entity entity) =>
             {
@@ -54,4 +57,5 @@ namespace Arena.Client.Presentation
             ecb.Dispose();
         }
     }
+    #endif
 }

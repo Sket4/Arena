@@ -6,25 +6,23 @@ Shader "Hidden/DGX/DEFERRED"
     }
     SubShader
     {
-        ZTest NotEqual
+        ZTest Always
         ZWrite Off
         Cull Off
         
         //Blend One SrcAlpha, Zero One
         //BlendOp Add, Add
-        
-        Stencil 
-        {
-            Ref 128
-            Comp Equal
-            Pass Keep
-            Fail Keep
-            ZFail Keep
-        }
 
         Pass
         {
             Name "fog"
+            
+            Stencil 
+            {
+                Ref 128
+                Comp Equal
+            }
+            
             HLSLPROGRAM
             #pragma vertex vert
             #pragma fragment frag
@@ -50,6 +48,13 @@ Shader "Hidden/DGX/DEFERRED"
         Pass
         {
             Name "no fog"
+            
+            Stencil 
+            {
+                Ref 128
+                Comp Equal
+            }
+            
             HLSLPROGRAM
             #pragma vertex vert
             #pragma fragment frag

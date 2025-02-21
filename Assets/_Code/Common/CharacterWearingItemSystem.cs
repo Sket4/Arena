@@ -214,6 +214,30 @@ namespace Arena
                     }
                 }
                 
+                if(SystemAPI.HasComponent<Shield>(request.Item))
+                {
+                    if(request.Activate)
+                    {
+                        if(equipment.LeftHandShield != Entity.Null
+                           && equipment.LeftHandShield != request.Item
+                           && SystemAPI.HasComponent<ActivatedState>(equipment.LeftHandShield))
+                        {
+                            SystemAPI.SetComponent(equipment.LeftHandShield, new ActivatedState(false));
+                        }
+
+                        equipment.LeftHandShield = request.Item;
+                        equipmentChanged = true;
+                    }
+                    else
+                    {
+                        if(equipment.LeftHandShield == request.Item)
+                        {
+                            equipment.LeftHandShield = Entity.Null;
+                            equipmentChanged = true;
+                        }
+                    }
+                }
+                
                 if(SystemAPI.HasComponent<Bow>(request.Item))
                 {
                     if(request.Activate)

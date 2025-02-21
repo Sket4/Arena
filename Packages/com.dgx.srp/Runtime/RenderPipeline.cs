@@ -26,6 +26,9 @@ namespace DGX.SRP
         private static bool enableShadows_global = true;
         private static bool enableLights_global = true;
         public static bool IsLightsEnabled => enableLights_global;
+
+        public static event Action<Camera, CommandBuffer> OnBeforeDraw;
+        public static event Action<Camera, CommandBuffer> OnAfterDraw;
         
         class CameraData
         {
@@ -370,6 +373,8 @@ namespace DGX.SRP
                 cmd.SetGlobalTexture("_LinearDepth", rt.LinearDepth_ID);
                 cmd.SetGlobalTexture("_Depth", depthTextureID);
 
+                OnBeforeDraw?.Invoke(camera, cmd);
+
                 if (rt.RenderSettings.SkipDeferredPass == false)
                 {
                     // GBUFFER
@@ -381,7 +386,7 @@ namespace DGX.SRP
                 
                     cmd.SetRenderTarget(rt.GBufferIDs, depthTextureID);
                     cmd.ClearRenderTarget(true, 
-                        shouldClearColor,
+                        false,
                         camera.backgroundColor);
                 
                     context.ExecuteCommandBuffer(cmd); 
@@ -416,8 +421,11 @@ namespace DGX.SRP
 
                     SetupMatrixConstants(cmd, camera);
                     
-                    // для depth указываем любую другую текстуру, иначе она становится недоступной
-                    cmd.SetRenderTarget(colorTextureID, rt.GBuffer0TargetId);
+                    cmd.SetRenderTarget(colorTextureID, depthTextureID);
+                    if (shouldClearColor)
+                    {
+                        cmd.ClearRenderTarget(false, true, camera.backgroundColor);    
+                    }
 
                     if (lightRenderer.VisibleSpotLights.Count > 0)
                     {
@@ -516,6 +524,14 @@ namespace DGX.SRP
                     context.DrawGizmos(camera, GizmoSubset.PostImageEffects);
                 }
 #endif
+                if (OnAfterDraw != null)
+                {
+                    cmd = new CommandBuffer();
+                    cmd.name = "on after draw";
+                    OnBeforeDraw(camera, cmd);
+                    context.ExecuteCommandBuffer(cmd);
+                    cmd.Release();
+                }
                 
                 context.Submit();
 

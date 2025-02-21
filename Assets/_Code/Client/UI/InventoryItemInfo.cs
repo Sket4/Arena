@@ -27,6 +27,8 @@ namespace Arena.Client.UI
 		[SerializeField]
 		Image iconImage = default;
 
+		[SerializeField] private RawImage preview = default;
+
 		[SerializeField]
 		TextUI itemNameText = default;
 		
@@ -480,6 +482,26 @@ namespace Arena.Client.UI
 					return;
 				}
 				iconImage.sprite = value;
+			}
+		}
+
+		public Texture PreviewImage
+		{
+			get
+			{
+				if (preview == false)
+				{
+					return null;
+				}
+				return preview.texture;
+			}
+			set
+			{
+				if (preview == false)
+				{
+					return;
+				}
+				preview.texture = value;
 			}
 		}
 		

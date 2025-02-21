@@ -324,5 +324,27 @@ half DepthOnlyFragment(v2f_depthonly input) : SV_TARGET
 	return input.positionCS.z;
 }
 
+#ifdef ARENA_META_PASS 
+#include "Packages/com.unity.render-pipelines.core/ShaderLibrary/MetaPass.hlsl"
+             
+half4 FragmentMeta(v2f fragIn) : SV_Target
+{
+	UnityMetaInput metaInput;
+
+	half4 diffuse = tex2D(_BaseMap, fragIn.uv) * _BaseColor;
+                
+	metaInput.Albedo = diffuse.rgb;
+	metaInput.Emission = _EmissionColor.rgb;
+                
+	#ifdef EDITOR_VISUALIZATION
+	metaInput.VizUV = fragIn.VizUV;
+	metaInput.LightCoord = fragIn.LightCoord;
+	#endif
+
+	half4 result = UnityMetaFragment(metaInput);
+	return result;
+}
+#endif
+
 #endif //UG_COMMON_ENV_INCLUDED
 

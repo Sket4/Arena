@@ -214,26 +214,28 @@ Shader "Arena/Environment"
 //            ENDHLSL
 //        }
 //        
-//        Pass
-//        {
-//            Name "Meta"
-//            Tags { "LightMode" = "Meta" }
-//            
-//            Cull Off
-//            HLSLPROGRAM
-//
-//            #pragma target 2.0
-//            
-//            #pragma vertex UniversalVertexMeta
-//            #pragma fragment UniversalFragmentMetaCustom
-//            #pragma shader_feature_local_fragment _ALPHATEST_ON
-//            #pragma shader_feature_local _ _DETAIL_MULX2 _DETAIL_SCALED
-//            #pragma shader_feature EDITOR_VISUALIZATION
-//            
-//            #include "Input-Env.hlsl"
-//            #include "Packages/com.tzargames.rendering/Shaders/MetaPass.hlsl"
-//            
-//            ENDHLSL
-//        }
+        Pass
+        {
+            Name "Meta"
+            Tags { "LightMode" = "Meta" }
+            
+            Cull Off
+            HLSLPROGRAM
+
+            #pragma target 2.0
+
+            #define ARENA_META_PASS
+            
+            #pragma vertex env_vert
+            #pragma fragment FragmentMeta
+            #pragma shader_feature_local_fragment _ALPHATEST_ON
+            #pragma shader_feature_local _ _DETAIL_MULX2 _DETAIL_SCALED
+            #pragma shader_feature EDITOR_VISUALIZATION
+           
+            #include "Input-Env.hlsl"
+            #include "Common-Env.hlsl"
+            
+            ENDHLSL
+        }
     }
 }

@@ -1,4 +1,6 @@
 using TzarGames.GameCore;
+using Unity.Burst;
+using Unity.Collections;
 using Unity.Entities;
 using UnityEngine;
 
@@ -25,4 +27,47 @@ namespace Arena.Client.PreviewRendering
             serializedData.RenderLayer = gameObject.layer;
         }
     }
+    
+    #if UNITY_EDITOR
+    [BurstCompile]
+    [WorldSystemFilter(WorldSystemFilterFlags.BakingSystem)]
+    [UpdateAfter(typeof(TzarGames.Rendering.Baking.RendererBakingSystem))]
+    public partial struct PreviewRenderingBakingSystem : ISystem
+    {
+        private EntityQuery renderFilterSettingsQuery;
+        private EntityQuery previewRenderSettingsQuery;
+        
+        public void OnCreate(ref SystemState state)
+        {
+            renderFilterSettingsQuery = state.GetEntityQuery(new EntityQueryDesc
+            {
+                All = new [] { ComponentType.ReadWrite<TzarGames.Rendering.RenderFilterSettings>() },
+                Options = EntityQueryOptions.IncludePrefab | EntityQueryOptions.IncludeDisabledEntities
+            });
+            previewRenderSettingsQuery = state.GetEntityQuery(ComponentType.ReadOnly<PreviewRenderingSettings>());
+            
+            state.RequireForUpdate<PreviewRenderingSettings>();
+        }
+
+        public void OnUpdate(ref SystemState state)
+        {
+            var settings = previewRenderSettingsQuery.GetSingleton<PreviewRenderingSettings>();
+            
+            updateRenderFilterSettings(settings, ref state);
+        }
+        
+        void updateRenderFilterSettings(PreviewRenderingSettings settings, ref SystemState state)
+        {
+            var filterChunks = renderFilterSettingsQuery.ToArchetypeChunkArray(Allocator.Temp);
+            var filterTypeHandle = state.GetSharedComponentTypeHandle<TzarGames.Rendering.RenderFilterSettings>();
+
+            foreach (var filterChunk in filterChunks)
+            {
+                var filterSettings = filterChunk.GetSharedComponent(filterTypeHandle);
+                filterSettings.Layer = settings.RenderLayer;
+                state.EntityManager.SetSharedComponent(filterChunk, filterSettings);
+            }
+        }
+    }
+    #endif
 }

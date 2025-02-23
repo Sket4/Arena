@@ -57,14 +57,14 @@ Shader "Arena/Environment"
             Cull[_Cull]
             ZWrite[_ZWrite]
             
-            Stencil 
-            {
-                Ref 128
-                Comp Always
-                Pass Replace
-                Fail Keep
-                ZFail Keep
-            }
+//            Stencil 
+//            {
+//                Ref 128
+//                Comp Always
+//                Pass Replace
+//                Fail Keep
+//                ZFail Keep
+//            }
             
             HLSLPROGRAM
             #pragma target 4.5

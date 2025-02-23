@@ -368,6 +368,10 @@ namespace Arena
                     if (SystemAPI.HasComponent<Consumable>(itemToPurchasePrefab))
                     {
                         var instance = commands.Instantiate(entityInQueryIndex, itemToPurchasePrefab);
+                        if (SystemAPI.HasComponent<SyncedColor>(itemToPurchasePrefab))
+                        {
+                            commands.SetComponent(entityInQueryIndex, instance, new SyncedColor(itemsToPurchase[it].Color));
+                        }
                         commands.SetComponent(entityInQueryIndex, instance, new Consumable { Count = (uint)itemsToPurchase[it].Count });
                         toAdd.Add(new ItemsToAdd { Item = instance });
                     }
@@ -376,6 +380,10 @@ namespace Arena
                         for (int c = 0; c < itemsToPurchase[it].Count; c++)
                         {
                             var instance = commands.Instantiate(entityInQueryIndex, itemToPurchasePrefab);
+                            if (SystemAPI.HasComponent<SyncedColor>(itemToPurchasePrefab))
+                            {
+                                commands.SetComponent(entityInQueryIndex, instance, new SyncedColor(itemsToPurchase[it].Color));
+                            }
                             toAdd.Add(new ItemsToAdd { Item = instance });
                         }
                     }

@@ -141,7 +141,7 @@ namespace Arena.Client
                 
                 var storeSystem = EntityManager.World.GetExistingSystemManaged<StoreSystem>();
                 var list = new NativeArray<PurchaseRequest_Item>(1, Allocator.Temp);
-                list[0] = new PurchaseRequest_Item { ItemID = itemID, Count = count };
+                list[0] = new PurchaseRequest_Item { ItemID = itemID, Count = count, Color = Color.white };
                 purchaseTask = storeSystem.RequestPuchase(playerEntity, store, list);
             }
 

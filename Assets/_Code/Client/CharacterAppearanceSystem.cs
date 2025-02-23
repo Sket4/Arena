@@ -62,39 +62,47 @@ namespace Arena.Client
                 .WithoutBurst()
                 .WithChangeFilter<CharacterEquipment>()
                 .ForEach((Entity entity, in CharacterEquipment equipment) =>
-            {
-                if (equipment.ArmorSet == Entity.Null)
                 {
-                    return;
-                }
-
-                if(EntityManager.HasComponent<CharacterEquipmentAppearanceState>(entity) == false)
-                {
-                    var newState = new CharacterEquipmentAppearanceState
+                    var hasAppearanceState = EntityManager.HasComponent<CharacterEquipmentAppearanceState>(entity);
+                    
+                    if (equipment.ArmorSet == Entity.Null)
                     {
-                        ArmorSetEntity = equipment.ArmorSet
-                    };
-                    EntityManager.AddComponentData(entity, newState);
-                    return;
-                }
+                        if (hasAppearanceState == false)
+                        {
+                            return;
+                        }
+                    }
 
-                var state = EntityManager.GetComponentData<CharacterEquipmentAppearanceState>(entity);
+                    if(hasAppearanceState == false)
+                    {
+                        var newState = new CharacterEquipmentAppearanceState
+                        {
+                            ArmorSetEntity = equipment.ArmorSet
+                        };
+                        EntityManager.AddComponentData(entity, newState);
+                        return;
+                    }
 
-                if(state.ArmorSetEntity == equipment.ArmorSet)
-                {
-                    return;
-                }
-                state.ArmorSetEntity = equipment.ArmorSet;
-                EntityManager.SetComponentData(entity, state);
+                    var state = EntityManager.GetComponentData<CharacterEquipmentAppearanceState>(entity);
 
-                if(EntityManager.HasComponent<CharacterAppearanceState>(equipment.RightHandWeapon))
-                {
-                    destroyItemAppearance(equipment.RightHandWeapon, EntityManager.GetComponentData<CharacterAppearanceState>(equipment.RightHandWeapon));
-                }
-                if(EntityManager.HasComponent<CharacterAppearanceState>(equipment.LeftHandShield))
-                {
-                    destroyItemAppearance(equipment.LeftHandShield, EntityManager.GetComponentData<CharacterAppearanceState>(equipment.LeftHandShield));
-                }
+                    if(state.ArmorSetEntity == equipment.ArmorSet)
+                    {
+                        return;
+                    }
+                    state.ArmorSetEntity = equipment.ArmorSet;
+                    state.HairModelEntity = Entity.Null;
+                    state.HeadModelEntity = Entity.Null;
+                    
+                    EntityManager.SetComponentData(entity, state);
+
+                    if(EntityManager.HasComponent<CharacterAppearanceState>(equipment.RightHandWeapon))
+                    {
+                        destroyItemAppearance(equipment.RightHandWeapon, EntityManager.GetComponentData<CharacterAppearanceState>(equipment.RightHandWeapon));
+                    }
+                    if(EntityManager.HasComponent<CharacterAppearanceState>(equipment.LeftHandShield))
+                    {
+                        destroyItemAppearance(equipment.LeftHandShield, EntityManager.GetComponentData<CharacterAppearanceState>(equipment.LeftHandShield));
+                    }
 
             }).Run();
 
@@ -613,6 +621,12 @@ namespace Arena.Client
                 for (int c = 0; c < chunk.Count; c++)
                 {
                     var appearance = appearances[c];
+
+                    if (appearance.ArmorSetEntity == Entity.Null)
+                    {
+                        continue;
+                    }
+                    
                     var hairstyle = hairstyles[c];
                     var haircolor = haircolors[c];
                     
@@ -726,6 +740,12 @@ namespace Arena.Client
                 for (int c = 0; c < chunk.Count; c++)
                 {
                     var appearance = appearances[c];
+
+                    if (appearance.ArmorSetEntity == Entity.Null)
+                    {
+                        continue;
+                    }
+                    
                     var head = heads[c];
                     var gender = genders[c];
                     var skinColor = skinColors[c];

@@ -10,18 +10,18 @@ Shader "Hidden/DGX/DEFERRED"
         ZWrite Off
         Cull Off
         
+//        Stencil 
+//        {
+//            Ref 128
+//            Comp Equal
+//        }
+        
         //Blend One SrcAlpha, Zero One
         //BlendOp Add, Add
 
         Pass
         {
             Name "fog"
-            
-            Stencil 
-            {
-                Ref 128
-                Comp Equal
-            }
             
             HLSLPROGRAM
             #pragma vertex vert
@@ -48,13 +48,7 @@ Shader "Hidden/DGX/DEFERRED"
         Pass
         {
             Name "no fog"
-            
-            Stencil 
-            {
-                Ref 128
-                Comp Equal
-            }
-            
+
             HLSLPROGRAM
             #pragma vertex vert
             #pragma fragment frag

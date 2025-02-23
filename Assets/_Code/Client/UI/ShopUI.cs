@@ -13,6 +13,7 @@ using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.Localization.Settings;
 using UnityEngine.UI;
+using UnityEngine.UI.Extensions.ColorPicker;
 
 namespace Arena.Client.UI
 {
@@ -32,6 +33,15 @@ namespace Arena.Client.UI
 
         [SerializeField]
         TextUI rubyText = default;
+
+        [SerializeField] private Button pickColorButton;
+
+        [SerializeField] private ColorPickerControl colorPicker;
+        [SerializeField] private GameObject itemInfoStack;
+
+        private Dictionary<Entity, Color> pickedColors = new();
+
+        private Color selectedColor = Color.white;
 
         /// <summary>
         ///  SERIALIZEME
@@ -77,6 +87,8 @@ namespace Arena.Client.UI
                 InitializeItems();
                 showItems(true, 0);
             }
+            
+            colorPicker.gameObject.SetActive(false);
 
             updateUI();
         }
@@ -84,7 +96,48 @@ namespace Arena.Client.UI
         protected override void OnHidden()
         {
             base.OnHidden();
-            PreviewRenderGameWorldLauncher.Instance.EnableRendering = false;
+            if (PreviewRenderGameWorldLauncher.Instance)
+            {
+                PreviewRenderGameWorldLauncher.Instance.EnableRendering = false;    
+            }
+        }
+
+        protected override void Awake()
+        {
+            base.Awake();
+            colorPicker.onValueChanged.AddListener((color) =>
+            {
+                if (colorPicker.gameObject.activeSelf == false)
+                {
+                    return;
+                }
+                var c = (Color32)color;
+                PreviewRenderGameWorldLauncher.Instance.ChangeColor(new PackedColor(c.r, c.g, c.b));
+            });
+        }
+
+        public void OnPickColorClicked()
+        {
+            colorPicker.gameObject.SetActive(true);
+            colorPicker.CurrentColor = selectedColor;
+            itemInfoStack.SetActive(false);
+        }
+
+        public void OnPickColorCancel()
+        {
+            colorPicker.gameObject.SetActive(false);
+            itemInfoStack.SetActive(true);
+            var c32 = (Color32)selectedColor;
+            PreviewRenderGameWorldLauncher.Instance.ChangeColor(new PackedColor(c32.r, c32.g, c32.b, 1));
+        }
+
+        public void OnPickColorApply()
+        {
+            colorPicker.gameObject.SetActive(false);
+            itemInfoStack.SetActive(true);
+            selectedColor = colorPicker.CurrentColor;
+            
+            pickedColors[shopItemInfo.Item] = selectedColor;
         }
 
         private void showItems(bool sort, byte groupID)
@@ -236,7 +289,6 @@ namespace Arena.Client.UI
             
             var itemDatabase = GetBuffer<IdToEntity>(itemDatabaseEntity);
             var items = GetBuffer<StoreItems>(storeEntity);
-            var inventory = GetBuffer<InventoryElement>();
             
             foreach (var item in items)
             {
@@ -283,7 +335,30 @@ namespace Arena.Client.UI
             updateItemExistance(inventory);
             
             var item = GetData<Item>(currentSelectedItem.ItemPrefab);
-            PreviewRenderGameWorldLauncher.Instance.ShowPreviewItem(item.ID);
+            PackedColor color;
+
+            if (HasData<SyncedColor>(currentSelectedItem.ItemPrefab))
+            {
+                pickColorButton.gameObject.SetActive(true);
+                color = GetData<SyncedColor>(currentSelectedItem.ItemPrefab).Value;
+            }
+            else
+            {
+                pickColorButton.gameObject.SetActive(false);
+                color = PackedColor.White;
+            }
+
+            if (pickedColors.TryGetValue(shopItemInfo.Item, out var pickedColor))
+            {
+                var c32 = (Color32)pickedColor;
+                color = new PackedColor(c32.r, c32.g, c32.b, 1);
+            }
+            
+            var c = (Color)new Color32(color.r, color.g, color.b, 1);
+            selectedColor = c;
+            colorPicker.CurrentColor = c;
+            PreviewRenderGameWorldLauncher.Instance.ShowPreviewItemWithColor(item.ID, color);
+            shopItemInfo.ShowPreviewWithFading();
         }
 
         void updateItemExistance(in DynamicBuffer<InventoryElement> inventory)
@@ -355,7 +430,12 @@ namespace Arena.Client.UI
                 var storeSystem = EntityManager.World.GetExistingSystemManaged<StoreSystem>();
                 var pc = GetData<PlayerController>();
                 var list = new NativeArray<PurchaseRequest_Item>(1, Allocator.Temp);
-                list[0] = new PurchaseRequest_Item { ItemID = itemID, Count = 1 };
+                list[0] = new PurchaseRequest_Item
+                {
+                    ItemID = itemID, 
+                    Count = 1,
+                    Color = selectedColor
+                };
                 var result = await storeSystem.RequestPuchase(pc.Value, store, list);
 
                 Debug.Log($"Результат покупки {result}");

@@ -425,8 +425,8 @@ MonoBehaviour:
   SkyColor: {r: 0.504717, g: 0.80479944, b: 1, a: 1}
   EnvColor1: {r: 0.6132076, g: 0.6132076, b: 0.6132076, a: 1}
   EnvColor2: {r: 0.4716981, g: 0.4716981, b: 0.4716981, a: 1}
-  EnvColor3: {r: 0.6104956, g: 0.6104956, b: 0.6104956, a: 1}
-  EnvColor4: {r: 0.49056602, g: 0.488252, b: 0.488252, a: 1}
+  EnvColor3: {r: 1, g: 1, b: 1, a: 1}
+  EnvColor4: {r: 0.34191445, g: 0.34191445, b: 0.34191445, a: 1}
   GroundColor: {r: 0.33962262, g: 0.33962262, b: 0.33962262, a: 1}
 --- !u!4 &624808149
 Transform:
@@ -824,6 +824,7 @@ GameObject:
   - component: {fileID: 1609894408}
   - component: {fileID: 1609894407}
   - component: {fileID: 1609894406}
+  - component: {fileID: 1609894410}
   m_Layer: 0
   m_Name: Item pivot
   m_TagString: Untagged
@@ -1381,7 +1382,7 @@ MonoBehaviour:
         Name: Angle per second
         NetSyncEnabled: 0
         IsHidden: 0
-        Value: 90
+        Value: 45
     - rid: 8443441604583489556
       type: {class: GetFloatVarCommandNode, ns: TzarGames.GameCore.ScriptViz.Graph, asm: TzarGames.GameCore}
       data:
@@ -1775,6 +1776,19 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1609894410
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1609894405}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 494c8da93ed4fa542ab64a4b1e922fee, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ConversionTargetOptions: -1
 --- !u!1 &1995118823
 GameObject:
   m_ObjectHideFlags: 0
@@ -1785,6 +1799,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1995118825}
   - component: {fileID: 1995118826}
+  - component: {fileID: 1995118827}
   m_Layer: 0
   m_Name: Main database
   m_TagString: Untagged
@@ -1822,6 +1837,20 @@ MonoBehaviour:
   ConversionTargetOptions: -1
   prefabStore: {fileID: 11400000, guid: d3e687d2446daa9409a80eb8bc965277, type: 2}
   addMainDatabaseTag: 1
+--- !u!114 &1995118827
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1995118823}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3e33c52ec99a84d4caa3daac11ea4326, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ConversionTargetOptions: -1
+  playerPrefab: {fileID: 7973009855572457803, guid: 709759d6d50fadb4ab72406e658ed872, type: 2}
 --- !u!1 &1998065213
 GameObject:
   m_ObjectHideFlags: 0

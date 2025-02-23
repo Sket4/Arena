@@ -1,4 +1,5 @@
 using Unity.Entities;
+using UnityEngine;
 
 namespace Arena
 {
@@ -34,5 +35,6 @@ namespace Arena
     {
         public int ItemID;
         public int Count;
+        public Color Color;
     }
 }

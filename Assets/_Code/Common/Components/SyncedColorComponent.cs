@@ -25,7 +25,15 @@ namespace Arena
         }
     }
     
+    [UseDefaultInspector]
     public class SyncedColorComponent : ComponentDataBehaviour<SyncedColor>
     {
+        public Color Color = Color.white;
+        
+        protected override void Bake<K>(ref SyncedColor serializedData, K baker)
+        {
+            base.Bake(ref serializedData, baker);
+            serializedData = new SyncedColor(Color);
+        }
     }
 }

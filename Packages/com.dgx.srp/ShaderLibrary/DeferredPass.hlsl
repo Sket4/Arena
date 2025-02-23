@@ -73,6 +73,7 @@ SAMPLER_CMP(SHADOW_SAMPLER);
 
 #define UNITY_DECLARE_TEX2D_FLOAT(tex) TEXTURE2D_FLOAT(tex); SAMPLER(sampler##tex)
 UNITY_DECLARE_TEX2D_FLOAT(_Depth);
+UNITY_DECLARE_TEX2D_FLOAT(_LinearDepth);
 
 real ComputeFogFactorZ0ToFar(float z)
 {
@@ -263,9 +264,8 @@ half4 frag (v2f i) : SV_Target
     float4 g1 = tex2D(_GT1, screen_uv.xy);
 
     SurfaceHalf surface = GBufferToSurfaceHalf(g0, g1);
-
+    
     float rawDepth = _Depth.Sample(sampler_Depth, screen_uv.xy).r;
-    //float eyeDepth = LinearEyeDepth(rawDepth, _ZBufferParams);
     
     float3 worldPos = WorldSpacePositionFromDepth(screen_uv, rawDepth);
 
@@ -294,14 +294,16 @@ half4 frag (v2f i) : SV_Target
     half viewDirDistanceSq = dot(viewDirWithDistance,viewDirWithDistance);
     drawShadows(worldPos, viewDirDistanceSq, surface, result.rgb);
     #endif
-    
-    #ifdef DGX_FOG_ENABLED
+
     float linDepth = Linear01Depth(rawDepth, _ZBufferParams);
+    #ifdef DGX_FOG_ENABLED
+    //float linDepth = _LinearDepth.Sample(sampler_LinearDepth, screen_uv.xy).r;
     float dist = ComputeFogDistance(linDepth);
     half fog = ComputeFogFactorZ0ToFar(dist);
     result.rgb = MixFog(result.rgb, unity_FogColor.rgb, fog);
     #endif
     //result.rgb = worldPos.xyz;
+    result.a = (1.0 - linDepth) * 4;
 
     return result; 
 }

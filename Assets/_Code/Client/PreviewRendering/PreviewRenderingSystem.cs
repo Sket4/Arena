@@ -4,6 +4,7 @@ using Unity.Burst;
 using Unity.Collections;
 using Unity.Entities;
 using Unity.Mathematics;
+using Unity.Physics;
 using Unity.Transforms;
 using UnityEngine;
 
@@ -12,6 +13,12 @@ namespace Arena.Client.PreviewRendering
     public struct CreatePreviewItemRequest : IComponentData
     {
         public int PrefabID;
+        public PackedColor Color;
+    }
+
+    public struct ChangeColorRequest : IComponentData
+    {
+        public PackedColor Color;
     }
 
     public struct PreviewItemInstance : IComponentData
@@ -26,48 +33,120 @@ namespace Arena.Client.PreviewRendering
     {
         private EntityQuery previewSettingsQuery;
         private EntityQuery databaseQuery;
-        private EntityQuery requestsQuery;
+        private EntityQuery createItemRequestsQuery;
+        private EntityQuery changeColorRequestsQuery;
         private EntityQuery previewCameraQuery;
-        private EntityQuery renderFilterSettingsQuery;
+        private EntityQuery inventoryQuery;
+        private Aabb characterBounds;
+        private bool isCharacterBoundsCalculated;
 
         public void OnCreate(ref SystemState state)
         {
             previewSettingsQuery = state.GetEntityQuery(ComponentType.ReadOnly<PreviewRenderingSettings>());
             databaseQuery = state.GetEntityQuery(ComponentType.ReadOnly<MainDatabaseTag>(), ComponentType.ReadOnly<IdToEntity>());
-            requestsQuery = state.GetEntityQuery(ComponentType.ReadOnly<CreatePreviewItemRequest>());
-            previewCameraQuery = state.GetEntityQuery(ComponentType.ReadOnly<PreviewCamera>());
-            state.RequireForUpdate<PreviewRenderingSettings>();
-            state.RequireForUpdate<IdToEntity>();
-            
-            renderFilterSettingsQuery = state.GetEntityQuery(new EntityQueryDesc
+            createItemRequestsQuery = state.GetEntityQuery(ComponentType.ReadOnly<CreatePreviewItemRequest>());
+            changeColorRequestsQuery = state.GetEntityQuery(ComponentType.ReadOnly<ChangeColorRequest>());
+            previewCameraQuery = state.GetEntityQuery(new EntityQueryDesc
             {
-                All = new [] { ComponentType.ReadWrite<RenderFilterSettings>() },
+                All = new [] { ComponentType.ReadOnly<PreviewCamera>() },
                 Options = EntityQueryOptions.IncludePrefab | EntityQueryOptions.IncludeDisabledEntities
             });
+            inventoryQuery = state.GetEntityQuery(ComponentType.ReadOnly<InventoryElement>());
+            
+            state.RequireForUpdate<PreviewRenderingSettings>();
+            state.RequireForUpdate<IdToEntity>();
         }
-
-        void updateRenderFilterSettings(PreviewRenderingSettings settings, ref SystemState state)
+        
+        void createArmorSet(EntityManager em, Entity armorSetPrefab, PackedColor color, EntityCommandBuffer commands)
         {
-            var filterChunks = renderFilterSettingsQuery.ToArchetypeChunkArray(Allocator.Temp);
-            var filterTypeHandle = state.GetSharedComponentTypeHandle<RenderFilterSettings>();
+            var prefabId = em.GetComponentData<Item>(armorSetPrefab);
+            var inventoryEntity = inventoryQuery.GetSingletonEntity();
+            var inventory = em.GetBuffer<InventoryElement>(inventoryEntity);
 
-            foreach (var filterChunk in filterChunks)
+            var existingItem = Entity.Null;
+            
+            foreach (var element in inventory)
             {
-                var filterSettings = filterChunk.GetSharedComponent(filterTypeHandle);
-                filterSettings.Layer = settings.RenderLayer;
-                state.EntityManager.SetSharedComponent(filterChunk, filterSettings);
+                var item = em.GetComponentData<Item>(element.Entity);
+                if (item.ID == prefabId.ID)
+                {
+                    existingItem = element.Entity;
+                }
+                else
+                {
+                    if (em.HasComponent<ArmorSet>(element.Entity))
+                    {
+                        var state = em.GetComponentData<ActivatedState>(element.Entity);
+                        if (state.Activated)
+                        {
+                            commands.SetComponent(element.Entity, new ActivatedState(false));    
+                        }
+                    }    
+                }
+            }
+
+            if (existingItem != Entity.Null)
+            {
+                commands.SetComponent(existingItem, new ActivatedState(true));   
+            }
+            else
+            {
+                var instance = commands.Instantiate(armorSetPrefab);
+                commands.SetComponent(instance, new ActivatedState(true));
+
+                if (em.HasComponent<SyncedColor>(armorSetPrefab))
+                {
+                    commands.SetComponent(instance, new SyncedColor { Value = color });
+                }
+                
+                var transactionEntity = commands.CreateEntity();
+                commands.AddComponent<InventoryTransaction>(transactionEntity);
+                commands.AddComponent<EventTag>(transactionEntity);
+                commands.AddComponent(transactionEntity, new Target(inventoryEntity));
+                var itemsToAdd = commands.AddBuffer<ItemsToAdd>(transactionEntity);
+                itemsToAdd.Add(new ItemsToAdd(instance));
             }
         }
 
-        void processCreateRequests(EntityCommandBuffer commands, PreviewRenderingSettings settings, ref SystemState state)
+        void processChangeColorRequests(EntityCommandBuffer commands, PreviewRenderingSettings settings, ref SystemState state)
         {
-            if (requestsQuery.IsEmpty)
+            if (changeColorRequestsQuery.IsEmpty)
             {
                 return;
             }
-            commands.DestroyEntity(requestsQuery);
+            commands.DestroyEntity(changeColorRequestsQuery);
             
-            var requests = requestsQuery.ToComponentDataArray<CreatePreviewItemRequest>(Allocator.Temp);
+            var requests = changeColorRequestsQuery.ToComponentDataArray<ChangeColorRequest>(Allocator.Temp);
+
+            if (requests.Length > 1)
+            {
+                Debug.LogWarning("More than one change color requests");
+            }
+            var request = requests[requests.Length-1];
+
+            var em = state.EntityManager;
+
+            if (inventoryQuery.TryGetSingletonBuffer<InventoryElement>(out var inventory, true))
+            {
+                foreach (var item in inventory)
+                {
+                    if (em.HasComponent<SyncedColor>(item.Entity))
+                    {
+                        commands.SetComponent(item.Entity, new SyncedColor { Value = request.Color });
+                    }
+                }
+            }
+        }
+
+        bool processCreateRequests(EntityCommandBuffer commands, PreviewRenderingSettings settings, ref SystemState state)
+        {
+            if (createItemRequestsQuery.IsEmpty)
+            {
+                return false;
+            }
+            commands.DestroyEntity(createItemRequestsQuery);
+            
+            var requests = createItemRequestsQuery.ToComponentDataArray<CreatePreviewItemRequest>(Allocator.Temp);
 
             if (requests.Length > 1)
             {
@@ -81,15 +160,51 @@ namespace Arena.Client.PreviewRendering
             if (IdToEntity.TryGetEntityById(database, request.PrefabID, out var prefab) == false)
             {
                 Debug.LogError($"Failed to find prefab with id {request.PrefabID}");
-                return;
+                return false;
             }
 
             var em = state.EntityManager;
+
+            var hasPreviewInstance = em.HasComponent<PreviewItemInstance>(settings.ItemPivot);
+
+            if (hasPreviewInstance)
+            {
+                var instanceData = em.GetComponentData<PreviewItemInstance>(settings.ItemPivot);
+                
+                if (instanceData.Entity != Entity.Null)
+                {
+                    commands.DestroyEntity(instanceData.Entity);
+                }
+            }
+
+            if (em.HasComponent<ArmorSet>(prefab))
+            {
+                commands.SetComponent(settings.ItemPivot, new PreviewItemInstance
+                {
+                    Entity = Entity.Null
+                });
+                createArmorSet(em, prefab, request.Color, commands);
+                return true;
+            }
+
+            if (inventoryQuery.HasSingleton<InventoryElement>())
+            {
+                var inventoryEntity = inventoryQuery.GetSingletonEntity();
+                var inventory = em.GetBuffer<InventoryElement>(inventoryEntity);
+
+                foreach (var inventoryElement in inventory)
+                {
+                    if (em.HasComponent<ActivatedState>(inventoryElement.Entity))
+                    {
+                        commands.SetComponent(inventoryElement.Entity, new ActivatedState(false));
+                    }
+                }
+            }
             
             if (em.HasComponent<ActivatedItemAppearance>(prefab) == false)
             {
                 Debug.LogError($"no activated ite appearance on prefab {request.PrefabID}");
-                return;
+                return false;
             }
             var appearance = em.GetComponentData<ActivatedItemAppearance>(prefab);
             var instance = commands.Instantiate(appearance.Prefab);
@@ -100,16 +215,12 @@ namespace Arena.Client.PreviewRendering
             });
             commands.SetComponent(instance, LocalTransform.Identity);
 
-            if (em.HasComponent<PreviewItemInstance>(settings.ItemPivot))
+            if(hasPreviewInstance)
             {
-                var instanceData = em.GetComponentData<PreviewItemInstance>(settings.ItemPivot);
-                if (instanceData.Entity != Entity.Null)
+                commands.SetComponent(settings.ItemPivot, new PreviewItemInstance
                 {
-                    commands.DestroyEntity(instanceData.Entity);
-                }
-
-                instanceData.Entity = instance;
-                commands.SetComponent(settings.ItemPivot, instanceData);
+                    Entity = instance
+                });
             }
             else
             {
@@ -118,11 +229,20 @@ namespace Arena.Client.PreviewRendering
                     Entity = instance
                 });
             }
+            
+            return true;
         }
 
         void updateCamera(in PreviewRenderingSettings settings, ref SystemState state)
         {
             var em = state.EntityManager;
+            
+            var cameraEntity = previewCameraQuery.GetSingletonEntity();
+
+            if (em.HasComponent<Disabled>(cameraEntity))
+            {
+                return;
+            }
 
             if (em.HasComponent<PreviewItemInstance>(settings.ItemPivot) == false)
             {
@@ -130,6 +250,32 @@ namespace Arena.Client.PreviewRendering
             }
 
             var previewInstance = em.GetComponentData<PreviewItemInstance>(settings.ItemPivot).Entity;
+
+            if (previewInstance == Entity.Null)
+            {
+                if (isCharacterBoundsCalculated == false)
+                {
+                    if (inventoryQuery.HasSingleton<InventoryElement>())
+                    {
+                        var characterEntity = inventoryQuery.GetSingletonEntity();
+                        var collider = em.GetComponentData<PhysicsCollider>(characterEntity);
+                        var position = em.GetComponentData<LocalToWorld>(characterEntity).Position;
+                        characterBounds = collider.Value.Value.CalculateAabb(new RigidTransform(quaternion.identity, position));
+                        isCharacterBoundsCalculated = true;
+                    }
+                }
+
+                if (isCharacterBoundsCalculated)
+                {
+                    var camera = previewCameraQuery.GetSingletonEntity();
+                    em.SetComponentData(camera, new PreviewCamera
+                    {
+                        Center = characterBounds.Center,
+                        OrthoSize = characterBounds.Extents.y * 0.5f,
+                    });    
+                }
+                return;
+            }
                 
             if (em.HasBuffer<LinkedEntityGroup>(previewInstance) == false)
             {
@@ -155,7 +301,6 @@ namespace Arena.Client.PreviewRendering
                 return;
             }
             
-            var cameraEntity = previewCameraQuery.GetSingletonEntity();
             em.SetComponentData(cameraEntity, new PreviewCamera
             {
                 Center = bounds.center,
@@ -166,14 +311,40 @@ namespace Arena.Client.PreviewRendering
         public void OnUpdate(ref SystemState state)
         {
             var settings = previewSettingsQuery.GetSingleton<PreviewRenderingSettings>();
+
+            setCameraState(true, ref state);
             
             using (var ecb = new EntityCommandBuffer(Allocator.TempJob))
             {
-                processCreateRequests(ecb, settings, ref state);
+                if (processCreateRequests(ecb, settings, ref state))
+                {
+                    setCameraState(false, ref state);
+                }
+                processChangeColorRequests(ecb, settings, ref state);
                 updateCamera(settings, ref state);
-                updateRenderFilterSettings(settings, ref state);
                 
                 ecb.Playback(state.EntityManager);
+            }
+        }
+
+        void setCameraState(bool enabled, ref SystemState state)
+        {
+            if (previewCameraQuery.TryGetSingletonEntity<PreviewCamera>(out var entity))
+            {
+                if (enabled)
+                {
+                    if (state.EntityManager.HasComponent<Disabled>(entity))
+                    {
+                        state.EntityManager.RemoveComponent<Disabled>(entity);
+                    }
+                }
+                else
+                {
+                    if (state.EntityManager.HasComponent<Disabled>(entity) == false)
+                    {
+                        state.EntityManager.AddComponent<Disabled>(entity);
+                    }
+                }
             }
         }
     }
@@ -194,9 +365,17 @@ namespace Arena.Client.PreviewRendering
             var settings = SystemAPI.GetSingleton<PreviewRenderingSettings>();
             
             Entities
+                .WithEntityQueryOptions(EntityQueryOptions.IncludeDisabledEntities)
                 .WithoutBurst()
-                .ForEach((Camera camera, Transform transform, PreviewCamera cameraData) =>
+                .ForEach((Entity entity, Camera camera, Transform transform, PreviewCamera cameraData) =>
                 {
+                    if (EntityManager.HasComponent<Disabled>(entity))
+                    {
+                        camera.enabled = false;
+                        return;
+                    }
+                    camera.enabled = true;
+                    
                     var position = cameraData.Center + Vector3.forward * 3;
                     var rotation = quaternion.LookRotation(cameraData.Center - position, math.up());
 

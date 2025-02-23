@@ -129,15 +129,8 @@ namespace Arena.Client.UI.MainMenu
         IEnumerator initSceneWorld()
         {
             yield return WaitForSceneGameLoop(null);
-            Utils.AddSharedSystems(gameLauncher.GameLoop, true, "Menu");
-
-            gameLauncher.GameLoop.World.GetExistingSystemManaged<CharacterRotationSystem>().Enabled = false;
             
-            gameLauncher.GameLoop.AddGameSystem<CharacterAppearanceSystem>();
-            gameLauncher.GameLoop.AddGameSystemUnmanaged<CharacterAppearanceNativeSystem>();
-            gameLauncher.GameLoop.AddGameSystem<AnimationSystem>();
-            gameLauncher.GameLoop.AddGameSystem<CharacterModelSmoothMovementSystem>();
-            gameLauncher.GameLoop.AddGameSystem<MaterialRenderingSystem>(gameLauncher.GameLoop.World.GetExistingSystemManaged<PresentationSystemGroup>());
+            GameLoopUtils.AddSystemsForPlayerPreview(gameLauncher.GameLoop, "Menu");
 
             Debug.Log("start waiting for mesh and material loading");
             var renderingSystem = gameLauncher.GameLoop.World.GetExistingSystemManaged<RenderingSystem>();

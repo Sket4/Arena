@@ -25,14 +25,14 @@ Shader"Arena/Window"
             {
                 "LightMode" = "gbuffer" 
             }
-            Stencil 
-            {
-                Ref 128
-                Comp Always
-                Pass Replace
-                Fail Keep
-                ZFail Keep
-            }
+//            Stencil 
+//            {
+//                Ref 128
+//                Comp Always
+//                Pass Replace
+//                Fail Keep
+//                ZFail Keep
+//            }
             
             HLSLPROGRAM
             #pragma target 4.5

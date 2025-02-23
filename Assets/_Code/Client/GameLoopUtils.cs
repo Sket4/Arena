@@ -74,6 +74,20 @@ namespace Arena.Client
                 AddClientOnlySystems(client,isBot);
             }
         }
+        
+        public static void AddSystemsForPlayerPreview(GameLoopBase gameLoop, string systemTag)
+        {
+            Utils.AddSharedSystems(gameLoop, true, systemTag);
+
+            gameLoop.World.GetExistingSystemManaged<CharacterRotationSystem>().Enabled = false;
+            gameLoop.World.GetExistingSystemManaged<CharacterWearingItemRequestSystem>().ValidateWearRequests = false;
+            
+            gameLoop.AddGameSystem<CharacterAppearanceSystem>();
+            gameLoop.AddGameSystemUnmanaged<CharacterAppearanceNativeSystem>();
+            gameLoop.AddGameSystem<AnimationSystem>();
+            gameLoop.AddGameSystem<CharacterModelSmoothMovementSystem>();
+            gameLoop.AddGameSystem<MaterialRenderingSystem>(gameLoop.World.GetExistingSystemManaged<PresentationSystemGroup>());
+        }
 
         public static void AddClientOnlySystems(GameClient gameLoop, bool isBot)
         {

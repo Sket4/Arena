@@ -11,6 +11,7 @@ namespace DGX.SRP
         public RenderPipelineAsset Asset { get; }
 
         Material LightingPassMaterial;
+        Material LinearizeDepthMaterial;
         private Mesh fullscreenTriangle;
         private Mesh fullscreenQuad;
         private bool isOpenGL;
@@ -139,6 +140,18 @@ namespace DGX.SRP
                 }
             }
 
+            if (LinearizeDepthMaterial == false)
+            {
+                if (Asset.LinearizeDepthShader)
+                {
+                    LinearizeDepthMaterial = new Material(Asset.LinearizeDepthShader);
+                }
+                else
+                {
+                    LinearizeDepthMaterial = new Material(Shader.Find("Hidden/DGX/LINEARIZE_DEPTH"));
+                }
+            }
+
             if(fullscreenTriangle == false)
                 fullscreenTriangle = CreateFullscreenTriangle();
             if (fullscreenQuad == false)
@@ -160,6 +173,11 @@ namespace DGX.SRP
             if (LightingPassMaterial)
             {
                 destroyObject(ref LightingPassMaterial);
+            }
+
+            if (LinearizeDepthMaterial)
+            {
+                destroyObject(ref LinearizeDepthMaterial);
             }
             
             destroyObject(ref fullscreenTriangle);
@@ -410,7 +428,8 @@ namespace DGX.SRP
                     // LINEAR DEPTH
                     // cmd = new CommandBuffer();
                     // cmd.name = "Linearize depth";
-                    // cmd.Blit(rt.Depth, rt.LinearDepth);
+                    // cmd.SetGlobalVector("_BlitScaleBias", new Vector4(1,1,0,0));
+                    // cmd.Blit(rt.Depth, rt.LinearDepth, LinearizeDepthMaterial);
                     // context.ExecuteCommandBuffer(cmd);
                     // cmd.Release();
                     
@@ -421,7 +440,7 @@ namespace DGX.SRP
 
                     SetupMatrixConstants(cmd, camera);
                     
-                    cmd.SetRenderTarget(colorTextureID, depthTextureID);
+                    cmd.SetRenderTarget(colorTextureID, rt.GBuffer0TargetId);
                     if (shouldClearColor)
                     {
                         cmd.ClearRenderTarget(false, true, camera.backgroundColor);    
@@ -642,7 +661,7 @@ namespace DGX.SRP
                 rt.Depth.name = $"Depth ({name})";
                 rt.Depth_ID = rt.Depth;
                 
-                rt.LinearDepth = RenderTexture.GetTemporary(width, height, 0, RenderTextureFormat.RHalf, RenderTextureReadWrite.Linear);
+                rt.LinearDepth = RenderTexture.GetTemporary(width, height, 0, RenderTextureFormat.R16, RenderTextureReadWrite.Linear);
                 rt.LinearDepth.name = $"Linear depth ({name})";
                 rt.LinearDepth_ID = rt.LinearDepth;
 

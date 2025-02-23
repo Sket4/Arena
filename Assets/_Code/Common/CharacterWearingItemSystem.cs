@@ -7,6 +7,8 @@ namespace Arena
     [UpdateBefore(typeof(ActivateItemRequestSystem))]
     public partial class CharacterWearingItemRequestSystem : SystemBase
     {
+        public bool ValidateWearRequests { get; set; } = true;
+
         protected override void OnUpdate()
         {
             Entities
@@ -144,6 +146,8 @@ namespace Arena
 
             }).Schedule();
 
+            bool validate = ValidateWearRequests;
+
 
             Entities.ForEach((ref ActivateItemRequest request) =>
             {
@@ -185,7 +189,15 @@ namespace Arena
                             //#if UNITY_EDITOR
                             //UnityEngine.Debug.Log($"Нельзя деактивировать активный армор сет!");
                             //#endif
-                            request.State = ActivateItemRequestState.Cancelled;
+                            if (validate)
+                            {
+                                request.State = ActivateItemRequestState.Cancelled;    
+                            }
+                            else
+                            {
+                                equipment.ArmorSet = Entity.Null;
+                                equipmentChanged = true;
+                            }
                         }
                     }
                 }
@@ -209,7 +221,15 @@ namespace Arena
                         // нельзя деактивировать активное оружие, только заменить на другое
                         if(equipment.RightHandWeapon == request.Item)
                         {
-                            request.State = ActivateItemRequestState.Cancelled;
+                            if (validate)
+                            {
+                                request.State = ActivateItemRequestState.Cancelled;    
+                            }
+                            else
+                            {
+                                equipment.RightHandWeapon = Entity.Null;
+                                equipmentChanged = true;
+                            }
                         }
                     }
                 }
@@ -257,7 +277,15 @@ namespace Arena
                         // нельзя деактивировать активное оружие, только заменить на другое
                         if(equipment.LeftHandBow == request.Item)
                         {
-                            request.State = ActivateItemRequestState.Cancelled;
+                            if (validate)
+                            {
+                                request.State = ActivateItemRequestState.Cancelled;    
+                            }
+                            else
+                            {
+                                equipment.LeftHandBow = Entity.Null;
+                                equipmentChanged = true;
+                            }
                         }
                     }
                 }

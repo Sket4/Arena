@@ -130,6 +130,34 @@ namespace Arena.Client.UI
             }
         }
 
+        public void ShowPreviewWithFading()
+        {
+	        StartCoroutine(previewAnim());
+        }
+
+        IEnumerator previewAnim()
+        {
+	        var c = new Color(1, 1, 1, 0);
+	        
+	        preview.color = c;
+	        
+	        // костыль от избавления кадров, где позиция камеры еще не успела обновиться
+	        yield return null;
+	        
+	        while (true)
+	        {
+		        yield return null;
+		        c.a += Time.unscaledDeltaTime * 3;
+		        
+		        if (c.a >= 1.0)
+		        {
+			        preview.color = c;
+			        break;
+		        }
+		        preview.color = c;
+	        }
+        }
+
         void OnEnable()
         {
             updateSpriteAnimationState();

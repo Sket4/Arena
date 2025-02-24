@@ -3,7 +3,7 @@ Shader"Arena/Water"
     Properties
     {
         [Toggle(USE_THIRD_WAVE)]
-        _UseCustomFogColor("Use third wave", Float) = 1.0
+        _UseThirdWave("Use third wave", Float) = 1.0
         
         _Tiling_and_speed_1("Tiling and speed 1", Vector) = (1,1,1,1)
         _Tiling_and_speed_2("Tiling and speed 1", Vector) = (1,1,1,1)
@@ -12,6 +12,10 @@ Shader"Arena/Water"
         _PackedNormalMap ("Packed normal map", 2D) = "white" {}
         _Roughness("Roughness", Range(0,1)) = 1
         _Rim_mult("Rim multiplier", Float) = 1
+        
+        [Toggle(USE_LIGHTING_MULT)]
+        _UseLightingMult("Use lighting multiplier", Float) = 0.0
+        _LightingMult("Lighting multiplier", Float) = 1
         
         [Toggle(USE_LOWER_NORMAL_FOG)]
         _UseLowerNormalFogByFog("Lower normal strength by fog", Float) = 1
@@ -55,12 +59,13 @@ Shader"Arena/Water"
             // make fog work
             #pragma multi_compile_fog
             #pragma multi_compile _ DOTS_INSTANCING_ON
-            #pragma shader_feature __ USE_CUSTOM_REFLECTIONS
-            #pragma shader_feature __ USE_CUSTOM_FOG_COLOR
-            #pragma shader_feature __ USE_THIRD_WAVE
-            #pragma shader_feature __ USE_LOWER_NORMAL_FOG
-            #pragma shader_feature __ USE_FOG
-            #pragma shader_feature __ USE_FOAM
+            #pragma shader_feature _ USE_CUSTOM_REFLECTIONS
+            #pragma shader_feature _ USE_CUSTOM_FOG_COLOR
+            #pragma shader_feature _ USE_THIRD_WAVE
+            #pragma shader_feature _ USE_LOWER_NORMAL_FOG
+            #pragma shader_feature _ USE_FOG
+            #pragma shader_feature _ USE_FOAM
+            #pragma shader_feature_local_fragment _ USE_LIGHTING_MULT
             #pragma multi_compile _ LIGHTMAP_ON
             #pragma multi_compile _ DIRLIGHTMAP_COMBINED
             #pragma multi_compile_fragment _ ARENA_MAP_RENDER
@@ -122,6 +127,11 @@ Shader"Arena/Water"
                 half _Normal_Y_Scale;
                 half4 _FoamParameters;
                 half4 _FoamTex_ST;
+
+            //#if defined(USE_LIGHTING_MULT)
+                half _LightingMult;
+            //#endif
+            
             CBUFFER_END
 
 #if defined(DOTS_INSTANCING_ON)
@@ -276,6 +286,10 @@ Shader"Arena/Water"
     #endif
                     ARENA_DYN_LIGHT(normalWS, i.positionWS_fog.xyz, lighting, viewDirWS, reflColor, true);
 #endif
+
+                #ifdef USE_LIGHTING_MULT
+                lighting *= _LightingMult;
+                #endif
 
                 diffuse.rgb *= lighting;
 

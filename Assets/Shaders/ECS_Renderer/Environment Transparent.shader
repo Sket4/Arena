@@ -35,6 +35,7 @@ Shader "Arena/Environment Transparent"
         
         [HideInInspector][NoScaleOffset] unity_Lightmaps("unity_Lightmaps", 2DArray) = "" {}
         [HideInInspector][NoScaleOffset] unity_LightmapsInd("unity_LightmapsInd", 2DArray) = "" {} 
+        _TransparencyLM ("Transmissive Texture", 2D) = "white" {}
         
         // чтобы не ругался батчер
         [HideInInspector] _Cutoff("Alpha Cutoff", Range(0.0, 1.0)) = 0.5

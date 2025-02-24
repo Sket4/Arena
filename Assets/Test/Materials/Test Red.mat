@@ -16,7 +16,7 @@ Material:
   - _ZWRITE_ON
   m_LightmapFlags: 4
   m_EnableInstancingVariants: 0
-  m_DoubleSidedGI: 0
+  m_DoubleSidedGI: 1
   m_CustomRenderQueue: -1
   stringTagMap: {}
   disabledShaderPasses: []
@@ -101,10 +101,12 @@ Material:
     - _DstBlend: 0
     - _DstBlendAlpha: 0
     - _EnvironmentReflections: 1
+    - _FogHeight: 0
     - _GlossMapScale: 0
     - _Glossiness: 0
     - _GlossinessSource: 0
     - _GlossyReflections: 0
+    - _HeightFogFade: 0.005
     - _HighlightRemove: 0
     - _Metallic: 0
     - _OcclusionStrength: 1
@@ -125,6 +127,8 @@ Material:
     - _Underwater_fog_density_factor: 1
     - _Underwater_fog_height_mult: 1
     - _UseAlphaAsSmoothness: 0
+    - _UseBaseColorInstance: 0
+    - _UseHeightFog: 0
     - _UseSurfaceBlend: 0
     - _UseUnderwater: 0
     - _WorkflowMode: 1

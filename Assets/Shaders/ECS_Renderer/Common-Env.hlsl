@@ -13,6 +13,10 @@
 #include "Packages/com.dgx.srp/ShaderLibrary/Lighting.hlsl"
 //#endif
 
+#ifdef ARENA_META_PASS 
+#include "Packages/com.unity.render-pipelines.core/ShaderLibrary/MetaPass.hlsl"
+#endif
+
 #if defined(DOTS_INSTANCING_ON)
 	 UNITY_DOTS_INSTANCING_START(UserPropertyMetadata)
 #ifdef USE_BASECOLOR_INSTANCE
@@ -49,6 +53,10 @@ struct appdata
 	half4 color : COLOR;
 	#endif
 	UNITY_VERTEX_INPUT_INSTANCE_ID
+
+	#ifdef ARENA_META_PASS
+	float2 uv2 : TEXCOORD2;
+	#endif
 };
 
 struct v2f
@@ -75,6 +83,11 @@ struct v2f
 
 	#ifndef ARENA_DEFERRED
 	float4 positionWS : TEXCOORD7;
+	#endif
+
+	#ifdef EDITOR_VISUALIZATION
+	float2 VizUV : TEXCOORD8;
+	float4 LightCoord : TEXCOORD9;
 	#endif
 };
 
@@ -124,6 +137,10 @@ v2f env_vert (appdata v)
 	// o.positionWS.w *= saturate((_FogHeight - o.positionWS_fog.y) * _HeightFogFade); 
 	// #endif
 
+	#if defined(ARENA_META_PASS) & defined(LIGHTMAP_ON)
+	UnityEditorVizData(positionOS, v.uv, v.lightmapUV, v.uv3, out o.VizUV, out o.LightCoord);
+	#endif
+	
 	return o;
 }
 #ifdef ARENA_DEFERRED
@@ -324,8 +341,7 @@ half DepthOnlyFragment(v2f_depthonly input) : SV_TARGET
 	return input.positionCS.z;
 }
 
-#ifdef ARENA_META_PASS 
-#include "Packages/com.unity.render-pipelines.core/ShaderLibrary/MetaPass.hlsl"
+#ifdef ARENA_META_PASS
              
 half4 FragmentMeta(v2f fragIn) : SV_Target
 {

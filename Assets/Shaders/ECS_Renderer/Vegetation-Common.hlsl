@@ -80,8 +80,10 @@ v2f vert (appdata v)
     half3 positionOS = v.vertex;
     
     float4 time = _Time;
+    float4 instanceData = tg_InstanceData;
+    o.instanceData = instanceData;
     half wind = (sin(time.z + (positionOS.x + positionOS.z) * 2) + sin(time.y) + sin(time.w)) * 0.05 * v.color.x;
-    wind *= _WindForce;
+    wind *= _WindForce * instanceData.w;
     positionOS.x += wind;
     positionOS.z += wind;
     
@@ -98,8 +100,7 @@ v2f vert (appdata v)
     o.uv = TRANSFORM_TEX(v.uv, _BaseMap);
     //o.positionWS_fog.a = ComputeFogFactor(o.vertex.z);
 
-    float4 instanceData = tg_InstanceData;
-    o.instanceData = instanceData;
+    
 
     real sign = real(tangentOS.w);
     float3 normalWS = TransformObjectToWorldNormal(normalOS);
@@ -204,6 +205,7 @@ half4 metaFragment(v2f fragIn) : SV_Target
     #endif
 
     half4 result = UnityMetaFragment(metaInput);
+    result.a = diffuse.a;
     return result;
 }
 #endif

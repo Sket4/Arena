@@ -30,6 +30,7 @@ Shader "Arena/Vegetation"
         [HideInInspector]_EmissionColor("Emission color", Color) = (1,1,1,1)
         [HideInInspector][NoScaleOffset]unity_Lightmaps("unity_Lightmaps", 2DArray) = "" {} 
         [HideInInspector][NoScaleOffset] unity_LightmapsInd("unity_LightmapsInd", 2DArray) = "" {} 
+        _TransparencyLM ("Transmissive Texture", 2D) = "white" {}
     }
     SubShader
     {
@@ -101,9 +102,9 @@ Shader "Arena/Vegetation"
             
             #pragma vertex vert
             #pragma fragment metaFragment
-            #pragma shader_feature_local __ TG_TRANSPARENT
-            #pragma shader_feature_local TG_USE_ALPHACLIP
-            #pragma shader_feature_local_vertex __ USE_BILLBOARD
+            #pragma shader_feature_local _ TG_TRANSPARENT
+            //#pragma shader_feature_local TG_USE_ALPHACLIP
+            #pragma shader_feature_local_vertex _ USE_BILLBOARD
             #pragma shader_feature EDITOR_VISUALIZATION
             
             #include "Vegetation-Common.hlsl"

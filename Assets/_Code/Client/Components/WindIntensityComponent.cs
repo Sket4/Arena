@@ -24,7 +24,7 @@ namespace Arena.Client
         }
     }
     
-    
+    #if UNITY_EDITOR
     [BurstCompile]
     [WorldSystemFilter(WorldSystemFilterFlags.BakingSystem)]
     [UpdateAfter(typeof(RendererBakingSystem))]
@@ -45,4 +45,5 @@ namespace Arena.Client
             job.Run();
         }
     }
+    #endif
 }

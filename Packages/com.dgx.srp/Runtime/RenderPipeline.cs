@@ -345,7 +345,7 @@ namespace DGX.SRP
                 bool shouldClearColor = clearFlags == CameraClearFlags.Color;
                 
 #if UNITY_EDITOR
-                if (camera.cameraType == CameraType.Preview)
+                if (camera.cameraType == CameraType.Preview || camera.cameraType == CameraType.SceneView)
                 {
                     shouldClearColor = true;
                 }
@@ -569,7 +569,14 @@ namespace DGX.SRP
         private static void skyboxPass(ScriptableRenderContext context, Camera camera, RenderTargetIdentifier colorTextureID,
             RenderTargetIdentifier depthTextureID)
         {
-            if (camera.clearFlags == CameraClearFlags.Skybox && RenderSettings.skybox != null)
+            var renderSkybox = camera.clearFlags == CameraClearFlags.Skybox && RenderSettings.skybox != null;
+
+            if (camera.cameraType == CameraType.SceneView || camera.cameraType == CameraType.Preview)
+            {
+                renderSkybox = true;
+            }
+            
+            if (renderSkybox)
             {
                 var cmd = new CommandBuffer();
                 cmd.name = "skybox";

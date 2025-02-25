@@ -179,10 +179,20 @@ namespace Arena.Client.PreviewRendering
 
             if (em.HasComponent<ArmorSet>(prefab))
             {
-                commands.SetComponent(settings.ItemPivot, new PreviewItemInstance
+                if (hasPreviewInstance)
                 {
-                    Entity = Entity.Null
-                });
+                    commands.SetComponent(settings.ItemPivot, new PreviewItemInstance
+                    {
+                        Entity = Entity.Null
+                    });    
+                }
+                else
+                {
+                    commands.AddComponent(settings.ItemPivot, new PreviewItemInstance
+                    {
+                        Entity = Entity.Null
+                    });
+                }
                 createArmorSet(em, prefab, request.Color, commands);
                 return true;
             }

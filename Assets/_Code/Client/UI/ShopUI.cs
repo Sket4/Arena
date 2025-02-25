@@ -52,7 +52,7 @@ namespace Arena.Client.UI
         [SerializeField] private Transform tabContainer = default;
         [SerializeField] private GameObject tabPrefab;
         
-        int currentSelectedItemIndex = -1;
+        int currentSelectedItemIndex = 0;
 
         struct ShopItemEntry
         {

@@ -130,23 +130,47 @@ namespace Arena.Client
                 
                 Debug.Log($"Попытка покупки предмета {itemID} в магазине {store}");
                 
-                var requestEntity = EntityManager.CreateEntity(typeof(PurchaseRequest));
                 var playerEntity = GetLocalPlayerCharacterEntity();
-                var request = new PurchaseRequest
-                {
-                    Customer = playerEntity,
-                    Store = store,
-                };
-                EntityManager.SetComponentData(requestEntity, request);
                 
                 var storeSystem = EntityManager.World.GetExistingSystemManaged<StoreSystem>();
                 var list = new NativeArray<PurchaseRequest_Item>(1, Allocator.Temp);
                 list[0] = new PurchaseRequest_Item { ItemID = itemID, Count = count, Color = Color.white };
-                purchaseTask = storeSystem.RequestPuchase(playerEntity, store, list);
+                purchaseTask = storeSystem.RequestPurchase(playerEntity, store, list);
             }
 
             var result = await purchaseTask;
             Debug.Log($"Результат покупки: {result}");
+        }
+        
+        [ConsoleCommand]
+        async void SellItemFromStore(int itemID, int count)
+        {
+            Task<SellRequestStatus> sellTask;
+            
+            using (var storeQuery = EntityManager.CreateEntityQuery(typeof(StoreItems)))
+            using (var entities = storeQuery.ToEntityArray(Allocator.Temp))
+            {
+                var store = entities[0];
+                
+                Debug.Log($"Попытка покупки предмета {itemID} в магазине {store}");
+                
+                var playerEntity = GetLocalPlayerCharacterEntity();
+                var inventory = EntityManager.GetBuffer<InventoryElement>(playerEntity);
+
+                if (InventoryExtensions.TryGetItemEntityWithId(inventory, itemID, EntityManager, out var itemEntity) == false)
+                {
+                    Debug.LogError($"Не найден предмет {itemID} в инвентаре игрока");
+                    return;
+                }
+                
+                var storeSystem = EntityManager.World.GetExistingSystemManaged<StoreSystem>();
+                var list = new NativeArray<SellRequest_Item>(1, Allocator.Temp);
+                list[0] = new SellRequest_Item { ItemEntity = itemEntity, Count = (uint)count };
+                sellTask = storeSystem.RequestSell(playerEntity, store, list);
+            }
+
+            var result = await sellTask;
+            Debug.Log($"Результат продажи: {result}");
         }
         
         [ConsoleCommand]

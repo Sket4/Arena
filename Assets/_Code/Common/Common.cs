@@ -137,7 +137,7 @@ namespace Arena
             {
                 gameLoop.AddGameSystem<AbilityAISystem>();                
                 gameLoop.AddGameSystem<FilterCraftRequestSystem>();
-                gameLoop.AddGameSystem<FilterPurchaseRequestSystem>();
+                gameLoop.AddGameSystem<FilterStoreRequestSystem>();
                 gameLoop.AddGameSystem<MainCurrencySystem>();
                 gameLoop.AddGameSystem<CraftSystem>();
                 gameLoop.AddGameSystem<LootDropSystem>();

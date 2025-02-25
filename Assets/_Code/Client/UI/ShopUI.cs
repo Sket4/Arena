@@ -436,7 +436,7 @@ namespace Arena.Client.UI
                     Count = 1,
                     Color = selectedColor
                 };
-                var result = await storeSystem.RequestPuchase(pc.Value, store, list);
+                var result = await storeSystem.RequestPurchase(pc.Value, store, list);
 
                 Debug.Log($"Результат покупки {result}");
 

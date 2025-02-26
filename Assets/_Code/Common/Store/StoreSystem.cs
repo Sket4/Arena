@@ -589,10 +589,7 @@ namespace Arena
                     totalPrice += price.Value * item.Count;
                 }
 
-                if (totalPrice > 1)
-                {
-                    totalPrice /= 2;    
-                }
+                totalPrice = GetSellPrice(totalPrice);
 
                 if (totalPrice > uint.MaxValue)
                 {
@@ -805,6 +802,15 @@ namespace Arena
                 commands.SetComponent(entityInQueryIndex, requestEntity, request);
             })
             .Run();
+        }
+
+        public static long GetSellPrice(long itemPrice)
+        {
+            if (itemPrice > 1)
+            {
+                return itemPrice /= 2;    
+            }
+            return itemPrice;
         }
     }
 }

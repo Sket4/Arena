@@ -12,6 +12,7 @@ using Unity.Entities;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.Localization.Settings;
+using UnityEngine.Serialization;
 using UnityEngine.UI;
 using UnityEngine.UI.Extensions.ColorPicker;
 
@@ -23,7 +24,10 @@ namespace Arena.Client.UI
         ShopItemUI shopItemInfo;
 
         [SerializeField] private UIBase shopWindow = default;
-        [SerializeField] private UIBase dialogWindow = default;
+        [SerializeField] private UIBase buyDialogWindow = default;
+        [SerializeField] private UIBase sellDialogWindow;
+        [SerializeField] private UIBase previewWindow;
+        [SerializeField] private ShopSellInventoryUI sellWindow;
 
         [SerializeField]
         Button buyButton = default;
@@ -80,7 +84,7 @@ namespace Arena.Client.UI
 
             PreviewRenderGameWorldLauncher.Instance.EnableRendering = true;
 
-            var store = getCurrentStore();
+            var store = GetCurrentStore();
 
             if (currentStoreEntity != store)
             {
@@ -89,8 +93,22 @@ namespace Arena.Client.UI
             }
             
             colorPicker.gameObject.SetActive(false);
+            
+            ShowSellWindow(false);
 
             updateUI();
+        }
+
+        protected override void OnSetup(Entity ownerEntity, Entity uiEntity, EntityManager manager)
+        {
+            base.OnSetup(ownerEntity, uiEntity, manager);
+            sellWindow.Setup(ownerEntity, uiEntity, manager);
+        }
+
+        public void ShowSellWindow(bool show)
+        {
+            previewWindow.SetVisible(!show);
+            sellWindow.SetVisible(show);
         }
 
         protected override void OnHidden()
@@ -219,7 +237,7 @@ namespace Arena.Client.UI
             }
         }
 
-        Entity getCurrentStore()
+        public Entity GetCurrentStore()
         {
             Entity storeEntity = Entity.Null;
             
@@ -261,7 +279,7 @@ namespace Arena.Client.UI
             
             Utility.DestroyAllChilds(tabContainer);
 
-            var storeEntity = getCurrentStore();
+            var storeEntity = GetCurrentStore();
             
             if (storeEntity == Entity.Null)
             {
@@ -282,6 +300,11 @@ namespace Arena.Client.UI
                 var groupID = index;
                 tabInstance.GetComponent<Button>().onClick.AddListener(() =>
                 {
+                    if (previewWindow.IsVisible == false)
+                    {
+                        ShowSellWindow(false);
+                    }
+                    
                     showItems(true, groupID);
                 });
                 tabInstance.SetActive(true);
@@ -386,13 +409,20 @@ namespace Arena.Client.UI
         public void ShowBuyDialog()
         {
             shopWindow.SetVisible(false);
-            dialogWindow.SetVisible(true);
+            buyDialogWindow.SetVisible(true);
+        }
+        
+        public void ShowSellDialog()
+        {
+            shopWindow.SetVisible(false);
+            sellDialogWindow.SetVisible(true);
         }
         
         public void ShowShop()
         {
             shopWindow.SetVisible(true);
-            dialogWindow.SetVisible(false);
+            buyDialogWindow.SetVisible(false);
+            sellDialogWindow.SetVisible(false);
         }
 
         public void OnBuyClick()
@@ -414,7 +444,7 @@ namespace Arena.Client.UI
         {
             try
             {
-                var store = getCurrentStore();
+                var store = GetCurrentStore();
 
                 if (store == Entity.Null)
                 {
@@ -430,11 +460,19 @@ namespace Arena.Client.UI
                 var storeSystem = EntityManager.World.GetExistingSystemManaged<StoreSystem>();
                 var pc = GetData<PlayerController>();
                 var list = new NativeArray<PurchaseRequest_Item>(1, Allocator.Temp);
+
+                var color = selectedColor;
+                
+                if (colorPicker.gameObject.activeInHierarchy)
+                {
+                    color = colorPicker.CurrentColor;
+                }
+                
                 list[0] = new PurchaseRequest_Item
                 {
                     ItemID = itemID, 
                     Count = 1,
-                    Color = selectedColor
+                    Color = color
                 };
                 var result = await storeSystem.RequestPurchase(pc.Value, store, list);
 
@@ -447,6 +485,7 @@ namespace Arena.Client.UI
                 else if (result == PurchaseRequestStatus.Success)
                 {
                     onBuy.Invoke();
+                    sellWindow.RefreshItems();
                 }
 
                 updateUI();

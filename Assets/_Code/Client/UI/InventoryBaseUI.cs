@@ -202,17 +202,20 @@ namespace Arena.Client.UI
 
 			var items = GetBuffer<InventoryElement>();
 
-			if(items.TryGetItemWithComponent<MainCurrency>(EntityManager, out Entity itemEntity))
-            {
-				var count = GetData<Consumable>(itemEntity).Count;
-				goldText.text = count.ToString();
-			}
-			else
+			if (goldText)
 			{
-				goldText.text = "0";
+				if(items.TryGetItemWithComponent<MainCurrency>(EntityManager, out Entity itemEntity))
+				{
+					var count = GetData<Consumable>(itemEntity).Count;
+					goldText.text = count.ToString();
+				}
+				else
+				{
+					goldText.text = "0";
+				}	
 			}
             
-			if (rubyText != null)
+			if (rubyText)
 			{
                 rubyText.text = "0";// EndlessGameState.Instance.SelectedCharacter.Ruby.ToString();
 			}

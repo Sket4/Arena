@@ -21,6 +21,7 @@ namespace Arena.Client.UI
         {
             base.OnVisible();
             updateSellButtonState();
+            FindObjectOfType<ShopUI>().DisablePickColorButton();
         }
 
         protected override void HandleItemClick(InventoryItemUI itemUI)

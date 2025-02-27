@@ -22,21 +22,12 @@ namespace Arena.Client.UI
 
     public class InventoryUI : InventoryBaseUI
 	{
-        [System.Serializable]
-        class ItemTab
-        {
-            public Button Button = default;
-            public UIBase Window = default;
-        }
-
 		[SerializeField] private UIBase inventoryWindow = default;
 		[SerializeField] private UIBase dialogWindow = default;
-		
-        [SerializeField]
-        ItemTab inventoryTab = default;
 
-        [SerializeField]
-        ItemTab maskTab = default;
+		[SerializeField] private Button allItemsButton;
+		[SerializeField] private Button weaponButton;
+		[SerializeField] private Button armorButton;
 
 		[SerializeField]
 		Button wearButton = default;
@@ -46,9 +37,8 @@ namespace Arena.Client.UI
 
         [SerializeField]
 		Button unwearButton = default;
-		
-		[SerializeField]
-		Button sellButton = default;
+
+		[SerializeField] private Button[] tabs;
 
 		[SerializeField] private TextUI sellDialogText = default;
 		
@@ -68,30 +58,44 @@ namespace Arena.Client.UI
 		[SerializeField] private EntityEvent onItemSell = default;
 		[SerializeField] private UnityEvent onCannotWear = default;
 
-        ItemTab currentTab;
+		private Button currentTab = null;
 
         protected override void OnVisible()
         {
 	        base.OnVisible();
-            ShowInvenoryTab();
+            ShowAllItems();
 		}
 
-        public void ShowInvenoryTab()
+        public void ShowAllItems()
         {
-            showTab(inventoryTab);
+            showTab(allItemsButton);
+            ClearFilter();
+            UpdateUI();
         }
 
-        public void ShowMaskTab()
+        public void ShowWeapons()
         {
-            showTab(maskTab);
+	        showTab(weaponButton);
+	        ClearFilter();
+	        AddFilter<Weapon>();
+	        UpdateUI();
         }
 
-        private void showTab(ItemTab tab)
+        public void ShowArmors()
+        {
+	        showTab(armorButton);
+	        ClearFilter();
+	        AddFilter<ArmorSet>();
+	        AddFilter<Shield>();
+	        UpdateUI();
+        }
+
+        private void showTab(Button tab)
         {
             StartCoroutine(showTabRoutine(tab));
         }
 
-        IEnumerator showTabRoutine(ItemTab tab)
+        IEnumerator showTabRoutine(Button tab)
         {
             if (currentTab == tab)
             {
@@ -100,13 +104,9 @@ namespace Arena.Client.UI
 
             yield return null;
 
-            tab.Window.SetVisible(true);
-            tab.Button.interactable = false;
-
-            if (currentTab != null)
+            foreach (var button in tabs)
             {
-                currentTab.Window.SetVisible(false);
-                currentTab.Button.interactable = true;
+	            button.interactable = tab != button;
             }
             currentTab = tab;
         }
@@ -235,22 +235,6 @@ namespace Arena.Client.UI
                     EntityManager.DestroyEntity(requestEntity);
                 });
 		}
-		
-		public void OnSellClicked()
-		{
-            Debug.LogError("Not implemented");
-            //var gameManager = GameManager.Instance as EndlessLobbyGameManager;
-            //if (gameManager == null)
-            //{
-            //	return;
-            //}
-   //         var cost = gameManager.GetItemSellCost(LastSelected.Item);
-			
-			//sellDialogText.text = string.Format(sellDialogMessage, cost);
-			
-			//inventoryWindow.SetVisible(false);
-			//dialogWindow.SetVisible(true);
-		}
 
 		public void CancelDialog()
 		{
@@ -258,93 +242,44 @@ namespace Arena.Client.UI
 			dialogWindow.SetVisible(false);
 		}
 
-		public void OnConfirmSellClicked()
-		{
-			try
-			{
-				SellItem();
-			}
-			catch (Exception e)
-			{
-				Debug.LogException(e);
-			}
-			
-			CancelDialog();
-		}
-
-		public void SellItem()
+		public override void UpdateUI ()
 		{
 			if (LastSelected == null)
 			{
-				return;
+				foreach (var item in itemUiElements)
+				{
+					if (item.gameObject.activeSelf)
+					{
+						SelectItem(item);
+						break;
+					}
+				}
 			}
-
-            Debug.LogError("Not implemented");
-            //var gameManager = GameManager.Instance as EndlessLobbyGameManager;
-            //if (gameManager == null)
-            //{
-            //	return;
-            //}
-
-            //if (LastSelected.ItemInstance != null)
-            //{
-            //	gameManager.SellItemInstance(LastSelected.ItemInstance);
-            //}
-            //else if(LastSelected.Item != null)
-            //{
-            //	gameManager.SellConsumableItem(LastSelected.Item, 1);
-            //}
-            //else
-            //{
-            //	Debug.LogError("No item to sell");
-            //	return;
-            //}
-            //var soldItem = LastSelected.Item;
-            //LastSelected = null;
-            //RefreshItems();
-
-            //onItemSell.Invoke(soldItem);
-        }
-
-		public void OnDestroyClick()
-		{
-			// var item = LastSelected.ItemInstance;
-			// var bag = playerCharacter.TemplateInstance.Inventory.GetBagOfItemInstance(item);
-			// if (bag != null && bag.IsItemInstanceLocked (item) == false) 
-			// {
-			// 	bag.RemoveItem (item);
-   //              Debug.LogError("Not implemented");
-   //              //var gameInstance = EndlessGameState.Instance;
-   //              //if (gameInstance != null && gameInstance.IsItSafeStateToSaveGame())
-   //              //{
-   //              //    (EndlessGameManager.Instance as EndlessGameManager).SaveGameWithPlayerData();
-   //              //}
-   //              LastSelected.IsActivated = false;
-			// 	RefreshItems ();
-			// }
-		}
-
-		public override void UpdateUI ()
-		{
             if(LastSelected != null)
             {
                 var itemEntity = LastSelected.ItemEntity;
 
-                itemInfo.gameObject.SetActive(true);
+                itemInfoContainer.gameObject.SetActive(true);
                 itemInfo.UpdateData(itemEntity, GetData<Level>().Value, EntityManager);
 
                 wearButton.gameObject.SetActive(HasData<ActivatedState>(itemEntity) && GetData<ActivatedState>(itemEntity).Activated == false);
-                unwearButton.gameObject.SetActive(HasData<ActivatedState>(itemEntity) && GetData<ActivatedState>(itemEntity).Activated);
+
+                bool canUnwear = HasData<ActivatedState>(itemEntity) && GetData<ActivatedState>(itemEntity).Activated;
+                if (canUnwear && (HasData<Weapon>(itemEntity) || HasData<ArmorSet>(itemEntity)))
+                {
+	                canUnwear = false;
+                }
                 
+                unwearButton.gameObject.SetActive(canUnwear);
                 useButton.gameObject.SetActive(HasData<Usable>(itemEntity));
+                wearLeftButton.gameObject.SetActive(false);
             }
             else
             {
-	            itemInfo.gameObject.SetActive(false);
+	            itemInfoContainer.gameObject.SetActive(false);
 	            
                 wearButton.gameObject.SetActive(false);
                 unwearButton.gameObject.SetActive(false);
-                sellButton.gameObject.SetActive(false);
                 useButton.gameObject.SetActive(false);
                 wearLeftButton.gameObject.SetActive(false);
             }

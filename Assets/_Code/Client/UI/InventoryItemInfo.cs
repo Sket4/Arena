@@ -740,7 +740,7 @@ namespace Arena.Client.UI
 	        }
         }
 
-		public void UpdateData(Entity item, uint ownerLevel, EntityManager manager, string levelInfoFormat)
+		public virtual void UpdateData(Entity item, uint ownerLevel, EntityManager manager, string levelInfoFormat)
 		{
 			Item = item;
 

@@ -83,12 +83,28 @@ namespace Arena.Client.UI
 
         [SerializeField] private UnityEvent onSceleLoaded;
 
+        [SerializeField] private AudioSource audioSource;
+        [SerializeField] private AudioClip buttonPressAudioClip;
+
+        public static GameUI Instance { get; private set; }
+
         public PlayerCharacterUI HUD
         {
             get
             {
                 return hud;
             }
+        }
+
+        public static void PlayClick()
+        {
+            Instance.audioSource.PlayOneShot(Instance.buttonPressAudioClip);
+        }
+
+        protected override void Awake()
+        {
+            base.Awake();
+            Instance = this;
         }
 
         protected virtual void Start()
@@ -985,6 +1001,10 @@ namespace Arena.Client.UI
 
 		void OnDestroy()
 		{
+            if (Instance == this)
+            {
+                Instance = null;
+            }
             if (GameState.Instance != null)
             {
                 GameState.Instance.OnLoadingStarted -= gameState_onLoadingStarted;

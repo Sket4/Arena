@@ -99,6 +99,11 @@ namespace Arena.Client.UI
             updateUI();
         }
 
+        public void DisablePickColorButton()
+        {
+            pickColorButton.gameObject.SetActive(false);
+        }
+
         protected override void OnSetup(Entity ownerEntity, Entity uiEntity, EntityManager manager)
         {
             base.OnSetup(ownerEntity, uiEntity, manager);
@@ -347,7 +352,12 @@ namespace Arena.Client.UI
             }
             
             goldText.text = currentMoney.ToString();
-            rubyText.text = "0";    
+            rubyText.text = "0";
+
+            if (selectedItems.Count == 0)
+            {
+                return;
+            }
 
             var currentSelectedItem = selectedItems[currentSelectedItemIndex];
             

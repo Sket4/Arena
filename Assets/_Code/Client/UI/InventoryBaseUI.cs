@@ -10,6 +10,7 @@ using TzarGames.GameFramework;
 using Unity.Entities;
 using Unity.Entities.Content;
 using UnityEngine;
+using UnityEngine.UI;
 
 namespace Arena.Client.UI
 {
@@ -35,6 +36,23 @@ namespace Arena.Client.UI
 		TextUI rubyText = default;
 
 		private bool needRefreshItems = true;
+
+		private List<ComponentType> filter = new();
+
+		protected void ClearFilter()
+		{
+			filter.Clear();
+		}
+
+		public void AddFilters(IEnumerable<ComponentType> filters)
+		{
+			filter.AddRange(filters);
+		}
+
+		public void AddFilter<T>()
+		{
+			filter.Add(ComponentType.ReadOnly(typeof(T)));
+		}
 
 		protected override void OnVisible()
 		{
@@ -66,10 +84,15 @@ namespace Arena.Client.UI
 			for(int i=container.childCount-1; i>=0; i--)
 			{
 				var child = container.GetChild(i);
+				var layoutElement = child.GetComponent<LayoutElement>();
+				if (layoutElement && layoutElement.ignoreLayout)
+				{
+					continue;
+				}
 				child.SetParent(null);
 				Destroy(child.gameObject);
 			}
-			this.itemUiElements.Clear();
+			itemUiElements.Clear();
 
 
 
@@ -118,7 +141,7 @@ namespace Arena.Client.UI
                 {
                     if(item.ItemEntity == lastSelectedInstance)
                     {
-                        selectItem(item);
+                        SelectItem(item);
                         break;
                     }
                 }
@@ -197,6 +220,25 @@ namespace Arena.Client.UI
 
             foreach (var item in itemUiElements)
             {
+	            var passFilter = false;
+
+	            if (filter.Count > 0)
+	            {
+		            foreach (var type in filter)
+		            {
+			            if (EntityManager.HasComponent(item.ItemEntity, type))
+			            {
+				            passFilter = true;
+				            break;
+			            }
+		            }
+	            }
+	            else
+	            {
+		            passFilter = true;
+	            }
+	            
+	            item.gameObject.SetActive(passFilter);
 				item.IsActivated = HasData<ActivatedState>(item.ItemEntity) ? (bool)GetData<ActivatedState>(item.ItemEntity).Activated : false;
 			}
 
@@ -223,11 +265,11 @@ namespace Arena.Client.UI
 
 		void onItemClicked(InventoryItemUI itemUI)
 		{
-            selectItem(itemUI);
+            SelectItem(itemUI);
             UpdateUI();
         }
 
-        private void selectItem(InventoryItemUI itemUI)
+        protected void SelectItem(InventoryItemUI itemUI)
         {
             if (LastSelected != null)
             {

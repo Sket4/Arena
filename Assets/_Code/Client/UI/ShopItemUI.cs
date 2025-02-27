@@ -1,5 +1,6 @@
-﻿// Copyright 2012-2017 Dinar Khasanov (E-mail: lespaul@live.ru) All Rights Reserved.
+﻿// Copyright 2012-2025 Dinar Khasanov (E-mail: lespaul@live.ru) All Rights Reserved.
 using TzarGames.Common.UI;
+using Unity.Entities;
 using UnityEngine;
 using UnityEngine.UI;
 

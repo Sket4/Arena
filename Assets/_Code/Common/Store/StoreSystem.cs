@@ -181,7 +181,7 @@ namespace Arena
             }
             else
             {
-                PurchaseItemRPC(itemsToPurchase, storeNetId, requestGuid, new NetMessageInfo { SenderEntity = customer });
+                createPuchaseRequest(customer, store, itemsToPurchase, requestGuid, PurchaseRequestStatus.InProcess);
             }
 
             var time = UnityEngine.Time.realtimeSinceStartup;

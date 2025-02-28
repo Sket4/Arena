@@ -410,6 +410,33 @@ namespace Arena.Client.UI
             shopItemInfo.ExistInInventory = false;
         }
 
+        public void Next()
+        {
+            if (selectedItems.Count > 0)
+            {
+                currentSelectedItemIndex++;
+            
+                if (currentSelectedItemIndex >= selectedItems.Count)
+                {
+                    currentSelectedItemIndex = selectedItems.Count - 1;
+                }    
+            }
+            
+            updateUI();
+        }
+
+        public void Prev()
+        {
+            currentSelectedItemIndex--;
+
+            if (currentSelectedItemIndex < 0)
+            {
+                currentSelectedItemIndex = 0;
+            }
+            
+            updateUI();
+        }
+
         public void NotifyItemIndexChanged(int index)
         {
             currentSelectedItemIndex = index;
@@ -468,7 +495,6 @@ namespace Arena.Client.UI
                 var itemID = GetData<Item>(itemEntity).ID;
 
                 var storeSystem = EntityManager.World.GetExistingSystemManaged<StoreSystem>();
-                var pc = GetData<PlayerController>();
                 var list = new NativeArray<PurchaseRequest_Item>(1, Allocator.Temp);
 
                 var color = selectedColor;
@@ -484,7 +510,7 @@ namespace Arena.Client.UI
                     Count = 1,
                     Color = color
                 };
-                var result = await storeSystem.RequestPurchase(pc.Value, store, list);
+                var result = await storeSystem.RequestPurchase(OwnerEntity, store, list);
 
                 Debug.Log($"Результат покупки {result}");
 

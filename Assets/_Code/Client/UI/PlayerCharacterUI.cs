@@ -97,7 +97,7 @@ namespace Arena.Client.UI
             {
                 //chatWindow.SetActive(true);
                 //skillWindow.SetActive(true);
-                statsButton.SetActive(true);
+                //statsButton.SetActive(true);
             }
 
             var childUIs = GetComponentsInChildren<TzarGames.GameFramework.UI.GameUIBase>();

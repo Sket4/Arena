@@ -9,6 +9,7 @@ using TzarGames.Common.UI;
 using TzarGames.GameCore;
 using Unity.Collections;
 using Unity.Entities;
+using Unity.Mathematics;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.Localization.Settings;
@@ -128,15 +129,19 @@ namespace Arena.Client.UI
         protected override void Awake()
         {
             base.Awake();
-            colorPicker.onValueChanged.AddListener((color) =>
+
+            if (PreviewRenderGameWorldLauncher.Instance)
             {
-                if (colorPicker.gameObject.activeSelf == false)
+                colorPicker.onValueChanged.AddListener((color) =>
                 {
-                    return;
-                }
-                var c = (Color32)color;
-                PreviewRenderGameWorldLauncher.Instance.ChangeColor(new PackedColor(c.r, c.g, c.b));
-            });
+                    if (colorPicker.gameObject.activeSelf == false)
+                    {
+                        return;
+                    }
+                    var c = (Color32)color;
+                    PreviewRenderGameWorldLauncher.Instance.ChangeColor(new PackedColor(c.r, c.g, c.b));
+                });    
+            }
         }
 
         public void OnPickColorClicked()
@@ -412,27 +417,24 @@ namespace Arena.Client.UI
 
         public void Next()
         {
-            if (selectedItems.Count > 0)
+            if (selectedItems.Count == selectedItems.Count-1)
             {
-                currentSelectedItemIndex++;
-            
-                if (currentSelectedItemIndex >= selectedItems.Count)
-                {
-                    currentSelectedItemIndex = selectedItems.Count - 1;
-                }    
+                return;
             }
+            currentSelectedItemIndex++;
+            currentSelectedItemIndex = math.clamp(currentSelectedItemIndex, 0, selectedItems.Count - 1);
             
             updateUI();
         }
 
         public void Prev()
         {
-            currentSelectedItemIndex--;
-
-            if (currentSelectedItemIndex < 0)
+            if (currentSelectedItemIndex == 0)
             {
-                currentSelectedItemIndex = 0;
+                return;
             }
+            currentSelectedItemIndex--;
+            currentSelectedItemIndex = math.clamp(currentSelectedItemIndex, 0, selectedItems.Count - 1);
             
             updateUI();
         }

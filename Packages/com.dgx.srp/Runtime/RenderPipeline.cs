@@ -401,12 +401,21 @@ namespace DGX.SRP
                     cmd.SetGlobalTexture("_GT1", rt.GBuffer1);
                 
                     //RenderTargetIdentifier depthTextureID = rt.Depth_ID;
-                
                     cmd.SetRenderTarget(rt.GBufferIDs, depthTextureID);
-                    cmd.ClearRenderTarget(true, 
-                        false,
-                        camera.backgroundColor);
-                
+                    
+#if UNITY_EDITOR
+                    if (camera.cameraType == CameraType.Preview || camera.cameraType == CameraType.SceneView)
+                    {
+                        cmd.ClearRenderTarget(true, true, camera.backgroundColor);
+                    }
+                    else
+                    {
+                        cmd.ClearRenderTarget(true, false, camera.backgroundColor);
+                    }
+#else
+                    cmd.ClearRenderTarget(true, false, camera.backgroundColor);
+#endif
+                    
                     context.ExecuteCommandBuffer(cmd); 
                     cmd.Release();
                 
@@ -571,10 +580,10 @@ namespace DGX.SRP
         {
             var renderSkybox = camera.clearFlags == CameraClearFlags.Skybox && RenderSettings.skybox != null;
 
-            if (camera.cameraType == CameraType.SceneView || camera.cameraType == CameraType.Preview)
-            {
-                renderSkybox = true;
-            }
+            // if (camera.cameraType == CameraType.SceneView || camera.cameraType == CameraType.Preview)
+            // {
+            //     renderSkybox = true;
+            // }
             
             if (renderSkybox)
             {

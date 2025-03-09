@@ -25,6 +25,7 @@ Material:
   m_Parent: {fileID: 0}
   m_ModifiedSerializedProperties: 0
   m_ValidKeywords:
+  - USE_CUSTOM_FOG_COLOR
   - USE_FOAM
   - USE_LOWER_NORMAL_FOG
   - USE_THIRD_WAVE
@@ -149,9 +150,11 @@ Material:
     - _Glossiness: 0.5
     - _GlossinessSource: 0
     - _GlossyReflections: 1
+    - _LightingMult: 1
     - _Lightmap_reflection_blur: 3.12
     - _Metallic: 0
     - _Mode: 0
+    - _Normal_Y_Scale: 1
     - _Normal_strength: 0.5
     - _OcclusionStrength: 1
     - _Parallax: 0.02
@@ -178,7 +181,9 @@ Material:
     - _UseCustomReflections: 0
     - _UseFoam: 1
     - _UseFog: 0
+    - _UseLightingMult: 0
     - _UseLowerNormalFogByFog: 1
+    - _UseThirdWave: 1
     - _Wave_deform_mult: 0.2
     - _WorkflowMode: 1
     - _ZWrite: 0

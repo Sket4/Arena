@@ -27,7 +27,7 @@ namespace Arena
                     {
                         if(state.Activated)
                         {
-                            if(equipment.ArmorSet == Entity.Null)
+                            //if(equipment.ArmorSet == Entity.Null)
                             {
                                 equipment.ArmorSet = itemEntity;
                                 equipmentChanged = true;

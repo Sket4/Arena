@@ -3,6 +3,7 @@ using MagicaCloth2;
 using TzarGames.Rendering;
 using Unity.Collections;
 using Unity.Entities;
+using Unity.Transforms;
 using UnityEngine;
 using UnityEngine.Rendering;
 
@@ -13,8 +14,104 @@ namespace Arena.Client.Cloth
         private EntityQuery initQuery;
         private List<MagicaCloth> changedRenderers = new();
 
+        bool tryGetChildComponent<T>(Entity entity, out T component) 
+            where T : UnityEngine.Component
+        {
+            if (EntityManager.HasComponent<T>(entity))
+            {
+                component = EntityManager.GetComponentObject<T>(entity);
+                return true;
+            }
+
+            if (EntityManager.HasBuffer<LinkedEntityGroup>(entity))
+            {
+                var linkeds = EntityManager.GetBuffer<LinkedEntityGroup>(entity);
+                foreach (var child in linkeds)
+                {
+                    if (child.Value == entity)
+                    {
+                        continue;
+                    }
+                    if (tryGetChildComponent<T>(child.Value, out component))
+                    {
+                        return true;
+                    }
+                } 
+            }
+
+            if (EntityManager.HasBuffer<Child>(entity))
+            {
+                var childs = EntityManager.GetBuffer<Child>(entity);
+                foreach (var child in childs)
+                {
+                    if (tryGetChildComponent<T>(child.Value, out component))
+                    {
+                        return true;
+                    }
+                }
+            }
+
+            
+            component = null;
+            return false;
+        }
+
         protected override void OnUpdate()
         {
+            Entities
+                .WithChangeFilter<CharacterEquipmentAppearanceState>()
+                .WithoutBurst()
+                .ForEach((in CharacterEquipmentAppearanceState state) =>
+                {
+                    if (tryGetChildComponent(state.HairModelEntity, out MagicaCloth hairCloth) == false)
+                    {
+                        return;
+                    }
+
+                    var headAppearance = EntityManager.GetComponentData<HeadAppearance>(state.HeadModelEntity);
+                    var headCollider =
+                        EntityManager.GetComponentObject<MagicaSphereCollider>(headAppearance.ClothHeadCollider);
+                    var neckCollider =
+                        EntityManager.GetComponentObject<MagicaCapsuleCollider>(headAppearance.ClothNeckCollider);
+                    
+                    
+                    
+                    hairCloth.SerializeData.colliderCollisionConstraint.colliderList.Clear();
+                    if (headCollider)
+                    {
+                        hairCloth.SerializeData.colliderCollisionConstraint.colliderList.Add(headCollider);
+                    }
+
+                    if (neckCollider)
+                    {
+                        hairCloth.SerializeData.colliderCollisionConstraint.colliderList.Add(neckCollider);
+                    }
+
+                    if (EntityManager.HasComponent<CharacterAppearanceState>(state.ArmorSetEntity))
+                    {
+                        var armorState = EntityManager.GetComponentData<CharacterAppearanceState>(state.ArmorSetEntity);
+                        if (EntityManager.HasBuffer<MagicaClothCapsuleColliders>(armorState.Instance))
+                        {
+                            var colliders = EntityManager.GetBuffer<MagicaClothCapsuleColliders>(armorState.Instance);
+                            foreach (var collider in colliders)
+                            {
+                                var caps = EntityManager.GetComponentObject<MagicaCapsuleCollider>(collider.Collider);
+                                hairCloth.SerializeData.colliderCollisionConstraint.colliderList.Add(caps);
+                            }
+                        }
+                        if (EntityManager.HasBuffer<MagicaClothSphereColliders>(armorState.Instance))
+                        {
+                            var colliders = EntityManager.GetBuffer<MagicaClothSphereColliders>(armorState.Instance);
+                            foreach (var collider in colliders)
+                            {
+                                var caps = EntityManager.GetComponentObject<MagicaSphereCollider>(collider.Collider);
+                                hairCloth.SerializeData.colliderCollisionConstraint.colliderList.Add(caps);
+                            }
+                        }
+                    }
+
+                }).Run();
+            
             if (changedRenderers.Count == 0 && initQuery.IsEmpty)
             {
                 return;
@@ -26,7 +123,7 @@ namespace Arena.Client.Cloth
                 .WithoutBurst()
                 .WithStoreEntityQueryInField(ref initQuery)
                 .WithAll<MagicaClothInitTag>()
-                .ForEach((Entity entity, MagicaCloth cloth, in DynamicBuffer<MagicaClothColliders> colliders) =>
+                .ForEach((Entity entity, MagicaCloth cloth) =>
                 {
                     if (EntityManager.HasComponent<MeshRenderer>(entity))
                     {
@@ -42,35 +139,39 @@ namespace Arena.Client.Cloth
                     
                     ecb.RemoveComponent<MagicaClothInitTag>(entity);
                     cloth.OnRendererMeshChange += OnRendererMeshChange;
-                    
-                    var list = cloth.SerializeData.colliderCollisionConstraint.colliderList;
-                    
-                    foreach (var collider in colliders)
+
+                    if (EntityManager.HasComponent<MagicaClothColliders>(entity))
                     {
-                        if (EntityManager.HasComponent<MagicaCapsuleCollider>(collider.Collider))
+                        var list = cloth.SerializeData.colliderCollisionConstraint.colliderList;
+                        var colliders = EntityManager.GetBuffer<MagicaClothColliders>(entity);
+                    
+                        foreach (var collider in colliders)
                         {
-                            var capsule = EntityManager.GetComponentObject<MagicaCapsuleCollider>(collider.Collider);
-
-                            if (capsule)
+                            if (EntityManager.HasComponent<MagicaCapsuleCollider>(collider.Collider))
                             {
-                                if (list.Contains(capsule) == false)
+                                var capsule = EntityManager.GetComponentObject<MagicaCapsuleCollider>(collider.Collider);
+
+                                if (capsule)
                                 {
-                                    list.Add(capsule);
+                                    if (list.Contains(capsule) == false)
+                                    {
+                                        list.Add(capsule);
+                                    }    
                                 }    
-                            }    
-                        }
+                            }
 
-                        if (EntityManager.HasComponent<MagicaSphereCollider>(collider.Collider))
-                        {
-                            var sphere = EntityManager.GetComponentObject<MagicaSphereCollider>(collider.Collider);
-
-                            if (sphere)
+                            if (EntityManager.HasComponent<MagicaSphereCollider>(collider.Collider))
                             {
-                                if (list.Contains(sphere) == false)
+                                var sphere = EntityManager.GetComponentObject<MagicaSphereCollider>(collider.Collider);
+
+                                if (sphere)
                                 {
-                                    list.Add(sphere);
+                                    if (list.Contains(sphere) == false)
+                                    {
+                                        list.Add(sphere);
+                                    }    
                                 }    
-                            }    
+                            }
                         }
                     }
 

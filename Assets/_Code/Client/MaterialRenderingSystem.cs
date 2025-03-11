@@ -18,9 +18,12 @@ namespace Arena.Client
         partial struct CopyColorJob : IJobEntity
         {
             public EntityCommandBuffer Commands;
-            public void Execute(in CopyColor copyColor, in ColorData color)
+            public void Execute(in DynamicBuffer<CopyColor> copyColor, in ColorData color)
             {
-                Commands.SetComponent(copyColor.Target, color);
+                foreach (var copy in copyColor)
+                {
+                    Commands.SetComponent(copy.Target, color);    
+                }
             }
         }
         

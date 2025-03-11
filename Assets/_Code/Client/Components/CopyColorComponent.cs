@@ -7,19 +7,34 @@ using UnityEngine;
 namespace Arena.Client.Presentation
 {
     [Serializable]
-    public struct CopyColor : IComponentData
+    public struct CopyColor : IBufferElementData
     {
         public Entity Target;
     }
     [UseDefaultInspector]
-    public class CopyColorComponent : ComponentDataBehaviour<CopyColor>
+    public class CopyColorComponent : DynamicBufferBehaviour<CopyColor>
     {
         public Renderer Target;
+        public Renderer[] AdditionalTargets;
 
-        protected override void Bake<K>(ref CopyColor serializedData, K baker)
+        protected override void Bake<K>(ref DynamicBuffer<CopyColor> serializedData, K baker)
         {
             base.Bake(ref serializedData, baker);
-            serializedData.Target = baker.GetEntity(Target);
+            if (Target)
+            {
+                serializedData.Add(new CopyColor { Target = baker.GetEntity(Target)});
+            }
+
+            if (AdditionalTargets != null)
+            {
+                foreach (var target in AdditionalTargets)
+                {
+                    if (target)
+                    {
+                        serializedData.Add(new CopyColor { Target = baker.GetEntity(target)});
+                    }
+                }
+            }
         }
 
         public override bool ShouldBeConverted(IGCBaker baker)

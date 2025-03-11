@@ -12,6 +12,8 @@ namespace Arena.Client
         public Entity HeadModel;
         public Entity BrowsModel;
         public Entity EyesModel;
+        public Entity ClothHeadCollider;
+        public Entity ClothNeckCollider;
         
         public Entity HairInstance;
     }
@@ -20,6 +22,8 @@ namespace Arena.Client
     public class HeadAppearanceComponent : ComponentDataBehaviour<HeadAppearance>
     {
         public Transform HairSocket;
+        public GameObject ClothHeadCollider;
+        public GameObject ClothNeckCollider;
         public Renderer HeadModel;
         public Renderer BrowsModel;
         public Renderer EyesModel;
@@ -31,6 +35,8 @@ namespace Arena.Client
             serializedData.BrowsModel = baker.GetEntity(BrowsModel);
             serializedData.HeadModel = baker.GetEntity(HeadModel);
             serializedData.EyesModel = baker.GetEntity(EyesModel);
+            serializedData.ClothHeadCollider = baker.GetEntity(ClothHeadCollider);
+            serializedData.ClothNeckCollider = baker.GetEntity(ClothNeckCollider);
         }
 
         protected override ConversionTargetOptions GetDefaultConversionOptions()

@@ -21,9 +21,13 @@ namespace Arena.Editor
 			DisplayWizard<MeSm_Creator>("Создание текстуры MeSm", "Создать");
 		}
 		public Texture2D MetallicMap;
+		public bool UseMetallicChannel = false;
+		[Range(0,3)]
+		public byte MetallicChannel = 0;
         public Texture2D SmoothnessMap;
         public bool InvertSmoothness;
-        public bool UseSmoothnessFromAlpha;
+        [Range(0,3)]
+        public byte SmoothnessChannel = 0;
         [Range(0,1)]
         public float MetallicScale = 1;
         public float SmoothnessScale = 1;
@@ -48,7 +52,16 @@ namespace Arena.Editor
 				for (var index = 0; index < destPixels.Length; index++)
 				{
 					ref var mesmPixel = ref destPixels[index];
+					
+					var sm = mesmPixel[SmoothnessChannel]; 
 
+					if(UseMetallicChannel)
+					{
+						var met = mesmPixel[MetallicChannel]; 
+						mesmPixel.r = met;
+						mesmPixel.g = met;
+						mesmPixel.b = met;
+					}
 					mesmPixel.r *= MetallicScale;
 					mesmPixel.g *= MetallicScale;
 					mesmPixel.b *= MetallicScale;
@@ -56,14 +69,11 @@ namespace Arena.Editor
 					if (smoothnessPixels != null)
 					{
 						var smPixel = smoothnessPixels[index];
-						if (UseSmoothnessFromAlpha)
-						{
-							mesmPixel.a = smPixel.a;	
-						}
-						else
-						{
-							mesmPixel.a = smPixel.r;
-						}
+						mesmPixel.a = smPixel[SmoothnessChannel];
+					}
+					else
+					{
+						mesmPixel.a = sm;
 					}
 
 					if (InvertSmoothness)
@@ -85,14 +95,8 @@ namespace Arena.Editor
 				{
 					ref var mesmPixel = ref destPixels[index];
 
-					if (UseSmoothnessFromAlpha)
-					{
-						mesmPixel.a = destPixels[index].a;	
-					}
-					else
-					{
-						mesmPixel.a = destPixels[index].r;
-					}
+					mesmPixel.a = destPixels[index][SmoothnessChannel];
+					
 					mesmPixel.r = MetallicScale;
 					mesmPixel.g = MetallicScale;
 					mesmPixel.b = MetallicScale;

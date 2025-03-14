@@ -14,6 +14,7 @@ namespace Arena
         {
             base.OnCreate();
             matchStateQuery = GetEntityQuery(ComponentType.ReadOnly<ArenaMatchStateData>());
+            RequireForUpdate<MainDatabaseTag>();
         }
 
         protected override void OnUpdate()
@@ -50,10 +51,13 @@ namespace Arena
             }
             
             var overlappingBuffers = GetBufferLookup<OverlappingEntities>(true);
+            var mainDatabaseEntity = SystemAPI.GetSingletonEntity<MainDatabaseTag>();
+            var mainDatabase = SystemAPI.GetBuffer<IdToEntity>(mainDatabaseEntity).AsNativeArray();
             
             Entities
                 .WithReadOnly(overlappingBuffers)
-                .ForEach((ref PurchaseRequest request) =>
+                .WithReadOnly(mainDatabase)
+                .ForEach((DynamicBuffer<PurchaseRequest_Item> items, ref PurchaseRequest request) =>
             {
                 if (request.Status != PurchaseRequestStatus.InProcess)
                 {
@@ -104,7 +108,29 @@ namespace Arena
                 {
                     request.Status = PurchaseRequestStatus.StoreUnavailable;
                 }
-                
+
+                var customerGender = SystemAPI.GetComponent<Gender>(request.Customer).Value;
+
+                foreach (var item in items)
+                {
+                    if (IdToEntity.TryGetEntityById(mainDatabase, item.ItemID, out var itemPrefab) == false)
+                    {
+                        request.Status = PurchaseRequestStatus.ItemPrefabError;
+                        break;
+                    }
+
+                    if (SystemAPI.HasComponent<Gender>(itemPrefab))
+                    {
+                        var itemGender = SystemAPI.GetComponent<Gender>(itemPrefab).Value;
+
+                        if (itemGender != customerGender)
+                        {
+                            request.Status = PurchaseRequestStatus.GenderError;
+                            break;
+                        }
+                    }
+                }
+
             }).Run();
             
             Entities

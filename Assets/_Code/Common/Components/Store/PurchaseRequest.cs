@@ -17,7 +17,9 @@ namespace Arena
         InventoryError,
         Success,
         CustomerCheckError,
-        NoCharacterContact
+        NoCharacterContact,
+        ItemPrefabError,
+        GenderError
     }
 
     public enum SellRequestStatus : byte

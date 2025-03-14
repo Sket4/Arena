@@ -172,6 +172,7 @@ namespace Arena.Client.UI
         {
             currentSelectedItemIndex = 0;
             var classData = GetData<CharacterClassData>();
+            var characterGender = GetData<Gender>().Value;
             
             selectedItems.Clear();
             
@@ -187,6 +188,16 @@ namespace Arena.Client.UI
                 {
                     var classUsage = GetData<ClassUsage>(itemEntity);
                     if (classUsage.HasFlag(classData.Value) == false)
+                    {
+                        continue;
+                    }
+                }
+
+                if (HasData<Gender>(itemEntity))
+                {
+                    var itemGender = GetData<Gender>(itemEntity).Value;
+
+                    if (itemGender != characterGender)
                     {
                         continue;
                     }

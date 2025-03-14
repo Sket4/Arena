@@ -7,7 +7,7 @@ namespace Arena
     [Serializable]
     public struct Gender : IComponentData
     {
-        [HideInAuthoring]
+        //[HideInAuthoring]
         public Genders Value;
 
         public Gender(Genders genders)

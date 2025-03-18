@@ -15,6 +15,7 @@ namespace DGX.SRP
         private Mesh fullscreenTriangle;
         private Mesh fullscreenQuad;
         private bool isOpenGL;
+        public ReflectionProbeManager ReflectionProbeManager;
         static readonly ShaderTagId srpDefaultUnlitShaderTag = new("SRPDefaultUnlit");
         static readonly ShaderTagId dgxForwardShaderTag = new("DGXForward");
         private const string PBR_RENDERING_ENABLED = "DGX_PBR_RENDERING";
@@ -30,7 +31,8 @@ namespace DGX.SRP
 
         public static event Action<Camera, CommandBuffer> OnBeforeDraw;
         public static event Action<Camera, CommandBuffer> OnAfterDraw;
-        
+        public bool IsValid { get; private set; }
+
         class CameraData
         {
             public Camera TargetCamera;
@@ -81,12 +83,15 @@ namespace DGX.SRP
         {
             GraphicsSettings.useScriptableRenderPipelineBatching = true;
             Asset = asset;
-
             checkResources();
+
+            ReflectionProbeManager = ReflectionProbeManager.Create();
             
             isOpenGL = SystemInfo.graphicsDeviceType == GraphicsDeviceType.OpenGLCore
                 || SystemInfo.graphicsDeviceType == GraphicsDeviceType.OpenGLES2
                 || SystemInfo.graphicsDeviceType == GraphicsDeviceType.OpenGLES2;
+
+            IsValid = true;
         }
 
         public static void EnablePBR(bool enable)
@@ -161,11 +166,14 @@ namespace DGX.SRP
         protected override void Dispose(bool disposing)
         {
             base.Dispose(disposing);
+            IsValid = false;
 
             foreach (var cameraRT in cameraRenderTextures)
             {
                 cameraRT.Release();    
             }
+            
+            ReflectionProbeManager.Dispose();
             
             for(int i=0; i<2; i++) 
                 Shader.SetGlobalTexture("_GT"+i, null);
@@ -330,6 +338,9 @@ namespace DGX.SRP
 
                 // Use the culling parameters to perform a cull operation, and store the results
                 var cullingResults = context.Cull(ref cullingParameters);
+                
+                var cmd = new CommandBuffer();
+                ReflectionProbeManager.UpdateGpuData(cmd, ref cullingResults);
 
                 var shouldRenderShadows = enableShadows_global && rt.RenderSettings.RenderShadows;
 
@@ -360,8 +371,7 @@ namespace DGX.SRP
                 // Tell Unity how to filter the culling results, to further specify which geometry to draw
                 // Use FilteringSettings.defaultValue to specify no filtering
                 var filteringSettings = FilteringSettings.defaultValue;
-
-                var cmd = new CommandBuffer();
+                
                 RenderTexture colorTarget = null;
                 RenderTargetIdentifier colorTextureID;
                 var cameraRect = camera.rect;

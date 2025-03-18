@@ -32,7 +32,7 @@
 
         #pragma target 4.5
         #pragma require 2darray
-        #pragma require cubearray
+        //#pragma require cubearray
         #pragma exclude_renderers gles //excluded shader from OpenGL ES 2.0 because it uses non-square matrices
         #pragma vertex vert
         #pragma fragment frag

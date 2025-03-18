@@ -51,7 +51,7 @@ Shader"Arena/Water"
         {
             HLSLPROGRAM
             #pragma target 4.5
-            #pragma require cubearray
+            //#pragma require cubearray
             #pragma require 2darray
             #pragma exclude_renderers gles //excluded shader from OpenGL ES 2.0 because it uses non-square matrices
             #pragma vertex vert
@@ -131,6 +131,10 @@ Shader"Arena/Water"
             //#if defined(USE_LIGHTING_MULT)
                 half _LightingMult;
             //#endif
+
+            #if USE_CUSTOM_REFLECTIONS
+            half4 _CustomReflectionTex_HDR;
+            #endif
             
             CBUFFER_END
 
@@ -250,14 +254,14 @@ Shader"Arena/Water"
                 //rim = sqrt(rim);
 
 
-                half reflectionLOD = _Roughness * 4;
+                half reflectionLOD = _Roughness * 6.99;
                 #if USE_CUSTOM_REFLECTIONS
                 float3 reflectVec = reflect(-viewDirWS, normalWS);
 
                 #if defined(DOTS_INSTANCING_ON)
-	            half3 reflColor = DecodeHDREnvironment(SAMPLE_TEXTURECUBE_LOD(_CustomReflectionTex, sampler_CustomReflectionTex, reflectVec, reflectionLOD), tg_ReflectionProbeDecodeInstructions);
+	            half3 reflColor = DecodeHDREnvironment(SAMPLE_TEXTURECUBE_LOD(_CustomReflectionTex, sampler_CustomReflectionTex, reflectVec, reflectionLOD), _CustomReflectionTex_HDR);
                 #else
-                half3 reflColor = DecodeHDREnvironment(SAMPLE_TEXTURECUBE_LOD(_CustomReflectionTex, sampler_CustomReflectionTex, reflectVec, reflectionLOD), unity_SpecCube0_HDR);
+                half3 reflColor = DecodeHDREnvironment(SAMPLE_TEXTURECUBE_LOD(_CustomReflectionTex, sampler_CustomReflectionTex, reflectVec, reflectionLOD), _CustomReflectionTex_HDR);
                 #endif
                 #else
                 half3 reflColor = TG_ReflectionProbe(viewDirWS, normalWS, i.instanceData.y, reflectionLOD);  

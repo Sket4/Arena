@@ -3,6 +3,7 @@
 
 #include "Common.hlsl"
 #include "Packages/com.unity.render-pipelines.core/ShaderLibrary/Color.hlsl"
+#include "Packages/com.unity.render-pipelines.core/ShaderLibrary/Packing.hlsl"
 
 struct GBufferFragmentOutput
 {
@@ -14,7 +15,7 @@ struct GBufferFragmentOutput
 struct SurfaceHalf
 {
     half3 Albedo;
-    half3 NormalWS;
+    float3 NormalWS;
     half3 AmbientLight;
     half3 Metallic;
     half Roughness;

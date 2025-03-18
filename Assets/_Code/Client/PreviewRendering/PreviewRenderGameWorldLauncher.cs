@@ -28,10 +28,12 @@ namespace Arena.Client.PreviewRendering
     {
         PresentationSystemGroup presentationSystemGroup;
         private RenderingSystem renderingSystem;
-        private SystemHandle previewSystem;
         private Camera previewCamera;
         
+#if TGRENDERER_USE_CUBE_ARRAY
         private BaseClientGameLauncher mainGameLauncher;
+        private SystemHandle previewSystem;
+#endif
         
         private bool enableRendering = false;
         private bool isSubscribed = false;
@@ -54,11 +56,13 @@ namespace Arena.Client.PreviewRendering
                 previewCamera.enabled = value;
                 renderingSystem.Enabled = value;
 
+#if TGRENDERER_USE_CUBE_ARRAY
                 if (value && isSubscribed == false)
                 {
                     RenderPipeline.OnBeforeDraw += RenderPipelineOnOnBeforeDraw;
                     isSubscribed = true;
                 }
+#endif
             }
         }
         
@@ -67,10 +71,13 @@ namespace Arena.Client.PreviewRendering
             InitSceneLoading(additionalScenes);
 
             this.previewCamera = previewCamera;
+#if TGRENDERER_USE_CUBE_ARRAY
             this.mainGameLauncher = mainGameLauncher;
-
-            presentationSystemGroup = World.GetOrCreateSystemManaged<PresentationSystemGroup>();
             previewSystem = AddGameSystemUnmanaged<PreviewRenderingSystem>();
+#endif
+            
+            presentationSystemGroup = World.GetOrCreateSystemManaged<PresentationSystemGroup>();
+            
             AddGameSystem<PreviewRenderingManagedSystem>();
             AddGameSystem<ScriptVizSystem>();
             
@@ -132,6 +139,7 @@ namespace Arena.Client.PreviewRendering
             utilSystem.EntityManager.SetName(mainCharacter, $"Preview character {dataCopy.Name}");
         }
         
+#if TGRENDERER_USE_CUBE_ARRAY
         private void RenderPipelineOnOnBeforeDraw(Camera camera, CommandBuffer commandBuffer)
         {
             if (camera != previewCamera)
@@ -164,6 +172,7 @@ namespace Arena.Client.PreviewRendering
                 renderingSystem.SetupShaderGlobals(commandBuffer);
             }
         }
+#endif
         
         protected override void OnUpdate()
         {
@@ -171,6 +180,7 @@ namespace Arena.Client.PreviewRendering
             presentationSystemGroup.Update();
         }
 
+#if TGRENDERER_USE_CUBE_ARRAY
         public override void Dispose()
         {
             base.Dispose();
@@ -180,6 +190,7 @@ namespace Arena.Client.PreviewRendering
                 RenderPipeline.OnBeforeDraw -= RenderPipelineOnOnBeforeDraw;
             }
         }
+#endif
     }
     
     public class PreviewRenderGameWorldLauncher : BaseClientGameLauncher

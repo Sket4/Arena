@@ -259,7 +259,7 @@ half4 env_frag(v2f i) : SV_Target
 	half roughness = 1 - smoothness;
 
 	half3 viewDirWS = GetWorldSpaceNormalizeViewDir(i.positionWS.xyz);
-	half3 envMapColor = TG_ReflectionProbe_half(viewDirWS, normalWS, i.instanceData.y,roughness * 4);
+	half3 envMapColor = TG_ReflectionProbe_half(viewDirWS, normalWS, i.instanceData.y,roughness * 6.99);
 
 	#ifdef USE_SPECULAR_MULT
 	envMapColor = lerp(envMapColor * smoothness, envMapColor, _SpecularMultiplier);

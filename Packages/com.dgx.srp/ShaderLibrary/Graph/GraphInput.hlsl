@@ -2,9 +2,11 @@
 #define DGX_GRAPHINPUT_INCLUDED
 
 #include "Packages/com.unity.render-pipelines.core/ShaderLibrary/Common.hlsl"
-#ifdef DOTS_INSTANCING_ON
+#ifndef UNITY_ANY_INSTANCING_ENABLED
 #include "Packages/com.unity.render-pipelines.core/ShaderLibrary/UnityInstancing.hlsl"
+#endif
 
+#ifdef DOTS_INSTANCING_ON
 UNITY_DOTS_INSTANCING_START(BuiltinPropertyMetadata)
     UNITY_DOTS_INSTANCED_PROP_OVERRIDE_REQUIRED(float3x4, unity_ObjectToWorld)
     UNITY_DOTS_INSTANCED_PROP_OVERRIDE_REQUIRED(float3x4, unity_WorldToObject)
@@ -63,7 +65,9 @@ float4 unity_LightmapST;
 float4 unity_LightmapIndex;
 float4 unity_DynamicLightmapST;
 
-// SH block feature
+//SH block feature
+//#if !defined(UNITY_INSTANCING_ENABLED) && !defined(UNITY_DOTS_INSTANCING_ENABLED)
+#ifndef UNITY_USE_SHCOEFFS_ARRAYS
 real4 unity_SHAr;
 real4 unity_SHAg;
 real4 unity_SHAb;
@@ -71,6 +75,8 @@ real4 unity_SHBr;
 real4 unity_SHBg;
 real4 unity_SHBb;
 real4 unity_SHC;
+#endif
+
 CBUFFER_END
 
 #define UNITY_MATRIX_M     unity_ObjectToWorld
@@ -153,9 +159,7 @@ struct Varyings
     float3 positionWS : COLOR2;
     #endif
 
-    #ifdef UNITY_ANY_INSTANCING_ENABLED
     DEFAULT_UNITY_VERTEX_INPUT_INSTANCE_ID
-    #endif
 };
 
 #ifndef USE_VERY_FAST_SRGB

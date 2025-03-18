@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.Rendering;
 
 namespace DGX.SRP
 {
@@ -19,6 +20,7 @@ namespace DGX.SRP
     }
     
     [CreateAssetMenu(menuName = "Rendering/DinogeniX render pipeline asset")]
+    [ReloadGroup]
     public class RenderPipelineAsset : UnityEngine.Rendering.RenderPipelineAsset
     {
         [SerializeField]
@@ -27,12 +29,23 @@ namespace DGX.SRP
 
         public Shader LightingPassShader;
         public Shader LinearizeDepthShader;
+
+        [Reload("ShaderLibrary/Utils/Blit.shader")]
+        public Shader BlitShader;
+        [Reload("ShaderLibrary/Utils/CoreBlitColorAndDepth.shader")]
+        public Shader BlitColorAndDepthShader;
         
         // Unity calls this method before rendering the first frame.
         // If a setting on the Render Pipeline Asset changes, Unity destroys the current Render Pipeline Instance and calls this method again before rendering the next frame
         protected override UnityEngine.Rendering.RenderPipeline CreatePipeline()
         {
-            return new RenderPipeline(this);
+            var result = new RenderPipeline(this);
+            if (BlitShader && BlitColorAndDepthShader)
+            {
+                Blitter.Cleanup();
+                Blitter.Initialize(BlitShader, BlitColorAndDepthShader);    
+            }
+            return result;
         }
     }
 }

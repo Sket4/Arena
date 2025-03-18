@@ -43,6 +43,8 @@ float3 shadergraph_LWSampleSceneColor(float2 uv)
 
 #ifndef LIGHTMAP_ON
 #include "Packages/com.unity.render-pipelines.core/ShaderLibrary/SphericalHarmonics.hlsl"
+#include "Packages/com.unity.render-pipelines.core/ShaderLibrary/UnityInstancing.hlsl"
+#include "GraphInput.hlsl" 
 
 half3 SampleSH(half3 normalWS)
 {

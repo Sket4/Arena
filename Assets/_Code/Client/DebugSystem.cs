@@ -20,6 +20,23 @@ namespace Arena.Client
     public partial class DebugSystem : SystemBase
     {
         [ConsoleCommand]
+        public void Refl()
+        {
+            Entities
+                .WithoutBurst()
+                .ForEach((Entity entity, ReflectionProbe probe)=>
+                {
+                    var hideFlag = ~(HideFlags.HideInHierarchy | HideFlags.NotEditable);
+                    probe.hideFlags = probe.hideFlags & hideFlag;
+                    probe.gameObject.hideFlags = probe.hideFlags;
+                    
+                    Debug.Log($"go hide flags: {probe.hideFlags}");
+                    Debug.Log($"scene: {probe.gameObject.scene.name} is subscene: {probe.gameObject.scene.isSubScene}, loaded: {probe.gameObject.scene.isLoaded}");
+
+                }).Run();
+        }
+        
+        [ConsoleCommand]
         public void GetNetIdEntity(int netid)
         {
             Entity result = Entity.Null;

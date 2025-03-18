@@ -16,6 +16,7 @@ struct v2f
 };
 
 #include "Packages/com.unity.render-pipelines.core/ShaderLibrary/Common.hlsl"
+#include "Packages/com.unity.render-pipelines.core/ShaderLibrary/Packing.hlsl"
 #include "Packages/com.unity.render-pipelines.core/ShaderLibrary/GlobalSamplers.hlsl"
 #include "Packages/com.unity.render-pipelines.core/ShaderLibrary/EntityLighting.hlsl"
 #include "Common.hlsl"
@@ -62,8 +63,12 @@ float4 dgx_MainLightShadowParams;
 // lower right
 float4x4 _WorldSpaceFrustumCorners;
 
-TEXTURECUBE_ARRAY(tg_ReflectionProbes);
-SAMPLER(samplertg_ReflectionProbes);
+TEXTURE2D(tg_ReflProbes_Atlas);
+SAMPLER(samplertg_ReflProbes_Atlas);
+float4 tg_ReflProbes_MipScaleOffset[32 * 7];
+
+//TEXTURECUBE_ARRAY(tg_ReflectionProbes);
+//SAMPLER(samplertg_ReflectionProbes);
 float4 tg_ReflectionProbeDecodeInstructions;
 
 float4x4 _ShadowVP;
@@ -163,12 +168,24 @@ v2f vert (appdata v)
     return o;
 }
 
-half3 Sample_ReflectionProbe_half(half3 viewDir, half3 normalWS, half index, half lod)
-{
-    half3 reflectVec = reflect(-viewDir, normalWS);
+// half3 Sample_ReflectionProbe_half(half3 viewDir, half3 normalWS, half index, half lod)
+// {
+//     half3 reflectVec = reflect(-viewDir, normalWS);
+//
+//     float4 color = SAMPLE_TEXTURECUBE_ARRAY_LOD(tg_ReflectionProbes, samplertg_ReflectionProbes, reflectVec, index, lod);
+//     return DecodeHDREnvironment(color, tg_ReflectionProbeDecodeInstructions);
+// }
 
-    float4 color = SAMPLE_TEXTURECUBE_ARRAY_LOD(tg_ReflectionProbes, samplertg_ReflectionProbes, reflectVec, index, lod);
-    return DecodeHDREnvironment(color, tg_ReflectionProbeDecodeInstructions);
+half3 SampleReflectionProbeAtlas(half3 reflectVector, half probeIndex, half mip)
+{
+    half3 sampleVector = reflectVector;
+    
+    half2 uv = saturate(PackNormalOctQuadEncode(sampleVector) * 0.5 + 0.5);
+
+    half mip0 = floor(mip);
+    float4 scaleOffset0 = tg_ReflProbes_MipScaleOffset[floor(probeIndex) * 7 + (uint)mip0];
+
+    return half4(SAMPLE_TEXTURE2D_LOD(tg_ReflProbes_Atlas, samplertg_ReflProbes_Atlas, uv * scaleOffset0.xy + scaleOffset0.zw, 0.0)).rgb;
 }
 
 float3 WorldSpacePositionFromDepth(float2 screenUV, float rawDepth)
@@ -286,9 +303,9 @@ half4 frag (v2f i) : SV_Target
     
 
     #ifdef DGX_PBR_RENDERING
-    half3 envMapColor = Sample_ReflectionProbe_half(viewDir, surface.NormalWS, surface.EnvCubemapIndex, surface.Roughness * 4);
+    half3 reflectVec = reflect(-viewDir, surface.NormalWS);
+    half3 envMapColor = SampleReflectionProbeAtlas(reflectVec, surface.EnvCubemapIndex, surface.Roughness * 6.99);
     envMapColor += specular; 
-
     #ifdef DGX_DARK_MODE
     envMapColor *= surface.AmbientLight;
     #endif

@@ -31,7 +31,9 @@
 #define BASE_COLOR _BaseColor
 #endif
 
-
+#if defined(UG_QUALITY_MED) || defined(UG_QUALITY_HIGH) 
+#define DGX_PBR_RENDERING 1
+#endif
 
 sampler2D _BaseMap;
 sampler2D _SurfaceMap;
@@ -270,7 +272,7 @@ half4 env_frag(v2f i) : SV_Target
 	half lum = tg_luminance(ambientLight);
 	envMapColor = lerp(remEnvMapColor, envMapColor, saturate(lum * lum * lum));
 
-	ARENA_DYN_LIGHT(normalWS, i.positionWS.xyz, ambientLight, viewDirWS, envMapColor, true);
+	ARENA_DYN_LIGHT(normalWS, i.positionWS.xyz, ambientLight, viewDirWS, envMapColor, roughness, true);
 
 	half4 finalColor = LightingPBR(diffuse, ambientLight, viewDirWS, normalWS, mesm.rrr, roughness, envMapColor);
 
@@ -278,7 +280,7 @@ half4 env_frag(v2f i) : SV_Target
 
 	half4 finalColor = diffuse;
 	half3 envMapColor = 0;
-	ARENA_DYN_LIGHT(normalWS, i.positionWS.xyz, ambientLight, 0,0, true); 
+	ARENA_DYN_LIGHT(normalWS, i.positionWS.xyz, ambientLight, 0,0,0, true); 
 	finalColor.rgb *= ambientLight;
 
 	#endif

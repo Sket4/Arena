@@ -21,9 +21,9 @@
 #endif
 
 #if defined(UG_QUALITY_HIGH) || defined(UG_QUALITY_MED)
-#define ARENA_DYN_LIGHT(normalWS, positionWS, lighting, viewDirWS, envMapColor, useShadowMap) ApplyDynamicLighting(normalWS, positionWS, lighting, viewDirWS, envMapColor, useShadowMap)
+#define ARENA_DYN_LIGHT(normalWS, positionWS, lighting, viewDirWS, envMapColor, roughness, useShadowMap) ApplyDynamicLighting(normalWS, positionWS, lighting, roughness, viewDirWS, envMapColor, useShadowMap)
 #else
-#define ARENA_DYN_LIGHT(normalWS, positionWS, lighting, viewDirWS, envMapColor, useShadowMap) ApplyDynamicLighting(normalWS, positionWS, lighting, useShadowMap)
+#define ARENA_DYN_LIGHT(normalWS, positionWS, lighting, viewDirWS, envMapColor, roughness, useShadowMap) ApplyDynamicLighting(normalWS, positionWS, lighting, useShadowMap)
 #endif
 
 #include "Packages/com.unity.render-pipelines.core/ShaderLibrary/Common.hlsl"
@@ -221,6 +221,7 @@ void ApplyDynamicLighting(
     inout float3 diffuseLight,
     
     #if defined(UG_QUALITY_HIGH) || defined(UG_QUALITY_MED)
+    half roughness,
     half3 viewDirWS,
     inout half3 specularLight,
     #endif
@@ -245,7 +246,13 @@ void ApplyDynamicLighting(
 
 	#ifdef TG_TRANSPARENT
 	#ifdef DGX_SPOT_LIGHTS
-	diffuseLight += calculateSpotLight(positionWS, normalWS);
+	#if !defined(UG_QUALITY_HIGH) && !defined(UG_QUALITY_MED)
+	half3 viewDirWS = 0;
+	half3 specularLight = 0;
+	half roughness = 0;
+	
+	#endif
+	calculateSpotLight(positionWS, normalWS, viewDirWS, roughness, diffuseLight, specularLight);
 	#endif
 	#endif
 }

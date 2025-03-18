@@ -9,10 +9,10 @@ half4 _SpotLightColors[4];
 sampler2D _SpotLightCookieTex;
 half4x4 _SpotLight_M_Inv;
 
-half3 calculateSpotLight(float3 worldPos, half3 normalWS)
+void calculateSpotLight(float3 worldPos, half3 normalWS, half3 viewDir, half roughness, inout half3 diffuseLight, inout half3 specular)
 {
     float3 spotLightPos = _SpotLightPositions[0].xyz;
-    float3 spotLightRayDir = worldPos - spotLightPos;
+    half3 spotLightRayDir = worldPos - spotLightPos;
     
     half spotLightAtten = dot(spotLightRayDir,spotLightRayDir);
     half spotLightRange = _SpotLightDirs[0].w;
@@ -38,16 +38,19 @@ half3 calculateSpotLight(float3 worldPos, half3 normalWS)
     
     half3 cookieColor = tex2D(_SpotLightCookieTex, cookieTexUV);
 
-    return _SpotLightColors[0].rgb * cookieColor * spotLightAtten;
+    half3 spotLightColor = _SpotLightColors[0].rgb * cookieColor * spotLightAtten;
+    diffuseLight += spotLightColor;
 
-    // half3 reflectDir = reflect(-spotLightRayDir, surface.NormalWS);
-    // half spec = pow(saturate(dot(-viewDir, reflectDir)), surface.Roughness * 128);
-    // specular += spec * _SpotLightColors[0].rgb * spotLightAtten;
+    #ifdef DGX_PBR_RENDERING
+    half3 reflectDir = reflect(-spotLightRayDir, normalWS);
+    half spec = pow(saturate(dot(-viewDir, reflectDir)), roughness * 128);
+    specular += spec * spotLightColor;
+    #endif
 }
 
-void calculateSpotLightForSurface(float3 worldPos, inout SurfaceHalf surface)
+void calculateSpotLightForSurface(float3 worldPos, half3 viewDir, inout SurfaceHalf surface, inout half3 specular)
 {
-    surface.AmbientLight += calculateSpotLight(worldPos, surface.NormalWS);
+    calculateSpotLight(worldPos, surface.NormalWS, viewDir, surface.Roughness, surface.AmbientLight, specular);
 }
 
 #endif

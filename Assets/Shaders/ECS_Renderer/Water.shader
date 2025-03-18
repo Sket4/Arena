@@ -284,7 +284,7 @@ Shader"Arena/Water"
     #else
                     half3 lighting = half3(1,1,1);
     #endif
-                    ARENA_DYN_LIGHT(normalWS, i.positionWS_fog.xyz, lighting, viewDirWS, reflColor, true);
+                    ARENA_DYN_LIGHT(normalWS, i.positionWS_fog.xyz, lighting, viewDirWS, reflColor, 0, true); 
 #endif
 
                 #ifdef USE_LIGHTING_MULT

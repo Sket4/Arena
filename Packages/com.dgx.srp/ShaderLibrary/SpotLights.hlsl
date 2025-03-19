@@ -15,8 +15,10 @@ void calculateSpotLight(float3 worldPos, half3 normalWS, half3 viewDir, half rou
     half3 spotLightRayDir = worldPos - spotLightPos;
     
     half spotLightAtten = dot(spotLightRayDir,spotLightRayDir);
+
+    // spotLightRange == squared
     half spotLightRange = _SpotLightDirs[0].w;
-    spotLightRange *= spotLightRange;
+    //spotLightRange *= spotLightRange;
     spotLightAtten = 1-saturate(spotLightAtten / spotLightRange);
 
     float3 spotLightDir = _SpotLightDirs[0].xyz;

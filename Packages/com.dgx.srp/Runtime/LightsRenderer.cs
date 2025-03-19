@@ -69,6 +69,7 @@ namespace DGX.SRP
         {
             data1 = light.localToWorldMatrix.GetColumn(2);
             data1.w = light.range;
+            data1.w *= data1.w;
 
             LocalToWorld = light.localToWorldMatrix;
             data2 = light.localToWorldMatrix.GetPosition();

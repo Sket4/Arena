@@ -137,10 +137,14 @@ namespace TzarGames.GameCore.CharacterController
 
                 characterAspect.PhysicsUpdate(ref Context, ref BaseContext);
 
-                // if (math.length(characterAspect.CharacterControl.ValueRO.MoveVector) > 0.0f)
-                // {
-                //     UnityEngine.Debug.Log($"{characterAspect.CharacterAspect.Entity.Index} delta {BaseContext.Time.DeltaTime} Move vect {characterAspect.CharacterControl.ValueRO.MoveVector}, prevpos: {prevPosition}, currpos: {characterAspect.CharacterAspect.LocalTransform.ValueRO.Position}");
-                // }
+                if (math.length(characterAspect.CharacterControl.ValueRO.MoveVector) > 0.0f)
+                {
+                    //var deltaMove = math.length(characterAspect.CharacterAspect.LocalTransform.ValueRO.Position - prevPosition);
+                    //var deltaSpeed = deltaMove / BaseContext.Time.DeltaTime;
+                    //Debug.Log($"delta move: {deltaMove}, deltaSpeed: {deltaSpeed}, deltime: {BaseContext.Time.DeltaTime}, Move vect {characterAspect.CharacterControl.ValueRO.MoveVector}");
+                    
+                    //UnityEngine.Debug.Log($"{characterAspect.CharacterAspect.Entity.Index} delta {BaseContext.Time.DeltaTime} Move vect {characterAspect.CharacterControl.ValueRO.MoveVector}, prevpos: {prevPosition}, currpos: {characterAspect.CharacterAspect.LocalTransform.ValueRO.Position}");
+                }
                 
                 if(characterAspect.OptinalDistanceMove.IsValid)
                 {

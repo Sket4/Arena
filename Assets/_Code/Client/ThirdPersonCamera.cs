@@ -360,14 +360,31 @@ namespace Arena.Client
 
             Entities.ForEach((ref LocalTransform transform, in CameraData cameraData) =>
             {
+                var collisionFilter = CollisionFilter.Default;
+                
+                collisionFilter.CollidesWith = cameraData.CollisionPhysicsTags;
+
+                // TRACE COLLISION
+                var traceStartPos = cameraData.TargetPivotPositionPosition + math.up() * cameraData.TargetPivotTraceVerticalOffset;
+                var traceDir = transform.Position - traceStartPos;
+                traceDir = math.normalizesafe(traceDir, -cameraData.Forward);
+
+                Debug.DrawRay(traceStartPos, traceDir, Color.red);
+
+                if (physWorld.SphereCast(traceStartPos, cameraData.CollisionTraceRadius, traceDir, cameraData.CameraDistance, out ColliderCastHit collisionHit, collisionFilter, QueryInteraction.IgnoreTriggers))
+                {
+                    transform.Position = traceStartPos + traceDir * cameraData.CameraDistance * collisionHit.Fraction;
+                }
+                
                 // TRACE AIM
                 var traceEnd = transform.Position + cameraData.Forward * 1000.0f;
-                var collisionFilter = CollisionFilter.Default;
+                
+                collisionFilter = CollisionFilter.Default;
                 collisionFilter.CollidesWith = cameraData.AimPhysicsTags;
 
                 var raycastInput = new RaycastInput
                 {
-                    Start = transform.Position,
+                    Start = transform.Position + cameraData.Forward * 0.01f,
                     End = traceEnd,
                     Filter = collisionFilter
                 };
@@ -386,22 +403,11 @@ namespace Arena.Client
                     }
 
                     SystemAPI.SetComponent(cameraData.Target, aimHitPoint);
-                    //DebugDraw.DrawSphere(aimHitPoint.Value, 0.1f, Color.red);
-                }
-
-                collisionFilter = CollisionFilter.Default;
-                collisionFilter.CollidesWith = cameraData.CollisionPhysicsTags;
-
-                // TRACE COLLISION
-                var traceStartPos = cameraData.TargetPivotPositionPosition + math.up() * cameraData.TargetPivotTraceVerticalOffset;
-                var traceDir = transform.Position - traceStartPos;
-                traceDir = math.normalizesafe(traceDir, -cameraData.Forward);
-
-                Debug.DrawRay(traceStartPos, traceDir, Color.red);
-
-                if (physWorld.SphereCast(traceStartPos, cameraData.CollisionTraceRadius, traceDir, cameraData.CameraDistance, out ColliderCastHit collisionHit, collisionFilter, QueryInteraction.IgnoreTriggers))
-                {
-                    transform.Position = traceStartPos + traceDir * cameraData.CameraDistance * collisionHit.Fraction;
+                    
+                    // #if UNITY_EDITOR
+                    // Debug.DrawLine(raycastInput.Start, raycastInput.End, Color.red);
+                    // DebugDraw.DrawSphere(aimHitPoint.Value, 0.1f, Color.red);
+                    // #endif
                 }
 
             }).Run();

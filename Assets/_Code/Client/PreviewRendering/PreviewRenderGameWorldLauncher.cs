@@ -77,7 +77,8 @@ namespace Arena.Client.PreviewRendering
 #endif
             
             presentationSystemGroup = World.GetOrCreateSystemManaged<PresentationSystemGroup>();
-            
+
+            AddGameSystemUnmanaged<PreviewRenderingSystem>();
             AddGameSystem<PreviewRenderingManagedSystem>();
             AddGameSystem<ScriptVizSystem>();
             

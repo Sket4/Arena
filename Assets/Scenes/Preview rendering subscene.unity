@@ -850,6 +850,96 @@ MonoBehaviour:
   references:
     version: 2
     RefIds:
+    - rid: 3663727143102709764
+      type: {class: WriteTransformNode, ns: TzarGames.GameCore.ScriptViz.Graph, asm: TzarGames.GameCore}
+      data:
+        ID:
+          Value:
+            Value:
+              x: 3530163907
+              y: 2722962050
+              z: 2715816090
+              w: 3837156176
+        Position: {x: 2564.5, y: 414.5}
+        input:
+          ID:
+            Value:
+              Value:
+                x: 3431121998
+                y: 3897119262
+                z: 2050216617
+                w: 3627263741
+          ConnectedSocketIDs:
+          - Value:
+              Value:
+                x: 160545189
+                y: 1598262141
+                z: 1496599463
+                w: 2286419412
+        output:
+          ID:
+            Value:
+              Value:
+                x: 1486727524
+                y: 2202225113
+                z: 279278219
+                w: 893789844
+          ConnectedSocketIDs: []
+        WriteHandleSocket:
+          ID:
+            Value:
+              Value:
+                x: 2389788511
+                y: 1095222222
+                z: 1058151066
+                w: 862630567
+          ConnectedSocketIDs:
+          - Value:
+              Value:
+                x: 1032792522
+                y: 1330887819
+                z: 1779342728
+                w: 1938370491
+        PositionSocket:
+          ID:
+            Value:
+              Value:
+                x: 1090239475
+                y: 625995065
+                z: 3476179625
+                w: 3643064736
+          ConnectedSocketIDs:
+          - Value:
+              Value:
+                x: 2787137731
+                y: 1062037039
+                z: 4007198629
+                w: 2012245570
+          Value:
+            x: 0
+            y: 0
+            z: 0
+        RotationSocket:
+          ID:
+            Value:
+              Value:
+                x: 2895088567
+                y: 2118217797
+                z: 1334301099
+                w: 155117593
+          ConnectedSocketIDs:
+          - Value:
+              Value:
+                x: 3093601016
+                y: 708889360
+                z: 3789308090
+                w: 2894526756
+          Value:
+            value:
+              x: 0
+              y: 0
+              z: 0
+              w: 1
     - rid: 8443441604583489538
       type: {class: ScriptVizGraph, ns: TzarGames.GameCore.ScriptViz.Graph, asm: TzarGames.GameCore}
       data:
@@ -871,7 +961,6 @@ MonoBehaviour:
             - rid: 8443441604583489544
             nodes:
             - rid: 8443441604583489539
-            - rid: 8443441604583489540
             - rid: 8443441604583489546
             - rid: 8443441604583489547
             - rid: 8443441604583489550
@@ -880,6 +969,7 @@ MonoBehaviour:
             - rid: 8443441604583489557
             - rid: 8443441604583489558
             - rid: 8443441604583489559
+            - rid: 3663727143102709764
           states: []
           variables:
           - rid: 8443441604583489549
@@ -895,7 +985,7 @@ MonoBehaviour:
               y: 2303332119
               z: 237638306
               w: 1446839880
-        Position: {x: 556, y: 464.66666}
+        Position: {x: 556, y: 464.5}
         output:
           ID:
             Value:
@@ -922,10 +1012,10 @@ MonoBehaviour:
           ConnectedSocketIDs:
           - Value:
               Value:
-                x: 926030871
-                y: 3679107775
-                z: 2551894943
-                w: 2582240128
+                x: 1090239475
+                y: 625995065
+                z: 3476179625
+                w: 3643064736
           Value:
             x: 0
             y: 0
@@ -962,103 +1052,14 @@ MonoBehaviour:
                 y: 1330887819
                 z: 1779342728
                 w: 1938370491
-          ConnectedSocketIDs: []
+          ConnectedSocketIDs:
+          - Value:
+              Value:
+                x: 2389788511
+                y: 1095222222
+                z: 1058151066
+                w: 862630567
         CallMode: 1
-    - rid: 8443441604583489540
-      type: {class: SetTransformCommandNode, ns: TzarGames.GameCore.ScriptViz.Graph, asm: TzarGames.GameCore}
-      data:
-        ID:
-          Value:
-            Value:
-              x: 3697462972
-              y: 2185569821
-              z: 3072878493
-              w: 2865144620
-        Position: {x: 2489.3333, y: 501.3333}
-        input:
-          ID:
-            Value:
-              Value:
-                x: 2452888182
-                y: 3695375894
-                z: 3065656766
-                w: 1528580980
-          ConnectedSocketIDs:
-          - Value:
-              Value:
-                x: 160545189
-                y: 1598262141
-                z: 1496599463
-                w: 2286419412
-        output:
-          ID:
-            Value:
-              Value:
-                x: 776046539
-                y: 2488252157
-                z: 469332141
-                w: 603008264
-          ConnectedSocketIDs: []
-        Target:
-          ID:
-            Value:
-              Value:
-                x: 65797276
-                y: 2118344243
-                z: 989451963
-                w: 2013920461
-          ConnectedSocketIDs: []
-          AuthoringValue: {fileID: 0}
-        TargetPosition:
-          ID:
-            Value:
-              Value:
-                x: 926030871
-                y: 3679107775
-                z: 2551894943
-                w: 2582240128
-          ConnectedSocketIDs:
-          - Value:
-              Value:
-                x: 2787137731
-                y: 1062037039
-                z: 4007198629
-                w: 2012245570
-          Value:
-            x: 0
-            y: 0
-            z: 0
-        TargetRotation:
-          ID:
-            Value:
-              Value:
-                x: 3414479435
-                y: 2571943185
-                z: 1792617611
-                w: 400816723
-          ConnectedSocketIDs:
-          - Value:
-              Value:
-                x: 3093601016
-                y: 708889360
-                z: 3789308090
-                w: 2894526756
-          Value:
-            value:
-              x: 0
-              y: 0
-              z: 0
-              w: 1
-        TargetScale:
-          ID:
-            Value:
-              Value:
-                x: 1717628815
-                y: 3947301445
-                z: 1964928697
-                w: 303381906
-          ConnectedSocketIDs: []
-          Value: 1
     - rid: 8443441604583489544
       type: {class: DynamicArrayVariable, ns: TzarGames.GameCore.ScriptViz.Graph, asm: TzarGames.GameCore}
       data:
@@ -1082,7 +1083,7 @@ MonoBehaviour:
               y: 1900283857
               z: 4202435501
               w: 1673420290
-        Position: {x: 2118.6667, y: 320.66666}
+        Position: {x: 2118.5, y: 320.5}
         input:
           ID:
             Value:
@@ -1109,10 +1110,10 @@ MonoBehaviour:
           ConnectedSocketIDs:
           - Value:
               Value:
-                x: 2452888182
-                y: 3695375894
-                z: 3065656766
-                w: 1528580980
+                x: 3431121998
+                y: 3897119262
+                z: 2050216617
+                w: 3627263741
         AngleSocket:
           ID:
             Value:
@@ -1153,10 +1154,10 @@ MonoBehaviour:
           ConnectedSocketIDs:
           - Value:
               Value:
-                x: 3414479435
-                y: 2571943185
-                z: 1792617611
-                w: 400816723
+                x: 2895088567
+                y: 2118217797
+                z: 1334301099
+                w: 155117593
           Value:
             value:
               x: 0
@@ -1174,7 +1175,7 @@ MonoBehaviour:
               y: 1363810487
               z: 3147462813
               w: 4209309544
-        Position: {x: 747.3333, y: 184.66667}
+        Position: {x: 747.5, y: 184.5}
         input:
           ID:
             Value:
@@ -1245,7 +1246,7 @@ MonoBehaviour:
               y: 2571274559
               z: 2569405112
               w: 2166094405
-        Position: {x: 1334.6666, y: 207.33333}
+        Position: {x: 1334.5, y: 207.5}
         input:
           ID:
             Value:
@@ -1309,7 +1310,7 @@ MonoBehaviour:
               y: 2638394859
               z: 2462413228
               w: 1705201359
-        Position: {x: 1159.3334, y: 257.33334}
+        Position: {x: 1159.5, y: 257.5}
         input:
           ID:
             Value:
@@ -1476,7 +1477,7 @@ MonoBehaviour:
               y: 2235992286
               z: 2627054493
               w: 917314674
-        Position: {x: 1521.3334, y: 223.33334}
+        Position: {x: 1521.5, y: 223.5}
         input:
           ID:
             Value:
@@ -1565,7 +1566,7 @@ MonoBehaviour:
               y: 3041068130
               z: 1032008870
               w: 3107511563
-        Position: {x: 1682.6666, y: 235.33334}
+        Position: {x: 1682.5, y: 235.5}
         input:
           ID:
             Value:
@@ -1629,7 +1630,7 @@ MonoBehaviour:
               y: 1866759147
               z: 443975100
               w: 534137059
-        Position: {x: 1864, y: 258.66666}
+        Position: {x: 1864, y: 258.5}
         input:
           ID:
             Value:

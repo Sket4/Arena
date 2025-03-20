@@ -1,4 +1,5 @@
 using TzarGames.GameCore;
+using TzarGames.Rendering;
 using Unity.Burst;
 using Unity.Collections;
 using Unity.Entities;
@@ -36,7 +37,8 @@ namespace Arena.Client.PreviewRendering
     {
         private EntityQuery renderFilterSettingsQuery;
         private EntityQuery previewRenderSettingsQuery;
-        
+        private SharedComponentTypeHandle<RenderFilterSettings> filterTypeHandle;
+
         public void OnCreate(ref SystemState state)
         {
             renderFilterSettingsQuery = state.GetEntityQuery(new EntityQueryDesc
@@ -47,6 +49,7 @@ namespace Arena.Client.PreviewRendering
             previewRenderSettingsQuery = state.GetEntityQuery(ComponentType.ReadOnly<PreviewRenderingSettings>());
             
             state.RequireForUpdate<PreviewRenderingSettings>();
+            filterTypeHandle = state.GetSharedComponentTypeHandle<TzarGames.Rendering.RenderFilterSettings>();
         }
 
         public void OnUpdate(ref SystemState state)
@@ -59,7 +62,7 @@ namespace Arena.Client.PreviewRendering
         void updateRenderFilterSettings(PreviewRenderingSettings settings, ref SystemState state)
         {
             var filterChunks = renderFilterSettingsQuery.ToArchetypeChunkArray(Allocator.Temp);
-            var filterTypeHandle = state.GetSharedComponentTypeHandle<TzarGames.Rendering.RenderFilterSettings>();
+            filterTypeHandle.Update(ref state);
 
             foreach (var filterChunk in filterChunks)
             {

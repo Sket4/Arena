@@ -281,7 +281,7 @@ namespace Arena.Client.PreviewRendering
                     em.SetComponentData(camera, new PreviewCamera
                     {
                         Center = characterBounds.Center,
-                        OrthoSize = characterBounds.Extents.y * 0.5f,
+                        OrthoSize = math.max(characterBounds.Extents.y * 0.5f, 1),
                     });    
                 }
                 return;
@@ -314,7 +314,7 @@ namespace Arena.Client.PreviewRendering
             em.SetComponentData(cameraEntity, new PreviewCamera
             {
                 Center = bounds.center,
-                OrthoSize = bounds.extents.y,
+                OrthoSize = math.max(bounds.extents.y, 1),
             });
         }
 

@@ -63,7 +63,7 @@ namespace Arena
 
         private void updateAuthority(bool isServer)
         {
-            var commands = CreateUniversalCommandBuffer();
+            var commands = CreateEntityCommandBufferParallel();
             storeFromEntity.Update(this);
             itemLookup.Update(this);
             priceLookup.Update(this);
@@ -493,7 +493,7 @@ namespace Arena
             return requestEntity;
         }
 
-        void processSellRequests(UniversalCommandBuffer commands, NativeArray<IdToEntity> prefabDatabase)
+        void processSellRequests(EntityCommandBuffer.ParallelWriter commands, NativeArray<IdToEntity> prefabDatabase)
         {
             var sellRequestJob = new SellRequestJob
             {
@@ -517,7 +517,7 @@ namespace Arena
             [ReadOnly] public BufferLookup<InventoryElement> InventoryLookup;
             [ReadOnly] public BufferLookup<StoreItems> StoreItemsLookup;
             [ReadOnly] public ComponentLookup<Price> PriceLookup;
-            public UniversalCommandBuffer Commands;
+            public EntityCommandBuffer.ParallelWriter Commands;
             
             public void Execute(
                 Entity requestEntity, 
@@ -628,7 +628,7 @@ namespace Arena
             }
         }
 
-        void processPurchaseRequests(UniversalCommandBuffer commands, NativeArray<IdToEntity> prefabDatabase)
+        void processPurchaseRequests(EntityCommandBuffer.ParallelWriter commands, NativeArray<IdToEntity> prefabDatabase)
         {
             var invEventArchetype = inventoryEventArchetype;
             var inventoryLookup = inventories;

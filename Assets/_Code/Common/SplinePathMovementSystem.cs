@@ -115,7 +115,7 @@ namespace Arena
             if (reachedEventsQuery.IsEmpty == false)
             {
                 var deltaTime = SystemAPI.Time.DeltaTime;
-                var commands = CreateUniversalCommandBuffer();
+                var commands = CreateEntityCommandBufferParallel();
                 var events = reachedEventsQuery.ToComponentDataArray<ReachedSplinePathDestinationEvent>(Allocator.TempJob);
                 
                 Entities

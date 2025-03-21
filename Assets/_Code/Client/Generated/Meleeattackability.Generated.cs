@@ -11,7 +11,7 @@ namespace TzarGames.GameCore.Abilities.Generated
 	[BurstCompile]
 	public struct Meleeattackability_19_AbilityJob : IJobChunk
 	{
-		public UniversalCommandBuffer Commands;
+		public EntityCommandBuffer.ParallelWriter Commands;
 		public EntityArchetype AbilityEventArchetype;
 		public bool IsServer;
 		public float GlobalDeltaTime;
@@ -182,7 +182,7 @@ namespace TzarGames.GameCore.Abilities.Generated
 					deltaTime = GlobalDeltaTime;
 				}
 
-				if(_AbilityState.Value == AbilityStates.Idle)
+				if(_AbilityState.Value == AbilityStates.Idle || _AbilityState.Value == AbilityStates.WaitingForValidation)
 				{
 					_DurationJob.OnIdleUpdate(ref _Duration);
 					_ScriptVizAbilityJob.OnIdleUpdate(abilityEntity, unfilteredChunkIndex, in _AbilityOwner, Commands, in abilityInterface, ref _VariableDataByteBuffer, ref _EntityVariableDataBuffer, in _ConstantEntityVariableDataBuffer, ref _ScriptVizState, in _ScriptVizCodeInfo, deltaTime);
@@ -318,7 +318,7 @@ namespace TzarGames.GameCore.Abilities.Generated
 			public DynamicBuffer<TzarGames.GameCore.Abilities.HitQueryAbilityAction> _HitQueryAbilityActionBuffer;
 			public RefRW<Unity.Transforms.LocalTransform> _LocalTransformRef;
 			public AbilityInterface abilityInterface;
-			public UniversalCommandBuffer Commands;
+			public EntityCommandBuffer.ParallelWriter Commands;
 			public Entity abilityEntity;
 			public DynamicBuffer<TzarGames.GameCore.ScriptViz.VariableDataByte> _VariableDataByteBuffer;
 			public DynamicBuffer<TzarGames.GameCore.ScriptViz.EntityVariableData> _EntityVariableDataBuffer;
@@ -553,7 +553,7 @@ namespace TzarGames.GameCore.Abilities.Generated
 		void updateJob(ref SystemState state)
 		{
 			var cmdSingleton = SystemAPI.GetSingleton<GameCommandBufferSystem.Singleton>();
-			job.Commands = new UniversalCommandBuffer(cmdSingleton.CreateCommandBuffer(state.WorldUnmanaged));
+			job.Commands = cmdSingleton.CreateCommandBuffer(state.WorldUnmanaged).AsParallelWriter();
 			var abilitySystem = SystemAPI.GetSingleton<AbilitySystem.Singleton>();
 			job.IsServer = abilitySystem.IsServer;
 			job.NetworkPlayerLookup.Update(ref state);

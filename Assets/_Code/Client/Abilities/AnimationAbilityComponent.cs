@@ -83,7 +83,7 @@ namespace Arena.Client.Abilities
             float deltaTime, 
             in AbilityOwner abilityOwner, 
             int commandBufferIndex, 
-            UniversalCommandBuffer commands, 
+            EntityCommandBuffer.ParallelWriter commands, 
             in AnimationAbilityComponentData component, 
             DynamicBuffer<Animations> animations
             )
@@ -126,7 +126,7 @@ namespace Arena.Client.Abilities
     public struct AnimationAbilityComponentStopJob
     {
         [MethodPriority(AbilitySystem.DefaultLowestPriority)]
-        public void OnStopped(in AnimationAbilityStopComponentData component, in AbilityOwner abilityOwner, int commandBufferIndex, UniversalCommandBuffer commands)
+        public void OnStopped(in AnimationAbilityStopComponentData component, in AbilityOwner abilityOwner, int commandBufferIndex, EntityCommandBuffer.ParallelWriter commands)
         {
             var animEvent = commands.CreateEntity(commandBufferIndex);
 

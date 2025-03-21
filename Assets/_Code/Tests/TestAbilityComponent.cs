@@ -19,7 +19,7 @@ namespace Arena.Tests
 
     public struct TestAbilityComponentJob
     {
-        public void OnStarted(UniversalCommandBuffer commands)
+        public void OnStarted(EntityCommandBuffer.ParallelWriter commands)
         {
         }
 

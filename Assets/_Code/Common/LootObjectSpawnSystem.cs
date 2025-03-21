@@ -19,7 +19,7 @@ namespace Arena
 
         protected override void OnSystemUpdate()
         {
-            var commands = CreateUniversalCommandBuffer();
+            var commands = CreateEntityCommandBufferParallel();
 
             Entities.ForEach((Entity entity, int entityInQueryIndex, DynamicBuffer<SpawnPointObjectPrefabReference> prefabs, in LocalToWorld l2w) =>
             {

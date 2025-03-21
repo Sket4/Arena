@@ -45,20 +45,20 @@ namespace TzarGames.MultiplayerKit.Generated
 					case "NotifySceneLoadingStateChanged": info.MethodCode = 0; info.Channel = ChannelType.Reliable; info.Options = MessageDeliveryOptions.Default; info.RepeatCount = 1; return true;
 				}
 			}
-			if(rpcHandlerType == typeof(TzarGames.GameCore.MessageDispatcherSystem))
-			{
-				info = new RemoteCallInfo(14,0, ChannelType.Reliable, MessageDeliveryOptions.Default, 1);
-				switch(method.Name)
-				{
-					case "SendMessage": info.MethodCode = 0; info.Channel = ChannelType.Reliable; info.Options = MessageDeliveryOptions.Default; info.RepeatCount = 1; return true;
-				}
-			}
 			if( typeof(TzarGames.GameCore.IItemTakenRpcHandler).IsAssignableFrom(rpcHandlerType))
 			{
 				info = new RemoteCallInfo(8,0, ChannelType.Reliable, MessageDeliveryOptions.Default, 1);
 				switch(method.Name)
 				{
 					case "NotifyDroppedItemTaken": info.MethodCode = 0; info.Channel = ChannelType.Reliable; info.Options = MessageDeliveryOptions.Default; info.RepeatCount = 1; return true;
+				}
+			}
+			if( typeof(TzarGames.GameCore.IPathMovementServerNetSync).IsAssignableFrom(rpcHandlerType))
+			{
+				info = new RemoteCallInfo(6,0, ChannelType.Reliable, MessageDeliveryOptions.Default, 1);
+				switch(method.Name)
+				{
+					case "Move": info.MethodCode = 0; info.Channel = ChannelType.Unreliable; info.Options = MessageDeliveryOptions.Default; info.RepeatCount = 1; return true;
 				}
 			}
 			if(rpcHandlerType == typeof(TzarGames.GameCore.LevelSystem))
@@ -69,12 +69,12 @@ namespace TzarGames.MultiplayerKit.Generated
 					case "OnLevelUpEvent": info.MethodCode = 0; info.Channel = ChannelType.Reliable; info.Options = MessageDeliveryOptions.Default; info.RepeatCount = 1; return true;
 				}
 			}
-			if( typeof(TzarGames.GameCore.IPathMovementServerNetSync).IsAssignableFrom(rpcHandlerType))
+			if(rpcHandlerType == typeof(TzarGames.GameCore.MessageDispatcherSystem))
 			{
-				info = new RemoteCallInfo(6,0, ChannelType.Reliable, MessageDeliveryOptions.Default, 1);
+				info = new RemoteCallInfo(14,0, ChannelType.Reliable, MessageDeliveryOptions.Default, 1);
 				switch(method.Name)
 				{
-					case "Move": info.MethodCode = 0; info.Channel = ChannelType.Unreliable; info.Options = MessageDeliveryOptions.Default; info.RepeatCount = 1; return true;
+					case "SendMessage": info.MethodCode = 0; info.Channel = ChannelType.Reliable; info.Options = MessageDeliveryOptions.Default; info.RepeatCount = 1; return true;
 				}
 			}
 			info = default;
@@ -158,27 +158,6 @@ namespace TzarGames.MultiplayerKit.Generated
 					#endif
 				}
 			}
-			if(handlerCode == 14)
-			{
-				if(target.GetType() != typeof(TzarGames.GameCore.MessageDispatcherSystem))
-				{
-					return false;
-				}
-				switch(rpcCode)
-				{
-					#if !UNITY_SERVER
-					case 0:
-					{
-						if(isServer) return false;
-						var stream = new ReadStream(ref reader);
-						TzarGames.GameCore.Message message = stream.ReadStruct<TzarGames.GameCore.Message>();
-
-						(target as TzarGames.GameCore.MessageDispatcherSystem).SendMessage(message,commands);
-						return true;
-					}
-					#endif
-				}
-			}
 			if(handlerCode == 8)
 			{
 				if(target is TzarGames.GameCore.IItemTakenRpcHandler == false)
@@ -196,6 +175,26 @@ namespace TzarGames.MultiplayerKit.Generated
 						Unity.Mathematics.float3 position = stream.ReadFloat3();
 						System.UInt32 count = stream.ReadUInt();
 						(target as TzarGames.GameCore.IItemTakenRpcHandler).NotifyDroppedItemTaken(itemId,position,count);
+						return true;
+					}
+					#endif
+				}
+			}
+			if(handlerCode == 6)
+			{
+				if(target is TzarGames.GameCore.IPathMovementServerNetSync == false)
+				{
+					return false;
+				}
+				switch(rpcCode)
+				{
+					#if UNITY_SERVER || UNITY_EDITOR
+					case 0:
+					{
+						var stream = new ReadStream(ref reader);
+						TzarGames.GameCore.ServerMoveInfo moveInfo = stream.ReadStruct<TzarGames.GameCore.ServerMoveInfo>();
+						TzarGames.MultiplayerKit.NetMessageInfo netMessageInfo = new NetMessageInfo() { Sender = sender, SenderEntity = senderEntity };
+						(target as TzarGames.GameCore.IPathMovementServerNetSync).Move(moveInfo,netMessageInfo);
 						return true;
 					}
 					#endif
@@ -223,21 +222,22 @@ namespace TzarGames.MultiplayerKit.Generated
 					#endif
 				}
 			}
-			if(handlerCode == 6)
+			if(handlerCode == 14)
 			{
-				if(target is TzarGames.GameCore.IPathMovementServerNetSync == false)
+				if(target.GetType() != typeof(TzarGames.GameCore.MessageDispatcherSystem))
 				{
 					return false;
 				}
 				switch(rpcCode)
 				{
-					#if UNITY_SERVER || UNITY_EDITOR
+					#if !UNITY_SERVER
 					case 0:
 					{
+						if(isServer) return false;
 						var stream = new ReadStream(ref reader);
-						TzarGames.GameCore.ServerMoveInfo moveInfo = stream.ReadStruct<TzarGames.GameCore.ServerMoveInfo>();
-						TzarGames.MultiplayerKit.NetMessageInfo netMessageInfo = new NetMessageInfo() { Sender = sender, SenderEntity = senderEntity };
-						(target as TzarGames.GameCore.IPathMovementServerNetSync).Move(moveInfo,netMessageInfo);
+						TzarGames.GameCore.Message message = stream.ReadStruct<TzarGames.GameCore.Message>();
+
+						(target as TzarGames.GameCore.MessageDispatcherSystem).SendMessage(message,commands);
 						return true;
 					}
 					#endif

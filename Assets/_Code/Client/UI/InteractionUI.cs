@@ -85,7 +85,7 @@ namespace Arena.Client.UI
 			        var eventCommands = GetBuffer<InteractionEventCommand>(currentInteractingEntity);
 			        var aspect = EntityManager.GetAspect<ScriptVizAspect>(currentInteractingEntity);
 			        var ecb = new EntityCommandBuffer(Allocator.Temp);
-			        var commands = new UniversalCommandBuffer(ecb);
+			        var commands = ecb.AsParallelWriter();
 			        var handle = new ContextDisposeHandle(ref aspect, ref commands, 0, Time.deltaTime);
 		        
 			        foreach (var eventCommand in eventCommands)

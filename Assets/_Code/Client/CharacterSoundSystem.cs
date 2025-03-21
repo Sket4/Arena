@@ -12,7 +12,7 @@ namespace Arena.Client
     {
         protected override void OnSystemUpdate()
         {
-            var commands = CreateUniversalCommandBuffer();
+            var commands = CreateEntityCommandBufferParallel();
             var playSoundEventArchetype = SystemAPI.GetSingleton<PlaySoundSystem.Singleton>().PlayerSoundEventArchetype;
 
             Entities

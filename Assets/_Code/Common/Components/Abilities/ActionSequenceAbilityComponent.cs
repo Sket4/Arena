@@ -285,7 +285,7 @@ namespace Arena.Abilities
             Entity abilityEntity,
             int commandBufferIndex,
             in AbilityOwner abilityOwner,
-            UniversalCommandBuffer commands,
+            EntityCommandBuffer.ParallelWriter commands,
             ref DynamicBuffer<VariableDataByte> variableData,
             ref DynamicBuffer<EntityVariableData> entityVariableData,
             ref DynamicBuffer<ConstantEntityVariableData> constantEntityVariableData,

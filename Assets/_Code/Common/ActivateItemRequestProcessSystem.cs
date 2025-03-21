@@ -13,7 +13,7 @@ namespace Arena
     {
         protected override void OnSystemUpdate()
         {
-            var commands = CreateUniversalCommandBuffer();
+            var commands = CreateEntityCommandBufferParallel();
             
             Entities.ForEach((int entityInQueryIndex, in ActivateItemRequest request) =>
             {

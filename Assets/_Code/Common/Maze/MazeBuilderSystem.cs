@@ -55,7 +55,7 @@ namespace Arena.Maze
 
         protected override void OnSystemUpdate()
         {
-            var commands = CreateUniversalCommandBuffer();
+            var commands = CreateEntityCommandBufferParallel();
 
             Entities
                 .WithoutBurst()
@@ -65,8 +65,6 @@ namespace Arena.Maze
                 {
                     return;
                 }
-
-                commands.DefaultSortKey = entityInQueryIndex;
 
                 var random = new Random(buildRequest.Seed);
 
@@ -80,21 +78,21 @@ namespace Arena.Maze
                     }
                     else
                     {
-                        mazeEntity = commands.CreateEntityWithDefaultKey();
+                        mazeEntity = commands.CreateEntity(entityInQueryIndex);
                         buildRequest.MazeEntity = mazeEntity;
                     }
 
                     buildRequest.State = BuildMazeRequestState.Building;
-                    commands.SetComponentWithDefaultKey(requestEntity, buildRequest);
+                    commands.SetComponent(entityInQueryIndex, requestEntity, buildRequest);
 
                     var builder = SystemAPI.GetComponent<MazeWorldBuilder>(buildRequest.Builder);
 
-                    GenerateMaze(mazeEntity, buildRequest.Builder, buildRequest.Seed, buildRequest.HorizontalCells, buildRequest.VerticalCells, buildRequest.StartCellCount, ref random, ref commands);
+                    GenerateMaze(entityInQueryIndex, mazeEntity, buildRequest.Builder, buildRequest.Seed, buildRequest.HorizontalCells, buildRequest.VerticalCells, buildRequest.StartCellCount, ref random, ref commands);
                     return;
                 }
 
                 Debug.Log("Построение геометрии лабиринта");
-                ProcessMaze(buildRequest.MazeEntity, buildRequest.Builder, ref random, ref commands);
+                ProcessMaze(entityInQueryIndex, buildRequest.MazeEntity, buildRequest.Builder, ref random, ref commands);
                 buildRequest.State = BuildMazeRequestState.Completed;
 
             }).Run();
@@ -221,7 +219,7 @@ namespace Arena.Maze
             return true;
         }
 
-        void ProcessMaze(Entity mazeEntity, Entity mazeBuilderEntity, ref Random random, ref UniversalCommandBuffer commands)
+        void ProcessMaze(int sortIndex, Entity mazeEntity, Entity mazeBuilderEntity, ref Random random, ref EntityCommandBuffer.ParallelWriter commands)
         {
             int maxVersionCount = 3;
 
@@ -258,7 +256,7 @@ namespace Arena.Maze
 
             SetComponent(mazeEntity, maze);
 
-            BuildMaze(mazeEntity, mazeBuilderEntity, ref random, ref commands, calculatedPaths[maxPathNum]);
+            BuildMaze(sortIndex, mazeEntity, mazeBuilderEntity, ref random, ref commands, calculatedPaths[maxPathNum]);
 
             //var lightController = mazeContainer.gameObject.AddComponent<MazeLightController>();
             //lightController.TraceLayers = lightTracelayers;
@@ -296,7 +294,7 @@ namespace Arena.Maze
 
         static readonly quaternion rot180 = quaternion.AxisAngle(math.up(), math.radians(180));
 
-        Entity spawnBorderCell(DynamicBuffer<BorderCellPrefabs> prefabs, float3 position, float angle, ref DynamicBuffer<MazeObjects> linkedEntities, ref Random random, ref UniversalCommandBuffer commands)
+        Entity spawnBorderCell(int sortIndex, DynamicBuffer<BorderCellPrefabs> prefabs, float3 position, float angle, ref DynamicBuffer<MazeObjects> linkedEntities, ref Random random, ref EntityCommandBuffer.ParallelWriter commands)
         {
             if(prefabs.IsEmpty)
             {
@@ -308,15 +306,15 @@ namespace Arena.Maze
             rot = quaternion.Euler(0, math.radians(angle), 0);
 
             var randCell = random.NextInt(0, prefabs.Length);
-            var cell = commands.InstantiateWithDefaultKey(prefabs[randCell].Prefab);
+            var cell = commands.Instantiate(sortIndex, prefabs[randCell].Prefab);
             var l2w = LocalTransform.FromPositionRotation(position, rot);
-            commands.SetComponentWithDefaultKey(cell, l2w);
+            commands.SetComponent(sortIndex, cell, l2w);
             linkedEntities.Add(new MazeObjects() { Value = cell });
 
             return cell;
         }
 
-        Entity spawnWall(DynamicBuffer<WallPrefabs> prefabs, float3 position, bool horizontal, ref DynamicBuffer<MazeObjects> linkedEntities, ref Random random, ref UniversalCommandBuffer commands, bool randomRot = true)
+        Entity spawnWall(int sortIndex, DynamicBuffer<WallPrefabs> prefabs, float3 position, bool horizontal, ref DynamicBuffer<MazeObjects> linkedEntities, ref Random random, ref EntityCommandBuffer.ParallelWriter commands, bool randomRot = true)
         {
             quaternion rot;
 
@@ -341,8 +339,8 @@ namespace Arena.Maze
                 return Entity.Null;
             }
 
-            var wall = commands.InstantiateWithDefaultKey(prefabs[randWall].Prefab);
-            commands.SetComponentWithDefaultKey(wall, LocalTransform.FromPositionRotation(position, rot));
+            var wall = commands.Instantiate(sortIndex, prefabs[randWall].Prefab);
+            commands.SetComponent(sortIndex, wall, LocalTransform.FromPositionRotation(position, rot));
             linkedEntities.Add(new MazeObjects() { Value = wall });
 
             return wall;
@@ -428,7 +426,7 @@ namespace Arena.Maze
             }
         }
 
-        void BuildMaze(Entity mazeEntity, Entity mazeBuilder, ref Random random, ref UniversalCommandBuffer commands, List<int> path)
+        void BuildMaze(int sortIndex, Entity mazeEntity, Entity mazeBuilder, ref Random random, ref EntityCommandBuffer.ParallelWriter commands, List<int> path)
         {
             var startHeightTranslation = new float3(0, 0, 0);
             float3 currentCellLocation = startHeightTranslation, wallSpawnLocation;
@@ -470,7 +468,7 @@ namespace Arena.Maze
             int startCellIndex = 0;
 
             // build
-            var linkedEntities = commands.AddBufferWithDefaultKey<MazeObjects>(mazeEntity);
+            var linkedEntities = commands.AddBuffer<MazeObjects>(sortIndex, mazeEntity);
 
             // список индексов ячеек, для которых уже были добавлены стены с дверьми
             var doorProcessedCells = new List<int>();
@@ -495,8 +493,8 @@ namespace Arena.Maze
 
             foreach (var zoneId in zonesInPath)
             {
-                var zoneInstance = commands.InstantiateWithDefaultKey(builderData.ZonePrefab);
-                commands.SetComponentWithDefaultKey(zoneInstance, new ZoneId((ushort)zoneId));
+                var zoneInstance = commands.Instantiate(sortIndex, builderData.ZonePrefab);
+                commands.SetComponent(sortIndex, zoneInstance, new ZoneId((ushort)zoneId));
             }
             
             var addedWalls = new List<AddedWallInfo>();
@@ -593,8 +591,8 @@ namespace Arena.Maze
                     cellRotation = quaternion.Euler(0, math.radians(angle), 0);
                 }
 
-                var spawnedCellEntity = commands.InstantiateWithDefaultKey(prefabToSpawn);
-                commands.SetComponentWithDefaultKey(spawnedCellEntity, LocalTransform.FromPositionRotation(currentCellLocation, cellRotation));
+                var spawnedCellEntity = commands.Instantiate(sortIndex, prefabToSpawn);
+                commands.SetComponent(sortIndex, spawnedCellEntity, LocalTransform.FromPositionRotation(currentCellLocation, cellRotation));
                 linkedEntities.Add(new MazeObjects() { Value = spawnedCellEntity });
 
                 if(isEnvironmentCell)
@@ -614,7 +612,7 @@ namespace Arena.Maze
                 var currentCellWalls = GetBuffer<MazeCellWalls>(currentCellEntity);
                 var currentCellRemovedWalls = GetBuffer<MaceCellRemovedWalls>(currentCellEntity);
 
-                commands.SetComponentWithDefaultKey(spawnedCellEntity, new ZoneId { Value = currentCellInfo.ZoneId });
+                commands.SetComponent(sortIndex, spawnedCellEntity, new ZoneId { Value = currentCellInfo.ZoneId });
 
                 float3 borderCellLocation;
                 bool isVerticalBorderCell = false;
@@ -781,12 +779,12 @@ namespace Arena.Maze
                         selectedWallPrefabs = wallPrefabs;
                     }
 
-                    spawnWall(selectedWallPrefabs, wallSpawnLocation, true, ref linkedEntities, ref random, ref commands);
+                    spawnWall(sortIndex, selectedWallPrefabs, wallSpawnLocation, true, ref linkedEntities, ref random, ref commands);
 
                     if(isLeftBorderIndex)
                     {
                         isHorizontalBorderCell = true;
-                        spawnBorderCell(borderCellPrefabs, borderCellLocation, 90, ref linkedEntities, ref random, ref commands);
+                        spawnBorderCell(sortIndex, borderCellPrefabs, borderCellLocation, 90, ref linkedEntities, ref random, ref commands);
                     }
 
                     addColumnPosition(true, wallSpawnLocation, cellSize, isLeftBorderIndex, columnPositions);
@@ -816,12 +814,12 @@ namespace Arena.Maze
                         selectedWallPrefabs = wallPrefabs;
                     }
 
-                    spawnWall(selectedWallPrefabs, wallSpawnLocation, false, ref linkedEntities, ref random, ref commands);
+                    spawnWall(sortIndex, selectedWallPrefabs, wallSpawnLocation, false, ref linkedEntities, ref random, ref commands);
 
                     if(isUpBorderIndex)
                     {
                         isVerticalBorderCell = true;
-                        spawnBorderCell(borderCellPrefabs, borderCellLocation, 180, ref linkedEntities, ref random, ref commands);
+                        spawnBorderCell(sortIndex, borderCellPrefabs, borderCellLocation, 180, ref linkedEntities, ref random, ref commands);
                     }
 
                     addColumnPosition(false, wallSpawnLocation, cellSize, isUpBorderIndex, columnPositions);
@@ -851,12 +849,12 @@ namespace Arena.Maze
                         selectedWallPrefabs = wallPrefabs;
                     }
 
-                    spawnWall(selectedWallPrefabs, wallSpawnLocation, true, ref linkedEntities, ref random, ref commands);
+                    spawnWall(sortIndex, selectedWallPrefabs, wallSpawnLocation, true, ref linkedEntities, ref random, ref commands);
 
                     if(isRightBorderIndex)
                     {
                         isHorizontalBorderCell = true;
-                        spawnBorderCell(borderCellPrefabs, borderCellLocation, -90, ref linkedEntities, ref random, ref commands);
+                        spawnBorderCell(sortIndex, borderCellPrefabs, borderCellLocation, -90, ref linkedEntities, ref random, ref commands);
                     }
 
                     addColumnPosition(true, wallSpawnLocation, cellSize, isRightBorderIndex, columnPositions);
@@ -886,12 +884,12 @@ namespace Arena.Maze
                         selectedWallPrefabs = wallPrefabs;
                     }
 
-                    spawnWall(selectedWallPrefabs, wallSpawnLocation, false, ref linkedEntities, ref random, ref commands);
+                    spawnWall(sortIndex, selectedWallPrefabs, wallSpawnLocation, false, ref linkedEntities, ref random, ref commands);
 
                     if(isDownBorderIndex)
                     {
                         isVerticalBorderCell = true;
-                        spawnBorderCell(borderCellPrefabs, borderCellLocation, 0, ref linkedEntities, ref random, ref commands);
+                        spawnBorderCell(sortIndex, borderCellPrefabs, borderCellLocation, 0, ref linkedEntities, ref random, ref commands);
                     }
 
                     addColumnPosition(false, wallSpawnLocation, cellSize, isDownBorderIndex, columnPositions);
@@ -902,7 +900,7 @@ namespace Arena.Maze
                     borderCellLocation = currentCellLocation;
                     borderCellLocation.x += cellSize * (i == 0 || i == mazeCells.Length - maze.HorizontalCells ? 1 : -1);
                     borderCellLocation.z += cellSize * (i == mazeCells.Length - 1 || (i == mazeCells.Length - maze.HorizontalCells) ? 1 : -1);
-                    spawnBorderCell(borderCellPrefabs, borderCellLocation, 0, ref linkedEntities, ref random, ref commands);
+                    spawnBorderCell(sortIndex, borderCellPrefabs, borderCellLocation, 0, ref linkedEntities, ref random, ref commands);
 
                     //if (isStartCell)
                     //{
@@ -957,40 +955,40 @@ namespace Arena.Maze
                     {
                         wallSpawnLocation = currentCellLocation;
                         wallSpawnLocation.x -= cellSize * -0.5f;
-                        var wallEntity = spawnWall(doorWallPrefabs.Reinterpret<WallPrefabs>(), wallSpawnLocation, true, ref linkedEntities, ref random, ref commands);
+                        var wallEntity = spawnWall(sortIndex, doorWallPrefabs.Reinterpret<WallPrefabs>(), wallSpawnLocation, true, ref linkedEntities, ref random, ref commands);
                         if(wallEntity != Entity.Null)
                         {
-                            commands.SetComponentWithDefaultKey(wallEntity, new ZoneGate { Zone1 = new ZoneId(currentCellInfo.ZoneId), Zone2 = new ZoneId(neighbourCellInfo.ZoneId) });
+                            commands.SetComponent(sortIndex, wallEntity, new ZoneGate { Zone1 = new ZoneId(currentCellInfo.ZoneId), Zone2 = new ZoneId(neighbourCellInfo.ZoneId) });
                         }
                     }
                     if (isUpRemoved && upWallIndex == removedWall.CellIndex)
                     {
                         wallSpawnLocation = currentCellLocation;
                         wallSpawnLocation.z += -cellSize * 0.5f;
-                        var wallEntity = spawnWall(doorWallPrefabs.Reinterpret<WallPrefabs>(), wallSpawnLocation, false, ref linkedEntities, ref random, ref commands);
+                        var wallEntity = spawnWall(sortIndex, doorWallPrefabs.Reinterpret<WallPrefabs>(), wallSpawnLocation, false, ref linkedEntities, ref random, ref commands);
                         if (wallEntity != Entity.Null)
                         {
-                            commands.SetComponentWithDefaultKey(wallEntity, new ZoneGate { Zone1 = new ZoneId(currentCellInfo.ZoneId), Zone2 = new ZoneId(neighbourCellInfo.ZoneId) });
+                            commands.SetComponent(sortIndex, wallEntity, new ZoneGate { Zone1 = new ZoneId(currentCellInfo.ZoneId), Zone2 = new ZoneId(neighbourCellInfo.ZoneId) });
                         }
                     }
                     if (isRightRemoved && rightWallIndex == removedWall.CellIndex)
                     {
                         wallSpawnLocation = currentCellLocation;
                         wallSpawnLocation.x += cellSize * -0.5f;
-                        var wallEntity = spawnWall(doorWallPrefabs.Reinterpret<WallPrefabs>(), wallSpawnLocation, true, ref linkedEntities, ref random, ref commands);
+                        var wallEntity = spawnWall(sortIndex, doorWallPrefabs.Reinterpret<WallPrefabs>(), wallSpawnLocation, true, ref linkedEntities, ref random, ref commands);
                         if (wallEntity != Entity.Null)
                         {
-                            commands.SetComponentWithDefaultKey(wallEntity, new ZoneGate { Zone1 = new ZoneId(currentCellInfo.ZoneId), Zone2 = new ZoneId(neighbourCellInfo.ZoneId) });
+                            commands.SetComponent(sortIndex, wallEntity, new ZoneGate { Zone1 = new ZoneId(currentCellInfo.ZoneId), Zone2 = new ZoneId(neighbourCellInfo.ZoneId) });
                         }
                     }
                     if (isDownRemoved && downWallIndex == removedWall.CellIndex)
                     {
                         wallSpawnLocation = currentCellLocation;
                         wallSpawnLocation.z += cellSize * 0.5f;
-                        var wallEntity = spawnWall(doorWallPrefabs.Reinterpret<WallPrefabs>(), wallSpawnLocation, false, ref linkedEntities, ref random, ref commands);
+                        var wallEntity = spawnWall(sortIndex, doorWallPrefabs.Reinterpret<WallPrefabs>(), wallSpawnLocation, false, ref linkedEntities, ref random, ref commands);
                         if (wallEntity != Entity.Null)
                         {
-                            commands.SetComponentWithDefaultKey(wallEntity, new ZoneGate { Zone1 = new ZoneId(currentCellInfo.ZoneId), Zone2 = new ZoneId(neighbourCellInfo.ZoneId) });
+                            commands.SetComponent(sortIndex, wallEntity, new ZoneGate { Zone1 = new ZoneId(currentCellInfo.ZoneId), Zone2 = new ZoneId(neighbourCellInfo.ZoneId) });
                         }
                     }
                 }
@@ -1001,7 +999,7 @@ namespace Arena.Maze
             if (environmentPrefabs.Length > 0)
             {
                 var envPrefab = environmentPrefabs[random.NextInt(0, environmentPrefabs.Length)];
-                var envInstance = commands.InstantiateWithDefaultKey(envPrefab.Prefab);
+                var envInstance = commands.Instantiate(sortIndex, envPrefab.Prefab);
                 linkedEntities.Add(new MazeObjects { Value = envInstance });
             }
 
@@ -1092,10 +1090,10 @@ namespace Arena.Maze
                     columnPrefab = columnPrefabs[random.NextInt(0, columnPrefabs.Length)].Prefab;
                 }
 
-                var column = commands.InstantiateWithDefaultKey(columnPrefab);
+                var column = commands.Instantiate(sortIndex, columnPrefab);
                 var lt = LocalTransform.FromPosition(pos.Position);
                 //lt = LocalTransform.FromPositionRotation(pos, quaternion.EulerXYZ(UnityEngine.Random.Range(-90, 90), 0, UnityEngine.Random.Range(-90, 90)));
-                commands.SetComponentWithDefaultKey(column, lt);
+                commands.SetComponent(sortIndex, column, lt);
                 linkedEntities.Add(new MazeObjects { Value = column });
             }
 
@@ -1205,7 +1203,7 @@ namespace Arena.Maze
         }
 
         [BurstCompile]
-        void GenerateMaze(Entity mazeEntity, Entity builder, uint seed, int horizontalCells, int verticalCells, int startCellCount, ref Random random, ref UniversalCommandBuffer commands)
+        void GenerateMaze(int sortIndex, Entity mazeEntity, Entity builder, uint seed, int horizontalCells, int verticalCells, int startCellCount, ref Random random, ref EntityCommandBuffer.ParallelWriter commands)
         {
             var cellNum = horizontalCells * verticalCells;
 
@@ -1221,14 +1219,14 @@ namespace Arena.Maze
                 StartCellCount = startCellCount
             };
 
-            var mazeCellsBuffer = commands.AddBufferWithDefaultKey<MazeCells>(mazeEntity);
+            var mazeCellsBuffer = commands.AddBuffer<MazeCells>(sortIndex, mazeEntity);
 
             // создаем сущности ячеек
             for (int i = 0; i < horizontalCells; i++)
             {
                 for (int j = 0; j < verticalCells; j++)
                 {
-                    var cellEntity = commands.CreateEntityWithDefaultKey(cellArchetype);
+                    var cellEntity = commands.CreateEntity(sortIndex, cellArchetype);
                     mazeCellsBuffer.Add(new MazeCells 
                     { 
                         Cell = cellEntity
@@ -1263,9 +1261,9 @@ namespace Arena.Maze
                 {
                     MazeCell = MazeCell.Default,
                     Entity = mazeCellElement.Cell,
-                    Neighbors = commands.SetBufferWithDefaultKey<MazeCellNeighbors>(mazeCellElement.Cell),
-                    RemovedWalls = commands.SetBufferWithDefaultKey<MaceCellRemovedWalls>(mazeCellElement.Cell),
-                    Walls = commands.SetBufferWithDefaultKey<MazeCellWalls>(mazeCellElement.Cell)
+                    Neighbors = commands.SetBuffer<MazeCellNeighbors>(sortIndex, mazeCellElement.Cell),
+                    RemovedWalls = commands.SetBuffer<MaceCellRemovedWalls>(sortIndex, mazeCellElement.Cell),
+                    Walls = commands.SetBuffer<MazeCellWalls>(sortIndex, mazeCellElement.Cell)
                 };
 
 
@@ -1498,11 +1496,11 @@ namespace Arena.Maze
             }
 
             // записываем результаты
-            commands.AddComponentWithDefaultKey(mazeEntity, maze);
+            commands.AddComponent(sortIndex, mazeEntity, maze);
 
             foreach(var cell in cells)
             {
-                commands.SetComponentWithDefaultKey(cell.Entity, cell.MazeCell);
+                commands.SetComponent(sortIndex, cell.Entity, cell.MazeCell);
             }
         }
     }

@@ -118,7 +118,7 @@ namespace Arena.Client
             var currentTime = timeSystem.GameTime;
 
             // создаем событие коррекции
-            var commands = CreateUniversalCommandBuffer();
+            var commands = CreateEntityCommandBufferParallel();
             var correctionEventEntity = commands.CreateEntity(0);
             commands.AddComponent(0, correctionEventEntity, new PositionCorrectionTag());
             commands.AddComponent(0, correctionEventEntity, new EventTag());

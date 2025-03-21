@@ -15,7 +15,7 @@ namespace Arena
     {
         protected override unsafe void OnSystemUpdate()
         {
-            var commands = CreateUniversalCommandBuffer();
+            var commands = CreateEntityCommandBufferParallel();
 
             // отключаем коллайдеры у персонажей при их смерти
             Entities

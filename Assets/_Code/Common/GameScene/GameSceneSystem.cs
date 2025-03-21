@@ -41,7 +41,7 @@ namespace Arena.GameSceneCode
     {
         protected override void OnSystemUpdate()
         {
-            var commands = CreateUniversalCommandBuffer();
+            var commands = CreateEntityCommandBufferParallel();
             
             Entities
                 .WithAll<GameSceneDescription>()

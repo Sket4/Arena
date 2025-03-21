@@ -17,7 +17,7 @@ namespace Arena.Maze
     [WithChangeFilter(typeof(ZoneGate))]
     partial struct ZoneGateEventJob : IJobEntity
     {
-        public UniversalCommandBuffer Commands;
+        public EntityCommandBuffer.ParallelWriter Commands;
         public float DeltaTime;
 
         public void Execute(ScriptVizAspect svizAspect, [ChunkIndexInQuery] int sortIndex, in DynamicBuffer<OnZoneGateChangedEventCommand> events, in ZoneGate zoneGate)
@@ -49,7 +49,7 @@ namespace Arena.Maze
     [WithChangeFilter(typeof(ZoneId))]
     partial struct ZoneIdChangedEventJob : IJobEntity
     {
-        public UniversalCommandBuffer Commands;
+        public EntityCommandBuffer.ParallelWriter Commands;
         public float DeltaTime;
 
         public void Execute(ScriptVizAspect svizAspect, [ChunkIndexInQuery] int sortIndex, in DynamicBuffer<OnZoneChangedEventCommand> events, in ZoneId zone)
@@ -73,7 +73,7 @@ namespace Arena.Maze
     {
         [ReadOnly] public NativeArray<ActivateZoneRequest> Requests;
         
-        public UniversalCommandBuffer Commands;
+        public EntityCommandBuffer.ParallelWriter Commands;
         public float DeltaTime;
 
         public void Execute(ScriptVizAspect svizAspect, [ChunkIndexInQuery] int sortIndex, in DynamicBuffer<OnZoneActivatedEventCommand> events)
@@ -115,7 +115,7 @@ namespace Arena.Maze
 
         protected override void OnSystemUpdate()
         {
-            var commands = CreateUniversalCommandBuffer();
+            var commands = CreateEntityCommandBufferParallel();
             
             var deltaTime = SystemAPI.Time.DeltaTime;
             zoneGateEventsJob.DeltaTime = deltaTime;
@@ -130,7 +130,7 @@ namespace Arena.Maze
 
             if (activateZoneRequestQuery.IsEmpty == false)
             {
-                var newCommands = CreateUniversalCommandBuffer();
+                var newCommands = CreateCommandBuffer();
                 newCommands.DestroyEntity(activateZoneRequestQuery);    
                 
                 var requests =
@@ -139,7 +139,7 @@ namespace Arena.Maze
 
                 zoneActivatedEventJob.Requests = requests.AsDeferredJobArray();
                 zoneActivatedEventJob.DeltaTime = deltaTime;
-                zoneActivatedEventJob.Commands = newCommands;
+                zoneActivatedEventJob.Commands = newCommands.AsParallelWriter();
             
                 Dependency = zoneActivatedEventJob.Schedule(Dependency);
                 Dependency = requests.Dispose(Dependency);

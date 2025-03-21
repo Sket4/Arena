@@ -27,7 +27,7 @@ namespace Arena.Client.Physics
 
         protected unsafe override void OnSystemUpdate()
         {
-            var commands = CreateUniversalCommandBuffer();
+            var commands = CreateEntityCommandBufferParallel();
 
             if(deadBreakablesQuery.CalculateEntityCount() > 0)
             {
@@ -96,7 +96,7 @@ namespace Arena.Client.Physics
 
                         commands.RemoveComponent<Parent>(0, bone.BoneEntity);
                         
-                        commands.SetSharedComponentData(0, bone.BoneEntity, new PhysicsWorldIndex { Value = 0 });
+                        commands.SetSharedComponent(0, bone.BoneEntity, new PhysicsWorldIndex { Value = 0 });
 
                     }
 
@@ -194,7 +194,7 @@ namespace Arena.Client.Physics
                         commands.SetComponent(0, bone.Value, LocalTransform.FromPositionRotationScale(l2w.Position, l2w.Rotation, scale));
 
                         commands.RemoveComponent<Parent>(0, bone.Value);
-                        commands.AddSharedComponentData(0, bone.Value, new PhysicsWorldIndex { Value = 0 });
+                        commands.AddSharedComponent(0, bone.Value, new PhysicsWorldIndex { Value = 0 });
 
                         //Debug.DrawLine(l2w.Position, l2w.Position + math.up() * 0.1f, Color.red, 10);
 

@@ -42,7 +42,7 @@ namespace Arena
 
         protected override void OnSystemUpdate()
         {
-            var commands = CreateUniversalCommandBuffer();
+            var commands = CreateEntityCommandBufferParallel();
             var transactionArchetype = this.transactionArchetype;
             var craftReceiptsFromEntity = GetBufferLookup<CraftReceipts>(true);
             

@@ -50,7 +50,7 @@ namespace Arena
             }).Run();
             
             var currentTime = timeSystem.GameTime;
-            var commands = CreateUniversalCommandBuffer();
+            var commands = CreateEntityCommandBufferParallel();
             var spawnedChunks = CreateArchetypeChunkArrayWithUpdateAllocator(spawnedQuery);
             var spawnedType = GetComponentTypeHandle<SpawnedBy>(true);
             var livingStateType = GetComponentTypeHandle<LivingState>(true);
@@ -268,7 +268,7 @@ namespace Arena
             }).Run();
         }
 
-        private static void CreateFinishedEvent(Entity entity, int nativeThreadIndex, UniversalCommandBuffer commands)
+        private static void CreateFinishedEvent(Entity entity, int nativeThreadIndex, EntityCommandBuffer.ParallelWriter commands)
         {
             var evtEntity = commands.CreateEntity(nativeThreadIndex);
             commands.AddComponent(nativeThreadIndex, evtEntity, new ArenaSpawnerFinishedEvent
@@ -284,7 +284,7 @@ namespace Arena
             public ArenaSpawner Spawner;
             public ArenaMatchStateData InternalState;
             public Level Level;
-            public UniversalCommandBuffer Commands;
+            public EntityCommandBuffer.ParallelWriter Commands;
             public int EntityInQueryIndex;
 
             public void OnEnter(Entity colliderEntity, Entity enteredEntity)

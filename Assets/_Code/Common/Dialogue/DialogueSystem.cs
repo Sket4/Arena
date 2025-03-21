@@ -36,7 +36,7 @@ namespace Arena.Dialogue
         protected override void OnUpdate()
         {
             var ecb = new EntityCommandBuffer(World.UpdateAllocator.ToAllocator);
-            var commands = new UniversalCommandBuffer(ecb);
+            var commands = ecb.AsParallelWriter();
             var deltaTime = SystemAPI.Time.DeltaTime;
             
             Entities.ForEach((Entity entity, in DialogueMessage message) =>
@@ -44,7 +44,7 @@ namespace Arena.Dialogue
                 if (message.Player == Entity.Null || message.Companion == Entity.Null)
                 {
                     Debug.LogError($"dialogue companion is null, destroying dialogue message {entity.Index}");
-                    commands.DestroyEntityWithDefaultKey(entity);
+                    ecb.DestroyEntity(entity);
                     return;
                 }
 
@@ -54,7 +54,7 @@ namespace Arena.Dialogue
                 if (player_hasLivingState == false && companion_hasLivingState == false)
                 {
                     Debug.LogError($"dialogue companions {message.Player.Index} and {message.Companion.Index} do not have LivingState component, destroying message {entity.Index}");
-                    commands.DestroyEntityWithDefaultKey(entity);
+                    ecb.DestroyEntity(entity);
                     return;
                 }
 
@@ -65,7 +65,7 @@ namespace Arena.Dialogue
                     if (livingState.IsAlive == false)
                     {
                         Debug.LogWarning($"dialogue player {message.Player.Index} is dead, destroying message {entity.Index}");
-                        commands.DestroyEntityWithDefaultKey(entity);
+                        ecb.DestroyEntity(entity);
                         return;
                     }
                 }
@@ -77,7 +77,7 @@ namespace Arena.Dialogue
                     if (livingState.IsAlive == false)
                     {
                         Debug.LogWarning($"dialogue companion {message.Companion.Index} is dead, destroying message {entity.Index}");
-                        commands.DestroyEntityWithDefaultKey(entity);
+                        ecb.DestroyEntity(entity);
                         return;
                     }
                 }
@@ -87,14 +87,14 @@ namespace Arena.Dialogue
                 if (currentState.Companion != Entity.Null && currentState.Companion != message.Companion)
                 {
                     Debug.LogError($"failed to start dialog with companion {message.Companion.Index} - already has companion {currentState.Companion.Index}");
-                    commands.DestroyEntityWithDefaultKey(entity);
+                    ecb.DestroyEntity(entity);
                     return;
                 }
 
                 if (currentState.DialogueEntity != Entity.Null && currentState.DialogueEntity != message.DialogueEntity)
                 {
                     Debug.LogError($"failed to start dialog by {message.DialogueEntity.Index} - already has dialogue {currentState.DialogueEntity.Index}");
-                    commands.DestroyEntityWithDefaultKey(entity);
+                    ecb.DestroyEntity(entity);
                     return;
                 }
                 

@@ -11,7 +11,7 @@ namespace TzarGames.GameCore.Abilities.Generated
 	[BurstCompile]
 	public struct Powerattackability_20_AbilityJob : IJobChunk
 	{
-		public UniversalCommandBuffer Commands;
+		public EntityCommandBuffer.ParallelWriter Commands;
 		public EntityArchetype AbilityEventArchetype;
 		public bool IsServer;
 		public float GlobalDeltaTime;
@@ -139,7 +139,7 @@ namespace TzarGames.GameCore.Abilities.Generated
 				var _DurationRef = new RefRW<TzarGames.GameCore.Abilities.Duration>(DurationArray, c);
 				ref var _Duration = ref _DurationRef.ValueRW;
 
-				if(_AbilityState.Value == AbilityStates.Idle)
+				if(_AbilityState.Value == AbilityStates.Idle || _AbilityState.Value == AbilityStates.WaitingForValidation)
 				{
 					_AbilityCooldownJob.OnIdleUpdate(deltaTime, ref _AbilityCooldown);
 					_DurationJob.OnIdleUpdate(ref _Duration);
@@ -298,7 +298,7 @@ namespace TzarGames.GameCore.Abilities.Generated
 			public DynamicBuffer<TzarGames.GameCore.Abilities.HitQueryAbilityAction> _HitQueryAbilityActionBuffer;
 			public RefRW<Unity.Transforms.LocalTransform> _LocalTransformRef;
 			public AbilityInterface abilityInterface;
-			public UniversalCommandBuffer Commands;
+			public EntityCommandBuffer.ParallelWriter Commands;
 			public void Init()
 			{
 				Caller = new ActionCaller(ExecFunction.Data);
@@ -487,7 +487,7 @@ namespace TzarGames.GameCore.Abilities.Generated
 		void updateJob(ref SystemState state)
 		{
 			var cmdSingleton = SystemAPI.GetSingleton<GameCommandBufferSystem.Singleton>();
-			job.Commands = new UniversalCommandBuffer(cmdSingleton.CreateCommandBuffer(state.WorldUnmanaged));
+			job.Commands = cmdSingleton.CreateCommandBuffer(state.WorldUnmanaged).AsParallelWriter();
 			var abilitySystem = SystemAPI.GetSingleton<AbilitySystem.Singleton>();
 			job.IsServer = abilitySystem.IsServer;
 			job.NetworkPlayerLookup.Update(ref state);

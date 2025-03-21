@@ -21,7 +21,8 @@ namespace Arena.Client
         
         protected override void OnSystemUpdate()
         {
-            UniversalCommandBuffer commands = CreateUniversalCommandBuffer();
+            var ecb = CreateCommandBuffer();
+            var commands = ecb.AsParallelWriter();
             var deltaTime = SystemAPI.Time.DeltaTime;
             
             Entities
@@ -32,11 +33,11 @@ namespace Arena.Client
 
                 if(funcName == "Footstep")
                 {
-                    playFootstep(in animEvent, ref commands);
+                    playFootstep(in animEvent, ref commands, ref ecb);
                 }
                 else if (funcName == "WeaponSwing")
                 {
-                    playWeaponSwing(in animEvent, ref commands);
+                    playWeaponSwing(in animEvent, ref commands, ref ecb);
                 }
                 else
                 {
@@ -87,7 +88,7 @@ namespace Arena.Client
             }).Run();
         }
 
-        unsafe void playFootstep(in AnimationEventData animEvent, ref UniversalCommandBuffer commands)
+        unsafe void playFootstep(in AnimationEventData animEvent, ref EntityCommandBuffer.ParallelWriter commands, ref EntityCommandBuffer ecb)
         {
             if(SystemAPI.HasComponent<Owner>(animEvent.SourceEntity) == false)
             {
@@ -109,7 +110,7 @@ namespace Arena.Client
                 return;
             }
             
-            initCommands(ref commands);
+            initCommands(ref commands, ref ecb);
 
             DynamicBuffer<FootstepSoundGroupElement> footstepSounds;
             var footstepSoundsEntity = SystemAPI.GetSingletonEntity<FootstepSoundsTag>();
@@ -212,9 +213,9 @@ namespace Arena.Client
             commands.AddComponent(0, groupInstance, LocalTransform.FromPosition(soundPos));
         }
 
-        void playWeaponSwing(in AnimationEventData animEvent, ref UniversalCommandBuffer commands)
+        void playWeaponSwing(in AnimationEventData animEvent, ref EntityCommandBuffer.ParallelWriter commands, ref EntityCommandBuffer ecb)
         {
-            initCommands(ref commands);
+            initCommands(ref commands, ref ecb);
 
             var sounds = SystemAPI.GetSingleton<WeaponSounds>();
 
@@ -247,11 +248,12 @@ namespace Arena.Client
             commands.AddComponent(0, groupInstance, LocalTransform.FromPosition(soundPos));
         }
 
-        void initCommands(ref UniversalCommandBuffer commandBuffer)
+        void initCommands(ref EntityCommandBuffer.ParallelWriter parallel, ref EntityCommandBuffer commandBuffer)
         {
             if (commandBuffer.IsCreated == false)
             {
-                commandBuffer = CreateUniversalCommandBuffer();
+                commandBuffer = CreateCommandBuffer();
+                parallel = commandBuffer.AsParallelWriter();
             }
         }
     }

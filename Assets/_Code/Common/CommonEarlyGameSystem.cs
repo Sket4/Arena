@@ -68,7 +68,8 @@ namespace Arena
 
         protected override unsafe void OnSystemUpdate()
         {
-            var commands = CreateUniversalCommandBuffer();
+            var ecb = CreateCommandBuffer();
+            var commands = ecb.AsParallelWriter();
             var deltaTime = World.Time.DeltaTime;
             
             // проверяем событие смерти заранее, чтобы WasDeadInCurrentFrame работал и в сетевой версии тоже
@@ -452,7 +453,7 @@ namespace Arena
             
             if (getAimPointRequestQuery.IsEmpty == false)
             {
-                commands.DestroyEntity(getAimPointRequestQuery);
+                ecb.DestroyEntity(getAimPointRequestQuery);
                 var requestChunks = CreateArchetypeChunkListAsync(getAimPointRequestQuery).AsDeferredJobArray();
                 
                 var getAimPointJob = new GetAimHitPointJob()
@@ -474,7 +475,7 @@ namespace Arena
             }
         }
 
-        static void createSavePlayerDataRequest(Owner owner, Entity playerEntity, AuthorizedUser user, UniversalCommandBuffer commands)
+        static void createSavePlayerDataRequest(Owner owner, Entity playerEntity, AuthorizedUser user, EntityCommandBuffer.ParallelWriter commands)
         {
             var requestEntity = commands.CreateEntity(0);
                 
@@ -503,7 +504,7 @@ namespace Arena
         [ReadOnly] public ComponentLookup<AimHitPoint> AimHitPointLookup;
         public float DeltaTime;
 
-        public UniversalCommandBuffer Commands;
+        public EntityCommandBuffer.ParallelWriter Commands;
         
         public void Execute(ScriptVizAspect aspect, [ChunkIndexInQuery] int sortIndex)
         {

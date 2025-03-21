@@ -10,7 +10,7 @@ namespace Arena
     {
         protected override void OnSystemUpdate()
         {
-            var commands = CreateUniversalCommandBuffer();
+            var commands = CreateEntityCommandBufferParallel();
             var modifyHealthArchetype = SystemAPI.GetSingleton<ModifyHealthSystem.Singleton>().ModifyEventArchetype;
             
             // обработка событий использования предметов

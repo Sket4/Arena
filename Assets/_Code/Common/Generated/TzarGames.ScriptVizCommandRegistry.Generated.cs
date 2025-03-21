@@ -67,7 +67,11 @@ namespace TzarGames.GameCore.Generated
 			ScriptVizCommandRegistry.RegisterCommand(typeof(TzarGames.GameCore.ScriptViz.SetComponentEnabledCommand<TzarGames.GameCore.MoveAroundPoint>), TzarGames.GameCore.ScriptViz.SetComponentEnabledCommand<TzarGames.GameCore.MoveAroundPoint>.Exec);
 			ScriptVizCommandRegistry.RegisterCommand(typeof(TzarGames.GameCore.ScriptViz.SetComponentEnabledCommand<TzarGames.GameCore.InteractiveObject>), TzarGames.GameCore.ScriptViz.SetComponentEnabledCommand<TzarGames.GameCore.InteractiveObject>.Exec);
 			ScriptVizCommandRegistry.RegisterCommand(typeof(TzarGames.GameCore.ScriptViz.SetComponentEnabledCommand<TzarGames.GameCore.FollowTarget>), TzarGames.GameCore.ScriptViz.SetComponentEnabledCommand<TzarGames.GameCore.FollowTarget>.Exec);
+			ScriptVizCommandRegistry.RegisterCommand(typeof(TzarGames.GameCore.ScriptViz.SetComponentOperationCommand<TzarGames.GameCore.FollowTargetMode>), TzarGames.GameCore.ScriptViz.SetComponentOperationCommand<TzarGames.GameCore.FollowTargetMode>.Exec);
+			ScriptVizCommandRegistry.RegisterCommand(typeof(TzarGames.GameCore.ScriptViz.AddComponentOperationCommand<TzarGames.GameCore.FollowTargetMode>), TzarGames.GameCore.ScriptViz.AddComponentOperationCommand<TzarGames.GameCore.FollowTargetMode>.Exec);
+			ScriptVizCommandRegistry.RegisterCommand(typeof(TzarGames.GameCore.ScriptViz.RemoveComponentOperationCommand<TzarGames.GameCore.FollowTargetMode>), TzarGames.GameCore.ScriptViz.RemoveComponentOperationCommand<TzarGames.GameCore.FollowTargetMode>.Exec);
 			ScriptVizCommandRegistry.RegisterCommand(typeof(TzarGames.GameCore.ScriptViz.Commands.AddOrRemoveItemCommand), TzarGames.GameCore.ScriptViz.Commands.AddOrRemoveItemCommand.Execute);
+			ScriptVizCommandRegistry.RegisterCommand(typeof(TzarGames.GameCore.ScriptViz.Commands.FriendshipCheckCommand), TzarGames.GameCore.ScriptViz.Commands.FriendshipCheckCommand.Exec);
 			ScriptVizCommandRegistry.RegisterCommand(typeof(TzarGames.GameCore.ScriptViz.Commands.GetViewDirectionCommand), TzarGames.GameCore.ScriptViz.Commands.GetViewDirectionCommand.Exec);
 		}
 	}

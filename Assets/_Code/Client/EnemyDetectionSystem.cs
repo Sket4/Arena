@@ -14,7 +14,7 @@ namespace Arena.Client
         protected override void OnSystemUpdate()
         {
             var collisionWorld = SystemAPI.GetSingleton<PhysicsWorldSingleton>().CollisionWorld;
-            UniversalCommandBuffer commands = CreateUniversalCommandBuffer();
+            EntityCommandBuffer.ParallelWriter commands = CreateEntityCommandBufferParallel();
 
             Entities.ForEach((Entity entity, int entityInQueryIndex, in EnemyDetectionSettings enemyDetectionSettings, in Group group, in EnemyDetectionData enemyDetectionData, in LocalTransform transform) =>
             {

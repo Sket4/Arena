@@ -45,7 +45,7 @@ void calculateSpotLight(float3 worldPos, half3 normalWS, half3 viewDir, half rou
 
     #ifdef DGX_PBR_RENDERING
     half3 reflectDir = reflect(-spotLightRayDir, normalWS);
-    half spec = pow(saturate(dot(-viewDir, reflectDir)), roughness * 128);
+    half spec = pow(saturate(dot(viewDir, reflectDir)), roughness * 128);
     specular += spec * spotLightColor;
     #endif
 }

@@ -12,6 +12,8 @@ GameObject:
   - component: {fileID: 6231478352453196791}
   - component: {fileID: 3649761933360663331}
   - component: {fileID: -6598959828427169806}
+  - component: {fileID: 2015099004727030127}
+  - component: {fileID: 5476433663803868067}
   m_Layer: 0
   m_Name: Mage girlfirend fireball explosion
   m_TagString: Untagged
@@ -4903,5 +4905,52 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   ConversionTargetOptions: -1
   Value:
-    Time: 0.5
+    Time: 2
     IsInitialized: 0
+--- !u!114 &2015099004727030127
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3909827272973002611}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 44fc9299b341424408b9c8f7275aaea0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ConversionTargetOptions: -1
+  SelfAsInstigator: 0
+--- !u!114 &5476433663803868067
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3909827272973002611}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 08ead1f0c9eeb46859ae00cb40618ed1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ConversionTargetOptions: 5
+  AttachToInstigator: 1
+  DisableAutoDestroy: 1
+  SoundGroup:
+    Name: 
+    Clips:
+    - {fileID: 8300000, guid: 7f5a6d778a2a5914aae2569db5fa446f, type: 3}
+    OptionalMixerGroup: {fileID: 24300002, guid: 64c795c25d71240459ab99e981490730, type: 2}
+    Settings:
+      RandomizeVolume: 1
+      MinVolume: 0.9
+      MaxVolume: 1
+      RandomizePitch: 1
+      MinPitch: 0.9
+      MaxPitch: 1.1
+      Loop: 0
+      SpatializeBlend: 1
+      SetMinDistance: 0
+      MinDistance: 0
+      SetMaxDistance: 1
+      MaxDistance: 30

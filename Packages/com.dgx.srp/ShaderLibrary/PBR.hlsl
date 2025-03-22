@@ -79,7 +79,7 @@ half dgx_luminance(half3 color)
 
 half4 LightingPBR_Half(SurfaceHalf surface, half3 worldViewDir, half3 envMapColor)
 {
-	half NoV = saturate(dot(surface.NormalWS, worldViewDir));
+	half NoV = saturate((dot(surface.NormalWS, worldViewDir))/* + 1e-5*/);
 
 	half3 specular = 0;
 	PBR_Half(envMapColor, NoV, surface, specular);

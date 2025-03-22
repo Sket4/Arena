@@ -285,7 +285,7 @@ half4 frag (v2f i) : SV_Target
     float rawDepth = _Depth.Sample(sampler_Depth, screen_uv.xy).r;
     
     float3 worldPos = WorldSpacePositionFromDepth(screen_uv, rawDepth);
-    float3 viewDirWithDistance = _WorldSpaceCameraPos.xyz - worldPos.xyz;
+    float3 viewDirWithDistance = worldPos.xyz - _WorldSpaceCameraPos.xyz;
 
     #ifdef DGX_PBR_RENDERING
     half3 viewDir = normalize(viewDirWithDistance);
@@ -299,18 +299,15 @@ half4 frag (v2f i) : SV_Target
     calculateSpotLightForSurface(worldPos, viewDir, surface, specular);
     #endif
     
-    
-    
-
     #ifdef DGX_PBR_RENDERING
-    half3 reflectVec = reflect(-viewDir, surface.NormalWS);
+    half3 reflectVec = reflect(viewDir, surface.NormalWS);
     half3 envMapColor = SampleReflectionProbeAtlas(reflectVec, surface.EnvCubemapIndex, surface.Roughness * 6.99);
     envMapColor += specular; 
     #ifdef DGX_DARK_MODE
     envMapColor *= surface.AmbientLight;
     #endif
     
-    half4 result = LightingPBR_Half(surface, viewDir, envMapColor);
+    half4 result = LightingPBR_Half(surface, -viewDir, envMapColor);
     #else
     half4 result = half4(surface.Albedo * surface.AmbientLight, surface.Alpha);
     #endif

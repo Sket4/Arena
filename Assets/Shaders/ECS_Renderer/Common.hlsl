@@ -197,17 +197,21 @@ half3 Arena_ComputeAmbientLight(
 	#else
 
 	#if LIGHTMAP_ON
-	ambientLight = TG_SAMPLE_LIGHTMAP(lightmapUV, slice, normalWS);
+		ambientLight = TG_SAMPLE_LIGHTMAP(lightmapUV, slice, normalWS);
 	#else
-	#if defined(DGX_DARK_MODE)
-	#ifdef TG_TRANSPARENT
-	ambientLight = 0;
-	#else
-	ambientLight = 1;
-	#endif
-	#else
-	ambientLight = TG_ComputeAmbientLight_half(normalWS);
-	#endif
+		#if defined(DGX_DARK_MODE)
+			#ifdef TG_TRANSPARENT
+			ambientLight = 0;
+			#else
+			ambientLight = 1;
+			#endif
+		#else
+			#if defined(DOTS_INSTANCING_ON)
+				ambientLight = TG_ComputeAmbientLight_half(normalWS);
+			#else
+				ambientLight = saturate(dot(normalWS, half3(0,0,1))) + half3(0.6,0.6,0.9) * 0.3;
+			#endif
+		#endif
 	#endif
 	
 	#endif

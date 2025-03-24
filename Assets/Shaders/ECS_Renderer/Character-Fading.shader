@@ -72,6 +72,11 @@ Shader"Arena/Character Fading"
             #define TG_FADING
             #define TG_USE_ALPHACLIP
 
+            #if defined(UG_QUALITY_MED) || defined(UG_QUALITY_HIGH)
+            #define DGX_PBR_RENDERING 1
+            #endif
+
+
             #include "Input-Character.hlsl"
             #include "Common-Character.hlsl" 
             

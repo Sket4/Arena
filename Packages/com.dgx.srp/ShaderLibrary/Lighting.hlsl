@@ -9,7 +9,10 @@ struct GBufferFragmentOutput
 {
     half4 GBuffer0 : SV_Target0;
     half4 GBuffer1 : SV_Target1;
-    //half4 GBuffer2 : SV_Target2;
+
+    #ifdef DGX_PBR_RENDERING
+    half4 GBuffer2 : SV_Target2;
+    #endif
 };
 
 struct SurfaceHalf
@@ -29,20 +32,28 @@ struct SurfaceHalf
 GBufferFragmentOutput SurfaceToGBufferOutputHalf(SurfaceHalf surface)
 {
     GBufferFragmentOutput result;
+    
+    result.GBuffer0.xyz = surface.Albedo;
+    result.GBuffer1.rgb = surface.AmbientLight / 5;
 
     float2 encodedNormal = PackNormalOctQuadEncode(surface.NormalWS);
     encodedNormal = encodedNormal * 0.5 + 0.5;
-    result.GBuffer0.xyz = surface.Albedo;
-    result.GBuffer0.w = surface.Roughness;
-    result.GBuffer1.x = encodedNormal.x;
-    result.GBuffer1.y = encodedNormal.y;
-    result.GBuffer1.z = surface.Metallic;
-    result.GBuffer1.w = surface.EnvCubemapIndex * MAX_ENVMAP_INDEX_INV + MAX_ENVMAP_INDEX_INV * 0.1;
+    result.GBuffer0.w = encodedNormal.x;
+    result.GBuffer1.w = encodedNormal.y;
 
+    #ifdef DGX_PBR_RENDERING
+    result.GBuffer2.x = surface.Metallic;
+    result.GBuffer2.y = surface.Roughness;
+    result.GBuffer2.z = surface.EnvCubemapIndex * MAX_ENVMAP_INDEX_INV + MAX_ENVMAP_INDEX_INV * 0.1;
+
+    // unused
+    result.GBuffer2.w = 0;
+    #endif
+    
     return result;
 }
 
-SurfaceHalf GBufferToSurfaceHalf(float4 gbuffer0, float4 gbuffer1)
+SurfaceHalf GBufferToSurfaceHalf(float4 gbuffer0, float4 gbuffer1, float4 gbuffer2)
 {
     SurfaceHalf result;
 
@@ -50,12 +61,20 @@ SurfaceHalf GBufferToSurfaceHalf(float4 gbuffer0, float4 gbuffer1)
     #ifdef DGX_DARK_MODE
     result.AmbientLight = 0;
     #else
-    result.AmbientLight = 1;
+    result.AmbientLight = gbuffer1.rgb * 5;
     #endif
-    result.NormalWS = UnpackNormalOctQuadEncode(float2(gbuffer1.x, gbuffer1.y) * 2 - 1);
-    result.Metallic = gbuffer1.z;
-    result.Roughness = gbuffer0.w;
-    result.EnvCubemapIndex = gbuffer1.w * MAX_ENVMAP_INDEX;
+    result.NormalWS = UnpackNormalOctQuadEncode(float2(gbuffer0.w, gbuffer1.w) * 2 - 1);
+
+    #ifdef DGX_PBR_RENDERING
+    result.Metallic = gbuffer2.x;
+    result.Roughness = gbuffer2.y;
+    result.EnvCubemapIndex = gbuffer2.z * MAX_ENVMAP_INDEX;
+    #else
+    result.Metallic = 0;
+    result.Roughness = 1;
+    result.EnvCubemapIndex = 0;
+    #endif
+    
     result.Alpha = 1;
     
     return  result;

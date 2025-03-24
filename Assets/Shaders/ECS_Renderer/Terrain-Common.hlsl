@@ -200,8 +200,8 @@ GBufferFragmentOutput frag(v2f i)
     
     surface.NormalWS = normalWS;
     half3 ambientLight = ARENA_COMPUTE_AMBIENT_LIGHT(i, surface.NormalWS);
-    surface.Albedo = diffuse.rgb * ambientLight;
-    surface.AmbientLight = 1;
+    surface.Albedo = diffuse.rgb;
+    surface.AmbientLight = ambientLight;
     surface.Alpha = 0;
     
     //diffuse.rgb = 1;

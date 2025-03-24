@@ -81,6 +81,10 @@ Shader "Arena/Terrain"
 
             #define ARENA_DEFERRED
             #define ARENA_USE_FOUR_CHANNEL
+
+            #if defined(UG_QUALITY_MED) || defined(UG_QUALITY_HIGH)
+            #define DGX_PBR_RENDERING 1
+            #endif
             
             #include "Terrain-Common.hlsl"
             

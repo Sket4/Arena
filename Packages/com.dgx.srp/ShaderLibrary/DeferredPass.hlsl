@@ -280,12 +280,24 @@ half4 frag (v2f i) : SV_Target
     float4 g0 = tex2D(_GT0, screen_uv.xy);
     float4 g1 = tex2D(_GT1, screen_uv.xy);
 
-    SurfaceHalf surface = GBufferToSurfaceHalf(g0, g1);
+    #ifdef DGX_PBR_RENDERING
+    float4 g2 = tex2D(_GT2, screen_uv.xy);
+    #else
+    float4 g2 = 0;
+    #endif
+
+    SurfaceHalf surface = GBufferToSurfaceHalf(g0, g1, g2);
+    
     
     float rawDepth = _Depth.Sample(sampler_Depth, screen_uv.xy).r;
     
     float3 worldPos = WorldSpacePositionFromDepth(screen_uv, rawDepth);
     float3 viewDirWithDistance = worldPos.xyz - _WorldSpaceCameraPos.xyz;
+
+    #ifdef DGX_SHADOWS_ENABLED
+    half viewDirDistanceSq = dot(viewDirWithDistance,viewDirWithDistance);
+    drawShadows(worldPos, viewDirDistanceSq, surface, surface.AmbientLight);
+    #endif
 
     #ifdef DGX_PBR_RENDERING
     half3 viewDir = normalize(viewDirWithDistance);
@@ -310,11 +322,6 @@ half4 frag (v2f i) : SV_Target
     half4 result = LightingPBR_Half(surface, -viewDir, envMapColor);
     #else
     half4 result = half4(surface.Albedo * surface.AmbientLight, surface.Alpha);
-    #endif
-
-    #ifdef DGX_SHADOWS_ENABLED
-    half viewDirDistanceSq = dot(viewDirWithDistance,viewDirWithDistance);
-    drawShadows(worldPos, viewDirDistanceSq, surface, result.rgb);
     #endif
 
     float linDepth = Linear01Depth(rawDepth, _ZBufferParams);

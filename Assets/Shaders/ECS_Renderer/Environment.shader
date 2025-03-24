@@ -92,6 +92,11 @@ Shader "Arena/Environment"
             #endif
 
             #define ARENA_DEFERRED
+
+            #if defined(UG_QUALITY_MED) || defined(UG_QUALITY_HIGH)
+            #define DGX_PBR_RENDERING 1
+            #endif
+
             
             #include "Input-Env.hlsl"
             #include "Common-Env.hlsl"

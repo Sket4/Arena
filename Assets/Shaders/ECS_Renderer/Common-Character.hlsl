@@ -143,7 +143,7 @@ GBufferFragmentOutput frag (v2f i)
     half3 lighting = ARENA_COMPUTE_AMBIENT_LIGHT(i, normalWS);
 
     SurfaceHalf surface;
-    surface.Albedo = diffuse.rgb * lighting;
+    surface.Albedo = diffuse.rgb;
     surface.Alpha = diffuse.a;
     surface.Metallic = metallic;
     surface.Roughness = roughness;

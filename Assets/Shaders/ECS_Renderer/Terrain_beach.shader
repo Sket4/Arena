@@ -125,6 +125,11 @@ Shader "Arena/Terrain (for beach)"
 
             #define ARENA_DEFERRED
             #define ARENA_UNDERWATER
+
+            #if defined(UG_QUALITY_MED) || defined(UG_QUALITY_HIGH)
+            #define DGX_PBR_RENDERING 1
+            #endif
+
             
             #include "Terrain-Common.hlsl"
             

@@ -31,10 +31,6 @@
 #define BASE_COLOR _BaseColor
 #endif
 
-#if defined(UG_QUALITY_MED) || defined(UG_QUALITY_HIGH) 
-#define DGX_PBR_RENDERING 1
-#endif
-
 sampler2D _BaseMap;
 sampler2D _SurfaceMap;
 sampler2D _BumpMap;
@@ -208,13 +204,12 @@ GBufferFragmentOutput env_frag_deferred(v2f i)
 
 	#endif
 	
-	surface.Albedo *= surface.AmbientLight;
-	surface.AmbientLight = 1;
+	surface.AmbientLight = surface.AmbientLight;
 	surface.NormalWS = normalWS;
 	
 	
 	#if USE_UNDERWATER
-	surface.Albedo = lerp(surface.Albedo, _Underwater_color.rgb * ambientLight, i.UnderwaterFade);
+	surface.Albedo = lerp(surface.Albedo, _Underwater_color.rgb, i.UnderwaterFade);
 	surface.Roughness = lerp(surface.Roughness, 1, i.UnderwaterFade);
 	#endif
 
@@ -285,7 +280,6 @@ half4 env_frag(v2f i) : SV_Target
 	#else
 
 	half4 finalColor = diffuse;
-	half3 envMapColor = 0;
 	ARENA_DYN_LIGHT(normalWS, i.positionWS.xyz, ambientLight, 0,0,0, true); 
 	finalColor.rgb *= ambientLight;
 

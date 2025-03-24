@@ -66,6 +66,12 @@ Shader"Arena/Character"
 
             #define TG_SKINNING
 
+
+            #if defined(UG_QUALITY_MED) || defined(UG_QUALITY_HIGH)
+            #define DGX_PBR_RENDERING 1
+            #endif
+
+
             #include "Input-Character.hlsl"
             #include "Common-Character.hlsl" 
             

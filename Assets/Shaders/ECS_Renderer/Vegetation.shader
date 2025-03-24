@@ -83,6 +83,10 @@ Shader "Arena/Vegetation"
             #pragma multi_compile UG_QUALITY_LOW UG_QUALITY_MED UG_QUALITY_HIGH
             #pragma multi_compile_fragment _ ARENA_MAP_RENDER
 
+            #if defined(UG_QUALITY_MED) || defined(UG_QUALITY_HIGH)
+            #define DGX_PBR_RENDERING 1
+            #endif
+
             #include "Vegetation-Common.hlsl"
             
             ENDHLSL

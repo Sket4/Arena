@@ -153,10 +153,10 @@ GBufferFragmentOutput frag(v2f i) : SV_Target
 #endif
 
     SurfaceHalf surface;
-    surface.Albedo = diffuse.rgb * lighting;
+    surface.Albedo = diffuse.rgb;
     surface.Alpha = diffuse.a;
     surface.NormalWS = normalWS;
-    surface.AmbientLight = 0;
+    surface.AmbientLight = lighting;
     
 
     #if !defined(ARENA_MAP_RENDER) && (defined(UG_QUALITY_MED) || defined(UG_QUALITY_HIGH))

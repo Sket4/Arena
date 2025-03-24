@@ -30,12 +30,13 @@ GBufferFragmentOutput SurfaceToGBufferOutputHalf(SurfaceHalf surface)
 {
     GBufferFragmentOutput result;
 
-    float2 encodedNormal = OctahedronEncode(surface.NormalWS);
+    float2 encodedNormal = PackNormalOctQuadEncode(surface.NormalWS);
+    encodedNormal = encodedNormal * 0.5 + 0.5;
     result.GBuffer0.xyz = surface.Albedo;
-    result.GBuffer0.w = LinearToSRGB(surface.Metallic.r);
+    result.GBuffer0.w = surface.Roughness;
     result.GBuffer1.x = encodedNormal.x;
     result.GBuffer1.y = encodedNormal.y;
-    result.GBuffer1.z = surface.Roughness;
+    result.GBuffer1.z = surface.Metallic;
     result.GBuffer1.w = surface.EnvCubemapIndex * MAX_ENVMAP_INDEX_INV + MAX_ENVMAP_INDEX_INV * 0.1;
 
     return result;
@@ -51,9 +52,9 @@ SurfaceHalf GBufferToSurfaceHalf(float4 gbuffer0, float4 gbuffer1)
     #else
     result.AmbientLight = 1;
     #endif
-    result.NormalWS = OctahedronDecode(float2(gbuffer1.x, gbuffer1.y));
-    result.Metallic = SRGBToLinear(gbuffer0.w);
-    result.Roughness = gbuffer1.z;
+    result.NormalWS = UnpackNormalOctQuadEncode(float2(gbuffer1.x, gbuffer1.y) * 2 - 1);
+    result.Metallic = gbuffer1.z;
+    result.Roughness = gbuffer0.w;
     result.EnvCubemapIndex = gbuffer1.w * MAX_ENVMAP_INDEX;
     result.Alpha = 1;
     

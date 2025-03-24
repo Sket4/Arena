@@ -13,15 +13,15 @@ Material:
   m_ModifiedSerializedProperties: 0
   m_ValidKeywords:
   - TG_USE_ALPHACLIP
-  - USE_LIGHTING
   m_InvalidKeywords:
+  - USE_LIGHTING
   - _ALPHAPREMULTIPLY_ON
   - _SPECULAR_COLOR
   - _SURFACE_TYPE_TRANSPARENT
   - _ZWRITE_ON
   m_LightmapFlags: 4
   m_EnableInstancingVariants: 0
-  m_DoubleSidedGI: 0
+  m_DoubleSidedGI: 1
   m_CustomRenderQueue: -1
   stringTagMap: {}
   disabledShaderPasses:
@@ -56,6 +56,10 @@ Material:
         m_Offset: {x: 0, y: 0}
     - _SurfaceMap:
         m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _TransparencyLM:
+        m_Texture: {fileID: 2800000, guid: 3b8d65f128cc7484a9c14ba4d91ea50d, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - unity_Lightmaps:
@@ -105,6 +109,7 @@ Material:
     - _Underwater_fog_density_factor: 1
     - _Underwater_fog_height_mult: 1
     - _UseAlphaAsSmoothness: 0
+    - _UseBillboard: 0
     - _UseLighting: 1
     - _UseSurfaceBlend: 0
     - _UseUnderwater: 0

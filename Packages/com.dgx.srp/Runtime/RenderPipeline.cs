@@ -700,9 +700,10 @@ namespace DGX.SRP
 
                 // TODO TEMP FIX
                 rt.isHDR = camera.name.ToLower().Contains("reflection probe");
-                var gbufferFormat = rt.isHDR ? RenderTextureFormat.DefaultHDR : RenderTextureFormat.Default;
+                //var gbufferFormat = rt.isHDR ? RenderTextureFormat.ARGBFloat : RenderTextureFormat.Default;
+                //var gbufferFormat = isLinear ? RenderTextureFormat.ARGBFloat : RenderTextureFormat.Default;
                 
-                rt.GBuffer0 = RenderTexture.GetTemporary(width, height, 0, gbufferFormat, rwMode);
+                rt.GBuffer0 = RenderTexture.GetTemporary(width, height, 0, RenderTextureFormat.Default, rwMode);
                 rt.GBuffer0.name = $"GBuffer 0 ({name})";
                 rt.GBuffer1 = RenderTexture.GetTemporary(width, height, 0, RenderTextureFormat.ARGB32, RenderTextureReadWrite.Linear);
                 rt.GBuffer1.name = $"GBuffer 1 ({name})";

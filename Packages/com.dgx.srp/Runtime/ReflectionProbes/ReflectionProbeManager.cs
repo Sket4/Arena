@@ -372,7 +372,7 @@ namespace DGX.SRP
             if (m_NeedsUpdate.Count > 0)
             {
                 version++;
-                Debug.Log($"version {version}");
+                //Debug.Log($"version {version}");
             }
             m_NeedsUpdate.Clear();
         }

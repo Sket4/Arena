@@ -220,7 +220,7 @@ namespace Arena.Client
                         }
                         else
                         {
-                            Debug.LogError($"Failed to find animation with id {animation.CurrentAnimationID} in entity {animation.AnimatorEntity}");
+                            Debug.LogError($"Failed to find animation with id {animation.CurrentAnimationID} in entity {animation.AnimatorEntity.Index}");
                             animation.CurrentAnimationID = AnimationID.Invalid;
                         }
                     }
@@ -230,7 +230,8 @@ namespace Arena.Client
                         int animID;
                         float defaultAnimSpeed;
 
-                        if(velocity.CachedMagnitude <= animation.MaxWalkingVelocity)
+                        if(velocity.CachedMagnitude <= animation.MaxWalkingVelocity
+                           && SimpleAnimation.GetClipIndexByID(clipIdToIndexBuffer, WalkingAnimationID) >= 0)
                         {
                             animID = WalkingAnimationID;
                             defaultAnimSpeed = animation.MaxWalkingVelocity;
@@ -263,7 +264,7 @@ namespace Arena.Client
                         }
                         else
                         {
-                            Debug.LogError($"Failed to find animation with id {RunningAnimationID} in entity {animation.AnimatorEntity}");
+                            Debug.LogError($"Failed to find animation with id {RunningAnimationID} in entity {animation.AnimatorEntity.Index}");
                         }
                     }
                     else
@@ -279,7 +280,7 @@ namespace Arena.Client
                         }
                         else
                         {
-                            Debug.LogError($"Failed to find animation with id {IdleAnimationID} in entity {animation.AnimatorEntity}");
+                            Debug.LogError($"Failed to find animation with id {IdleAnimationID} in entity {animation.AnimatorEntity.Index}");
                         }
                     }
 

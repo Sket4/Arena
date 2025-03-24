@@ -68,7 +68,10 @@ struct v2f
 	TG_DECLARE_INSTANCE_DATA(1)
 
 	float3 normalWS : TEXCOORD2;
+
+	#if defined(UG_QUALITY_MED) || defined(UG_QUALITY_HIGH) || defined(USE_SURFACE_BLEND)
 	float4 tangentWS : TEXCOORD3;
+	#endif
 
 	#if USE_UNDERWATER
 	half UnderwaterFade : TEXCOORD4;
@@ -125,7 +128,10 @@ v2f env_vert (appdata v)
 	o.instanceData = instanceData;
 
 	o.normalWS = normalWS;
+
+	#if defined(UG_QUALITY_MED) || defined(UG_QUALITY_HIGH) || defined(USE_SURFACE_BLEND)
 	o.tangentWS = float4(tangentWS, tangentOS.w);
+	#endif
 
 	#if LIGHTMAP_ON
 	TG_TRANSFORM_LIGHTMAP_TEX(v.lightmapUV, o.lightmapUV)
@@ -227,15 +233,15 @@ half4 env_frag(v2f i) : SV_Target
 	clip(diffuse.a - _Cutoff);
 	#endif
 
-	half3 normalTS = UnpackNormal(tex2D(_BumpMap, i.uv));
-	//normalTS.xy *= 2;
-
+	#if defined(UG_QUALITY_MED) || defined(UG_QUALITY_HIGH)
 	real sign = real(i.tangentWS.w);
 	real3 bitangentWS = real3(cross(i.normalWS, i.tangentWS.xyz)) * sign;
-	
 	half3x3 tangentToWorld = half3x3(i.tangentWS.xyz, bitangentWS.xyz, i.normalWS.xyz); 
-
+	half3 normalTS = UnpackNormal(tex2D(_BumpMap, i.uv));
 	half3 normalWS = TransformTangentToWorld(normalTS.xyz, tangentToWorld, true);
+	#else
+	half3 normalWS = i.normalWS.xyz;
+	#endif
 
 	half3 ambientLight = ARENA_COMPUTE_AMBIENT_LIGHT(i, normalWS);
 	

@@ -27,6 +27,7 @@ Material:
   m_ValidKeywords:
   - USE_FOAM
   - USE_FOG
+  - USE_THIRD_WAVE
   m_InvalidKeywords:
   - _BLENDMODE_ALPHA
   - _DOUBLESIDED_ON
@@ -122,6 +123,10 @@ Material:
         m_Texture: {fileID: 2800000, guid: eab6cbe1ae51c0747879e914c36ef72d, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
+    - _TransparencyLM:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
     - unity_Lightmaps:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
@@ -165,7 +170,9 @@ Material:
     - _Glossiness: 0
     - _GlossyReflections: 0
     - _HighlightRemove: 0
+    - _LightingMult: 1
     - _Metallic: 0.198
+    - _Normal_Y_Scale: 1
     - _Normal_strength: 0.18
     - _OcclusionStrength: 1
     - _QueueOffset: 0
@@ -201,9 +208,11 @@ Material:
     - _UseCustomReflections: 0
     - _UseFoam: 1
     - _UseFog: 1
+    - _UseLightingMult: 0
     - _UseLowerNormalFogByFog: 0
     - _UseShadowThreshold: 0
     - _UseSurfaceBlend: 0
+    - _UseThirdWave: 1
     - _UseUnderwater: 0
     - _WorkflowMode: 1
     - _ZTestDepthEqualForOpaque: 4

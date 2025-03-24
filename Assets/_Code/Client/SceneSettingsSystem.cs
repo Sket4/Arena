@@ -34,6 +34,12 @@ namespace Arena.Client
             // });
         }
 
+        protected override void OnDestroy()
+        {
+            base.OnDestroy();
+            DGX.SRP.RenderPipeline.EnableDarkMode(false);
+        }
+
         protected override void OnUpdate()
         {
             if (shaderSettingsQuery.IsEmpty == false)

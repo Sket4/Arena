@@ -8,6 +8,7 @@ using TzarGames.MatchFramework.Server;
 using Unity.Burst;
 using Unity.Collections;
 using Unity.Entities;
+using Unity.Jobs;
 using Unity.Mathematics;
 using UnityEngine;
 using UnityEngine.AI;
@@ -454,7 +455,9 @@ namespace Arena
             if (getAimPointRequestQuery.IsEmpty == false)
             {
                 ecb.DestroyEntity(getAimPointRequestQuery);
-                var requestChunks = CreateArchetypeChunkListAsync(getAimPointRequestQuery).AsDeferredJobArray();
+                var requestChunks = getAimPointRequestQuery.ToArchetypeChunkListAsync(Allocator.TempJob, out var requestDeps);
+                Dependency = JobHandle.CombineDependencies(Dependency, requestDeps);
+                var reqeustChunkList = requestChunks.AsDeferredJobArray();
                 
                 var getAimPointJob = new GetAimHitPointJob()
                 {
@@ -462,16 +465,16 @@ namespace Arena
                     DeltaTime = deltaTime,
                     EntityType = GetEntityTypeHandle(),
                     Commands = commands,
-                    RequestChunks = requestChunks,
+                    RequestChunks = reqeustChunkList,
                     RequestType = GetComponentTypeHandle<GetAimPointRequest>(true),
                 };
 #if TZAR_GAMECORE_THREADS
-                    Dependency = getTransformJob.Schedule(Dependency);
+                Dependency = getTransformJob.Schedule(Dependency);
 #else
                 Dependency.Complete();
                 getAimPointJob.Run();
 #endif
-                requestChunks.Dispose(Dependency);
+                Dependency = requestChunks.Dispose(Dependency);
             }
         }
 

@@ -187,6 +187,87 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &34985965
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 34985967}
+  - component: {fileID: 34985969}
+  - component: {fileID: 34985968}
+  m_Layer: 0
+  m_Name: Ambient music
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &34985967
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 34985965}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &34985968
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 34985965}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 08ead1f0c9eeb46859ae00cb40618ed1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ConversionTargetOptions: 5
+  AttachToInstigator: 0
+  DisableAutoDestroy: 1
+  SoundGroup:
+    Name: 
+    Clips:
+    - {fileID: 8300000, guid: d67b2d45ec91a914ca57d7b62d7f2a9a, type: 3}
+    OptionalMixerGroup: {fileID: 24300002, guid: e9a5cc95a5ce419498d6a797076314bf, type: 2}
+    Settings:
+      RandomizeVolume: 0
+      MinVolume: 0.9
+      MaxVolume: 1
+      RandomizePitch: 0
+      MinPitch: 0.9
+      MaxPitch: 1.1
+      Loop: 1
+      SpatializeBlend: 0
+      BypassEffects: 1
+      SetMinDistance: 0
+      MinDistance: 0
+      SetMaxDistance: 0
+      MaxDistance: 0
+--- !u!114 &34985969
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 34985965}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 44fc9299b341424408b9c8f7275aaea0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ConversionTargetOptions: -1
+  SelfAsInstigator: 1
 --- !u!1001 &36067512
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -1126,7 +1207,7 @@ MonoBehaviour:
                 y: 1324784034
                 z: 1647269252
                 w: 4027921731
-        QuestKey: {fileID: -5995000349584570135, guid: 709759d6d50fadb4ab72406e658ed872, type: 2}
+        questKey: {fileID: 0}
         ProgressSocket:
           ID:
             Value:
@@ -1322,7 +1403,7 @@ MonoBehaviour:
                 y: 1256626483
                 z: 3244829881
                 w: 772067835
-        QuestKey: {fileID: -5995000349584570135, guid: 709759d6d50fadb4ab72406e658ed872, type: 2}
+        questKey: {fileID: 0}
         State: 1
     - rid: 5272189481285321166
       type: {class: LogCommandNode, ns: TzarGames.GameCore.ScriptViz.Graph, asm: TzarGames.GameCore}
@@ -1506,7 +1587,7 @@ MonoBehaviour:
                 y: 1158060030
                 z: 805313938
                 w: 2000468981
-        QuestKey: {fileID: -5995000349584570135, guid: 709759d6d50fadb4ab72406e658ed872, type: 2}
+        questKey: {fileID: 0}
         ProgressSocket:
           ID:
             Value:
@@ -2749,6 +2830,7 @@ SceneRoots:
   - {fileID: 1256087238}
   - {fileID: 436222525}
   - {fileID: 528115830}
+  - {fileID: 34985967}
   - {fileID: 934147481}
   - {fileID: 1492312930}
   - {fileID: 30618052}

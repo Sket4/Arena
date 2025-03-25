@@ -8,6 +8,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: -9069249598320717613, guid: 5ddd7db5c356c4fee8ed859f307b2d35, type: 3}
+      propertyPath: Value.ForwardDirOffset
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 123360374479650823, guid: 5ddd7db5c356c4fee8ed859f307b2d35, type: 3}
       propertyPath: m_Name
       value: Mage girlfriend fireball ability
@@ -391,8 +395,8 @@ MonoBehaviour:
           MaxPitch: 1.1
           Loop: 0
           SpatializeBlend: 1
-          SetMinDistance: 0
-          MinDistance: 0
+          SetMinDistance: 1
+          MinDistance: 5
           SetMaxDistance: 1
           MaxDistance: 30
         AudioMixerGroup: {fileID: 24300002, guid: 64c795c25d71240459ab99e981490730, type: 2}

@@ -27,6 +27,10 @@ namespace Arena.Server
         
         public event System.Action<PlayerId, GameSessionID> OnUserDisconnected;
 
+        struct TransationProcessedTag : IComponentData
+        {
+        }
+
         protected override void OnCreate()
         {
             base.OnCreate();
@@ -144,8 +148,8 @@ namespace Arena.Server
             
             // сохранение данных игроков
             Entities
-                .WithNone<InitialPlayerDataLoad>()
-                .ForEach((in InventoryTransaction invTransaction, in Target target) =>
+                .WithNone<InitialPlayerDataLoad, TransationProcessedTag>()
+                .ForEach((Entity transactionEntity, in InventoryTransaction invTransaction, in Target target) =>
             {
                 if (invTransaction.Status != InventoryTransactionStatus.Success)
                 {
@@ -181,6 +185,8 @@ namespace Arena.Server
                 {
                     CharacterEntity = target.Value
                 });
+                
+                commands.AddComponent<TransationProcessedTag>(transactionEntity);
                 
             }).Run();
         }

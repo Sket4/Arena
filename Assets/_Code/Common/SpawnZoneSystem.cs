@@ -71,6 +71,8 @@ namespace Arena
             updateJob.Commands = cmdBufferSystem.CreateCommandBuffer(state.WorldUnmanaged).AsParallelWriter();
             
             state.Dependency = updateJob.ScheduleParallel(state.Dependency);
+
+            state.Dependency = playerChunks.Dispose(state.Dependency);
         }
     }
 

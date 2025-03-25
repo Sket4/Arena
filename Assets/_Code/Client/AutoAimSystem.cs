@@ -126,6 +126,8 @@ namespace Arena.Client
                 }
                 
             }).Run();
+
+            otherTargetChunks.Dispose();
         }
     }
 }

@@ -980,9 +980,9 @@ namespace Arena.Client.UI
 
         IEnumerator startFade(EntityManager manager)
         {
-            var renderingSystem = manager.World.GetExistingSystemManaged<TzarGames.Rendering.RenderingSystem>();
-
-            while (renderingSystem.LoadingMaterialCount > 0 || renderingSystem.LoadingMeshCount > 0)
+            var task = GameLoopUtils.WaitForResourcesLoad(manager.World);
+            
+            while (task.IsCompleted == false)
             {
                 yield return null;
             }

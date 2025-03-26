@@ -133,9 +133,10 @@ namespace Arena.Client.UI.MainMenu
             GameLoopUtils.AddSystemsForPlayerPreview(gameLauncher.GameLoop, "Menu");
 
             Debug.Log("start waiting for mesh and material loading");
-            var renderingSystem = gameLauncher.GameLoop.World.GetExistingSystemManaged<RenderingSystem>();
 
-            while (renderingSystem.LoadingMaterialCount > 0 || renderingSystem.LoadingMeshCount > 0)
+            var loadTask = GameLoopUtils.WaitForResourcesLoad(gameLauncher.GameLoop.World);
+            
+            while (loadTask.IsCompleted == false)
             {
                 yield return null;
             }

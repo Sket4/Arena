@@ -231,14 +231,10 @@ namespace Arena.Client
 
             await Task.Yield();
 
-            while (rs.LoadingMaterialCount > 0 || rs.LoadingMeshCount > 0)
+            var loadResult = await GameLoopUtils.WaitForResourcesLoad(World);
+            if (loadResult == false)
             {
-                await Task.Yield();
-                
-                if (World.IsCreated == false)
-                {
-                    return;
-                }
+                return;
             }
             
             if (mapRenderData.MapPostprocessMaterial.LoadingStatus == ObjectLoadingStatus.None)

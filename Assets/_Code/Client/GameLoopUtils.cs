@@ -7,6 +7,7 @@ using TzarGames.GameCore.Client;
 using TzarGames.GameCore.Client.Abilities;
 using TzarGames.MultiplayerKit;
 using TzarGames.MultiplayerKit.Client;
+using TzarGames.Rendering;
 using Unity.Entities;
 
 namespace Arena.Client
@@ -146,6 +147,37 @@ namespace Arena.Client
             // для получения оповещений о подобранных предметах
             gameLoop.AddPreSimGameSystem<ItemPickupNetworkEventSystem>();
             gameLoop.AddGameSystem<ItemPickupEventSoundSystem>();
+        }
+
+        public async static System.Threading.Tasks.Task<bool> WaitForResourcesLoad(World world)
+        {
+            var rs = world.GetExistingSystemManaged<RenderingSystem>();
+            int noLoadFrameCounter = 0;
+
+            while (true)
+            {
+                await System.Threading.Tasks.Task.Yield();
+
+                if (world.IsCreated == false)
+                {
+                    return false;
+                }
+                
+                if (rs.LoadingMaterialCount > 0 || rs.LoadingMeshCount > 0)
+                {
+                    noLoadFrameCounter = 0;
+                    continue;
+                }
+
+                noLoadFrameCounter++;
+
+                if (noLoadFrameCounter >= 5)
+                {
+                    break;
+                }
+            }
+
+            return true;
         }
     }
 

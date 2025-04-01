@@ -148,7 +148,7 @@ namespace Arena.Server
             
             // сохранение данных игроков
             Entities
-                .WithNone<InitialPlayerDataLoad, TransationProcessedTag>()
+                .WithNone<InitialPlayerDataLoad>()
                 .ForEach((Entity transactionEntity, in InventoryTransaction invTransaction, in Target target) =>
             {
                 if (invTransaction.Status != InventoryTransactionStatus.Success)
@@ -185,8 +185,14 @@ namespace Arena.Server
                 {
                     CharacterEntity = target.Value
                 });
+
+                if (SystemAPI.HasComponent<AutoDestroyItemTransaction>(transactionEntity) == false
+                    && SystemAPI.HasComponent<TransationProcessedTag>(transactionEntity) == false
+                    )
+                {
+                    commands.AddComponent<TransationProcessedTag>(transactionEntity);    
+                }
                 
-                commands.AddComponent<TransationProcessedTag>(transactionEntity);
                 
             }).Run();
         }

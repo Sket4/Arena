@@ -142,6 +142,24 @@ namespace Arena.Client
         }
 
         [ConsoleCommand]
+        public void SetQuestState(int questId, string questState)
+        {
+            if (System.Enum.TryParse<QuestState>(questState, out var state) == false)
+            {
+                Debug.LogError($"invalid state {state}");
+                return;
+            }
+            
+            var entityRequest = EntityManager.CreateEntity();
+            
+            EntityManager.AddComponentData(entityRequest, new AddGameProgressQuestRequest
+            {
+                QuestKey = questId,
+                State = state 
+            });
+        }
+
+        [ConsoleCommand]
         public void SetGameProgressValue(int key, int value)
         {
             var entityRequest = EntityManager.CreateEntity();

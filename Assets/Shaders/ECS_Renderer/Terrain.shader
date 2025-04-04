@@ -91,80 +91,36 @@ Shader "Arena/Terrain"
             ENDHLSL
         }
 
-//        Pass
-//        {
-//            Name "Meta"
-//            Tags { "LightMode" = "Meta" }
-//            
-//            Cull Off
-//            HLSLPROGRAM
-//
-//            #pragma target 2.0
-//            
-//            #pragma vertex UniversalVertexMeta
-//            #pragma fragment UniversalFragmentMetaCustom
-//            #pragma shader_feature_local_fragment _SPECULAR_SETUP
-//            #pragma shader_feature_local_fragment _EMISSION
-//            #pragma shader_feature_local_fragment _METALLICSPECGLOSSMAP
-//            #pragma shader_feature_local_fragment _ALPHATEST_ON
-//            #pragma shader_feature_local_fragment _ _SMOOTHNESS_TEXTURE_ALBEDO_CHANNEL_A
-//            #pragma shader_feature_local _ _DETAIL_MULX2 _DETAIL_SCALED
-//            #pragma shader_feature_local_fragment _SPECGLOSSMAP
-//            #pragma shader_feature EDITOR_VISUALIZATION
-//
-//            #include "HLSLSupport.cginc"
-//            #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Core.hlsl" 
-//            
-//             
-//            CBUFFER_START(UnityPerMaterial)
-//                half4 _Layers_Tiling;
-//                half _HighlightRemove;
-//            CBUFFER_END
-//
-//            half4 _BaseColor;
-//            half4 _BaseMap_ST;
-//            half4 _EmissionColor; 
-//
-//            sampler2D _BaseMap;
-//            sampler2D _SplatMap;
-//            UNITY_DECLARE_TEX2D(_Color1);
-//            UNITY_DECLARE_TEX2D_NOSAMPLER(_Color2);
-//            UNITY_DECLARE_TEX2D_NOSAMPLER(_Color3); 
-//
-//            #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/UniversalMetaPass.hlsl"
-//           
-//            
-//            half4 UniversalFragmentMetaCustom(Varyings fragIn) : SV_Target
-//            {
-//                MetaInput metaInput;
-//
-//                half4 splat = tex2D(_SplatMap, fragIn.uv);
-//
-//                half2 layer1_uv = fragIn.uv * _Layers_Tiling.x;
-//                half2 layer2_uv = fragIn.uv * _Layers_Tiling.y;
-//                half2 layer3_uv = fragIn.uv * _Layers_Tiling.z;
-//
-//                //layer3_uv += half2(0, i.positionWS_fog.x * 0.02);
-//                
-//                half4 diffuse = UNITY_SAMPLE_TEX2D_SAMPLER(_Color1, _Color1, layer1_uv) * splat.x;
-//
-//                half4 color2 = UNITY_SAMPLE_TEX2D_SAMPLER(_Color2, _Color1, layer2_uv); 
-//                diffuse += color2 * splat.y;
-//                diffuse += UNITY_SAMPLE_TEX2D_SAMPLER(_Color3, _Color1, layer3_uv) * splat.z;
-//                            
-//                metaInput.Albedo = diffuse.rgb;
-//                metaInput.Emission = _EmissionColor.rgb;
-//                            
-//                #ifdef EDITOR_VISUALIZATION
-//                metaInput.VizUV = fragIn.VizUV;
-//                metaInput.LightCoord = fragIn.LightCoord;
-//                #endif
-//
-//                half4 result = UnityMetaFragment(metaInput);
-//                return result;
-//            }
-//            
-//            ENDHLSL
-//        }
+Pass
+        {
+            Name "Meta"
+            Tags { "LightMode" = "Meta" }
+            
+            Cull Off
+            HLSLPROGRAM
+
+            #pragma target 2.0
+            
+            #pragma vertex vert
+            #pragma fragment FragmentMeta
+            #pragma shader_feature_local_fragment _SPECULAR_SETUP
+            #pragma shader_feature_local_fragment _EMISSION
+            #pragma shader_feature_local_fragment _METALLICSPECGLOSSMAP
+            #pragma shader_feature_local_fragment _ALPHATEST_ON
+            #pragma shader_feature_local_fragment _ _SMOOTHNESS_TEXTURE_ALBEDO_CHANNEL_A
+            #pragma shader_feature_local _ _DETAIL_MULX2 _DETAIL_SCALED
+            #pragma shader_feature_local_fragment _SPECGLOSSMAP
+            #pragma shader_feature EDITOR_VISUALIZATION
+
+            #pragma shader_feature_local_vertex ARENA_SCALE_UV_X
+            #pragma shader_feature_local_vertex ARENA_SCALE_UV_Y
+
+            #define ARENA_META_PASS
+            #define ARENA_USE_FOUR_CHANNEL
+
+            #include "Terrain-Common.hlsl"
+            
+            ENDHLSL
+        }
     }
 }

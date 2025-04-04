@@ -28,12 +28,54 @@ namespace DGX.SRP.Editor.ShaderGraph
                 new ColorRGBAControl(UnityEngine.Color.white), ShaderStage.Fragment);
     }
 
+    static class StaticData
+    {
+        public static StructDescriptor Varyings = new()
+        {
+            name = "Varyings",
+            packFields = true,
+            populateWithCustomInterpolators = true,
+            fields = new []
+            {
+                StructFields.Varyings.positionCS,
+                StructFields.Varyings.positionWS,
+                StructFields.Varyings.normalWS,
+                StructFields.Varyings.tangentWS,
+                StructFields.Varyings.texCoord0,
+                StructFields.Varyings.texCoord1,
+                StructFields.Varyings.texCoord2,
+                StructFields.Varyings.texCoord3,
+                StructFields.Varyings.color,
+                StructFields.Varyings.screenPosition,
+                //BuiltInStructFields.Varyings.lightmapUV,
+                //BuiltInStructFields.Varyings.sh,
+                //BuiltInStructFields.Varyings.fogFactorAndVertexLight,
+                //BuiltInStructFields.Varyings.shadowCoord,
+                StructFields.Varyings.instanceID,
+                //BuiltInStructFields.Varyings.stereoTargetEyeIndexAsBlendIdx0,
+                //BuiltInStructFields.Varyings.stereoTargetEyeIndexAsRTArrayIdx,
+                StructFields.Varyings.cullFace,
+            }
+        };
+        public static readonly CustomInterpSubGen.Collection CustomInterpolators = new()
+        {
+            // Custom interpolators are not explicitly defined in the SurfaceDescriptionInputs template.
+            // This entry point will let us generate a block of pass-through assignments for each field.
+            CustomInterpSubGen.Descriptor.MakeBlock(CustomInterpSubGen.Splice.k_spliceCopyToSDI, "output", "input"),
+
+            // sgci_PassThroughFunc is called from BuildVaryings in Varyings.hlsl to copy custom interpolators from vertex descriptions.
+            // this entry point allows for the function to be defined before it is used.
+            CustomInterpSubGen.Descriptor.MakeFunc(CustomInterpSubGen.Splice.k_splicePreSurface, "CustomInterpolatorPassThroughFunc", "Varyings", "VertexDescription", "CUSTOMINTERPOLATOR_VARYPASSTHROUGH_FUNC", "FEATURES_GRAPH_VERTEX")
+        };
+    }
+
     sealed class DgxTarget : Target
     {
         [SerializeField] private ZWrite ZWriteMode = ZWrite.On;
         [SerializeField] private SurfaceType surfaceType = SurfaceType.Opaque;
         [SerializeField] private AlphaMode alphaMode = AlphaMode.Alpha;
         [SerializeField] private Cull cull = Cull.Back;
+        internal override bool ignoreCustomInterpolators => false;
         
         public DgxTarget()
         {
@@ -109,7 +151,7 @@ namespace DGX.SRP.Editor.ShaderGraph
                 includes = Includes,
 
                 // Custom Interpolator Support
-                customInterpolators = CustomInterpolators
+                customInterpolators = StaticData.CustomInterpolators
             };
             //CorePasses.AddTargetSurfaceControlsToPass(ref result, target);
             return result;
@@ -149,22 +191,12 @@ namespace DGX.SRP.Editor.ShaderGraph
                 includes = Includes,
 
                 // Custom Interpolator Support
-                customInterpolators = CustomInterpolators
+                customInterpolators = StaticData.CustomInterpolators
             };
 
             //AddMetaControlsToPass(ref result, target);
             return result;
         }
-        public static readonly CustomInterpSubGen.Collection CustomInterpolators = new()
-        {
-            // Custom interpolators are not explicitly defined in the SurfaceDescriptionInputs template.
-            // This entry point will let us generate a block of pass-through assignments for each field.
-            //CustomInterpSubGen.Descriptor.MakeBlock(CustomInterpSubGen.Splice.k_spliceCopyToSDI, "output", "input"),
-
-            // sgci_PassThroughFunc is called from BuildVaryings in Varyings.hlsl to copy custom interpolators from vertex descriptions.
-            // this entry point allows for the function to be defined before it is used.
-            //CustomInterpSubGen.Descriptor.MakeFunc(CustomInterpSubGen.Splice.k_splicePreSurface, "CustomInterpolatorPassThroughFunc", "Varyings", "VertexDescription", "CUSTOMINTERPOLATOR_VARYPASSTHROUGH_FUNC", "FEATURES_GRAPH_VERTEX")
-        };
         public static IncludeCollection Includes = new()
         {
             { "Packages/com.unity.render-pipelines.core/ShaderLibrary/Common.hlsl", IncludeLocation.Pregraph },
@@ -269,7 +301,7 @@ namespace DGX.SRP.Editor.ShaderGraph
         public static readonly StructCollection DefaultStructs = new StructCollection
         {
             { Structs.Attributes },
-            //{ BuiltInStructs.Varyings },
+            { StaticData.Varyings },
             { Structs.SurfaceDescriptionInputs },
             { Structs.VertexDescriptionInputs },
         };

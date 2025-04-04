@@ -45,7 +45,7 @@ Light:
   m_Shape: 0
   m_Color: {r: 1, g: 0.8459618, b: 0.6431373, a: 1}
   m_Intensity: 1
-  m_Range: 4
+  m_Range: 6
   m_SpotAngle: 30
   m_InnerSpotAngle: 21.80208
   m_CookieSize: 10
@@ -14673,6 +14673,7 @@ GameObject:
   - component: {fileID: 4668743382720407753}
   - component: {fileID: 4436524890313347839}
   - component: {fileID: 7975094881679158790}
+  - component: {fileID: 4626579859668947427}
   m_Layer: 0
   m_Name: SM_Candles_01
   m_TagString: Untagged
@@ -14749,3 +14750,22 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!205 &4626579859668947427
+LODGroup:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8543870029259053786}
+  serializedVersion: 2
+  m_LocalReferencePoint: {x: 0.03758046, y: 0.1755163, z: -0.03422934}
+  m_Size: 0.7474517
+  m_FadeMode: 0
+  m_AnimateCrossFading: 0
+  m_LastLODIsBillboard: 0
+  m_LODs:
+  - screenRelativeHeight: 0.032650065
+    fadeTransitionWidth: 0
+    renderers:
+    - renderer: {fileID: 7975094881679158790}
+  m_Enabled: 1

@@ -38,6 +38,8 @@ namespace Arena.Client
         public CameraClearFlags ClearFlags;
         public bool ChangeClearColor;
         public Color ClearColor;
+        public bool ChangeFarPlane;
+        public float FarPlane;
     }
 
     [UseDefaultInspector(true)]
@@ -50,7 +52,6 @@ namespace Arena.Client
         };
 
         public bool UseSceneRenderSettings = true;
-        public bool UseCameraSettings = false;
 
         public SceneCameraSettings CameraSettings;
         
@@ -79,7 +80,9 @@ namespace Arena.Client
                 baker.AddComponent(renderSettings);
             }
 
-            if (UseCameraSettings)
+            if (CameraSettings.ChangeClearColor 
+                || CameraSettings.ChangeClearFlags 
+                || CameraSettings.ChangeFarPlane)
             {
                 baker.AddComponent(CameraSettings);
             }

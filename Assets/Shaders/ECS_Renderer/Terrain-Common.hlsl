@@ -7,6 +7,10 @@
 #include "Packages/com.dgx.srp/ShaderLibrary/Lighting.hlsl"
 #include "Common.hlsl"
 
+#ifdef ARENA_META_PASS 
+#include "Packages/com.unity.render-pipelines.core/ShaderLibrary/MetaPass.hlsl"
+#endif
+
 struct appdata
 {
     float3 vertex : POSITION;
@@ -252,6 +256,48 @@ GBufferFragmentOutput frag(v2f i)
 
     return SurfaceToGBufferOutputHalf(surface);
 }
+
+#ifdef ARENA_META_PASS
+             
+half4 FragmentMeta(v2f i) : SV_Target
+{
+    UnityMetaInput metaInput;
+    
+    half4 splat = tex2D(_SplatMap, i.splatmapUV);
+
+    half3 color1 = tex2D(_Color1, i.layer1_uv).rgb;
+    DETILING(_Color1, color1, i.layer1_uv)
+    
+    half3 diffuse = color1 * splat.x;
+    half3 color2 = tex2D(_Color2, i.layer2_uv).rgb;
+    DETILING(_Color2, color2, i.layer2_uv)
+    
+    diffuse += color2 * splat.y;
+    half3 color3 = tex2D(_Color3, i.layer3_uv).rgb;
+    DETILING(_Color3, color3, i.layer3_uv)
+    diffuse += color3 * splat.z;
+
+    #ifdef ARENA_USE_FOUR_CHANNEL
+    half3 color4 = tex2D(_Color4, i.layer4_uv).rgb;
+    DETILING(_Color4, color4, i.layer4_uv)
+    diffuse += color4 * splat.w; 
+    #else
+    // wet sand
+    diffuse += color2 * splat.w * 0.75;
+    #endif
+                            
+    metaInput.Albedo = diffuse.rgb;
+    metaInput.Emission = 0;
+                            
+    #ifdef EDITOR_VISUALIZATION
+    metaInput.VizUV = fragIn.VizUV;
+    metaInput.LightCoord = fragIn.LightCoord;
+    #endif
+
+    half4 result = UnityMetaFragment(metaInput);
+    return result;
+}
+#endif
 
 #endif
 

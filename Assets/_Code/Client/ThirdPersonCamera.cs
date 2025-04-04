@@ -294,6 +294,11 @@ namespace Arena.Client
                         {
                             createdCamera.Camera.clearFlags = settings.ClearFlags;
                         }
+
+                        if (settings.ChangeFarPlane)
+                        {
+                            createdCamera.Camera.farClipPlane = settings.FarPlane;
+                        }
                     }
 
                 }).Run();

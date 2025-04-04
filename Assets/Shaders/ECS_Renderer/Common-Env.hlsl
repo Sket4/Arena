@@ -169,6 +169,7 @@ GBufferFragmentOutput env_frag_deferred(v2f i)
 	#endif
 
 	half3 ambientLight = ARENA_COMPUTE_AMBIENT_LIGHT(i, normalWS);
+	ambientLight += _EmissionColor.rgb;
 	
 	#if USE_SURFACE_BLEND
 	half4 surfaceColor = tex2D(_SurfaceMap, i.surfaceBlendUV);

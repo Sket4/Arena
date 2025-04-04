@@ -4,7 +4,7 @@
 #include "GraphInput.hlsl"
 #include "Packages/com.unity.render-pipelines.core/ShaderLibrary/MetaPass.hlsl"
 
-Varyings vert (Attributes v)
+PackedVaryings vert (Attributes v)
 {
     Varyings o;
 
@@ -35,19 +35,25 @@ Varyings vert (Attributes v)
     #ifdef VARYINGS_NEED_TEXCOORD2
     o.texCoord2 = v.uv2;
     #endif
-    
-    return o; 
+
+    #ifdef ATTRIBUTES_NEED_COLOR
+    o.color = v.color;
+    #endif
+
+    return PackVaryings(o); 
 }
 
-half4 frag(Varyings varyings) : SV_Target
+half4 frag(PackedVaryings packed) : SV_Target
 {
+    Varyings varyings = UnpackVaryings(packed);
     SurfaceDescriptionInputs surfDescInputs = BuildSurfaceDescriptionInputs(varyings);
     SurfaceDescription surface = SurfaceDescriptionFunction(surfDescInputs);
     return half4(surface.BaseColor + surface.Emission, surface.Alpha);
 }
 
-half4 FragmentMetaCustom(Varyings varyings) : SV_Target
+half4 FragmentMetaCustom(PackedVaryings packed) : SV_Target
 {
+    Varyings varyings = UnpackVaryings(packed);
     SurfaceDescriptionInputs surfDescInputs = BuildSurfaceDescriptionInputs(varyings);
     SurfaceDescription surface = SurfaceDescriptionFunction(surfDescInputs);
     

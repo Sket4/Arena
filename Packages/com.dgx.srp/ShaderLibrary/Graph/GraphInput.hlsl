@@ -131,36 +131,36 @@ float4 _ScaledScreenParams;
 #define UNITY_PREV_MATRIX_M   unity_MatrixPreviousM
 #define UNITY_PREV_MATRIX_I_M unity_MatrixPreviousMI
 
-struct Varyings
-{
-    float4 positionCS : SV_POSITION;
-
-    #ifdef VARYINGS_NEED_TEXCOORD0
-    float4 texCoord0 : TEXCOORD0;
-    #endif
-    
-    #ifdef VARYINGS_NEED_TEXCOORD1
-    float4 texCoord1 : TEXCOORD1;
-    #endif
-
-    #ifdef VARYINGS_NEED_TEXCOORD2
-    float4 texCoord2 : TEXCOORD2;
-    #endif
-
-    #ifdef VARYINGS_NEED_COLOR
-    real4 color : COLOR0; 
-    #endif
-
-    #ifdef VARYINGS_NEED_NORMAL_WS
-    float3 normalWS : COLOR1;
-    #endif
-
-    #ifdef VARYINGS_NEED_POSITION_WS
-    float3 positionWS : COLOR2;
-    #endif
-
-    DEFAULT_UNITY_VERTEX_INPUT_INSTANCE_ID
-};
+// struct Varyings
+// {
+//     float4 positionCS : SV_POSITION;
+//
+//     #ifdef VARYINGS_NEED_TEXCOORD0
+//     float4 texCoord0 : TEXCOORD0;
+//     #endif
+//     
+//     #ifdef VARYINGS_NEED_TEXCOORD1
+//     float4 texCoord1 : TEXCOORD1;
+//     #endif
+//
+//     #ifdef VARYINGS_NEED_TEXCOORD2
+//     float4 texCoord2 : TEXCOORD2;
+//     #endif
+//
+//     #ifdef VARYINGS_NEED_COLOR
+//     real4 color : COLOR0; 
+//     #endif
+//
+//     #ifdef VARYINGS_NEED_NORMAL_WS
+//     float3 normalWS : COLOR1;
+//     #endif
+//
+//     #ifdef VARYINGS_NEED_POSITION_WS
+//     float3 positionWS : COLOR2;
+//     #endif
+//
+//     DEFAULT_UNITY_VERTEX_INPUT_INSTANCE_ID
+// };
 
 #ifndef USE_VERY_FAST_SRGB
 #if defined(SHADER_API_MOBILE)

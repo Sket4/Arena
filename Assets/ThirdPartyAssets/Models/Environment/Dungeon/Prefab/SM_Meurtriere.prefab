@@ -11,6 +11,7 @@ GameObject:
   - component: {fileID: 5003849879984281029}
   - component: {fileID: 4047109111447760883}
   - component: {fileID: 7716549762943341322}
+  - component: {fileID: 1755372689328431983}
   m_Layer: 0
   m_Name: SM_Meurtriere
   m_TagString: Untagged
@@ -25,12 +26,13 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 8298558704782862294}
+  serializedVersion: 2
   m_LocalRotation: {x: -0.00000015041115, y: -0.965926, z: -0.2588186, w: 0.00000056134337}
   m_LocalPosition: {x: 77.52726, y: -1.2498596, z: 0.2054851}
   m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: -30.000002, y: -180.00002, z: 0}
 --- !u!33 &4047109111447760883
 MeshFilter:
@@ -51,9 +53,12 @@ MeshRenderer:
   m_CastShadows: 1
   m_ReceiveShadows: 1
   m_DynamicOccludee: 1
+  m_StaticShadowCaster: 0
   m_MotionVectors: 1
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
+  m_RayTracingMode: 2
+  m_RayTraceProcedural: 0
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
@@ -78,3 +83,23 @@ MeshRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
+  m_AdditionalVertexStreams: {fileID: 0}
+--- !u!205 &1755372689328431983
+LODGroup:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8298558704782862294}
+  serializedVersion: 2
+  m_LocalReferencePoint: {x: 0.0042725652, y: 0.19893825, z: 0.045420863}
+  m_Size: 1.0785022
+  m_FadeMode: 0
+  m_AnimateCrossFading: 0
+  m_LastLODIsBillboard: 0
+  m_LODs:
+  - screenRelativeHeight: 0.026919685
+    fadeTransitionWidth: 0
+    renderers:
+    - renderer: {fileID: 7716549762943341322}
+  m_Enabled: 1

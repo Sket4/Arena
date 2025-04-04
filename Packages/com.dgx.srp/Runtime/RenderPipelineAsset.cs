@@ -30,11 +30,22 @@ namespace DGX.SRP
         public Shader LightingPassShader;
         public Shader LinearizeDepthShader;
 
+        [SerializeField]
+        Shader _terrainDetailLitShader;
+        
+        [SerializeField]
+        Shader _terrainDetailGrassShader;
+
         [Reload("ShaderLibrary/Utils/Blit.shader")]
         public Shader BlitShader;
         [Reload("ShaderLibrary/Utils/CoreBlitColorAndDepth.shader")]
         public Shader BlitColorAndDepthShader;
-        
+
+        public override Shader terrainDetailLitShader => _terrainDetailLitShader;
+
+        public override Shader terrainDetailGrassShader => _terrainDetailGrassShader;
+        public override Shader terrainDetailGrassBillboardShader => _terrainDetailGrassShader;
+
         // Unity calls this method before rendering the first frame.
         // If a setting on the Render Pipeline Asset changes, Unity destroys the current Render Pipeline Instance and calls this method again before rendering the next frame
         protected override UnityEngine.Rendering.RenderPipeline CreatePipeline()

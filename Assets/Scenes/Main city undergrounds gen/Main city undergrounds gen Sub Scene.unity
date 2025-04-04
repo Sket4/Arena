@@ -886,16 +886,16 @@ MonoBehaviour:
           ConnectedSocketIDs:
           - Value:
               Value:
-                x: 593544330
-                y: 1253401406
-                z: 929209781
-                w: 3481709343
-          - Value:
-              Value:
                 x: 3078273824
                 y: 1241888939
                 z: 1031267479
                 w: 2034503866
+          - Value:
+              Value:
+                x: 593544330
+                y: 1253401406
+                z: 929209781
+                w: 3481709343
           Value: 0
     - rid: 5272189481285321131
       type: {class: SetIntVariableNode, ns: TzarGames.GameCore.ScriptViz.Graph, asm: TzarGames.GameCore}
@@ -1207,7 +1207,7 @@ MonoBehaviour:
                 y: 1324784034
                 z: 1647269252
                 w: 4027921731
-        questKey: {fileID: 0}
+        questKey: {fileID: -5995000349584570135, guid: 709759d6d50fadb4ab72406e658ed872, type: 2}
         ProgressSocket:
           ID:
             Value:
@@ -1403,7 +1403,7 @@ MonoBehaviour:
                 y: 1256626483
                 z: 3244829881
                 w: 772067835
-        questKey: {fileID: 0}
+        questKey: {fileID: -5995000349584570135, guid: 709759d6d50fadb4ab72406e658ed872, type: 2}
         State: 1
     - rid: 5272189481285321166
       type: {class: LogCommandNode, ns: TzarGames.GameCore.ScriptViz.Graph, asm: TzarGames.GameCore}
@@ -1587,7 +1587,7 @@ MonoBehaviour:
                 y: 1158060030
                 z: 805313938
                 w: 2000468981
-        questKey: {fileID: 0}
+        questKey: {fileID: -5995000349584570135, guid: 709759d6d50fadb4ab72406e658ed872, type: 2}
         ProgressSocket:
           ID:
             Value:
@@ -2582,12 +2582,13 @@ MonoBehaviour:
     EnableAdditionalLight: 1
     EnableDarkMode: 1
   UseSceneRenderSettings: 0
-  UseCameraSettings: 1
   CameraSettings:
     ChangeClearFlags: 1
     ClearFlags: 2
     ChangeClearColor: 1
     ClearColor: {r: 0, g: 0, b: 0, a: 0}
+    ChangeFarPlane: 0
+    FarPlane: 0
 --- !u!1 &1679008460
 GameObject:
   m_ObjectHideFlags: 0

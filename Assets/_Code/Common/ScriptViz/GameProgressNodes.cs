@@ -10,28 +10,6 @@ using Unity.Entities;
 
 namespace Arena.ScriptViz
 {
-    [StructLayout(LayoutKind.Explicit, Size = 8)]
-    public struct PointerWrapper
-    {
-        [FieldOffset(0)]
-        public IntPtr Value;
-
-        [FieldOffset(0)]
-        private long memory;
-
-        public static implicit operator IntPtr(PointerWrapper value)
-        {
-            return value.Value;
-        }
-        public static implicit operator PointerWrapper(IntPtr value)
-        {
-            return new PointerWrapper
-            {
-                Value = value
-            };
-        }
-    }
-    
     public struct GameProgressSocketData
     {
         public Entity ProgressEntity;

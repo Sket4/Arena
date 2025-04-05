@@ -395,9 +395,9 @@ namespace Arena
                                     {
                                         ProgressEntity = progressDataEntity,
                                         FlagsCount = (ushort)flagsData.Length,
-                                        FlagsPointer = (System.IntPtr)flagsData.GetUnsafeReadOnlyPtr(),
-                                        KeysPointer = (System.IntPtr)keysData.GetUnsafeReadOnlyPtr(),
-                                        QuestsPointer = (System.IntPtr)questData.GetUnsafeReadOnlyPtr(),
+                                        FlagsPointer = flagsData.GetUnsafeReadOnlyPtr(),
+                                        KeysPointer = keysData.GetUnsafeReadOnlyPtr(),
+                                        QuestsPointer = questData.GetUnsafeReadOnlyPtr(),
                                         QuestCount = (ushort)questData.Length,
                                         KeysCount = (ushort)keysData.Length
                                     };

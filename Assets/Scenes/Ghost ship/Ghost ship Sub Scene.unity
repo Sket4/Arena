@@ -24426,6 +24426,87 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 0
+--- !u!1 &1934960125
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1934960128}
+  - component: {fileID: 1934960127}
+  - component: {fileID: 1934960126}
+  m_Layer: 0
+  m_Name: Ambient sound
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &1934960126
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1934960125}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 08ead1f0c9eeb46859ae00cb40618ed1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ConversionTargetOptions: 5
+  AttachToInstigator: 0
+  DisableAutoDestroy: 1
+  SoundGroup:
+    Name: 
+    Clips:
+    - {fileID: 8300000, guid: 21538f6160ff48040a8488deb4ed6d5e, type: 3}
+    OptionalMixerGroup: {fileID: 24300002, guid: e9a5cc95a5ce419498d6a797076314bf, type: 2}
+    Settings:
+      RandomizeVolume: 0
+      MinVolume: 0.9
+      MaxVolume: 1
+      RandomizePitch: 0
+      MinPitch: 0.9
+      MaxPitch: 1.1
+      Loop: 1
+      SpatializeBlend: 0
+      BypassEffects: 1
+      SetMinDistance: 0
+      MinDistance: 0
+      SetMaxDistance: 0
+      MaxDistance: 0
+--- !u!114 &1934960127
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1934960125}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 44fc9299b341424408b9c8f7275aaea0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ConversionTargetOptions: -1
+  SelfAsInstigator: 0
+--- !u!4 &1934960128
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1934960125}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 14.719331, y: -1.8446773, z: 176.52405}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &1942380766
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -28823,6 +28904,7 @@ SceneRoots:
   - {fileID: 1728571028}
   - {fileID: 2141782531}
   - {fileID: 1433798563}
+  - {fileID: 1934960128}
   - {fileID: 1191052959}
   - {fileID: 3293571836256954913}
   - {fileID: 9194378231304792259}

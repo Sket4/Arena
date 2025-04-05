@@ -51,7 +51,6 @@ Shader"Arena/Water"
         {
             HLSLPROGRAM
             #pragma target 4.5
-            //#pragma require cubearray
             #pragma require 2darray
             #pragma exclude_renderers gles //excluded shader from OpenGL ES 2.0 because it uses non-square matrices
             #pragma vertex vert
@@ -69,15 +68,33 @@ Shader"Arena/Water"
             #pragma multi_compile _ LIGHTMAP_ON
             #pragma multi_compile _ DIRLIGHTMAP_COMBINED
             #pragma multi_compile_fragment _ ARENA_MAP_RENDER
+            #pragma multi_compile_fragment _ DGX_SPOT_LIGHTS
 
-            #pragma multi_compile _ _MAIN_LIGHT_SHADOWS
-            #pragma multi_compile _ _MAIN_LIGHT_SHADOWS_CASCADE
+            
+            // // ------ это для спекуляров от спотлайта
+            // #pragma multi_compile_fragment UG_QUALITY_LOW UG_QUALITY_MED UG_QUALITY_HIGH
+            // #if defined(UG_QUALITY_MED) || defined(UG_QUALITY_HIGH)
+            // #define DGX_PBR_RENDERING 1
+            // #endif
+            // // ------
+
+            #if defined(UG_QUALITY_LOW)
+            #undef DIRLIGHTMAP_COMBINED
+            #endif
+
+            #define TG_TRANSPARENT
+
+            //#pragma multi_compile _ _MAIN_LIGHT_SHADOWS
+            //#pragma multi_compile _ _MAIN_LIGHT_SHADOWS_CASCADE
+            
             //#pragma multi_compile_fragment __ ARENA_USE_MAIN_LIGHT
             //#pragma multi_compile_fragment __ ARENA_USE_ADD_LIGHT
             
             //#pragma multi_compile_fragment _ _SHADOWS_SOFT
             //#pragma multi_compile_fragment _ _SHADOWS_SOFT_LOW _SHADOWS_SOFT_MEDIUM _SHADOWS_SOFT_HIGH
             //#pragma multi_compile_fragment _ _LIGHT_COOKIES
+
+            
             
             #include "Packages/com.unity.render-pipelines.core/ShaderLibrary/Common.hlsl"
             #include "Packages/com.unity.render-pipelines.core/ShaderLibrary/UnityInstancing.hlsl"
@@ -268,19 +285,8 @@ Shader"Arena/Water"
                 #endif
 
                 half waterEdgeFadeInv = 1.0 - i.color.g;
-                
-                half4 diffuse;
-                diffuse.rgb = lerp(reflColor, _BaseColor.rgb, rim);
-                diffuse.a = lerp(1, _BaseColor.a, rim);
 
-                #if USE_FOAM
-                half foam = tex2D(_FoamGradientTex, half2(i.foamData.r, 0)).r;
-                foam *= tex2D(_FoamTex, i.foamData.gb).r;
-                
-                diffuse.rgb = lerp(diffuse.rgb, diffuse.rgb + foam.rrr, waterEdgeFadeInv);
-                #endif
-                
-#ifdef ARENA_MAP_RENDER
+                #ifdef ARENA_MAP_RENDER
                 half3 lighting = half3(1,1,1);
 #else
     #if LIGHTMAP_ON
@@ -293,6 +299,17 @@ Shader"Arena/Water"
 
                 #ifdef USE_LIGHTING_MULT
                 lighting *= _LightingMult;
+                #endif
+                
+                half4 diffuse;
+                diffuse.rgb = lerp(reflColor, _BaseColor.rgb, rim);
+                diffuse.a = lerp(1, _BaseColor.a, rim);
+
+                #if USE_FOAM
+                half foam = tex2D(_FoamGradientTex, half2(i.foamData.r, 0)).r;
+                foam *= tex2D(_FoamTex, i.foamData.gb).r;
+                
+                diffuse.rgb = lerp(diffuse.rgb, diffuse.rgb + foam.rrr, waterEdgeFadeInv);
                 #endif
 
                 diffuse.rgb *= lighting;

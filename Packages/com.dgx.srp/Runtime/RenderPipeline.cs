@@ -688,7 +688,7 @@ namespace DGX.SRP
                 rt.Depth.name = $"Depth ({name})";
                 rt.Depth_ID = rt.Depth;
                 
-                rt.LinearDepth = RenderTexture.GetTemporary(width, height, 0, RenderTextureFormat.R16, RenderTextureReadWrite.Linear);
+                rt.LinearDepth = RenderTexture.GetTemporary(width, height, 0, RenderTextureFormat.R8, RenderTextureReadWrite.Linear);
                 rt.LinearDepth.name = $"Linear depth ({name})";
                 rt.LinearDepth_ID = rt.LinearDepth;
 

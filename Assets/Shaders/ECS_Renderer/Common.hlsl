@@ -254,7 +254,7 @@ void ApplyDynamicLighting(
 	half3 viewDirWS = 0;
 	half3 specularLight = 0;
 	half roughness = 0;
-	
+	calculateSpotLight(positionWS, normalWS, viewDirWS, roughness, diffuseLight, specularLight);
 	#endif
 	calculateSpotLight(positionWS, normalWS, viewDirWS, roughness, diffuseLight, specularLight);
 	#endif

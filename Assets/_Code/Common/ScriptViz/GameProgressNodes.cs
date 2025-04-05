@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Runtime.InteropServices;
 using Arena.Quests;
 using TzarGames.GameCore.ScriptViz;
 using UnityEngine;
@@ -9,14 +10,36 @@ using Unity.Entities;
 
 namespace Arena.ScriptViz
 {
+    [StructLayout(LayoutKind.Explicit, Size = 8)]
+    public struct PointerWrapper
+    {
+        [FieldOffset(0)]
+        public IntPtr Value;
+
+        [FieldOffset(0)]
+        private long memory;
+
+        public static implicit operator IntPtr(PointerWrapper value)
+        {
+            return value.Value;
+        }
+        public static implicit operator PointerWrapper(IntPtr value)
+        {
+            return new PointerWrapper
+            {
+                Value = value
+            };
+        }
+    }
+    
     public struct GameProgressSocketData
     {
         public Entity ProgressEntity;
-        public IntPtr FlagsPointer;
+        public PointerWrapper FlagsPointer;
         public ushort FlagsCount;
-        public IntPtr KeysPointer;
+        public PointerWrapper KeysPointer;
         public ushort KeysCount;
-        public IntPtr QuestsPointer;
+        public PointerWrapper QuestsPointer;
         public ushort QuestCount;
     }
     
@@ -51,7 +74,7 @@ namespace Arena.ScriptViz
             
             var progress = data->Progress.Read(ref context);
 
-            var quests = (CharacterGameProgressQuests*)progress.QuestsPointer;
+            var quests = (CharacterGameProgressQuests*)progress.QuestsPointer.Value;
             bool hasQuest = false;
             QuestState state = QuestState.Failed;
             
@@ -181,7 +204,7 @@ namespace Arena.ScriptViz
             
             var progress = data->Progress.Read(ref context);
 
-            var flags = (CharacterGameProgressFlags*)progress.FlagsPointer;
+            var flags = (CharacterGameProgressFlags*)progress.FlagsPointer.Value;
             bool hasFlag = false;
             
             for (int i = 0; i < progress.FlagsCount; i++)
@@ -463,7 +486,7 @@ namespace Arena.ScriptViz
             
             var progress = data->Progress.Read(ref context);
 
-            var keys = (CharacterGameProgressKeyValue*)progress.KeysPointer;
+            var keys = (CharacterGameProgressKeyValue*)progress.KeysPointer.Value;
             int val = 0;
             
             for (int i = 0; i < progress.KeysCount; i++)

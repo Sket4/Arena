@@ -19,7 +19,7 @@ namespace Arena.Client.Anima
             return SourceRigPrefab.transform;
         }
         
-        RemapData CreateRemapData(Transform srcRig, Transform dstRig, Avatar sourceAvatar, Avatar retargetAvatar)
+        public static RemapData CreateRemapData(Transform srcRig, Transform dstRig, Avatar sourceAvatar, Avatar retargetAvatar, Transform fallbackRootTransform)
         {
 #if UNITY_EDITOR
             // если объект находится на сцене, то он, скорее всего, не находится в начале координат,
@@ -37,7 +37,7 @@ namespace Arena.Client.Anima
                 }
                 else
                 {
-                    modifiedRootTransform = transform;
+                    modifiedRootTransform = fallbackRootTransform;
                 }
 
                 prevParent = modifiedRootTransform.parent;
@@ -94,7 +94,7 @@ namespace Arena.Client.Anima
                     continue;
                 }
 
-                if (targetHumanName == "Hips")
+                //if (targetHumanName == "Hips")
                 {
                     // heuristic that computes retarget scale based on translation node (ex: hips) height (assumed to be y)
                     var translationOffsetScale = targetBoneTransform.position.y / sourceBoneTransform.position.y;
@@ -157,7 +157,7 @@ namespace Arena.Client.Anima
             if (cachedRemapData == null)
             {
                 var dstRig = RetargetRootTransform ? RetargetRootTransform : transform;
-                cachedRemapData = CreateRemapData(SourceRigPrefab.transform, dstRig, SourceAvatar, RetargetAvatar);
+                cachedRemapData = CreateRemapData(SourceRigPrefab.transform, dstRig, SourceAvatar, RetargetAvatar, transform);
             }
             return cachedRemapData;
         }

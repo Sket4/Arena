@@ -66,12 +66,20 @@ namespace Arena.ScriptViz
 
         public override string GetNodeName(ScriptVizGraphPage page)
         {
-            if (Message != null)
+            try
             {
-                return $"Показать '{Message.GetLocalizedString()}'";
+                if (Message != null)
+                {
+                    return $"Показать '{Message.GetLocalizedString()}'";
+                }
+                else
+                {
+                    return "Показать сообщение";
+                }
             }
-            else
+            catch (Exception e)
             {
+                Debug.LogException(e);
                 return "Показать сообщение";
             }
         }

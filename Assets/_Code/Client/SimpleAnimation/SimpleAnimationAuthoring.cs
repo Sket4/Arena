@@ -11,13 +11,21 @@ using AnimationState = UnityEngine.AnimationState;
 [Serializable]
 public class SimpleAnimationClipAuthoring : IAnimationClip
 {
+    [Serializable]
+    public class OtherClipProperties
+    {
+        public Transform CustomSourceRigPrefab;
+        public Avatar CustomSourceAvatar;
+    }
+    
     public string Label;
     public AnimationClip Clip;
 	public AnimationID ID;
     public bool Loop = false;
     public float SpeedScale = 1f;
-    public bool ComputeRootmotionDeltas = false;
     public AnimationClipBakeFlags BakeFlags;
+
+    public OtherClipProperties OtherProperties = new();
 
     public AnimationClip GetUnityAnimationClip() => Clip;
     public AnimationClipBakeFlags GetBakeFlags()
@@ -51,14 +59,16 @@ public class SimpleAnimationAuthoring : ComponentDataBehaviourBase
         public GameObject AnimationRoot { get; private set; }
         public int DefaultClipIndex { get; private set; }
         public List<SimpleAnimationClipAuthoring> Clips  { get; private set; }
-        public IRemapper Remapper { get; private set; }
+        public RetargetComponent DefaultRemapper { get; private set; }
 
-        public Proxy(GameObject animRoot, int defaultClipIndex, List<SimpleAnimationClipAuthoring> clips, IRemapper remapper)
+        private Dictionary<Avatar, CustomRemapper> remapDataCache = new();
+
+        public Proxy(GameObject animRoot, int defaultClipIndex, List<SimpleAnimationClipAuthoring> clips, RetargetComponent defaultRemapper)
         {
             AnimationRoot = animRoot;
             DefaultClipIndex = defaultClipIndex;
             Clips = clips;
-            Remapper = remapper;
+            DefaultRemapper = defaultRemapper;
         }
         
         public void ConvertAnimationState(int index, ref TzarGames.AnimationFramework.AnimationState state, IAnimationClip originalClip, IBaker baker)
@@ -105,10 +115,59 @@ public class SimpleAnimationAuthoring : ComponentDataBehaviourBase
             return list.ToArray();
         }
 
-        public IRemapper GetRemapper()
+        public IRemapper GetRemapperForClip(IAnimationClip clip)
         {
-            return Remapper;
-            //return GetComponent<RetargetComponent>();
+            foreach (var clipAuthoring in Clips)
+            {
+                if (clip == clipAuthoring)
+                {
+                    var props = clipAuthoring.OtherProperties;
+                    
+                    if (props != null &&
+                        props.CustomSourceAvatar)
+                    {
+                        CustomRemapper remapper;
+
+                        if (remapDataCache.TryGetValue(props.CustomSourceAvatar, out remapper) == false)
+                        {
+                            var remapData = RetargetComponent.CreateRemapData(
+                                props.CustomSourceRigPrefab,
+                                DefaultRemapper.RetargetRootTransform,
+                                props.CustomSourceAvatar, 
+                                DefaultRemapper.RetargetAvatar, 
+                                DefaultRemapper.RetargetRootTransform);
+
+                            remapper = new CustomRemapper(props.CustomSourceRigPrefab, remapData);
+                            remapDataCache.Add(props.CustomSourceAvatar, remapper);
+                        }
+                        return remapper;
+                    }
+                    break;
+                }
+            }
+            return DefaultRemapper;
+        }
+
+        class CustomRemapper : IRemapper
+        {
+            public Transform SourceObjectRoot { get; private set; }
+            public RemapData RemapData { get; private set; }
+
+            public CustomRemapper(Transform sourceObjectRoot, RemapData remapData)
+            {
+                SourceObjectRoot = sourceObjectRoot;
+                RemapData = remapData;
+            }
+
+            public Transform GetSourceObjectRoot()
+            {
+                return SourceObjectRoot;
+            }
+
+            public RemapData GetRemapData()
+            {
+                return RemapData;
+            }
         }
     }
 

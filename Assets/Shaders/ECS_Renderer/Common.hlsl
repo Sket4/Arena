@@ -209,7 +209,8 @@ half3 Arena_ComputeAmbientLight(
 			#if defined(DOTS_INSTANCING_ON)
 				ambientLight = TG_ComputeAmbientLight_half(normalWS);
 			#else
-				ambientLight = saturate(dot(normalWS, half3(0,0,1))) + half3(0.6,0.6,0.9) * 0.3;
+				float3 viewDir = -GetViewForwardDir();
+				ambientLight = saturate(dot(normalWS, viewDir)) + half3(0.6,0.6,0.9) * 0.3;
 			#endif
 		#endif
 	#endif

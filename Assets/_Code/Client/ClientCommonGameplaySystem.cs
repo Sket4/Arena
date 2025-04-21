@@ -225,7 +225,13 @@ namespace Arena.Client
             }
 
             var mapTextureSize = mapRenderData.MapTextureSize;
-            var textureHiRes = RenderTexture.GetTemporary(mapTextureSize*2, mapTextureSize*2, 16, RenderTextureFormat.Default, RenderTextureReadWrite.Default, 8);
+            
+#if UNITY_STANDALONE
+            //var textureHiRes = RenderTexture.GetTemporary(mapTextureSize*2, mapTextureSize*2, 16, RenderTextureFormat.Default, RenderTextureReadWrite.Default, 8);
+#else
+            var textureHiRes = RenderTexture.GetTemporary(mapTextureSize*2, mapTextureSize*2);
+#endif
+            
 
             var rs = World.GetExistingSystemManaged<RenderingSystem>();
 
@@ -248,8 +254,8 @@ namespace Arena.Client
                 await Task.Yield();
             }
             
-            var cameroGO = new GameObject("map render camera");
-            var camera = cameroGO.AddComponent<Camera>();
+            var cameraGO = new GameObject("map render camera");
+            var camera = cameraGO.AddComponent<Camera>();
             camera.cullingMask = mapRenderData.MapRenderLayers;
             camera.farClipPlane = 200;
             camera.orthographicSize = mapRenderData.MapCameraOrthoSize;
@@ -290,7 +296,7 @@ namespace Arena.Client
 
             var msgEntity = EntityManager.CreateEntity(typeof(Message));
             EntityManager.SetComponentData(msgEntity, Message.CreateFromString("map rendered"));
-            //Object.Destroy(cameroGO);
+            Object.Destroy(cameraGO);
         }
         
         static Mesh navMeshToMesh()

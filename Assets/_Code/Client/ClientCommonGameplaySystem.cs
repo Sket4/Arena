@@ -18,7 +18,7 @@ namespace Arena.Client
     {
         public Mesh Mesh;
     }
-    
+
     [UpdateBefore(typeof(CommonEarlyGameSystem))]
     [DisableAutoCreation]
     public partial class ClientCommonGameplaySystem : GameSystemBase
@@ -27,6 +27,8 @@ namespace Arena.Client
         protected EntityQuery gameInterfaceQuery;
         private EntityQuery navMeshSettingsQuery;
         private EntityQuery mapCameraQuery;
+
+        private RenderTexture mapRenderTexture;
         
         public struct QuestStartedFlag : IComponentData
         {
@@ -55,6 +57,13 @@ namespace Arena.Client
                     data.Mesh = null;
                 }
             }).Run();
+
+
+            if (mapRenderTexture)
+            {
+                RenderTexture.ReleaseTemporary(mapRenderTexture);
+                mapRenderTexture = null;
+            }
         }
 
         protected override void OnSystemUpdate()
@@ -225,12 +234,11 @@ namespace Arena.Client
             }
 
             var mapTextureSize = mapRenderData.MapTextureSize;
-            
-#if UNITY_STANDALONE
-            //var textureHiRes = RenderTexture.GetTemporary(mapTextureSize*2, mapTextureSize*2, 16, RenderTextureFormat.Default, RenderTextureReadWrite.Default, 8);
-#else
-            var textureHiRes = RenderTexture.GetTemporary(mapTextureSize*2, mapTextureSize*2);
-#endif
+
+            var useHiRes = SystemInfo.graphicsMemorySize > 512;
+            var renderTextureSize = useHiRes ? mapTextureSize * 2 : mapTextureSize;
+            var targetRenderTexture = RenderTexture.GetTemporary(renderTextureSize, renderTextureSize, 16, RenderTextureFormat.Default, RenderTextureReadWrite.Default, 8);
+            targetRenderTexture.name = "Map render texture hires";
             
 
             var rs = World.GetExistingSystemManaged<RenderingSystem>();
@@ -260,7 +268,7 @@ namespace Arena.Client
             camera.farClipPlane = 200;
             camera.orthographicSize = mapRenderData.MapCameraOrthoSize;
             camera.orthographic = true;
-            camera.targetTexture = textureHiRes;
+            camera.targetTexture = targetRenderTexture;
             camera.backgroundColor = Color.black;
             camera.clearFlags = CameraClearFlags.SolidColor;
             camera.transform.position = l2w.Position;
@@ -278,21 +286,37 @@ namespace Arena.Client
             
             if (mapRenderData.MapPostprocessMaterial.Result != null)
             {
-                var temp = RenderTexture.GetTemporary(textureHiRes.descriptor);
-                Graphics.Blit(textureHiRes, temp, mapRenderData.MapPostprocessMaterial.Result);
-                RenderTexture.ReleaseTemporary(textureHiRes);
-                textureHiRes = temp;
+                var temp = RenderTexture.GetTemporary(targetRenderTexture.descriptor);
+                Graphics.Blit(targetRenderTexture, temp, mapRenderData.MapPostprocessMaterial.Result);
+                RenderTexture.ReleaseTemporary(targetRenderTexture);
+                targetRenderTexture = temp;
             }
             else
             {
                 Debug.LogError("failed to load map postprocess material"); 
             }
             camera.enabled = false;
+
+            if (mapRenderTexture)
+            {
+                Debug.LogWarning("Map render texture already exist");
+                RenderTexture.ReleaseTemporary(mapRenderTexture);
+                mapRenderTexture = null;
+            }
+
+            if (useHiRes)
+            {
+                mapRenderTexture = RenderTexture.GetTemporary(mapTextureSize, mapTextureSize, 0, RenderTextureFormat.Default, RenderTextureReadWrite.Default, 1);
+                Graphics.Blit(targetRenderTexture, mapRenderTexture);
+                RenderTexture.ReleaseTemporary(targetRenderTexture);
+            }
+            else
+            {
+                mapRenderTexture = targetRenderTexture;
+            }
             
-            var texture = RenderTexture.GetTemporary(mapTextureSize, mapTextureSize, 0, RenderTextureFormat.Default, RenderTextureReadWrite.Default, 1);
-            Graphics.Blit(textureHiRes, texture);
-            RenderTexture.ReleaseTemporary(textureHiRes);
-            renderInfo.Material.Result.mainTexture = texture;
+            mapRenderTexture.name = "Map render texture";
+            renderInfo.Material.Result.mainTexture = mapRenderTexture;
 
             var msgEntity = EntityManager.CreateEntity(typeof(Message));
             EntityManager.SetComponentData(msgEntity, Message.CreateFromString("map rendered"));

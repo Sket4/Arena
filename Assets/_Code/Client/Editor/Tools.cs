@@ -15,8 +15,10 @@ using TzarGames.CodeGeneration;
 using TzarGames.Common;
 using TzarGames.GameCore.Client.Physics;
 using Unity.Mathematics;
+using UnityEditor.VersionControl;
 using Console = System.Console;
 using Object = UnityEngine.Object;
+using Task = System.Threading.Tasks.Task;
 
 public static class Tools
 {
@@ -55,6 +57,17 @@ public static class Tools
         Menu.SetChecked(offlineMode, GameState.IsOfflineMode);
         EditorPrefs.SetBool(offlineModeKey, GameState.IsOfflineMode);
         Debug.Log($"Режим оффлайн игры: {GameState.IsOfflineMode}");
+    }
+
+    [MenuItem("Arena/Test")]
+    static void test()
+    {
+        var rts = Resources.FindObjectsOfTypeAll<RenderTexture>();
+
+        foreach (var rt in rts)
+        {
+            Debug.Log($"{rt.name} - {rt.width}x{rt.height} - format: - {rt.format}");
+        }
     }
 
     

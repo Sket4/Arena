@@ -404,6 +404,14 @@ namespace Arena.Client.UI
                 {
                     map.SetExtendedMode();
                 }
+                
+                // TEST
+                var rts = Resources.FindObjectsOfTypeAll<RenderTexture>();
+
+                foreach (var rt in rts)
+                {
+                    Debug.Log($"{rt.name} - {rt.width}x{rt.height} - format: - {rt.format}");
+                }
             }
             public override void OnStateEnd(State nextState)
             {

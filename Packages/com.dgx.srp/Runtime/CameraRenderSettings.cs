@@ -18,6 +18,7 @@ namespace DGX.SRP
         public bool LowResRendering;
         public bool RenderShadows = true;
         public bool SkipDeferredPass = false;
+        public bool DisableDepth = false;
     }
     
     public class CameraRenderSettings : MonoBehaviour

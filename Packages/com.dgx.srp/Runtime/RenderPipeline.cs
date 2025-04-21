@@ -35,6 +35,7 @@ namespace DGX.SRP
 
         class CameraData
         {
+            public string TargetCameraName;
             public Camera TargetCamera;
             public CameraRenderSettingsData RenderSettings;
             public float LastUpdateTime = -1000;
@@ -52,28 +53,14 @@ namespace DGX.SRP
             public RenderTargetIdentifier LinearDepth_ID;
 
             public bool isHDR;
-            // RenderTexture Color0;
-            //public RenderTargetIdentifier Color0_ID;
-            // public RenderTexture Color1;
-            // public RenderTargetIdentifier Color1_ID;
-
-            //private bool isUsingColor1 = true;
-
-            // public RenderTargetIdentifier SwapAndGetColorRT()
-            // {
-            //     isUsingColor1 = !isUsingColor1;
-            //     return isUsingColor1 ? Color0_ID : Color1_ID;
-            // }
 
             public void Release()
             {
-                RenderTexture.ReleaseTemporary(GBuffer0);
-                RenderTexture.ReleaseTemporary(GBuffer1);
-                RenderTexture.ReleaseTemporary(GBuffer2);
-                RenderTexture.ReleaseTemporary(Depth);
-                RenderTexture.ReleaseTemporary(LinearDepth);
-                //RenderTexture.ReleaseTemporary(Color0);
-                //RenderTexture.ReleaseTemporary(Color1);
+                if(GBuffer0) RenderTexture.ReleaseTemporary(GBuffer0);
+                if(GBuffer1) RenderTexture.ReleaseTemporary(GBuffer1);
+                if(GBuffer2) RenderTexture.ReleaseTemporary(GBuffer2);
+                if(Depth) RenderTexture.ReleaseTemporary(Depth);
+                if(LinearDepth) RenderTexture.ReleaseTemporary(LinearDepth);
             }
         }
 
@@ -398,7 +385,12 @@ namespace DGX.SRP
                     bool isFullRect = cameraRect == fullRect;
                     fullscreenMesh = isFullRect ? fullscreenTriangle : fullscreenQuad;
                 }
-                cmd.SetGlobalTexture("_LinearDepth", rt.LinearDepth_ID);
+
+                if (rt.LinearDepth)
+                {
+                    cmd.SetGlobalTexture("_LinearDepth", rt.LinearDepth_ID);    
+                }
+                
                 cmd.SetGlobalTexture("_Depth", depthTextureID);
 
                 OnBeforeDraw?.Invoke(camera, cmd);
@@ -637,6 +629,7 @@ namespace DGX.SRP
                 rt = new CameraData
                 {
                     TargetCamera = camera,
+                    TargetCameraName = camera.name
                 };
                 var settings = camera.GetComponent<CameraRenderSettings>();
                 if (settings)
@@ -671,7 +664,6 @@ namespace DGX.SRP
                 }
                 else
                 {
-                    rt.Release();
                     createNew = true;
                 }
             }
@@ -680,50 +672,67 @@ namespace DGX.SRP
                 createNew = true;
             }
 
+            if (rt.RenderSettings.SkipDeferredPass == false && rt.GBuffer0 == false)
+            {
+                createNew = true;    
+            }
+            if (rt.RenderSettings.DisableDepth == false && rt.Depth == false)
+            {
+                createNew = true;
+            }
+            
+            if (createNew)
+            {
+                rt.Release();
+            }
+
             if (createNew)
             {
                 var name = camera.name;
+
+                if (rt.RenderSettings == null || rt.RenderSettings.DisableDepth == false)
+                {
+                    rt.Depth = RenderTexture.GetTemporary(width, height, 32, RenderTextureFormat.Depth, RenderTextureReadWrite.Linear);
+                }
+                else
+                {
+                    rt.Depth = RenderTexture.GetTemporary(4, 4, 32, RenderTextureFormat.Depth, RenderTextureReadWrite.Linear);
+                }
                 
-                rt.Depth = RenderTexture.GetTemporary(width, height, 32, RenderTextureFormat.Depth, RenderTextureReadWrite.Linear);
                 rt.Depth.name = $"Depth ({name})";
                 rt.Depth_ID = rt.Depth;
                 
-                rt.LinearDepth = RenderTexture.GetTemporary(width, height, 0, RenderTextureFormat.R8, RenderTextureReadWrite.Linear);
-                rt.LinearDepth.name = $"Linear depth ({name})";
-                rt.LinearDepth_ID = rt.LinearDepth;
+                // пока пропускаем создание LinearDepth, чтобы не расходовать память
+                //rt.LinearDepth = RenderTexture.GetTemporary(width, height, 0, RenderTextureFormat.R8, RenderTextureReadWrite.Linear);
+                //rt.LinearDepth.name = $"Linear depth ({name})";
+                //rt.LinearDepth_ID = rt.LinearDepth;
 
                 bool isLinear = QualitySettings.activeColorSpace == ColorSpace.Linear;
 
-                // var gBufferDescriptor = new RenderTextureDescriptor(width, height, RenderTextureFormat.ARGB32);
-                // gBufferDescriptor.sRGB = !isLinear;
-                // gBufferDescriptor.depthBufferBits = 0;
                 var rwMode = isLinear ? RenderTextureReadWrite.sRGB : RenderTextureReadWrite.Linear;
 
                 // TODO TEMP FIX
                 rt.isHDR = camera.name.ToLower().Contains("reflection probe");
                 //var gbufferFormat = rt.isHDR ? RenderTextureFormat.ARGBFloat : RenderTextureFormat.Default;
                 //var gbufferFormat = isLinear ? RenderTextureFormat.ARGBFloat : RenderTextureFormat.Default;
-                
-                rt.GBuffer0 = RenderTexture.GetTemporary(width, height, 0, RenderTextureFormat.Default, rwMode);
-                rt.GBuffer0.name = $"GBuffer 0 ({name})";
-                rt.GBuffer1 = RenderTexture.GetTemporary(width, height, 0, RenderTextureFormat.Default, rwMode);
-                rt.GBuffer1.name = $"GBuffer 1 ({name})";
-                rt.GBuffer2 = RenderTexture.GetTemporary(width, height, 0, RenderTextureFormat.ARGB32, RenderTextureReadWrite.Linear);
-                rt.GBuffer2.name = $"GBuffer 2 ({name})";
 
-                rt.GBuffer0TargetId = rt.GBuffer0;
-                rt.GBuffer1TargetId = rt.GBuffer1;
-                rt.GBuffer2TargetId = rt.GBuffer2;
-                
-                rt.GBufferIDs[0] = rt.GBuffer0TargetId;
-                rt.GBufferIDs[1] = rt.GBuffer1TargetId;
-                rt.GBufferIDs[2] = rt.GBuffer2TargetId;
+                if (rt.RenderSettings.SkipDeferredPass == false)
+                {
+                    rt.GBuffer0 = RenderTexture.GetTemporary(width, height, 0, RenderTextureFormat.Default, rwMode);
+                    rt.GBuffer0.name = $"GBuffer 0 ({name})";
+                    rt.GBuffer1 = RenderTexture.GetTemporary(width, height, 0, RenderTextureFormat.Default, rwMode);
+                    rt.GBuffer1.name = $"GBuffer 1 ({name})";
+                    rt.GBuffer2 = RenderTexture.GetTemporary(width, height, 0, RenderTextureFormat.ARGB32, RenderTextureReadWrite.Linear);
+                    rt.GBuffer2.name = $"GBuffer 2 ({name})";
 
-                // rt.Color0 = RenderTexture.GetTemporary(width, height, 0, RenderTextureFormat.ARGB32,
-                //     rwMode);
-                //
-                // rt.Color0.name = $"Color A ({name})";
-                // rt.Color0_ID = rt.Color0;
+                    rt.GBuffer0TargetId = rt.GBuffer0;
+                    rt.GBuffer1TargetId = rt.GBuffer1;
+                    rt.GBuffer2TargetId = rt.GBuffer2;
+                
+                    rt.GBufferIDs[0] = rt.GBuffer0TargetId;
+                    rt.GBufferIDs[1] = rt.GBuffer1TargetId;
+                    rt.GBufferIDs[2] = rt.GBuffer2TargetId;
+                }
             }
 
             return rt;

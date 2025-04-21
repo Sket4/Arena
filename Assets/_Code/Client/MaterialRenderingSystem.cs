@@ -79,7 +79,8 @@ namespace Arena.Client
                         new CustomWeakObjectReference<Material>(replacement.UseOriginal
                             ? replacement.Original
                             : replacement.Replacement);
-                    renderInfo.ResetHash128();
+                    
+                    renderInfo.ResetHash128_Managed();
                     
                     ecb.SetComponentEnabled<MaterialFadeReplacement>(entity, false);
                     ecb.SetSharedComponentManaged(entity, renderInfo);

@@ -245,7 +245,7 @@ namespace Arena.Client.Cloth
             meshInfo.MeshID = BatchMeshID.Null;
             
             meshInfo.MeshIndex = renderInfo.AddMeshReference(newRef);
-            renderInfo.ResetHash128();
+            renderInfo.ResetHash128_Managed();
             ecb.SetSharedComponentManaged(target, renderInfo);
             ecb.SetComponent(target, meshInfo);
         }

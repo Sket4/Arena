@@ -18,6 +18,9 @@ Shader"Arena/Character"
         
         [HideInInspector] _SkinningData("SkinData", Vector) = (0, 1, 0, 0)
         [HideInInspector] _BaseColor("Color", Color) = (1,1,1,1)
+        
+        [Toggle(TG_FADING)] _Fading("Fading", int) = 0
+        _FadeMap ("Fade map", 2D) = "white" {}
     }
     SubShader
     {
@@ -63,6 +66,7 @@ Shader"Arena/Character"
 
             #pragma multi_compile UG_QUALITY_LOW UG_QUALITY_MED UG_QUALITY_HIGH
             #pragma multi_compile _BONECOUNT_ONE _BONECOUNT_FOUR
+            #pragma multi_compile_fragment _ TG_FADING
 
             #define TG_SKINNING
 

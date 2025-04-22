@@ -2081,6 +2081,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   ConversionTargetOptions: -1
+  OptionalCopyFrom: {fileID: 0}
   AnimationRoot: {fileID: 0}
   DefaultClipIndex: 0
   Clips:
@@ -2089,36 +2090,46 @@ MonoBehaviour:
     ID: {fileID: 11400000, guid: 53bed7b3c88fcbb478a5626f613a373a, type: 2}
     Loop: 1
     SpeedScale: 1
-    ComputeRootmotionDeltas: 0
     BakeFlags: 0
+    OtherProperties:
+      CustomSourceRigPrefab: {fileID: 0}
+      CustomSourceAvatar: {fileID: 0}
   - Label: 
     Clip: {fileID: -1314735584812334829, guid: fb4a97a046b021742a97d7d2887f671a, type: 3}
     ID: {fileID: 11400000, guid: 37f59d96f0bef184ca0cc99cab343ea1, type: 2}
     Loop: 1
     SpeedScale: 1
-    ComputeRootmotionDeltas: 0
     BakeFlags: 0
+    OtherProperties:
+      CustomSourceRigPrefab: {fileID: 0}
+      CustomSourceAvatar: {fileID: 0}
   - Label: 
     Clip: {fileID: -2145144372462087935, guid: aa2f08f7b9b480e40a68b103092d471d, type: 3}
     ID: {fileID: 11400000, guid: 1f617242a093c5c4e8296860449a0b49, type: 2}
     Loop: 0
     SpeedScale: 1
-    ComputeRootmotionDeltas: 0
     BakeFlags: 0
+    OtherProperties:
+      CustomSourceRigPrefab: {fileID: 0}
+      CustomSourceAvatar: {fileID: 0}
   - Label: 
     Clip: {fileID: -981627260550935958, guid: d6b9873e9bb22fb4ba052119416360fa, type: 3}
     ID: {fileID: 11400000, guid: 37e9e3ba7a391e24a87d298a8373896b, type: 2}
     Loop: 0
     SpeedScale: 1
-    ComputeRootmotionDeltas: 0
     BakeFlags: 0
+    OtherProperties:
+      CustomSourceRigPrefab: {fileID: 0}
+      CustomSourceAvatar: {fileID: 0}
   - Label: 
     Clip: {fileID: 4779298921846735930, guid: 6cc8b92bc29efa64bbbf74560c1c26bd, type: 3}
     ID: {fileID: 11400000, guid: 297ef81ea378c2b4089668c47fab984a, type: 2}
     Loop: 0
     SpeedScale: 1
-    ComputeRootmotionDeltas: 0
     BakeFlags: 0
+    OtherProperties:
+      CustomSourceRigPrefab: {fileID: 0}
+      CustomSourceAvatar: {fileID: 0}
 --- !u!114 &8031159842713388743
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2579,6 +2590,7 @@ MonoBehaviour:
       MaxPitch: 1.1
       Loop: 0
       SpatializeBlend: 1
+      BypassEffects: 0
       SetMinDistance: 0
       MinDistance: 0
       SetMaxDistance: 0
@@ -10540,10 +10552,18 @@ PrefabInstance:
       propertyPath: managedReferences[2560020591264923770].AudioClip
       value: 
       objectReference: {fileID: 8300000, guid: 9070557bb93851c46ae14bd03d0641ac, type: 3}
+    - target: {fileID: 2232529582706308508, guid: 7e318a5053d3f0c4dbccb38c5a2b7604, type: 3}
+      propertyPath: managedReferences[4396341679678029922].AudioClip
+      value: 
+      objectReference: {fileID: 8300000, guid: e0faccb1c4d051942acb01fa2020c406, type: 3}
     - target: {fileID: 2345421837550367308, guid: 7e318a5053d3f0c4dbccb38c5a2b7604, type: 3}
       propertyPath: Value.value
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 2708151911438505953, guid: 7e318a5053d3f0c4dbccb38c5a2b7604, type: 3}
+      propertyPath: m_Mesh
+      value: 
+      objectReference: {fileID: 2496655133332930085, guid: 010f199f4d3df458d8593063f5ac415e, type: 3}
     - target: {fileID: 2931668029453089402, guid: 7e318a5053d3f0c4dbccb38c5a2b7604, type: 3}
       propertyPath: Value.TraceLayers
       value: 1
@@ -10628,6 +10648,10 @@ PrefabInstance:
       propertyPath: Value.Id
       value: 2
       objectReference: {fileID: 0}
+    - target: {fileID: 8424189590011519842, guid: 7e318a5053d3f0c4dbccb38c5a2b7604, type: 3}
+      propertyPath: m_Materials.Array.data[0]
+      value: 
+      objectReference: {fileID: 2100000, guid: ab8be878b58a73d4a9b303da853afff5, type: 2}
     - target: {fileID: 8645241558336446628, guid: 7e318a5053d3f0c4dbccb38c5a2b7604, type: 3}
       propertyPath: Value.CheckObstacles
       value: 1

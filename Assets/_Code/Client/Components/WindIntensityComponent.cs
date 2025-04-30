@@ -22,6 +22,12 @@ namespace Arena.Client
                 Value = 1
             };
         }
+
+        protected override void Bake<K>(ref WindIntensity serializedData, K baker)
+        {
+            base.Bake(ref serializedData, baker);
+            serializedData.Value = 1.0f - serializedData.Value;
+        }
     }
     
     #if UNITY_EDITOR

@@ -82,8 +82,14 @@ v2f vert (appdata v)
     float4 time = _Time;
     float4 instanceData = tg_InstanceData;
     o.instanceData = instanceData;
-    half wind = (sin(time.z + (positionOS.x + positionOS.z) * 2) + sin(time.y) + sin(time.w)) * 0.05 * v.color.x;
-    wind *= _WindForce * instanceData.w;
+    #if USE_MULT_WINDFORCE_BY_UV
+    half windForceMult = v.uv.y;
+    #else
+    half windForceMult = v.color.x;
+    #endif
+    
+    half wind = (sin(time.z + (positionOS.x + positionOS.z) * 2) + sin(time.y) + sin(time.w)) * 0.05 * windForceMult;
+    wind *= _WindForce * (1.0 - instanceData.w);
     positionOS.x += wind;
     positionOS.z += wind;
     
@@ -124,7 +130,15 @@ GBufferFragmentOutput frag(v2f i) : SV_Target
     UNITY_SETUP_INSTANCE_ID(i);
     
     #if DEBUG_VERTEX_COLOR
-    return i.normalWS_occl.w;
+    SurfaceHalf vcSurface;
+    vcSurface.Albedo = i.normalWS_occl.w;
+    vcSurface.Alpha = 1;
+    vcSurface.NormalWS = i.normalWS_occl.xyz;
+    vcSurface.AmbientLight = 1;
+    vcSurface.Metallic = 0;
+    vcSurface.Roughness = 1;
+    vcSurface.EnvCubemapIndex = 0;
+    return SurfaceToGBufferOutputHalf(vcSurface);
     #endif
     
     half4 diffuse = tex2D(_BaseMap, i.uv);

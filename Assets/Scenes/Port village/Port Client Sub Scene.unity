@@ -11035,12 +11035,13 @@ MonoBehaviour:
     EnableAdditionalLight: 0
     EnableDarkMode: 0
   UseSceneRenderSettings: 1
-  UseCameraSettings: 0
   CameraSettings:
     ChangeClearFlags: 0
     ClearFlags: 0
     ChangeClearColor: 0
     ClearColor: {r: 0, g: 0, b: 0, a: 0}
+    ChangeFarPlane: 0
+    FarPlane: 0
 --- !u!4 &210010542
 Transform:
   m_ObjectHideFlags: 0
@@ -12782,7 +12783,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 402216539427447191, guid: a19cab6610bee4144a505c3b32ed4b75, type: 3}
       propertyPath: Value.SpawnRadius
-      value: 3.22
+      value: 1.89
       objectReference: {fileID: 0}
     - target: {fileID: 402216539427447191, guid: a19cab6610bee4144a505c3b32ed4b75, type: 3}
       propertyPath: CharacterPrefabKey
@@ -19811,7 +19812,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 402216539427447191, guid: a19cab6610bee4144a505c3b32ed4b75, type: 3}
       propertyPath: Value.SpawnRadius
-      value: 3.33
+      value: 1.74
       objectReference: {fileID: 0}
     - target: {fileID: 402216539427447191, guid: a19cab6610bee4144a505c3b32ed4b75, type: 3}
       propertyPath: CharacterPrefabKey
@@ -58776,8 +58777,10 @@ MonoBehaviour:
     ID: {fileID: 11400000, guid: 53bed7b3c88fcbb478a5626f613a373a, type: 2}
     Loop: 1
     SpeedScale: 1
-    ComputeRootmotionDeltas: 0
     BakeFlags: 0
+    OtherProperties:
+      CustomSourceRigPrefab: {fileID: 0}
+      CustomSourceAvatar: {fileID: 0}
 --- !u!1001 &6710936271419098176
 PrefabInstance:
   m_ObjectHideFlags: 0

@@ -8,6 +8,7 @@ using Unity.Collections.LowLevel.Unsafe;
 using Unity.Entities;
 using Unity.Mathematics;
 using UnityEngine;
+using UnityEngine.Localization.Tables;
 
 #if UNITY_EDITOR
 using UnityEditor;
@@ -27,6 +28,7 @@ namespace Arena.Dialogue
     {
         public long LocalizedStringID;
         public Address AnswerAddress;
+        public InputVar<bool> Condition;
     }
     
     [BurstCompile]
@@ -73,7 +75,13 @@ namespace Arena.Dialogue
             for (int i = 0; i < outCount; i++)
             {
                 var answer = outPtr[i];
-                answers.Add(answer);
+
+                var isAnswerEnabled = answer.Condition.Read(ref context);
+
+                if (isAnswerEnabled)
+                {
+                    answers.Add(answer);    
+                }
             }
         }
     }
@@ -81,6 +89,9 @@ namespace Arena.Dialogue
     [Serializable]
     public class DialogueAnswerOutputSocket : DataLabelOutputSocket<UnityEngine.Localization.LocalizedString>
     {
+        [SerializeField]
+        internal ID InternalID;
+        
         public override string ToString()
         {
             if (Value == null)
@@ -278,6 +289,12 @@ namespace Arena.Dialogue
             return "Старт диалога";
         }
     }
+
+    [Serializable]
+    public class DialogueAnswerConditionSocket : BoolSocket
+    {
+        public ID TargetSocketInternalID;
+    }
     
     [Serializable]
     [FriendlyName("Диалог")]
@@ -286,22 +303,107 @@ namespace Arena.Dialogue
         public UnityEngine.Localization.LocalizedString Message;
         [HideInInspector] public NodeInputSocket InputSocket = new();
         public List<DialogueAnswerOutputSocket> AnswerOutputSockets = new();
+        public List<DialogueAnswerConditionSocket> AnswerConditionSockets = new();
         private ID player_varId;
         private ID companion_varId;
+        private int lastLetterIndex = 0;
+
+        SocketInfo CreateAnswerSocketInfo(DialogueAnswerOutputSocket socket, string label)
+        {
+            return new SocketInfo(
+                socket,
+                SocketType.Out,
+                label,
+                SocketInfoFlags.AddRemoveButton | SocketInfoFlags.ShowEditorForOutputDataSocket);
+        }
+
+        SocketInfo CreateConditionSocketInfo(DialogueAnswerConditionSocket conditionSocket, string label)
+        {
+            return new SocketInfo(
+                conditionSocket, 
+                SocketType.In, 
+                label);
+        }
         
         public override void DeclareSockets(List<SocketInfo> sockets)
         {
             sockets.Add((new SocketInfo(InputSocket, SocketType.In, "In")));
-
-            foreach(var caseVal in AnswerOutputSockets)
+            
+            if (AnswerConditionSockets == null)
             {
-                sockets.Add(createSocketInfo(caseVal));
+                AnswerConditionSockets = new List<DialogueAnswerConditionSocket>();
             }
-        }
 
-        SocketInfo createSocketInfo(NodeOutputSocket caseSocket)
-        {
-            return new SocketInfo(caseSocket, SocketType.Out, "", SocketInfoFlags.AddRemoveButton | SocketInfoFlags.ShowEditorForOutputDataSocket);
+            var names = new Dictionary<ID, string>();
+
+            for (var index = 0; index < AnswerOutputSockets.Count; index++)
+            {
+                var answerSocket = AnswerOutputSockets[index];
+                if (answerSocket.InternalID.IsInvalid)
+                {
+                    answerSocket.InternalID.Regenerate();
+                }
+                
+                lastLetterIndex = index + 65;
+                var label = $"{(char)lastLetterIndex}";
+                
+                names.Add(answerSocket.InternalID, label);
+
+                var info = CreateAnswerSocketInfo(answerSocket, label);
+
+                sockets.Add(info);
+            }
+
+            for (var index = AnswerConditionSockets.Count - 1; index >= 0; index--)
+            {
+                var conditionSocket = AnswerConditionSockets[index];
+                bool exist = false;
+                foreach (var answerSocket in AnswerOutputSockets)
+                {
+                    if (conditionSocket.TargetSocketInternalID == answerSocket.InternalID)
+                    {
+                        exist = true;
+                        break;
+                    }
+                }
+
+                if (exist == false)
+                {
+                    AnswerConditionSockets.RemoveAt(index);
+                }
+            }
+
+            foreach (var outSocket in AnswerOutputSockets)
+            {
+                bool found = false;
+
+                foreach (var conditionSocket in AnswerConditionSockets)
+                {
+                    if (conditionSocket.TargetSocketInternalID == outSocket.InternalID)
+                    {
+                        found = true;
+                        break;
+                    }
+                }
+
+                if (found == false)
+                {
+                    var socket = new DialogueAnswerConditionSocket
+                    {
+                        Value = true,
+                        TargetSocketInternalID = outSocket.InternalID
+                    };
+                    socket.ID.Regenerate();
+                    
+                    AnswerConditionSockets.Add(socket);
+                }
+            }
+
+            foreach (var conditionSocket in AnswerConditionSockets)
+            {
+                var info = CreateConditionSocketInfo(conditionSocket, names[conditionSocket.TargetSocketInternalID]);
+                sockets.Add(info);
+            }
         }
 
         public override bool ShowEditableProperties => true;
@@ -319,20 +421,41 @@ namespace Arena.Dialogue
 
             var outputList = new NativeList<DialogueAnswer>(AnswerOutputSockets.Count, Allocator.Temp);
 
-            foreach (var element in AnswerOutputSockets)
+            foreach (var conditionNode in AnswerConditionSockets)
             {
-                if (element.Value == null)
+                var answerSocketID = conditionNode.TargetSocketInternalID;
+                
+                if (answerSocketID.IsInvalid)
                 {
                     continue;
                 }
+
+                DialogueAnswerOutputSocket targetSocket = null;
+                foreach (var outputSocket in AnswerOutputSockets)
+                {
+                    if (outputSocket.InternalID == answerSocketID)
+                    {
+                        targetSocket = outputSocket;
+                        break;
+                    }
+                }
+
+                if (targetSocket == null)
+                {
+                    Debug.LogError($"socket with id {answerSocketID} not found");
+                    continue;
+                }
                 
-                var nodeAddr = compilerAllocator.GetFirstConnectedNodeAddress(element);
-                
-                outputList.Add(new DialogueAnswer
+                var nodeAddr = compilerAllocator.GetFirstConnectedNodeAddress(targetSocket);
+
+                var answer = new DialogueAnswer
                 {
                     AnswerAddress = nodeAddr,
-                    LocalizedStringID = element.Value.TableEntryReference.KeyId
-                });
+                    LocalizedStringID = targetSocket.Value.TableEntryReference.KeyId,
+                };
+                compilerAllocator.InitializeInputVar(ref answer.Condition, conditionNode);
+                
+                outputList.Add(answer);
             }
             if(outputList.Length == 0)
             {
@@ -349,11 +472,22 @@ namespace Arena.Dialogue
             cmd.AnswersStartAddress = compilerAllocator.WriteConstantDataAndGetAddress(outputList.GetUnsafeReadOnlyPtr(), outputList.Length * answerSize);
         }
 
-        public SocketInfo CreateOutSocket()
+        public SocketInfo[] CreateOutSocket()
         {
             var socket = new DialogueAnswerOutputSocket();
+            socket.InternalID.Regenerate();
             AnswerOutputSockets.Add(socket);
-            return createSocketInfo(socket);
+            var conditionSocket = new DialogueAnswerConditionSocket();
+            conditionSocket.TargetSocketInternalID = socket.InternalID;
+            conditionSocket.Value = true;
+            AnswerConditionSockets.Add(conditionSocket);
+            lastLetterIndex++;
+            var label = $"{(char)lastLetterIndex}";
+            return new []
+            {
+                CreateAnswerSocketInfo(socket, label),
+                CreateConditionSocketInfo(conditionSocket, label)
+            };
         }
 
         public void RemoveOutSocket(Socket socket)

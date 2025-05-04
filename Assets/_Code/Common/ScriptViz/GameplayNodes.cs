@@ -138,7 +138,15 @@ namespace Arena.ScriptViz
             {
                 try
                 {
-                    return $"Скрыть '{Message.GetLocalizedString()}'";
+                    try
+                    {
+                        return $"Скрыть '{Message.GetLocalizedString()}'";
+                    }
+                    catch (Exception ex)
+                    {
+                        Debug.LogException(ex);
+                        return "Скрыть (ошибка)";    
+                    }
                 }
                 catch (Exception e)
                 {

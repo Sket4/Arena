@@ -64,7 +64,7 @@ struct Varyings
     float2 uv       : TEXCOORD0;
     #endif
 
-    #if defined(TG_FADING)
+    #ifdef TG_FADING
     half fade : TEXCOORD1;
     #endif
     
@@ -100,7 +100,7 @@ Varyings ShadowPassVertex(Attributes input)
     UNITY_SETUP_INSTANCE_ID(input);
     //UNITY_TRANSFER_INSTANCE_ID(input, output);
 
-    #if defined(TG_FADING)
+    #ifdef TG_FADING
     float4 instanceData = tg_InstanceData;
     output.fade = instanceData.w;
     #endif

@@ -10,11 +10,13 @@ struct appdata
     float3 normal : NORMAL;
     float4 tangent : TANGENT;
     float2 uv : TEXCOORD0;
-    
-    uint4 BoneIndices : BLENDINDICES;
 
+    #ifdef TG_SKINNING
+    uint4 BoneIndices : BLENDINDICES;
+ 
     #if defined _BONECOUNT_FOUR
     half4 BoneWeights : BLENDWEIGHTS;
+    #endif
     #endif
     UNITY_VERTEX_INPUT_INSTANCE_ID
 };
@@ -53,7 +55,7 @@ struct v2f
 #endif
 
 sampler2D _BaseMap;
-#if defined TG_FADING
+#ifdef TG_FADING
 sampler2D _FadeMap;
 #endif
 sampler2D _BumpMap;
@@ -70,10 +72,12 @@ v2f vert (appdata v)
     float4 tangentOS = v.tangent;
 
     // skinning
+    #ifdef TG_SKINNING 
     #if defined _BONECOUNT_FOUR
     ComputeSkinning(v.BoneIndices, v.BoneWeights, 4, positionOS, normalOS, tangentOS.xyz);
     #else
     ComputeSkinning_OneBone(v.BoneIndices.x, positionOS, normalOS, tangentOS.xyz);
+    #endif
     #endif
 
     float3 positionWS = TransformObjectToWorld(positionOS);

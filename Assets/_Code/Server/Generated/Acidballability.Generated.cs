@@ -66,10 +66,6 @@ namespace TzarGames.GameCore.Abilities.Generated
 		[ReadOnly] public ComponentTypeHandle<TzarGames.GameCore.Abilities.SetOwnerAsTargetAbilityData> SetOwnerAsTargetAbilityDataType;
 		[NativeDisableContainerSafetyRestriction]
 		[ReadOnly] public BufferTypeHandle<TzarGames.GameCore.Abilities.HitQueryAbilityAction> HitQueryAbilityActionType;
-		[NativeDisableContainerSafetyRestriction]
-		public BufferTypeHandle<TzarGames.GameCore.EntityInstance> EntityInstanceType;
-		[NativeDisableContainerSafetyRestriction]
-		[ReadOnly] public BufferTypeHandle<TzarGames.GameCore.Abilities.Networking.SetPredictionDataAbilityAction> SetPredictionDataAbilityActionType;
 
 		public TzarGames.GameCore.Abilities.AbilityCooldownJob _AbilityCooldownJob;
 		public TzarGames.GameCore.Abilities.AttackHeightJob _AttackHeightJob;
@@ -82,7 +78,6 @@ namespace TzarGames.GameCore.Abilities.Generated
 		public TzarGames.GameCore.Abilities.SetTargetAbilityJob _SetTargetAbilityJob;
 		public TzarGames.GameCore.Abilities.AbilityCylinderHitActionJob _AbilityCylinderHitActionJob;
 		public TzarGames.GameCore.Abilities.TimerEventAbilityComponentJob _TimerEventAbilityComponentJob;
-		public TzarGames.GameCore.Abilities.Networking.SetPredictionDataAbilityActionJob _SetPredictionDataAbilityActionJob;
 		public TzarGames.GameCore.Abilities.ScriptVizAbilityJob _ScriptVizAbilityJob;
 
 
@@ -121,8 +116,6 @@ namespace TzarGames.GameCore.Abilities.Generated
 			var ModifyOwnerCharacteristicsArray = chunk.GetNativeArray(ref ModifyOwnerCharacteristicsType);
 			var SetOwnerAsTargetAbilityDataArray = chunk.GetNativeArray(ref SetOwnerAsTargetAbilityDataType);
 			var HitQueryAbilityActionAccessor = chunk.GetBufferAccessor(ref HitQueryAbilityActionType);
-			var EntityInstanceAccessor = chunk.GetBufferAccessor(ref EntityInstanceType);
-			var SetPredictionDataAbilityActionAccessor = chunk.GetBufferAccessor(ref SetPredictionDataAbilityActionType);
 
 			var entityCount = chunk.Count;
 
@@ -254,22 +247,16 @@ namespace TzarGames.GameCore.Abilities.Generated
 
 				var _CopyOwnerTransformToAbilityOnUpdate = CopyOwnerTransformToAbilityOnUpdateArray[c];
 				var _HitQueryAbilityActionBuffer = HitQueryAbilityActionAccessor[c];
-				var _EntityInstanceBuffer = EntityInstanceAccessor[c];
-				var _SetPredictionDataAbilityActionBuffer = SetPredictionDataAbilityActionAccessor[c];
 
 				var callWrapper = new ActionCallWrapper();
 				callWrapper.Init();
 				callWrapper._AbilityCylinderHitActionJob = _AbilityCylinderHitActionJob;
-				callWrapper._SetPredictionDataAbilityActionJob = _SetPredictionDataAbilityActionJob;
 				callWrapper.unfilteredChunkIndex = unfilteredChunkIndex;
 				callWrapper._AbilityOwner = _AbilityOwner;
 				callWrapper._HitQueryAbilityActionBuffer = _HitQueryAbilityActionBuffer;
 				callWrapper._LocalTransformRef = _LocalTransformRef;
 				callWrapper.abilityInterface = abilityInterface;
 				callWrapper.Commands = Commands;
-				callWrapper._EntityInstanceBuffer = _EntityInstanceBuffer;
-				callWrapper.abilityEntity = abilityEntity;
-				callWrapper._SetPredictionDataAbilityActionBuffer = _SetPredictionDataAbilityActionBuffer;
 				ref var actionCaller = ref Unity.Collections.LowLevel.Unsafe.UnsafeUtility.As<ActionCallWrapper, ActionCaller>(ref callWrapper);
 
 				if(_AbilityState.Value == AbilityStates.Running)
@@ -310,7 +297,6 @@ namespace TzarGames.GameCore.Abilities.Generated
 			public static readonly SharedStatic<FunctionPointer<ActionCaller.ActionCallDelegate>> ExecFunction = SharedStatic<FunctionPointer<ActionCaller.ActionCallDelegate>>.GetOrCreate<ActionCaller, ActionCallWrapper>();
 
 			public TzarGames.GameCore.Abilities.AbilityCylinderHitActionJob _AbilityCylinderHitActionJob;
-			public TzarGames.GameCore.Abilities.Networking.SetPredictionDataAbilityActionJob _SetPredictionDataAbilityActionJob;
 
 			public int unfilteredChunkIndex;
 			public TzarGames.GameCore.Abilities.AbilityOwner _AbilityOwner;
@@ -318,9 +304,6 @@ namespace TzarGames.GameCore.Abilities.Generated
 			public RefRW<Unity.Transforms.LocalTransform> _LocalTransformRef;
 			public AbilityInterface abilityInterface;
 			public EntityCommandBuffer.ParallelWriter Commands;
-			public DynamicBuffer<TzarGames.GameCore.EntityInstance> _EntityInstanceBuffer;
-			public Entity abilityEntity;
-			public DynamicBuffer<TzarGames.GameCore.Abilities.Networking.SetPredictionDataAbilityAction> _SetPredictionDataAbilityActionBuffer;
 			public void Init()
 			{
 				Caller = new ActionCaller(ExecFunction.Data);
@@ -335,14 +318,6 @@ namespace TzarGames.GameCore.Abilities.Generated
 					if(_HitQueryAbilityAction.CallerId == callerId && _HitQueryAbilityAction.ActionId == actionId)
 					{
 						caller._AbilityCylinderHitActionJob.Execute(caller.unfilteredChunkIndex, in caller._AbilityOwner, _HitQueryAbilityAction, in caller._LocalTransformRef.ValueRW, caller.abilityInterface, in caller.Commands);
-						break;
-					}
-				}
-				foreach(var _SetPredictionDataAbilityAction in caller._SetPredictionDataAbilityActionBuffer)
-				{
-					if(_SetPredictionDataAbilityAction.CallerId == callerId && _SetPredictionDataAbilityAction.ActionId == actionId)
-					{
-						caller._SetPredictionDataAbilityActionJob.Execute(caller.unfilteredChunkIndex, ref caller._EntityInstanceBuffer, in caller._AbilityOwner, caller.abilityEntity, in _SetPredictionDataAbilityAction, in caller.Commands);
 						break;
 					}
 				}
@@ -407,8 +382,6 @@ namespace TzarGames.GameCore.Abilities.Generated
 					ComponentType.ReadWrite<TzarGames.GameCore.Abilities.ModifyOwnerCharacteristics>(),
 					ComponentType.ReadOnly<TzarGames.GameCore.Abilities.SetOwnerAsTargetAbilityData>(),
 					ComponentType.ReadOnly<TzarGames.GameCore.Abilities.HitQueryAbilityAction>(),
-					ComponentType.ReadWrite<TzarGames.GameCore.EntityInstance>(),
-					ComponentType.ReadOnly<TzarGames.GameCore.Abilities.Networking.SetPredictionDataAbilityAction>(),
 				}
 			};
 			query = state.GetEntityQuery(entityQueryDesc);
@@ -456,8 +429,6 @@ namespace TzarGames.GameCore.Abilities.Generated
 			job.ModifyOwnerCharacteristicsType = state.GetComponentTypeHandle<TzarGames.GameCore.Abilities.ModifyOwnerCharacteristics>();
 			job.SetOwnerAsTargetAbilityDataType = state.GetComponentTypeHandle<TzarGames.GameCore.Abilities.SetOwnerAsTargetAbilityData>(true);
 			job.HitQueryAbilityActionType = state.GetBufferTypeHandle<TzarGames.GameCore.Abilities.HitQueryAbilityAction>(true);
-			job.EntityInstanceType = state.GetBufferTypeHandle<TzarGames.GameCore.EntityInstance>();
-			job.SetPredictionDataAbilityActionType = state.GetBufferTypeHandle<TzarGames.GameCore.Abilities.Networking.SetPredictionDataAbilityAction>(true);
 
 			var ComponentLookupAttackVerticalOffset = state.GetComponentLookup<TzarGames.GameCore.AttackVerticalOffset>(true);
 			var ComponentLookupDamage = state.GetComponentLookup<TzarGames.GameCore.Damage>(true);
@@ -478,8 +449,6 @@ namespace TzarGames.GameCore.Abilities.Generated
 			var ComponentTypeHandleCriticalDamageMultiplier = state.GetComponentTypeHandle<TzarGames.GameCore.CriticalDamageMultiplier>(true);
 			var BufferTypeHandleEntityInstance = state.GetBufferTypeHandle<TzarGames.GameCore.EntityInstance>();
 			var ComponentTypeHandleWeaponSurface = state.GetComponentTypeHandle<TzarGames.GameCore.WeaponSurface>(true);
-			var ComponentLookupPlayerInputCommandIndex = state.GetComponentLookup<TzarGames.GameCore.PlayerInputCommandIndex>(true);
-			var ComponentLookupPlayerController = state.GetComponentLookup<TzarGames.GameCore.PlayerController>(true);
 			var BufferTypeHandleOnAbilityStartEventCommandData = state.GetBufferTypeHandle<TzarGames.GameCore.Abilities.OnAbilityStartEventCommandData>(true);
 			var BufferTypeHandleOnAbilityStopEventCommandData = state.GetBufferTypeHandle<TzarGames.GameCore.Abilities.OnAbilityStopEventCommandData>(true);
 			var BufferTypeHandleOnAbilityUpdateEventCommandData = state.GetBufferTypeHandle<TzarGames.GameCore.Abilities.OnAbilityUpdateEventCommandData>(true);
@@ -517,9 +486,6 @@ namespace TzarGames.GameCore.Abilities.Generated
 			job._AbilityCylinderHitActionJob.Targets = ComponentLookupTarget;
 			job._AbilityCylinderHitActionJob.SurfaceType = ComponentTypeHandleWeaponSurface;
 
-
-			job._SetPredictionDataAbilityActionJob.CommandIndexes = ComponentLookupPlayerInputCommandIndex;
-			job._SetPredictionDataAbilityActionJob.PlayerControllers = ComponentLookupPlayerController;
 
 			job._ScriptVizAbilityJob.StartEventType = BufferTypeHandleOnAbilityStartEventCommandData;
 			job._ScriptVizAbilityJob.StopEventType = BufferTypeHandleOnAbilityStopEventCommandData;
@@ -563,8 +529,6 @@ namespace TzarGames.GameCore.Abilities.Generated
 			job.ModifyOwnerCharacteristicsType.Update(ref state);
 			job.SetOwnerAsTargetAbilityDataType.Update(ref state);
 			job.HitQueryAbilityActionType.Update(ref state);
-			job.EntityInstanceType.Update(ref state);
-			job.SetPredictionDataAbilityActionType.Update(ref state);
 
 
 
@@ -598,9 +562,6 @@ namespace TzarGames.GameCore.Abilities.Generated
 			job._AbilityCylinderHitActionJob.Targets.Update(ref state);
 			job._AbilityCylinderHitActionJob.SurfaceType.Update(ref state);
 
-
-			job._SetPredictionDataAbilityActionJob.CommandIndexes.Update(ref state);
-			job._SetPredictionDataAbilityActionJob.PlayerControllers.Update(ref state);
 
 			job._ScriptVizAbilityJob.StartEventType.Update(ref state);
 			job._ScriptVizAbilityJob.StopEventType.Update(ref state);

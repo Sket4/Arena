@@ -43,6 +43,9 @@ Shader "Hidden/Arena/ShadowCaster-Skinned"
             #pragma target 4.5
             #pragma exclude_renderers gles
             #pragma multi_compile _ DOTS_INSTANCING_ON
+            #pragma shader_feature_local _ TG_FADING
+            #pragma shader_feature_local TG_USE_ALPHACLIP
+            #pragma shader_feature_local_vertex TG_SKINNING
             
             // Shader Stages
             #pragma vertex ShadowPassVertex

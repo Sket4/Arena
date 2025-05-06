@@ -3,6 +3,7 @@ Shader"Arena/Character"
     Properties
     {
         [Toggle(TG_USE_ALPHACLIP)] _AlphaClip("Use alpha clipping", float) = 0.0
+        [Toggle(TG_SKINNING)] _UseSkinning("Use skinning", float) = 1.0
         _Cutoff("Alpha Cutoff", Range(0.0, 1.0)) = 0.5
         [Enum(UnityEngine.Rendering.CullMode)] _Cull("Cull", int) = 2
         
@@ -61,14 +62,13 @@ Shader"Arena/Character"
             #pragma multi_compile_fog
             #pragma multi_compile _ DOTS_INSTANCING_ON
 
-            #pragma shader_feature TG_USE_ALPHACLIP
+            #pragma shader_feature_local TG_USE_ALPHACLIP
             #pragma shader_feature_local __ ARENA_SKIN_COLOR
 
             #pragma multi_compile UG_QUALITY_LOW UG_QUALITY_MED UG_QUALITY_HIGH
             #pragma multi_compile _BONECOUNT_ONE _BONECOUNT_FOUR
-            #pragma multi_compile_fragment _ TG_FADING
-
-            #define TG_SKINNING
+            #pragma shader_feature_local _ TG_FADING
+            #pragma shader_feature_local_vertex _ TG_SKINNING
 
 
             #if defined(UG_QUALITY_MED) || defined(UG_QUALITY_HIGH)

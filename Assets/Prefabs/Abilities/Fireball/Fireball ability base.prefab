@@ -62,9 +62,6 @@ PrefabInstance:
       addedObject: {fileID: 8247846670625359659}
     - targetCorrespondingSourceObject: {fileID: 5485270017481130691, guid: 6d97be5c7877f7d43adb4a2de89bce46, type: 3}
       insertIndex: -1
-      addedObject: {fileID: 8444099729534047302}
-    - targetCorrespondingSourceObject: {fileID: 5485270017481130691, guid: 6d97be5c7877f7d43adb4a2de89bce46, type: 3}
-      insertIndex: -1
       addedObject: {fileID: 6415996901866249509}
     - targetCorrespondingSourceObject: {fileID: 5485270017481130691, guid: 6d97be5c7877f7d43adb4a2de89bce46, type: 3}
       insertIndex: -1
@@ -138,26 +135,6 @@ MonoBehaviour:
     ConversionOptions: -1
     Actions:
     - {fileID: 9069375274351016745}
-    - {fileID: 8444099729534047302}
---- !u!114 &8444099729534047302
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 123360374479650823}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 0ed51d513c53d1e448e2d48624341d69, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  ConversionTargetOptions: -1
-  id: 7f05b42f-eff2-4015-a10f-5b132ff2dce2
-  Data:
-    ClearEntityInstanceArray: 1
-    UnparentPredictedEntityOnSync: 1
-    callerId: 0
-    actionId: 0
 --- !u!114 &6415996901866249509
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -435,6 +412,10 @@ MonoBehaviour:
           pages: []
           states: []
           variables: []
+        - id: 5ddd7db5c356c4fee8ed859f307b2d35
+          pages: []
+          states: []
+          variables: []
         Name: 
     - rid: 1281248210854871048
       type: {class: DynamicArrayVariable, ns: TzarGames.GameCore.ScriptViz.Graph, asm: TzarGames.GameCore}
@@ -459,7 +440,7 @@ MonoBehaviour:
               y: 1200670962
               z: 3246258840
               w: 4199513689
-        Position: {x: 507.3333, y: 730}
+        Position: {x: 507, y: 730}
         output:
           ID:
             Value:
@@ -525,7 +506,7 @@ MonoBehaviour:
               y: 1212783480
               z: 1885327768
               w: 3320721048
-        Position: {x: 766, y: 707.3333}
+        Position: {x: 766, y: 707}
         input:
           ID:
             Value:
@@ -694,7 +675,7 @@ MonoBehaviour:
           Loop: 0
           SpatializeBlend: 1
           BypassEffects: 0
-          SetMinDistance: 1
+          SetMinDistance: 0
           MinDistance: 5
           SetMaxDistance: 1
           MaxDistance: 30

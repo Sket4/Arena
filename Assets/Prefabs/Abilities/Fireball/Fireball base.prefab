@@ -4839,6 +4839,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 3731744431198949141}
+  - component: {fileID: 4567682178813194657}
   - component: {fileID: -8407282018324118001}
   - component: {fileID: -3233657693020057855}
   - component: {fileID: 3922649395218390902}
@@ -4879,6 +4880,21 @@ Transform:
   - {fileID: 3754268364737239329}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &4567682178813194657
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3493419779460319259}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b747ecf76e2cbd04a974e227de33f55e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ConversionTargetOptions: -1
+  ManualMode: 0
+  ID: {fileID: 0}
 --- !u!114 &-8407282018324118001
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -5155,6 +5171,70 @@ MonoBehaviour:
   references:
     version: 2
     RefIds:
+    - rid: 986275275307745321
+      type: {class: GetEntityVarCommandNode, ns: TzarGames.GameCore.ScriptViz.Graph, asm: TzarGames.GameCore}
+      data:
+        ID:
+          Value:
+            Value:
+              x: 3238840843
+              y: 2369889923
+              z: 3026326672
+              w: 1117642630
+        Position: {x: 1486, y: 377}
+        input:
+          ID:
+            Value:
+              Value:
+                x: 626759970
+                y: 3611661183
+                z: 1889791401
+                w: 1516447370
+          ConnectedSocketIDs:
+          - Value:
+              Value:
+                x: 4041406918
+                y: 4266050529
+                z: 1061924246
+                w: 954933450
+        output:
+          ID:
+            Value:
+              Value:
+                x: 2583373811
+                y: 256198723
+                z: 3271277744
+                w: 1819720195
+          ConnectedSocketIDs:
+          - Value:
+              Value:
+                x: 970167230
+                y: 3410643559
+                z: 1961382815
+                w: 1596049054
+        getVariableId:
+          Value:
+            Value:
+              x: 355596181
+              y: 1217995513
+              z: 3636935067
+              w: 2733692810
+        WriteOutput:
+          ID:
+            Value:
+              Value:
+                x: 1399043276
+                y: 1313799108
+                z: 1282541498
+                w: 917254031
+          ConnectedSocketIDs:
+          - Value:
+              Value:
+                x: 1341022052
+                y: 390592220
+                z: 649542052
+                w: 551272484
+          AuthoringValue: {fileID: 0}
     - rid: 3663727143102709788
       type: {class: ScriptVizGraph, ns: TzarGames.GameCore.ScriptViz.Graph, asm: TzarGames.GameCore}
       data:
@@ -5186,7 +5266,7 @@ MonoBehaviour:
             - rid: 3663727143102709810
             - rid: 3663727148787040262
             - rid: 3663727148787040263
-            - rid: 5431782183231553701
+            - rid: 986275275307745321
           states: []
           variables:
           - rid: 3663727143102709805
@@ -5219,7 +5299,7 @@ MonoBehaviour:
               y: 1464006063
               z: 2695912096
               w: 2177672679
-        Position: {x: 710, y: 421.33334}
+        Position: {x: 710, y: 421}
         output:
           ID:
             Value:
@@ -5311,7 +5391,7 @@ MonoBehaviour:
               y: 2202500533
               z: 1908979624
               w: 3801458920
-        Position: {x: 900, y: 421.33334}
+        Position: {x: 900, y: 421}
         input:
           ID:
             Value:
@@ -5375,7 +5455,7 @@ MonoBehaviour:
               y: 574940536
               z: 319692433
               w: 2976552076
-        Position: {x: 1036.6666, y: 421.33334}
+        Position: {x: 1037, y: 421}
         InputSocket:
           ID:
             Value:
@@ -5441,7 +5521,7 @@ MonoBehaviour:
               y: 3125245932
               z: 643189901
               w: 815565192
-        Position: {x: 1208.6666, y: 421.33334}
+        Position: {x: 1209, y: 421}
         input:
           ID:
             Value:
@@ -5468,10 +5548,10 @@ MonoBehaviour:
           ConnectedSocketIDs:
           - Value:
               Value:
-                x: 55531943
-                y: 1325518879
-                z: 1900140706
-                w: 3238289191
+                x: 626759970
+                y: 3611661183
+                z: 1889791401
+                w: 1516447370
         setVariableId:
           Value:
             Value:
@@ -5499,7 +5579,7 @@ MonoBehaviour:
               y: 2320361784
               z: 4029382559
               w: 446642651
-        Position: {x: 1812.6666, y: 427.33334}
+        Position: {x: 1813, y: 427}
         input:
           ID:
             Value:
@@ -5511,10 +5591,10 @@ MonoBehaviour:
           ConnectedSocketIDs:
           - Value:
               Value:
-                x: 622929511
-                y: 1088295206
-                z: 1144237498
-                w: 3721323083
+                x: 2583373811
+                y: 256198723
+                z: 3271277744
+                w: 1819720195
         output:
           ID:
             Value:
@@ -5541,10 +5621,10 @@ MonoBehaviour:
           ConnectedSocketIDs:
           - Value:
               Value:
-                x: 3702118643
-                y: 1223414750
-                z: 1172581534
-                w: 1111602991
+                x: 1399043276
+                y: 1313799108
+                z: 1282541498
+                w: 917254031
           AuthoringValue: {fileID: 3909827272973002611, guid: 79ec36b46f0b144578220dc7cb6e09b0, type: 3}
         ParentInputSocket:
           ID:
@@ -5612,7 +5692,7 @@ MonoBehaviour:
               y: 3376538582
               z: 310130838
               w: 1344249713
-        Position: {x: 2404.6667, y: 427.33334}
+        Position: {x: 2405, y: 427}
         input:
           ID:
             Value:
@@ -5663,7 +5743,7 @@ MonoBehaviour:
               y: 2285935494
               z: 4146645398
               w: 2479644939
-        Position: {x: 2244.6667, y: 427.33334}
+        Position: {x: 2245, y: 427}
         input:
           ID:
             Value:
@@ -5723,68 +5803,4 @@ MonoBehaviour:
         Name: explosion prefab
         NetSyncEnabled: 0
         IsHidden: 0
-        Value: {fileID: 0}
-    - rid: 5431782183231553701
-      type: {class: GetEntityVarCommandNode, ns: TzarGames.GameCore.ScriptViz.Graph, asm: TzarGames.GameCore}
-      data:
-        ID:
-          Value:
-            Value:
-              x: 3789874338
-              y: 1315721796
-              z: 2745901492
-              w: 2860314428
-        Position: {x: 1439.3334, y: 427.33334}
-        input:
-          ID:
-            Value:
-              Value:
-                x: 55531943
-                y: 1325518879
-                z: 1900140706
-                w: 3238289191
-          ConnectedSocketIDs:
-          - Value:
-              Value:
-                x: 4041406918
-                y: 4266050529
-                z: 1061924246
-                w: 954933450
-        output:
-          ID:
-            Value:
-              Value:
-                x: 622929511
-                y: 1088295206
-                z: 1144237498
-                w: 3721323083
-          ConnectedSocketIDs:
-          - Value:
-              Value:
-                x: 970167230
-                y: 3410643559
-                z: 1961382815
-                w: 1596049054
-        getVariableId:
-          Value:
-            Value:
-              x: 355596181
-              y: 1217995513
-              z: 3636935067
-              w: 2733692810
-        WriteOutput:
-          ID:
-            Value:
-              Value:
-                x: 3702118643
-                y: 1223414750
-                z: 1172581534
-                w: 1111602991
-          ConnectedSocketIDs:
-          - Value:
-              Value:
-                x: 1341022052
-                y: 390592220
-                z: 649542052
-                w: 551272484
-          AuthoringValue: {fileID: 0}
+        Value: {fileID: 7677878632377691574, guid: b74eed39609234d5b85e55eac45f22ea, type: 3}

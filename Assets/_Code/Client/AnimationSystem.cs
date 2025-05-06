@@ -142,11 +142,11 @@ namespace Arena.Client
 
                     float transitionDuration = 0.3f;
 
-                    if (livingState.IsAlive == false)
-                    {
-                        animation.PendingAnimationID = AnimationID.Invalid;
-                        animation.CurrentAnimationID = AnimationID.Invalid;
-                    }
+                    // if (livingState.IsAlive == false)
+                    // {
+                    //     animation.PendingAnimationID = AnimationID.Invalid;
+                    //     animation.CurrentAnimationID = AnimationID.Invalid;
+                    // }
 
                     bool resetCurrentAnimation = false;
 
@@ -225,65 +225,67 @@ namespace Arena.Client
                         }
                     }
 
-                    if (velocity.CachedMagnitude > 0.01f)
+                    if (livingState.IsAlive)
                     {
-                        int animID;
-                        float defaultAnimSpeed;
-
-                        if(velocity.CachedMagnitude <= animation.MaxWalkingVelocity
-                           && SimpleAnimation.GetClipIndexByID(clipIdToIndexBuffer, WalkingAnimationID) >= 0)
+                        if (velocity.CachedMagnitude > 0.01f)
                         {
-                            animID = WalkingAnimationID;
-                            defaultAnimSpeed = animation.MaxWalkingVelocity;
+                            int animID;
+                            float defaultAnimSpeed;
+
+                            if(velocity.CachedMagnitude <= animation.MaxWalkingVelocity
+                               && SimpleAnimation.GetClipIndexByID(clipIdToIndexBuffer, WalkingAnimationID) >= 0)
+                            {
+                                animID = WalkingAnimationID;
+                                defaultAnimSpeed = animation.MaxWalkingVelocity;
+                            }
+                            else
+                            {
+                                animID = RunningAnimationID;
+                                defaultAnimSpeed = animation.DefaultRunningVelocity;
+                            }
+
+                            if (defaultAnimSpeed <= 0)
+                            {
+                                defaultAnimSpeed = 1;
+                            }
+                            
+                            var animIndex = SimpleAnimation.GetClipIndexByID(clipIdToIndexBuffer, animID);
+
+                            if (animIndex != AnimationID.Invalid)
+                            {
+                                var speed = velocity.CachedMagnitude / defaultAnimSpeed;
+                                speed = math.max(speed, 0.1f);
+
+                                //if(animator.ToClipIndex !- animIndex)
+                                //{
+                                //Debug.Log($"Transiting to run, fromspd {animator.FromClipSpeed} tospd {animator.ToClipSpeed}, nextspd {speed}");
+                                //}
+
+                                animator.TransitionTo(animIndex, transitionDuration, speed, ref animBuffer, false);
+                                animator.ToClipSpeed = speed;    
+                            }
+                            else
+                            {
+                                Debug.LogError($"Failed to find animation with id {RunningAnimationID} in entity {animation.AnimatorEntity.Index}");
+                            }
                         }
                         else
                         {
-                            animID = RunningAnimationID;
-                            defaultAnimSpeed = animation.DefaultRunningVelocity;
-                        }
-
-                        if (defaultAnimSpeed <= 0)
-                        {
-                            defaultAnimSpeed = 1;
-                        }
-                        
-                        var animIndex = SimpleAnimation.GetClipIndexByID(clipIdToIndexBuffer, animID);
-
-                        if (animIndex != AnimationID.Invalid)
-                        {
-                            var speed = velocity.CachedMagnitude / defaultAnimSpeed;
-                            speed = math.max(speed, 0.1f);
-
-                            //if(animator.ToClipIndex !- animIndex)
-                            //{
-                            //Debug.Log($"Transiting to run, fromspd {animator.FromClipSpeed} tospd {animator.ToClipSpeed}, nextspd {speed}");
-                            //}
-
-                            animator.TransitionTo(animIndex, transitionDuration, speed, ref animBuffer, false);
-                            animator.ToClipSpeed = speed;    
-                        }
-                        else
-                        {
-                            Debug.LogError($"Failed to find animation with id {RunningAnimationID} in entity {animation.AnimatorEntity.Index}");
+                            if (idleAnimIndex != -1)
+                            {
+                                //if(animator.ToClipIndex != idleAnimIndex)
+                                //{
+                                //Debug.Log($"Transiting to idle, fromspd {animator.FromClipSpeed} tospd {animator.ToClipSpeed}, nextspd {1.0f}");
+                                //}
+                                animator.TransitionTo(idleAnimIndex, transitionDuration, 1.0f, ref animBuffer, false);
+                                animator.ToClipSpeed = 1.0f;
+                            }
+                            else
+                            {
+                                Debug.LogError($"Failed to find animation with id {IdleAnimationID} in entity {animation.AnimatorEntity.Index}");
+                            }
                         }
                     }
-                    else
-                    {
-                        if (idleAnimIndex != -1)
-                        {
-                            //if(animator.ToClipIndex != idleAnimIndex)
-                            //{
-                            //Debug.Log($"Transiting to idle, fromspd {animator.FromClipSpeed} tospd {animator.ToClipSpeed}, nextspd {1.0f}");
-                            //}
-                            animator.TransitionTo(idleAnimIndex, transitionDuration, 1.0f, ref animBuffer, false);
-                            animator.ToClipSpeed = 1.0f;
-                        }
-                        else
-                        {
-                            Debug.LogError($"Failed to find animation with id {IdleAnimationID} in entity {animation.AnimatorEntity.Index}");
-                        }
-                    }
-
                     SystemAPI.SetComponent(animation.AnimatorEntity, animator);
 
                 }).Run();

@@ -465,6 +465,7 @@ namespace TzarGames.GameCore.Abilities.Generated
 			var BufferLookupSpeedModificator = state.GetBufferLookup<TzarGames.GameCore.SpeedModificator>(true);
 			var ComponentLookupLocalToWorld = state.GetComponentLookup<Unity.Transforms.LocalToWorld>(true);
 			var ComponentLookupHeight = state.GetComponentLookup<TzarGames.GameCore.Height>(true);
+			var ComponentLookupVelocity = state.GetComponentLookup<TzarGames.GameCore.Velocity>(true);
 			var ComponentLookupTarget = state.GetComponentLookup<TzarGames.GameCore.Target>(true);
 			var ComponentTypeHandleAngle = state.GetComponentTypeHandle<TzarGames.GameCore.Angle>(true);
 			var ComponentTypeHandleLocalTransform = state.GetComponentTypeHandle<Unity.Transforms.LocalTransform>(true);
@@ -499,6 +500,7 @@ namespace TzarGames.GameCore.Abilities.Generated
 
 			job._RotateToTargetAbilityComponentJob.L2WLookup = ComponentLookupLocalToWorld;
 			job._RotateToTargetAbilityComponentJob.HeightLookup = ComponentLookupHeight;
+			job._RotateToTargetAbilityComponentJob.VelocityLookup = ComponentLookupVelocity;
 
 			job._SetTargetAbilityJob.TargetFromEntity = ComponentLookupTarget;
 
@@ -579,6 +581,7 @@ namespace TzarGames.GameCore.Abilities.Generated
 
 			job._RotateToTargetAbilityComponentJob.L2WLookup.Update(ref state);
 			job._RotateToTargetAbilityComponentJob.HeightLookup.Update(ref state);
+			job._RotateToTargetAbilityComponentJob.VelocityLookup.Update(ref state);
 
 			job._SetTargetAbilityJob.TargetFromEntity.Update(ref state);
 

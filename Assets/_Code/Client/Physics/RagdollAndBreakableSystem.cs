@@ -124,7 +124,7 @@ namespace Arena.Client.Physics
 
                     if (ragdollBones.HasBuffer(characterAnimation.AnimatorEntity) == false)
                     {
-                        Debug.Log($"Animator entity {characterAnimation.AnimatorEntity} does not have ragdoll component");
+                        //Debug.Log($"Animator entity {characterAnimation.AnimatorEntity} does not have ragdoll component");
                         return;
                     }
 

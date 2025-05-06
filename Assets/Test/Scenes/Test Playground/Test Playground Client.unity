@@ -122,265 +122,6 @@ NavMeshSettings:
     debug:
       m_Flags: 0
   m_NavMeshData: {fileID: 0}
---- !u!1 &33868699
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 33868701}
-  - component: {fileID: 33868700}
-  m_Layer: 0
-  m_Name: Mage anim
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!114 &33868700
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 33868699}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 25d87a6b957a60841942c7e71e0c252f, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  ConversionTargetOptions: -1
-  Graph:
-    rid: 4396341541238997021
-  references:
-    version: 2
-    RefIds:
-    - rid: 4396341541238997021
-      type: {class: ScriptVizGraph, ns: TzarGames.GameCore.ScriptViz.Graph, asm: TzarGames.GameCore}
-      data:
-        pages: []
-        states: []
-        layers:
-        - id: scene
-          pages:
-          - ID:
-              Value:
-                Value:
-                  x: 1030108965
-                  y: 1217233255
-                  z: 774867388
-                  w: 2091073992
-            Name: 
-            ConversionTargetOptions: 7
-            variables:
-            - rid: 4396341541238997028
-            nodes:
-            - rid: 4396341541238997022
-            - rid: 4396341541238997024
-            - rid: 4396341541238997029
-          states: []
-          variables:
-          - rid: 4396341541238997026
-        Name: Mage anim
-    - rid: 4396341541238997022
-      type: {class: StartEventNode, ns: TzarGames.GameCore.ScriptViz.Graph, asm: TzarGames.GameCore}
-      data:
-        ID:
-          Value:
-            Value:
-              x: 470386341
-              y: 1299023420
-              z: 1441640586
-              w: 3281789535
-        Position: {x: 511.3333, y: 456}
-        output:
-          ID:
-            Value:
-              Value:
-                x: 3097229175
-                y: 1104086862
-                z: 3894057902
-                w: 3545820876
-          ConnectedSocketIDs:
-          - Value:
-              Value:
-                x: 1787895092
-                y: 1146532017
-                z: 4201977478
-                w: 3841291587
-    - rid: 4396341541238997024
-      type: {class: PlayCharacterAnimationCommandNode, ns: Arena.Client.ScriptViz, asm: Arena.Client}
-      data:
-        ID:
-          Value:
-            Value:
-              x: 3726912918
-              y: 1160399725
-              z: 1815128753
-              w: 494115337
-        Position: {x: 655.3333, y: 486}
-        input:
-          ID:
-            Value:
-              Value:
-                x: 1787895092
-                y: 1146532017
-                z: 4201977478
-                w: 3841291587
-          ConnectedSocketIDs:
-          - Value:
-              Value:
-                x: 3097229175
-                y: 1104086862
-                z: 3894057902
-                w: 3545820876
-          - Value:
-              Value:
-                x: 2675095420
-                y: 1078029567
-                z: 2542034110
-                w: 1615877917
-        output:
-          ID:
-            Value:
-              Value:
-                x: 896103760
-                y: 1320222094
-                z: 296093084
-                w: 1560479648
-          ConnectedSocketIDs:
-          - Value:
-              Value:
-                x: 3491324348
-                y: 1171624624
-                z: 549588872
-                w: 1158900627
-        TargetAnimatorSocket:
-          ID:
-            Value:
-              Value:
-                x: 3253478392
-                y: 1306020119
-                z: 474421664
-                w: 3186264763
-          ConnectedSocketIDs: []
-          AuthoringValue: {fileID: 1016631315}
-        AnimationID: {fileID: 11400000, guid: 716d2f776794eea48b3636612d13a391, type: 2}
-        TransitionTimeSocket:
-          ID:
-            Value:
-              Value:
-                x: 985685572
-                y: 1251698647
-                z: 1073774724
-                w: 3902923298
-          ConnectedSocketIDs: []
-          Value: 0.2
-        DurationSocket:
-          ID:
-            Value:
-              Value:
-                x: 1060068741
-                y: 1206527906
-                z: 539510203
-                w: 3789307909
-          ConnectedSocketIDs: []
-          Value: 0
-    - rid: 4396341541238997026
-      type: {class: FloatVariable, ns: TzarGames.GameCore.ScriptViz.Graph, asm: TzarGames.GameCore}
-      data:
-        ID:
-          Value:
-            Value:
-              x: 1192637729
-              y: 1301024771
-              z: 434971800
-              w: 2486981128
-        Name: New variable
-        NetSyncEnabled: 0
-        IsHidden: 0
-        Value: 2
-    - rid: 4396341541238997028
-      type: {class: DynamicArrayVariable, ns: TzarGames.GameCore.ScriptViz.Graph, asm: TzarGames.GameCore}
-      data:
-        ID:
-          Value:
-            Value:
-              x: 245339753
-              y: 1319068715
-              z: 3654196887
-              w: 2439505996
-        Name: _delayed_commands
-        NetSyncEnabled: 0
-        IsHidden: 1
-    - rid: 4396341541238997029
-      type: {class: DelayCommandNode, ns: TzarGames.GameCore.ScriptViz.Graph, asm: TzarGames.GameCore}
-      data:
-        ID:
-          Value:
-            Value:
-              x: 3228784040
-              y: 1266642328
-              z: 3546552759
-              w: 2273500417
-        Position: {x: 987.3334, y: 520}
-        InputCommandSocket:
-          ID:
-            Value:
-              Value:
-                x: 3491324348
-                y: 1171624624
-                z: 549588872
-                w: 1158900627
-          ConnectedSocketIDs:
-          - Value:
-              Value:
-                x: 896103760
-                y: 1320222094
-                z: 296093084
-                w: 1560479648
-        DelaySocket:
-          ID:
-            Value:
-              Value:
-                x: 1709116482
-                y: 1127699632
-                z: 2390992257
-                w: 1775842236
-          ConnectedSocketIDs: []
-          Value: 3
-        NextCommandSocket:
-          ID:
-            Value:
-              Value:
-                x: 2675095420
-                y: 1078029567
-                z: 2542034110
-                w: 1615877917
-          ConnectedSocketIDs:
-          - Value:
-              Value:
-                x: 1787895092
-                y: 1146532017
-                z: 4201977478
-                w: 3841291587
---- !u!4 &33868701
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 33868699}
-  serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 7.0397506, y: -8.871267, z: -9.195594}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 0}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &37386100
 GameObject:
   m_ObjectHideFlags: 0
@@ -570,6 +311,67 @@ MonoBehaviour:
   ConversionTargetOptions: -1
   prefabStore: {fileID: 11400000, guid: d3e687d2446daa9409a80eb8bc965277, type: 2}
   addMainDatabaseTag: 1
+--- !u!1001 &351324793
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 461897898195485860, guid: 2c48b9a9b232bc34abc53cc2bc53b679, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: -13.602
+      objectReference: {fileID: 0}
+    - target: {fileID: 461897898195485860, guid: 2c48b9a9b232bc34abc53cc2bc53b679, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 461897898195485860, guid: 2c48b9a9b232bc34abc53cc2bc53b679, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 5.758
+      objectReference: {fileID: 0}
+    - target: {fileID: 461897898195485860, guid: 2c48b9a9b232bc34abc53cc2bc53b679, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 461897898195485860, guid: 2c48b9a9b232bc34abc53cc2bc53b679, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 461897898195485860, guid: 2c48b9a9b232bc34abc53cc2bc53b679, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 461897898195485860, guid: 2c48b9a9b232bc34abc53cc2bc53b679, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 461897898195485860, guid: 2c48b9a9b232bc34abc53cc2bc53b679, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 461897898195485860, guid: 2c48b9a9b232bc34abc53cc2bc53b679, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 461897898195485860, guid: 2c48b9a9b232bc34abc53cc2bc53b679, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5237166760477480476, guid: 2c48b9a9b232bc34abc53cc2bc53b679, type: 3}
+      propertyPath: m_Name
+      value: Worm from hole
+      objectReference: {fileID: 0}
+    - target: {fileID: 5237166760477480476, guid: 2c48b9a9b232bc34abc53cc2bc53b679, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: 2c48b9a9b232bc34abc53cc2bc53b679, type: 3}
 --- !u!1 &383236414
 GameObject:
   m_ObjectHideFlags: 0
@@ -2774,6 +2576,67 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1001 &437920800
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 461897898195485860, guid: 2c48b9a9b232bc34abc53cc2bc53b679, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: -13.602
+      objectReference: {fileID: 0}
+    - target: {fileID: 461897898195485860, guid: 2c48b9a9b232bc34abc53cc2bc53b679, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 461897898195485860, guid: 2c48b9a9b232bc34abc53cc2bc53b679, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0.43
+      objectReference: {fileID: 0}
+    - target: {fileID: 461897898195485860, guid: 2c48b9a9b232bc34abc53cc2bc53b679, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 461897898195485860, guid: 2c48b9a9b232bc34abc53cc2bc53b679, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 461897898195485860, guid: 2c48b9a9b232bc34abc53cc2bc53b679, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 461897898195485860, guid: 2c48b9a9b232bc34abc53cc2bc53b679, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 461897898195485860, guid: 2c48b9a9b232bc34abc53cc2bc53b679, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 461897898195485860, guid: 2c48b9a9b232bc34abc53cc2bc53b679, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 461897898195485860, guid: 2c48b9a9b232bc34abc53cc2bc53b679, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5237166760477480476, guid: 2c48b9a9b232bc34abc53cc2bc53b679, type: 3}
+      propertyPath: m_Name
+      value: Worm from hole
+      objectReference: {fileID: 0}
+    - target: {fileID: 5237166760477480476, guid: 2c48b9a9b232bc34abc53cc2bc53b679, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: 2c48b9a9b232bc34abc53cc2bc53b679, type: 3}
 --- !u!1 &463632825
 GameObject:
   m_ObjectHideFlags: 0
@@ -3114,6 +2977,10 @@ PrefabInstance:
     - target: {fileID: 9138325840751349751, guid: 79c37626debdf6c4ebfcfc0bd1a0095b, type: 3}
       propertyPath: m_Name
       value: Crab monster
+      objectReference: {fileID: 0}
+    - target: {fileID: 9138325840751349751, guid: 79c37626debdf6c4ebfcfc0bd1a0095b, type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -3850,11 +3717,6 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: efd21ab1963d79d4d8ba08ffb6421619, type: 3}
---- !u!1 &1016631315 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 9040673568443925372, guid: efd21ab1963d79d4d8ba08ffb6421619, type: 3}
-  m_PrefabInstance: {fileID: 1016631314}
-  m_PrefabAsset: {fileID: 0}
 --- !u!1 &1138507188
 GameObject:
   m_ObjectHideFlags: 0
@@ -4489,6 +4351,10 @@ PrefabInstance:
     - target: {fileID: 9138325840751349751, guid: 0c2cefb51f6f5a042a3bd570ece8edf6, type: 3}
       propertyPath: m_Name
       value: Clipper
+      objectReference: {fileID: 0}
+    - target: {fileID: 9138325840751349751, guid: 0c2cefb51f6f5a042a3bd570ece8edf6, type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -9963,7 +9829,8 @@ SceneRoots:
   - {fileID: 2036142967}
   - {fileID: 498630506}
   - {fileID: 1585195006}
-  - {fileID: 33868701}
+  - {fileID: 351324793}
+  - {fileID: 437920800}
   - {fileID: 1016631314}
   - {fileID: 1138507190}
   - {fileID: 386362691}

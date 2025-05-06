@@ -52,7 +52,8 @@ PrefabInstance:
       propertyPath: m_Name
       value: Fireball ability base
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    m_RemovedComponents:
+    - {fileID: 358552552092101191, guid: 6d97be5c7877f7d43adb4a2de89bce46, type: 3}
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
     m_AddedComponents:
@@ -104,6 +105,12 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 5485270017481130691, guid: 6d97be5c7877f7d43adb4a2de89bce46, type: 3}
       insertIndex: -1
       addedObject: {fileID: 2615022399293720854}
+    - targetCorrespondingSourceObject: {fileID: 5485270017481130691, guid: 6d97be5c7877f7d43adb4a2de89bce46, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: -6434083678990532794}
+    - targetCorrespondingSourceObject: {fileID: 5485270017481130691, guid: 6d97be5c7877f7d43adb4a2de89bce46, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 7546312561175781450}
   m_SourcePrefab: {fileID: 100100000, guid: 6d97be5c7877f7d43adb4a2de89bce46, type: 3}
 --- !u!1 &123360374479650823 stripped
 GameObject:
@@ -361,7 +368,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   ConversionTargetOptions: -1
   Value:
-    DefaultVerticalOffset: 0
+    DefaultVerticalOffset: 1
+    PositionPredictionDistance: 15
 --- !u!114 &2615022399293720854
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -375,3 +383,337 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   ConversionTargetOptions: -1
+--- !u!114 &-6434083678990532794
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 123360374479650823}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 25d87a6b957a60841942c7e71e0c252f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ConversionTargetOptions: -1
+  Graph:
+    rid: 1281248210854871040
+  references:
+    version: 2
+    RefIds:
+    - rid: 1281248210854871040
+      type: {class: ScriptVizGraph, ns: TzarGames.GameCore.ScriptViz.Graph, asm: TzarGames.GameCore}
+      data:
+        pages: []
+        states: []
+        layers:
+        - id: scene
+          pages: []
+          states: []
+          variables: []
+        - id: 0a8457be81a464e3c8b9f51f8e251fc8
+          pages:
+          - ID:
+              Value:
+                Value:
+                  x: 1362609412
+                  y: 1110254224
+                  z: 3932563073
+                  w: 1872844321
+            Name: CLIENT AND LOCAL
+            ConversionTargetOptions: 5
+            variables:
+            - rid: 1281248210854871048
+            - rid: 1281248210854871070
+            nodes:
+            - rid: 1281248210854871068
+            - rid: 1281248210854871071
+            - rid: 1281248210854871075
+          states: []
+          variables: []
+        - id: 6d97be5c7877f7d43adb4a2de89bce46
+          pages: []
+          states: []
+          variables: []
+        Name: 
+    - rid: 1281248210854871048
+      type: {class: DynamicArrayVariable, ns: TzarGames.GameCore.ScriptViz.Graph, asm: TzarGames.GameCore}
+      data:
+        ID:
+          Value:
+            Value:
+              x: 828434190
+              y: 1095578718
+              z: 3478631858
+              w: 109983469
+        Name: _delayed_commands
+        NetSyncEnabled: 0
+        IsHidden: 1
+    - rid: 1281248210854871068
+      type: {class: OnAbilityTimerEventEventNode, ns: TzarGames.GameCore.Abilities, asm: TzarGames.GameCore}
+      data:
+        ID:
+          Value:
+            Value:
+              x: 1356894814
+              y: 1200670962
+              z: 3246258840
+              w: 4199513689
+        Position: {x: 507.3333, y: 730}
+        output:
+          ID:
+            Value:
+              Value:
+                x: 3479714889
+                y: 1328252341
+                z: 3178517439
+                w: 4131201608
+          ConnectedSocketIDs:
+          - Value:
+              Value:
+                x: 1533795878
+                y: 1283046480
+                z: 48404918
+                w: 1625859118
+        AbilityOwnerSocket:
+          ID:
+            Value:
+              Value:
+                x: 2191697921
+                y: 1302688025
+                z: 2597447613
+                w: 1967278691
+          ConnectedSocketIDs:
+          - Value:
+              Value:
+                x: 3144723282
+                y: 1301248323
+                z: 2294453121
+                w: 550819449
+          AuthoringValue: {fileID: 0}
+        EventIdSocket:
+          ID:
+            Value:
+              Value:
+                x: 3258506233
+                y: 1113894785
+                z: 3202834345
+                w: 909333220
+          ConnectedSocketIDs: []
+          Value: 0
+    - rid: 1281248210854871070
+      type: {class: AudioClipVariable, ns: TzarGames.GameCore.ScriptViz, asm: TzarGames.GameCore.Client}
+      data:
+        ID:
+          Value:
+            Value:
+              x: 3340920672
+              y: 1334450859
+              z: 10586780
+              w: 917460676
+        Name: spell throw audio
+        NetSyncEnabled: 0
+        IsHidden: 0
+        AudioClip: {fileID: 8300000, guid: 2df49f6bb18bd3247bd788e26695f4ff, type: 3}
+    - rid: 1281248210854871071
+      type: {class: GetAudioClipReferenceVarCommandNode, ns: TzarGames.GameCore.ScriptViz, asm: TzarGames.GameCore.Client}
+      data:
+        ID:
+          Value:
+            Value:
+              x: 2365077855
+              y: 1212783480
+              z: 1885327768
+              w: 3320721048
+        Position: {x: 766, y: 707.3333}
+        input:
+          ID:
+            Value:
+              Value:
+                x: 1533795878
+                y: 1283046480
+                z: 48404918
+                w: 1625859118
+          ConnectedSocketIDs:
+          - Value:
+              Value:
+                x: 3479714889
+                y: 1328252341
+                z: 3178517439
+                w: 4131201608
+        output:
+          ID:
+            Value:
+              Value:
+                x: 741214444
+                y: 1241065024
+                z: 1564104579
+                w: 2546282492
+          ConnectedSocketIDs:
+          - Value:
+              Value:
+                x: 4124147365
+                y: 1155525808
+                z: 1776470437
+                w: 2761060307
+        getVariableId:
+          Value:
+            Value:
+              x: 3340920672
+              y: 1334450859
+              z: 10586780
+              w: 917460676
+        WriteOutput:
+          ID:
+            Value:
+              Value:
+                x: 1120896025
+                y: 1126845028
+                z: 534958224
+                w: 898254658
+          ConnectedSocketIDs:
+          - Value:
+              Value:
+                x: 1253604515
+                y: 1110058145
+                z: 402727333
+                w: 3653389688
+          Value:
+            Value:
+              Id:
+                GlobalId:
+                  SceneObjectIdentifier0: 0
+                  SceneObjectIdentifier1: 0
+                  AssetGUID:
+                    Value:
+                      x: 0
+                      y: 0
+                      z: 0
+                      w: 0
+                  IdentifierType: 0
+                GenerationType: 0
+    - rid: 1281248210854871075
+      type: {class: PlayAudioClipNode, ns: TzarGames.GameCore.ScriptViz, asm: TzarGames.GameCore.Client}
+      data:
+        ID:
+          Value:
+            Value:
+              x: 4129501850
+              y: 1165091646
+              z: 1822859435
+              w: 208058754
+        Position: {x: 1120, y: 752}
+        input:
+          ID:
+            Value:
+              Value:
+                x: 4124147365
+                y: 1155525808
+                z: 1776470437
+                w: 2761060307
+          ConnectedSocketIDs:
+          - Value:
+              Value:
+                x: 741214444
+                y: 1241065024
+                z: 1564104579
+                w: 2546282492
+        output:
+          ID:
+            Value:
+              Value:
+                x: 4038996559
+                y: 1142077102
+                z: 4231827641
+                w: 1104213306
+          ConnectedSocketIDs: []
+        Clip:
+          ID:
+            Value:
+              Value:
+                x: 1253604515
+                y: 1110058145
+                z: 402727333
+                w: 3653389688
+          ConnectedSocketIDs:
+          - Value:
+              Value:
+                x: 1120896025
+                y: 1126845028
+                z: 534958224
+                w: 898254658
+          Value:
+            Value:
+              Id:
+                GlobalId:
+                  SceneObjectIdentifier0: 0
+                  SceneObjectIdentifier1: 0
+                  AssetGUID:
+                    Value:
+                      x: 0
+                      y: 0
+                      z: 0
+                      w: 0
+                  IdentifierType: 0
+                GenerationType: 0
+        InstigatorSocket:
+          ID:
+            Value:
+              Value:
+                x: 3144723282
+                y: 1301248323
+                z: 2294453121
+                w: 550819449
+          ConnectedSocketIDs:
+          - Value:
+              Value:
+                x: 2191697921
+                y: 1302688025
+                z: 2597447613
+                w: 1967278691
+          AuthoringValue: {fileID: 0}
+        OutputAudioEventEntitySocket:
+          ID:
+            Value:
+              Value:
+                x: 4145178549
+                y: 1096793248
+                z: 932689062
+                w: 1784377709
+          ConnectedSocketIDs: []
+          AuthoringValue: {fileID: 0}
+        DisableAutoDestroy: 0
+        AttachToInstigator: 1
+        Settings:
+          RandomizeVolume: 1
+          MinVolume: 0.8
+          MaxVolume: 1
+          RandomizePitch: 1
+          MinPitch: 0.9
+          MaxPitch: 1.1
+          Loop: 0
+          SpatializeBlend: 1
+          BypassEffects: 0
+          SetMinDistance: 1
+          MinDistance: 5
+          SetMaxDistance: 1
+          MaxDistance: 30
+        AudioMixerGroup: {fileID: 24300002, guid: 64c795c25d71240459ab99e981490730, type: 2}
+--- !u!114 &7546312561175781450
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 123360374479650823}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3439dd5d9b543fc4cb478c08b7e35b94, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ConversionTargetOptions: -1
+  Value:
+    ModifySpeed: 1
+    SpeedModificator:
+      Value: 0
+      Operator: 2

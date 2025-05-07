@@ -5193,7 +5193,7 @@ MonoBehaviour:
               y: 1129028617
               z: 2686195335
               w: 3145201704
-        Name: New variable
+        Name: dead audio
         NetSyncEnabled: 0
         IsHidden: 0
         AudioClip: {fileID: 8300000, guid: 9366f2aa6c913254ab9817a2d9d5d14e, type: 3}
@@ -5491,6 +5491,171 @@ MonoBehaviour:
           AuthoringValue: {fileID: 5093342986377779604}
         Enable: 1
         AffectChilds: 1
+    - rid: 986275294506123288
+      type: {class: DeadEventNodeBase, ns: TzarGames.GameCore.ScriptViz.Commands, asm: TzarGames.GameCore}
+      data:
+        ID:
+          Value:
+            Value:
+              x: 811302035
+              y: 2924117639
+              z: 2537501569
+              w: 1100173749
+        Position: {x: 1410, y: 688}
+        output:
+          ID:
+            Value:
+              Value:
+                x: 3010126108
+                y: 3242681733
+                z: 563829634
+                w: 609287487
+          ConnectedSocketIDs:
+          - Value:
+              Value:
+                x: 178899208
+                y: 424389949
+                z: 2865842584
+                w: 4143243263
+    - rid: 986275294506123290
+      type: {class: MessageVariable, ns: TzarGames.GameCore.ScriptViz.Graph, asm: TzarGames.GameCore}
+      data:
+        ID:
+          Value:
+            Value:
+              x: 3234151468
+              y: 1917467394
+              z: 2428233607
+              w: 1976565923
+        Name: death message
+        NetSyncEnabled: 0
+        IsHidden: 0
+        Value: worm dead
+    - rid: 986275294506123291
+      type: {class: SendMessageCommandNode, ns: TzarGames.GameCore.ScriptViz.Graph, asm: TzarGames.GameCore}
+      data:
+        ID:
+          Value:
+            Value:
+              x: 207857294
+              y: 2168810037
+              z: 1978774166
+              w: 1488486649
+        Position: {x: 1758, y: 640}
+        input:
+          ID:
+            Value:
+              Value:
+                x: 4070643100
+                y: 2755896693
+                z: 2363887237
+                w: 2230169815
+          ConnectedSocketIDs:
+          - Value:
+              Value:
+                x: 3338437090
+                y: 2135252944
+                z: 1719193993
+                w: 857564986
+        output:
+          ID:
+            Value:
+              Value:
+                x: 2038690292
+                y: 1010982523
+                z: 2523211705
+                w: 4007637612
+          ConnectedSocketIDs: []
+        MessageSocket:
+          ID:
+            Value:
+              Value:
+                x: 4171492486
+                y: 877070788
+                z: 4097953165
+                w: 3448356216
+          ConnectedSocketIDs:
+          - Value:
+              Value:
+                x: 255396005
+                y: 2957669446
+                z: 2306557337
+                w: 3243491918
+          Value: 
+        OptionalTarget:
+          ID:
+            Value:
+              Value:
+                x: 3221096700
+                y: 2487482497
+                z: 1648777346
+                w: 1170917343
+          ConnectedSocketIDs: []
+          AuthoringValue: {fileID: 0}
+    - rid: 986275294506123292
+      type: {class: GetMessageVariableCommandNode, ns: TzarGames.GameCore.ScriptViz.Graph, asm: TzarGames.GameCore}
+      data:
+        ID:
+          Value:
+            Value:
+              x: 565511715
+              y: 1195417098
+              z: 2237454507
+              w: 2555065197
+        Position: {x: 1556, y: 640}
+        input:
+          ID:
+            Value:
+              Value:
+                x: 178899208
+                y: 424389949
+                z: 2865842584
+                w: 4143243263
+          ConnectedSocketIDs:
+          - Value:
+              Value:
+                x: 3010126108
+                y: 3242681733
+                z: 563829634
+                w: 609287487
+        output:
+          ID:
+            Value:
+              Value:
+                x: 3338437090
+                y: 2135252944
+                z: 1719193993
+                w: 857564986
+          ConnectedSocketIDs:
+          - Value:
+              Value:
+                x: 4070643100
+                y: 2755896693
+                z: 2363887237
+                w: 2230169815
+        getVariableId:
+          Value:
+            Value:
+              x: 3234151468
+              y: 1917467394
+              z: 2428233607
+              w: 1976565923
+        WriteOutput:
+          ID:
+            Value:
+              Value:
+                x: 255396005
+                y: 2957669446
+                z: 2306557337
+                w: 3243491918
+          ConnectedSocketIDs:
+          - Value:
+              Value:
+                x: 4171492486
+                y: 877070788
+                z: 4097953165
+                w: 3448356216
+          Value: 
     - rid: 5431782183231553560
       type: {class: ScriptVizGraph, ns: TzarGames.GameCore.ScriptViz.Graph, asm: TzarGames.GameCore}
       data:
@@ -5523,7 +5688,22 @@ MonoBehaviour:
           states: []
           variables: []
         - id: 2c48b9a9b232bc34abc53cc2bc53b679
-          pages: []
+          pages:
+          - ID:
+              Value:
+                Value:
+                  x: 1206416476
+                  y: 2941053329
+                  z: 754122933
+                  w: 3130550937
+            Name: 
+            ConversionTargetOptions: -1
+            variables:
+            - rid: 986275294506123290
+            nodes:
+            - rid: 986275294506123288
+            - rid: 986275294506123291
+            - rid: 986275294506123292
           states: []
           variables: []
         Name: 
@@ -5753,6 +5933,7 @@ MonoBehaviour:
     MaxRadius: 20
     UsageInterval: 3
     FirstUsageDelay: 2
+    SearchTarget: 0
     CheckObstacles: 0
     ObstacleTraceVerticalOffset: 0
     ObstacleLayers:

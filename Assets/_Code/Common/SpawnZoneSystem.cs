@@ -260,7 +260,11 @@ namespace Arena
             var prefab = spawnZoneParameters.Prefab;
                 
             var instance = Commands.Instantiate(jobIndex, prefab);
-            Commands.SetComponent(jobIndex, instance, LocalTransform.FromPosition(spawnPosition));
+            var spawnDirection = random.NextFloat2Direction().xxy;
+            spawnDirection.y = 0;
+            var spawnRotation = quaternion.LookRotation(spawnDirection, math.up());
+            var spawnTransform = LocalTransform.FromPositionRotation(spawnPosition, spawnRotation);
+            Commands.SetComponent(jobIndex, instance, spawnTransform);
 
             if (MoveAroundPointLookup.TryGetComponent(prefab, out var moveAroundPoint))
             {

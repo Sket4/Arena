@@ -21,6 +21,7 @@ namespace Arena.ScriptViz
     {
         public long LocalizedMessageID;
         public long ID;
+        public Address MessageEntityAddress;
 
         [BurstCompile]
         [AOT.MonoPInvokeCallback(typeof(ScriptVizCommandRegistry.ExecuteDelegate))]
@@ -35,6 +36,86 @@ namespace Arena.ScriptViz
                 LocalizedMessageID = data->LocalizedMessageID,
                 ID = data->ID
             });
+
+            if (data->MessageEntityAddress.IsValid)
+            {
+                context.WriteToTemp(requestEntity, data->MessageEntityAddress);
+            }
+        }
+    }
+    
+    public struct MessageNumbers : IComponentData
+    {
+        public int NumberA;
+        public int NumberB;
+    }
+    
+    [BurstCompile]
+    public struct SetMessageNumbersCommand : IScriptVizCommand
+    {
+        public InputEntityVar MessageEntity;
+        public InputVar<int> NumberA;
+        public InputVar<int> NumberB;
+
+        [BurstCompile]
+        [AOT.MonoPInvokeCallback(typeof(ScriptVizCommandRegistry.ExecuteDelegate))]
+        public static unsafe void Exec(ref Context context, void* commandData)
+        {
+            var data = (SetMessageNumbersCommand*)commandData;
+
+            if (data->MessageEntity.Address.IsInvalid)
+            {
+                return;
+            }
+
+            var messageEntity = data->MessageEntity.Read(ref context);
+
+            if (messageEntity == Entity.Null)
+            {
+                Debug.LogError("failed to set message numbers - null message entity");
+                return;
+            }
+            
+            context.Commands.AddComponent(context.SortIndex, messageEntity, new MessageNumbers
+            {
+                NumberA = data->NumberA.Read(ref context),
+                NumberB = data->NumberB.Read(ref context)
+            });
+        }
+    }
+    
+    [FriendlyName("Установить числа в сообщение")]
+    [Serializable]
+    public class SetMessageNumbersNode : CommandNode
+    {
+        public EntitySocket MessageEntitySocket = new();
+        public IntSocket NumberA = new();
+        public IntSocket NumberB = new();
+
+        public override bool ShowEditableProperties => false;
+
+        public override void WriteCommand(CompilerAllocator compilerAllocator, out Address commandAddress)
+        {
+            var cmd = new SetMessageNumbersCommand();
+            
+            compilerAllocator.InitializeInputVar(ref cmd.MessageEntity, MessageEntitySocket);
+            compilerAllocator.InitializeInputVar(ref cmd.NumberA, NumberA);
+            compilerAllocator.InitializeInputVar(ref cmd.NumberB, NumberB);
+            
+            commandAddress = compilerAllocator.WriteCommand(ref cmd);
+        }
+
+        public override void DeclareSockets(List<SocketInfo> sockets)
+        {
+            base.DeclareSockets(sockets);
+            sockets.Add(new SocketInfo(MessageEntitySocket, SocketType.In, "Сообщение"));
+            sockets.Add(new SocketInfo(NumberA, SocketType.In, "Число A"));
+            sockets.Add(new SocketInfo(NumberB, SocketType.In, "Число B"));
+        }
+
+        public override string GetNodeName(ScriptVizGraphPage page)
+        {
+            return "Установить числа в сообщение";
         }
     }
 
@@ -43,9 +124,22 @@ namespace Arena.ScriptViz
     [Serializable]
     public class ShowMessageNode : CommandNode
     {
+        [HideInInspector] public EntitySocket MessageEntityOutSocket = new();
         public string OptionalID;
         public UnityEngine.Localization.LocalizedString Message;
-        
+
+        public override void DeclareSockets(List<SocketInfo> sockets)
+        {
+            base.DeclareSockets(sockets);
+            
+            if (MessageEntityOutSocket == null)
+            {
+                MessageEntityOutSocket = new EntitySocket();
+                MessageEntityOutSocket.ID.Regenerate();
+            }
+            sockets.Add(new SocketInfo(MessageEntityOutSocket, SocketType.Out, "Сущность сообщения (delay)"));
+        }
+
         public override void WriteCommand(CompilerAllocator compilerAllocator, out Address commandAddress)
         {
             var cmd = new ShowMessageCommand();
@@ -59,6 +153,11 @@ namespace Arena.ScriptViz
             else
             {
                 cmd.ID = TzarGames.GameCore.Message.CreateFromString(OptionalID).HashCode;
+            }
+
+            if (MessageEntityOutSocket != null)
+            {
+                cmd.MessageEntityAddress = compilerAllocator.GetSocketAddress(MessageEntityOutSocket);    
             }
             
             commandAddress = compilerAllocator.WriteCommand(ref cmd);

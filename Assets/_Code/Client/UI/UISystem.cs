@@ -178,7 +178,7 @@ namespace Arena.Client
             Entities
                 .WithoutBurst()
                 .WithStoreEntityQueryInField(ref messageRequestQuery)
-                .ForEach((in ShowMessageRequest showMessageRequest) =>
+                .ForEach((Entity entity, in ShowMessageRequest showMessageRequest) =>
                 {
                     if(uiQuery.TryGetSingleton<GameUI>(out var ui) == false)
                     {
@@ -186,6 +186,14 @@ namespace Arena.Client
                         return;
                     }
                     var localizedMessage = LocalizationSettings.StringDatabase.GetLocalizedString(showMessageRequest.LocalizedMessageID);
+
+                    if (EntityManager.HasComponent<MessageNumbers>(entity))
+                    {
+                        var messageNumbers = EntityManager.GetComponentData<MessageNumbers>(entity);
+                        localizedMessage = localizedMessage.Replace("{numA}", messageNumbers.NumberA.ToString());
+                        localizedMessage = localizedMessage.Replace("{numB}", messageNumbers.NumberB.ToString());
+                    }
+                    
                     ui.HUD.Notifications.AddConstantNotification(localizedMessage, showMessageRequest.ID.ToString());
 
                 })

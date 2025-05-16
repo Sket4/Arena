@@ -60,6 +60,7 @@ namespace Arena.Client.UI
                 var answerUI = Instantiate(AnswerPrefab);
                 answerUI.SetActive(true);
                 answerUI.transform.SetParent(AnswerContainer);
+                answerUI.transform.localScale = Vector3.one;
 
                 var text = answerUI.GetComponent<TMPro.TextMeshProUGUI>();
                 text.enabled = true;

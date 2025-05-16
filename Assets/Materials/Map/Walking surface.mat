@@ -21,15 +21,16 @@ Material:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_Name: Walking surface
-  m_Shader: {fileID: -6465566751694194690, guid: 64d3f5511cde146789f0b61c474d13d9, type: 3}
+  m_Shader: {fileID: -6465566751694194690, guid: 3bf9df4dd48b50b41b0dc17a6ae5502b, type: 3}
   m_Parent: {fileID: 0}
   m_ModifiedSerializedProperties: 0
-  m_ValidKeywords: []
+  m_ValidKeywords:
+  - _USE_FOG
   m_InvalidKeywords: []
   m_LightmapFlags: 4
   m_EnableInstancingVariants: 0
   m_DoubleSidedGI: 0
-  m_CustomRenderQueue: 1960
+  m_CustomRenderQueue: -1
   stringTagMap: {}
   disabledShaderPasses: []
   m_LockedProperties: 
@@ -125,6 +126,7 @@ Material:
     - _SrcBlend: 1
     - _SrcBlendAlpha: 1
     - _Surface: 0
+    - _USE_FOG: 1
     - _WorkflowMode: 1
     - _ZWrite: 1
     m_Colors:

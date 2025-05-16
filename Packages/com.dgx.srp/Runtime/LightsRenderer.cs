@@ -90,6 +90,9 @@ namespace DGX.SRP
         private static int spotLightColorId = Shader.PropertyToID("_SpotLightColors");
         private static int spotLightCookieTexId = Shader.PropertyToID("_SpotLightCookieTex");
         private static int spotLightLocalToWorldInvMatrixId = Shader.PropertyToID("_SpotLight_M_Inv");
+        private static int mainLightShadowOffsets0 = Shader.PropertyToID("_MainLightShadowOffsets0");
+        private static int mainLightShadowOffsets1 = Shader.PropertyToID("_MainLightShadowOffsets1");
+        
         
         private CommandBuffer commands = new()
         {
@@ -337,6 +340,15 @@ namespace DGX.SRP
                 mainLightShadowParams.x = 0;
                 mainLightShadowParams.y = 1;
                 commands.SetGlobalVector("dgx_MainLightShadowParams", mainLightShadowParams);
+
+                float invShadowAtlasSize = 1.0f / atlasSize;
+                commands.SetGlobalVector(mainLightShadowOffsets0, 
+                    new Vector4(-invShadowAtlasSize, invShadowAtlasSize, 
+                        invShadowAtlasSize,invShadowAtlasSize));
+                
+                commands.SetGlobalVector(mainLightShadowOffsets1, 
+                    new Vector4(-invShadowAtlasSize, -invShadowAtlasSize, 
+                        invShadowAtlasSize,-invShadowAtlasSize));
             }
             
             ExecuteBuffer();

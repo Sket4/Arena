@@ -13,6 +13,7 @@ struct v2f
     float4 positionCS : SV_POSITION;
     float3 screenUV : TEXCOORD0;
     float3 viewDir : TEXCOORD1;
+    //float2 pixelCoords : TEXCOORD2;
 };
 
 #include "Packages/com.unity.render-pipelines.core/ShaderLibrary/Common.hlsl"
@@ -56,6 +57,9 @@ half4 _SubtractiveShadowColor;
 
 // x - shadow intensity, y - shadow distance
 float4 dgx_MainLightShadowParams;
+
+half4       _MainLightShadowOffsets0;
+half4       _MainLightShadowOffsets1;
 
 // low left
 // upper left
@@ -164,6 +168,9 @@ v2f vert (appdata v)
 
     o.screenUV.x /= _DrawScale.x;
     o.screenUV.y /= +_DrawScale.y;
+
+    //o.pixelCoords.x = o.screenUV.x * _DrawScale.x;
+    //o.pixelCoords.y = o.screenUV.y * _DrawScale.y;
     
     return o;
 }
@@ -236,7 +243,16 @@ void softNormalBias(float3 main, inout half3 normalBias)
     //normalBias += randomnormal_tangent(surface.NormalWS) * 0.02;
 }
 
-void drawShadows(float3 worldPos, half viewDirDistanceSq, SurfaceHalf surface, inout half3 result)
+half SampleShadow(half3 positionSTS, half2 offset)
+{
+    //return SAMPLE_TEXTURE2D_SHADOW(_DirectionalShadowAtlas, SHADOW_SAMPLER, positionSTS + half3(offset / 1024, 0));
+    return SAMPLE_TEXTURE2D_SHADOW(_DirectionalShadowAtlas, SHADOW_SAMPLER, positionSTS + half3(offset, 0));
+}
+
+void drawShadows(
+    float3 worldPos,
+    //float2 pixelCoords,
+    half viewDirDistanceSq, SurfaceHalf surface, inout half3 result)
 {
     half shadowDistance = dgx_MainLightShadowParams.y;
     half3 normalBias = dgx_MainLightShadowParams.z * surface.NormalWS;
@@ -244,14 +260,28 @@ void drawShadows(float3 worldPos, half viewDirDistanceSq, SurfaceHalf surface, i
     // плохо работает на мобиле, тестил на vulkan (samsung s20)
     //softNormalBias(worldPos, normalBias);
     
-    float3 positionSTS = mul(
+    half3 positionSTS = mul(
         _ShadowVP,
         float4(worldPos.xyz + normalBias, 1.0)
     ).xyz;
 
-    half shadowAtten = SAMPLE_TEXTURE2D_SHADOW(
-        _DirectionalShadowAtlas, SHADOW_SAMPLER, positionSTS
-    ).r;
+    half4 attenuation4;
+    attenuation4.x = SampleShadow(positionSTS.xyz, _MainLightShadowOffsets0.xy);
+    attenuation4.y = SampleShadow(positionSTS.xyz, _MainLightShadowOffsets0.zw);
+    attenuation4.z = SampleShadow(positionSTS.xyz, _MainLightShadowOffsets1.xy);
+    attenuation4.w = SampleShadow(positionSTS.xyz, _MainLightShadowOffsets1.zw);
+
+    // half2 offset = (float)(frac(pixelCoords.xy * 0.5) > 0.25);
+    // if (offset.y > 1.1)
+    //     offset.y = 0;
+
+    // attenuation4.x = SampleShadow(positionSTS.xyz, offset + half2(-1.5, 0.5));
+    // attenuation4.y = SampleShadow(positionSTS.xyz, offset + half2(0.5, 0.5));
+    // attenuation4.z = SampleShadow(positionSTS.xyz, offset + half2(-1.5, -1.5));
+    // attenuation4.w = SampleShadow(positionSTS.xyz, offset + half2(0.5, -1.5));
+    
+    half shadowAtten = dot(attenuation4, 0.25);
+    
 
     half shadowIntensity = dgx_MainLightShadowParams.x;
 
@@ -296,7 +326,10 @@ half4 frag (v2f i) : SV_Target
 
     #ifdef DGX_SHADOWS_ENABLED
     half viewDirDistanceSq = dot(viewDirWithDistance,viewDirWithDistance);
-    drawShadows(worldPos, viewDirDistanceSq, surface, surface.AmbientLight);
+    drawShadows(
+        worldPos,
+        //i.pixelCoords,
+        viewDirDistanceSq, surface, surface.AmbientLight);
     #endif
 
     #ifdef DGX_PBR_RENDERING

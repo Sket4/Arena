@@ -14,11 +14,11 @@ Material:
   m_ValidKeywords:
   - TG_USE_ALPHACLIP
   - _ALPHATEST_ON
-  - _METALLICSPECGLOSSMAP
   m_InvalidKeywords:
   - _DOUBLESIDED_ON
   - _MASKMAP
   - _MATERIAL_FEATURE_TRANSMISSION
+  - _METALLICSPECGLOSSMAP
   - _NORMALMAP
   - _NORMALMAP_TANGENT_SPACE
   - _ZWRITE_ON
@@ -221,12 +221,14 @@ Material:
     - _EnableSpecularOcclusion: 0
     - _EnergyConservingSpecularColor: 1
     - _EnvironmentReflections: 1
+    - _FogHeight: 0
     - _GlossMapScale: 0
     - _Glossiness: 0
     - _GlossyReflections: 0
     - _HdrpVersion: 2
     - _HeightAmplitude: 0.02
     - _HeightCenter: 0.5
+    - _HeightFogFade: 0.005
     - _HeightMapParametrization: 0
     - _HeightMax: 1
     - _HeightMin: -1
@@ -296,7 +298,9 @@ Material:
     - _UVEmissive: 0
     - _Underwater_fog_density_factor: 1
     - _Underwater_fog_height_mult: 1
+    - _UseBaseColorInstance: 0
     - _UseEmissiveIntensity: 0
+    - _UseHeightFog: 0
     - _UseShadowThreshold: 0
     - _UseSurfaceBlend: 0
     - _UseUnderwater: 0
@@ -313,7 +317,7 @@ Material:
     - _Color: {r: 1, g: 1, b: 1, a: 1}
     - _DiffusionProfileAsset: {r: 2.2888926e+38, g: 1.2389358e-26, b: 7.69327e-37, a: 0.00018220427}
     - _DoubleSidedConstants: {r: 1, g: 1, b: -1, a: 0}
-    - _EmissionColor: {r: 1, g: 1, b: 1, a: 1}
+    - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
     - _EmissiveColor: {r: 0, g: 0, b: 0, a: 1}
     - _EmissiveColorLDR: {r: 0, g: 0, b: 0, a: 1}
     - _InvPrimScale: {r: 1, g: 1, b: 0, a: 0}

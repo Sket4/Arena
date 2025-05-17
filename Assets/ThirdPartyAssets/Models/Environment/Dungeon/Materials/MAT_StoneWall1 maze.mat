@@ -24,10 +24,10 @@ Material:
   m_Shader: {fileID: 4800000, guid: 537b6c3f7a4218d459a2cdaea0cd4bf7, type: 3}
   m_Parent: {fileID: 0}
   m_ModifiedSerializedProperties: 0
-  m_ValidKeywords:
-  - _METALLICSPECGLOSSMAP
+  m_ValidKeywords: []
   m_InvalidKeywords:
   - USE_MAIN_LIGHT
+  - _METALLICSPECGLOSSMAP
   - _NORMALMAP
   - _ZWRITE_ON
   m_LightmapFlags: 4
@@ -251,12 +251,14 @@ Material:
     - _EnableSpecularOcclusion: 0
     - _EnergyConservingSpecularColor: 1
     - _EnvironmentReflections: 1
+    - _FogHeight: 0
     - _GlossMapScale: 0
     - _Glossiness: 0
     - _GlossyReflections: 0
     - _HdrpVersion: 2
     - _HeightAmplitude: 0.02
     - _HeightCenter: 0.5
+    - _HeightFogFade: 0.005
     - _HeightMapParametrization: 0
     - _HeightMax: 1
     - _HeightMin: -1
@@ -326,7 +328,9 @@ Material:
     - _UVEmissive: 0
     - _Underwater_fog_density_factor: 1
     - _Underwater_fog_height_mult: 1
+    - _UseBaseColorInstance: 0
     - _UseEmissiveIntensity: 0
+    - _UseHeightFog: 0
     - _UseShadowThreshold: 0
     - _UseSurfaceBlend: 0
     - _UseUnderwater: 0
@@ -342,7 +346,7 @@ Material:
     - _Color: {r: 1, g: 1, b: 1, a: 1}
     - _DiffusionProfileAsset: {r: 0, g: 0, b: 0, a: 0}
     - _DoubleSidedConstants: {r: 1, g: 1, b: -1, a: 0}
-    - _EmissionColor: {r: 1, g: 1, b: 1, a: 1}
+    - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
     - _EmissiveColor: {r: 0, g: 0, b: 0, a: 1}
     - _EmissiveColorLDR: {r: 0, g: 0, b: 0, a: 1}
     - _InvPrimScale: {r: 1, g: 1, b: 0, a: 0}

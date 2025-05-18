@@ -49,6 +49,7 @@ namespace Arena.Client
             var simSystem = World.GetOrCreateSystemManaged<SimulationSystemGroup>();
             simSystem.AddSystemToUpdateList(World.CreateSystemManaged<FloatingLabelHitUISystem>());
             simSystem.AddSystemToUpdateList(World.CreateSystemManaged<FloatingLabelUI_ItemTakeEventSystem>());
+            simSystem.AddSystemToUpdateList(World.CreateSystemManaged<FloatingLabelUI_CommonSystem>());
             
             var presentSystem = World.GetOrCreateSystemManaged<PresentationSystemGroup>();
             presentSystem.AddSystemToUpdateList(World.CreateSystemManaged<FloatingLabelCharacterLabelUiSystem>());

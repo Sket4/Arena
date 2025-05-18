@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using Arena.Client;
 using TzarGames.Common;
@@ -12,6 +13,7 @@ using Unity.Mathematics;
 using Arena;
 using Arena.Items;
 using Unity.Transforms;
+using Object = UnityEngine.Object;
 
 namespace Arena.Client.UI
 {
@@ -627,6 +629,46 @@ namespace Arena.Client.UI
     struct PlayerLabelState : ICleanupComponentData
     {
 
+    }
+    
+    [DisableAutoCreation]
+    [UpdateAfter(typeof(ApplyDamageSystem))]
+    [UpdateBefore(typeof(EventCleanSystem))]
+    public partial class FloatingLabelUI_CommonSystem : SystemBase
+    {
+        protected override void OnUpdate()
+        {
+            Entities
+                .WithoutBurst()
+                .ForEach((in ModifyHealth modifyHealth, in Target target) =>
+            {
+                UserInterfaceData uiData;
+
+                if (HasComponent<UserInterfaceData>(target.Value) == false)
+                {
+                    return;
+                }
+                uiData = GetComponent<UserInterfaceData>(target.Value);
+
+                var screen = EntityManager.GetComponentObject<FloatingLabelScreenUI>(uiData.Entity);
+                var position = EntityManager.GetComponentData<LocalToWorld>(target.Value).Position;
+                position.y += 1.0f;
+
+                switch (modifyHealth.Mode)
+                {
+                    case ModifyHealthMode.Add:
+                        screen.AddCommonLabel($"+{math.round(modifyHealth.Value)} HP", Color.green, position);
+                        break;
+                    case ModifyHealthMode.AddPercent:
+                        screen.AddCommonLabel($"+{math.round(modifyHealth.Value)}% HP", Color.green, position);
+                        break;
+                    default:
+                        throw new ArgumentOutOfRangeException();
+                }
+                
+
+            }).Run();
+        }
     }
 
     [DisableAutoCreation]

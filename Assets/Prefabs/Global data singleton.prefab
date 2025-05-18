@@ -28,13 +28,13 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 4333372530938052348}
+  serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &4333372530938052349
 MonoBehaviour:
@@ -49,8 +49,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   ConversionTargetOptions: -1
-  playerPrefab: {fileID: -3403346994361342194, guid: 709759d6d50fadb4ab72406e658ed872,
-    type: 2}
+  playerPrefab: {fileID: -3403346994361342194, guid: 709759d6d50fadb4ab72406e658ed872, type: 2}
 --- !u!114 &1143720480609565665
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -66,8 +65,7 @@ MonoBehaviour:
   ConversionTargetOptions: -1
   Value:
     MainCurrencyID: 0
-  MainCurrencyKey: {fileID: 1190982234416697117, guid: 709759d6d50fadb4ab72406e658ed872,
-    type: 2}
+  MainCurrencyKey: {fileID: 1190982234416697117, guid: 709759d6d50fadb4ab72406e658ed872, type: 2}
 --- !u!114 &4333372530938052345
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -88,7 +86,10 @@ MonoBehaviour:
   m_SolverIterationCount: 4
   m_EnableSolverStabilizationHeuristic: 0
   m_MultiThreaded: 0
+  m_CollisionTolerance: 0.01
   m_SynchronizeCollisionWorld: 0
+  m_IncrementalDynamicBroadphase: 0
+  m_IncrementalStaticBroadphase: 0
 --- !u!114 &4333372530938052346
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -102,6 +103,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   ConversionTargetOptions: -1
+  Value:
+    TraceLayers: 0
+  GroundTraceLayers:
+    serializedVersion: 2
+    m_Bits: 1
 --- !u!114 &4333372530938052351
 MonoBehaviour:
   m_ObjectHideFlags: 0

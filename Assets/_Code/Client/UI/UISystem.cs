@@ -38,6 +38,11 @@ namespace Arena.Client
             return SystemAPI.TryGetSingleton(out singletonData);
         }
 
+        public bool TryGetSingletonEntity<T>(out Entity entity) where T : unmanaged, IComponentData
+        {
+            return SystemAPI.TryGetSingletonEntity<T>(out entity);
+        }
+
         protected override void OnCreate()
         {
             base.OnCreate();
@@ -194,6 +199,8 @@ namespace Arena.Client
                         localizedMessage = localizedMessage.Replace("{numA}", messageNumbers.NumberA.ToString());
                         localizedMessage = localizedMessage.Replace("{numB}", messageNumbers.NumberB.ToString());
                     }
+
+                    localizedMessage = localizedMessage.Trim();
                     
                     ui.HUD.Notifications.AddConstantNotification(localizedMessage, showMessageRequest.ID.ToString());
 
@@ -213,6 +220,27 @@ namespace Arena.Client
                         return;
                     }
                     ui.HUD.Notifications.RemoveConstantNotificationById(showMessageRequest.MessageID.ToString());
+
+                })
+                .Run();
+            
+            Entities
+                .WithoutBurst()
+                .WithChangeFilter<ItemUsageSystem.TimeModificator>()
+                .ForEach((Entity entity, in Target target) =>
+                {
+                    if(uiQuery.TryGetSingleton<GameUI>(out var ui) == false)
+                    {
+                        Debug.LogError("Failed to find UI entity");
+                        return;
+                    }
+
+                    if (ui.OwnerEntity != target.Value)
+                    {
+                        return;
+                    }
+                    
+                    ui.HUD.SetFoodIndicatorEntity(entity);
 
                 })
                 .Run();

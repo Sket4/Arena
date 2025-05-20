@@ -190,7 +190,7 @@ namespace Arena.Dialogue
                 else
                 {
                     // unblock movement
-                    IOwnedModificatorExtensions.RemoveModificatorWithOwner(blocker, speedMods);
+                    IOwnedModificatorExtensions.RemoveModificatorsWithOwner(blocker, speedMods);
                     // unblock abilities
                     CharacterAbilityBlocker.RemoveFromBuffer(blocker, abilityBlockers);
                 }

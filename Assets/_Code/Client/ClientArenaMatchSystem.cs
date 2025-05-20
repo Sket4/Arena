@@ -299,7 +299,7 @@ namespace Arena.Client
             }
             else
             {
-                IOwnedModificatorExtensions.RemoveModificatorWithOwner(characterEntity, defenseMods);
+                IOwnedModificatorExtensions.RemoveModificatorsWithOwner(characterEntity, defenseMods);
                 Debug.Log("Removed god mode from local player character");
             }
         }
@@ -313,7 +313,7 @@ namespace Arena.Client
 
             if(enable)
             {
-                IOwnedModificatorExtensions.RemoveModificatorWithOwner(characterEntity, damageModificators);
+                IOwnedModificatorExtensions.RemoveModificatorsWithOwner(characterEntity, damageModificators);
             }
             else
             {

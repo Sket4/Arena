@@ -43,6 +43,8 @@ namespace Arena.Client.UI
             }
             
             Debug.Log($"Show dialogue from entity {dialogueEntity}");
+
+            message = message.Trim();
             
             MessageText.text = replace(message, playerName);
 
@@ -64,7 +66,9 @@ namespace Arena.Client.UI
 
                 var text = answerUI.GetComponent<TMPro.TextMeshProUGUI>();
                 text.enabled = true;
-                text.text = replace(answer.Text, playerName);
+                var anwserText = replace(answer.Text, playerName);
+                anwserText = anwserText.Trim();
+                text.text = anwserText; 
                 
                 var button = answerUI.GetComponent<Button>();
                 

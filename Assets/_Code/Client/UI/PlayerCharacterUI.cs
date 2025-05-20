@@ -1,12 +1,10 @@
 ﻿// Copyright 2012-2017 Dinar Khasanov (E-mail: lespaul@live.ru) All Rights Reserved.
 
-using Arena.Client;
 using Arena.Items;
 using TzarGames.Common.UI;
 using TzarGames.GameCore;
 using Unity.Entities;
 using UnityEngine;
-using UnityEngine.Events;
 using UnityEngine.UI;
 
 namespace Arena.Client.UI
@@ -29,6 +27,15 @@ namespace Arena.Client.UI
         [SerializeField] private GameObject difficultyContainer;
         [SerializeField] private TextUI enemyStrengthText;
         private ushort lastEnemyStrengthValue;
+
+        [SerializeField] private GameObject foodIndicator;
+        [SerializeField] private Image foodIndicatorCooldown;
+        private Entity foodIndicatorEntity;
+
+        public void SetFoodIndicatorEntity(Entity entity)
+        {
+            foodIndicatorEntity = entity;
+        }
 
         [SerializeField]
         TextUI allyName = default;
@@ -266,16 +273,26 @@ namespace Arena.Client.UI
 
             if (system.TryGetSingleton(out DifficultyData difficultyData))
             {
-                if (difficultyContainer.activeSelf == false)
-                {
-                    difficultyContainer.SetActive(true);
-                }
-
                 if (lastEnemyStrengthValue != difficultyData.EnemyStrengthMultiplier)
                 {
                     lastEnemyStrengthValue = difficultyData.EnemyStrengthMultiplier;
 
-                    enemyStrengthText.text = $"Усиление врагов <color=yellow>x{lastEnemyStrengthValue}</color>";
+                    if (lastEnemyStrengthValue > 1)
+                    {
+                        enemyStrengthText.text = $"Усиление врагов <color=yellow>x{lastEnemyStrengthValue}</color>";
+                    
+                        if (difficultyContainer.activeSelf == false)
+                        {
+                            difficultyContainer.SetActive(true);
+                        }    
+                    }
+                    else
+                    {
+                        if (difficultyContainer.activeSelf)
+                        {
+                            difficultyContainer.SetActive(false);
+                        }
+                    }
                 }
             }
             else
@@ -283,6 +300,28 @@ namespace Arena.Client.UI
                 if (difficultyContainer.activeSelf)
                 {
                     difficultyContainer.SetActive(false);
+                }
+            }
+
+            var elapsedTime = system.World.Time.ElapsedTime;
+
+            if (foodIndicatorEntity != Entity.Null && EntityManager.HasComponent<ItemUsageSystem.TimeModificator>(foodIndicatorEntity))
+            {
+                var timeMod = EntityManager.GetComponentData<ItemUsageSystem.TimeModificator>(foodIndicatorEntity);
+                
+                if (foodIndicator.activeSelf == false)
+                {
+                    foodIndicator.SetActive(true);
+                }
+                foodIndicatorCooldown.fillAmount = 1.0f - (float)((elapsedTime - timeMod.StartTime) / timeMod.Duration);
+            }
+            else
+            {
+                foodIndicatorEntity = Entity.Null;
+                
+                if (foodIndicator.activeSelf)
+                {
+                    foodIndicator.SetActive(false);
                 }
             }
         }

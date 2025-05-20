@@ -174,7 +174,7 @@ namespace Arena
                 if(CurrentTime - stunned.StartTime >= stunned.Duration || stunned.PendingFinish)
                 {
                     Commands.RemoveComponent<Stunned>(index, entity);
-                    IOwnedModificatorExtensions.RemoveModificatorWithOwner(StunModificatorEntity, speedModificators);
+                    IOwnedModificatorExtensions.RemoveModificatorsWithOwner(StunModificatorEntity, speedModificators);
                     CharacterAbilityBlocker.RemoveFromBuffer(StunModificatorEntity, blockModificators);
                 }
             }

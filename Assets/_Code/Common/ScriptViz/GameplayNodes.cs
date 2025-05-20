@@ -169,7 +169,7 @@ namespace Arena.ScriptViz
             {
                 if (Message != null)
                 {
-                    return $"Показать '{Message.GetLocalizedString()}'";
+                    return $"Показать '{Message.GetLocalizedString().Trim()}'";
                 }
                 else
                 {

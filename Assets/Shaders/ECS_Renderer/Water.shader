@@ -83,6 +83,7 @@ Shader"Arena/Water"
             #endif
 
             #define TG_TRANSPARENT
+            #define TG_USE_REFLECTION_PROBE_ATLAS
 
             //#pragma multi_compile _ _MAIN_LIGHT_SHADOWS
             //#pragma multi_compile _ _MAIN_LIGHT_SHADOWS_CASCADE

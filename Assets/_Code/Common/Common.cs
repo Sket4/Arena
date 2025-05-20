@@ -105,6 +105,7 @@ namespace Arena
 
             gameLoop.AddGameSystem<SceneLoaderSystem>();
             gameLoop.AddGameSystem<ItemUsageSystem>();
+            gameLoop.AddGameSystem<ItemUsageCheckSystem>();
             gameLoop.AddGameSystem<ProcessUsedItemRequestSystem>();
             gameLoop.AddGameSystem<UseItemRequestSystem>();
             gameLoop.AddGameSystem<InventorySystem>();

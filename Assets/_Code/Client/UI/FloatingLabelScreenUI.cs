@@ -653,14 +653,16 @@ namespace Arena.Client.UI
                 var screen = EntityManager.GetComponentObject<FloatingLabelScreenUI>(uiData.Entity);
                 var position = EntityManager.GetComponentData<LocalToWorld>(target.Value).Position;
                 position.y += 1.0f;
+                
+                var sign = modifyHealth.Value > 0 ? '+' : '-';
 
                 switch (modifyHealth.Mode)
                 {
                     case ModifyHealthMode.Add:
-                        screen.AddCommonLabel($"+{math.round(modifyHealth.Value)} HP", Color.green, position);
+                        screen.AddCommonLabel($"{sign}{math.round(modifyHealth.Value)} HP", Color.green, position);
                         break;
                     case ModifyHealthMode.AddPercent:
-                        screen.AddCommonLabel($"+{math.round(modifyHealth.Value)}% HP", Color.green, position);
+                        screen.AddCommonLabel($"{sign}{math.round(modifyHealth.Value)}% HP", Color.green, position);
                         break;
                     default:
                         throw new ArgumentOutOfRangeException();

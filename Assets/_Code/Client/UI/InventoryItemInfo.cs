@@ -695,6 +695,11 @@ namespace Arena.Client.UI
         }
         IEnumerator loadIcon(Entity item, EntityManager manager)
         {
+	        if (manager.Exists(item) == false || manager.HasComponent<ItemIcon>(item) == false)
+	        {
+		        yield break;
+	        }
+	        
 	        var spriteRef = manager.GetComponentData<ItemIcon>(item).Sprite;
 	        
 	        if (spriteRef.LoadingStatus == ObjectLoadingStatus.None)
@@ -742,6 +747,11 @@ namespace Arena.Client.UI
 
 		public virtual void UpdateData(Entity item, uint ownerLevel, EntityManager manager, string levelInfoFormat)
 		{
+			if (manager.Exists(item) == false || manager.HasComponent<ItemName>(item) == false)
+			{
+				return;
+			}
+			
 			Item = item;
 
 			RefreshIcon(manager);

@@ -90,6 +90,7 @@ Shader "Arena/Environment Transparent"
             #pragma multi_compile_fragment _ DIRLIGHTMAP_COMBINED
 
             #define TG_TRANSPARENT
+            #define TG_USE_REFLECTION_PROBE_ATLAS
 
             #include "Input-Env.hlsl"
             #include "Common-Env.hlsl"

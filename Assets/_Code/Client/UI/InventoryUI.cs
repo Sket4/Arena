@@ -113,7 +113,7 @@ namespace Arena.Client.UI
 
 		public void OnUseClicked()
 		{
-			if (LastSelected == null || LastSelected.ItemEntity == Entity.Null)
+ 			if (LastSelected == null || LastSelected.ItemEntity == Entity.Null)
 			{
 				return;
 			}
@@ -131,11 +131,12 @@ namespace Arena.Client.UI
 				.Subscribe((unit) =>
 			{
 				var req = GetData<UseItemRequest>(requestEntity);
-				EntityManager.DestroyEntity(requestEntity);
+				
 				if (req.IsFinished == false)
 				{
 					return;
 				}
+				EntityManager.DestroyEntity(requestEntity);
 				Debug.Log($"Завершен запрос на использование предмета {itemEntity}: {req.Status}");
 
 				if (req.Status == UseRequestStatus.Success)

@@ -110,7 +110,7 @@ namespace Arena
                 if (IOwnedModificatorExtensions.TryGet(ModificatorEntity, healthMods, out var addedMod))
                 {
                     health.ModifiedHP /= addedMod.Value.Value;
-                    IOwnedModificatorExtensions.RemoveModificatorWithOwner(ModificatorEntity, healthMods);
+                    IOwnedModificatorExtensions.RemoveModificatorsWithOwner(ModificatorEntity, healthMods);
                 }
                 
                 Debug.Log($"Change health of entity for difficulty: {DifficultyData.EnemyStrengthMultiplier}");

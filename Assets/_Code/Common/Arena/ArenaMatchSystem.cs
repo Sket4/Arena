@@ -93,6 +93,7 @@ namespace Arena.Server
         }
         
         NativeList<ExitGameRequest> exitFromGameNotifiedPlayers;
+        private EnableByPlayerDistanceSystem enableByDistanceSystem;
 
         public NetworkIdentity NetIdentity { get; set; }
 
@@ -113,6 +114,8 @@ namespace Arena.Server
             exitFromGameNotifiedPlayers = new NativeList<ExitGameRequest>(Allocator.Persistent);
             spawnPointsQuery = ArenaMatchUtility.CreatePlayerSpawnPointsQuery(EntityManager);
             mazeBuilderQuery = GetEntityQuery(ComponentType.ReadOnly<MazeWorldBuilder>());
+
+            enableByDistanceSystem = World.GetExistingSystemManaged<EnableByPlayerDistanceSystem>();
         }
 
         protected override void OnDestroy()
@@ -302,42 +305,52 @@ namespace Arena.Server
 
             protected override bool IsReadyToStartMatch(Entity entity, DynamicBuffer<RegisteredPlayer> players)
             {
-                if(ArenaMatchUtility.IsGameSceneLoaded(this, entity) == false)
+                if ((System as ArenaMatchSystem).isReadyToStartmatch(this, entity) == false)
                 {
                     return false;
                 }
                 
-                if (HasComponent<MazeSessionInitializationData>(entity))
-                {
-                    if (HasComponent<BuildMazeRequest>(entity))
-                    {
-                        var request = GetComponent<BuildMazeRequest>(entity);
-                        if (request.State != BuildMazeRequestState.Completed)
-                        {
-                            return false;
-                        }
-                    }
-                    else
-                    {
-                        Debug.Log("creating maze generation request");
-                        var initData = GetComponent<MazeSessionInitializationData>(entity);
+                return base.IsReadyToStartMatch(entity, players);
+            }
+        }
 
-                        var buildMazeRequest = new BuildMazeRequest
-                        {
-                            Builder = (System as ArenaMatchSystem).mazeBuilderQuery.GetSingletonEntity(),
-                            Seed = initData.GenerationSeed,
-                            HorizontalCells = initData.MazeSize,
-                            VerticalCells = initData.MazeSize,
-                            StartCellCount = 1,
-                            State = BuildMazeRequestState.Pending
-                        };
-                        Commands.AddComponent(entity, buildMazeRequest);
+        bool isReadyToStartmatch(BaseState state, Entity entity)
+        {
+            if(ArenaMatchUtility.IsGameSceneLoaded(state, entity) == false)
+            {
+                return false;
+            }
+                
+            if (HasComponent<MazeSessionInitializationData>(entity))
+            {
+                if (HasComponent<BuildMazeRequest>(entity))
+                {
+                    var request = GetComponent<BuildMazeRequest>(entity);
+                    if (request.State != BuildMazeRequestState.Completed)
+                    {
                         return false;
                     }
                 }
-                
-                return base.IsReadyToStartMatch(entity, players);
+                else
+                {
+                    Debug.Log("creating maze generation request");
+                    var initData = GetComponent<MazeSessionInitializationData>(entity);
+
+                    var buildMazeRequest = new BuildMazeRequest
+                    {
+                        Builder = mazeBuilderQuery.GetSingletonEntity(),
+                        Seed = initData.GenerationSeed,
+                        HorizontalCells = initData.MazeSize,
+                        VerticalCells = initData.MazeSize,
+                        StartCellCount = 1,
+                        State = BuildMazeRequestState.Pending
+                    };
+                    Commands.AddComponent(entity, buildMazeRequest);
+                    return false;
+                }
             }
+
+            return true;
         }
 
         struct PlayerToSave : IBufferElementData
@@ -631,6 +644,17 @@ namespace Arena.Server
                 var matchData = GetComponent<SceneData>(entity);
                 var currentGameSceneEntity = matchData.GameSceneInstance;
                 Commands.SetComponent(currentGameSceneEntity, new SceneLoadingState { Value = SceneLoadingStates.PendingStartUnloading });
+
+                if (HasComponent<BuildMazeRequest>(entity))
+                {
+                    var buildRequest = GetComponent<BuildMazeRequest>(entity);
+
+                    var destroyMazeRequest = Commands.CreateEntity();
+                    Commands.AddComponent(destroyMazeRequest, new DestroyMazeRequest
+                    {
+                        MazeEntity = buildRequest.MazeEntity
+                    });
+                }
             }
 
             public override void OnUpdate(Entity entity)
@@ -691,6 +715,14 @@ namespace Arena.Server
                 var internalState = GetComponent<ArenaMatchStateData>(entity);
                 matchData.GameSceneInstance = Entity.Null;
                 SetComponent(entity, matchData);
+
+                var arenaSystem = System as ArenaMatchSystem;
+                arenaSystem.enableByDistanceSystem.Enabled = false;
+                
+                if (HasComponent<BuildMazeRequest>(entity))
+                {
+                    Commands.RemoveComponent<BuildMazeRequest>(entity);
+                }
                 
                 if (internalState.IsMatchFailed)
                 {
@@ -730,7 +762,7 @@ namespace Arena.Server
             {
                 base.OnUpdate(entity);
 
-                if(ArenaMatchUtility.IsGameSceneLoaded(this, entity))
+                if ((System as ArenaMatchSystem).isReadyToStartmatch(this, entity))
                 {
                     RequestStateChange<RunningStateEx>(entity);
                 }
@@ -821,6 +853,9 @@ namespace Arena.Server
                     var buffer = Commands.AddBuffer<RegisterListenerRequestMessage>(registerRequest);
                     buffer.Add(new RegisterListenerRequestMessage { Listener = entity, MessageToListen = MatchFinishedMessage });
                 }
+
+                arenaSystem.enableByDistanceSystem.Enabled = true;
+                arenaSystem.enableByDistanceSystem.Reset();
             }
 
             public override void OnUpdate(Entity entity)

@@ -25,11 +25,22 @@ namespace Arena
         public NavMeshDataInstance Instance;
     }
 
+    struct GeneratedNavMeshDataCleanup : ICleanupComponentData
+    {
+        public Entity NavMeshDataEntity;
+    }
+
     [RequireMatchingQueriesForUpdate]
     [DisableAutoCreation]
     [UpdateAfter(typeof(TransformSystemGroup))]
     public partial class NavMeshGenSystem : GameSystemBase
     {
+        protected override void OnCreate()
+        {
+            base.OnCreate();
+            RequireForUpdate<Maze.Maze>();
+        }
+
         protected override void OnDestroy()
         {
             base.OnDestroy();
@@ -46,7 +57,7 @@ namespace Arena
 
         protected override void OnSystemUpdate()
         {
-            var commands = CreateEntityCommandBufferParallel();
+            var commands = CreateCommandBuffer();
             List<Entity> navMeshShapeList = null;
 
             Entities
@@ -54,7 +65,7 @@ namespace Arena
                 .WithNone<NavMeshShapeProcessedFlag>()
                 .ForEach((Entity entity, NavMeshShape navMeshShape) =>
                 {
-                    commands.AddComponent<NavMeshShapeProcessedFlag>(0, entity);
+                    commands.AddComponent<NavMeshShapeProcessedFlag>(entity);
 
                     if(navMeshShapeList == null)
                     {
@@ -63,12 +74,22 @@ namespace Arena
                     navMeshShapeList.Add(entity);
 
                 }).Run();
+            
+            Entities
+                .WithNone<Maze.Maze>()
+                .ForEach((Entity entity, in GeneratedNavMeshDataCleanup cleanup) =>
+            {
+                Debug.Log($"cleaning up navmesh from destroyed maze {entity.Index}:{entity.Version}");
+                commands.RemoveComponent<GeneratedNavMeshDataCleanup>(entity);
+                commands.DestroyEntity(cleanup.NavMeshDataEntity);
+                
+            }).Run();
 
             if(navMeshShapeList != null)
             {
                 Debug.Log("Creating nav mesh gen request...");
-                var requestEntity = commands.CreateEntity(0);
-                var elems = commands.AddBuffer<NavMeshShapeElement>(0, requestEntity);
+                var requestEntity = commands.CreateEntity();
+                var elems = commands.AddBuffer<NavMeshShapeElement>(requestEntity);
                 foreach(var shapeEntity in navMeshShapeList)
                 {
                     elems.Add(new NavMeshShapeElement { Entity = shapeEntity });
@@ -76,6 +97,7 @@ namespace Arena
             }
 
             var maze = SystemAPI.GetSingleton<Maze.Maze>();
+            var mazeEntity = SystemAPI.GetSingletonEntity<Maze.Maze>();
             var cellSize = SystemAPI.GetComponentRO<MazeWorldBuilder>(maze.Builder).ValueRO.CellSize;
             var worldSize = maze.CalculateWorldSize(cellSize);
             var bounds = new Bounds(Vector3.zero, new Vector3(worldSize.x, 100, worldSize.y));
@@ -118,7 +140,7 @@ namespace Arena
                     return;
                 }
 
-                commands.DestroyEntity(0, entity);
+                commands.DestroyEntity(entity);
 
                 var buildSources = new List<NavMeshBuildSource>();
 
@@ -217,6 +239,11 @@ namespace Arena
                 EntityManager.SetComponentData(navMeshEntity, new GeneratedNavMeshData
                 {
                     Instance = navDataHandle,
+                });
+
+                EntityManager.AddComponentData(mazeEntity, new GeneratedNavMeshDataCleanup
+                {
+                    NavMeshDataEntity = navMeshEntity
                 });
 
             }).Run();

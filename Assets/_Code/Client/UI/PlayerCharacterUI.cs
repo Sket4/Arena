@@ -147,14 +147,15 @@ namespace Arena.Client.UI
             miniMapImage.texture = map.CameraTexture;
         }
 
-		private void OnDestroy()
-		{
-            // if (CharacterOwner != null)
-            // {
-            //     CharacterOwner.OnCharacterLevelUp -= Handle_OnCharacterLevelUp;
-            // }
-		}
-        
+        protected override void OnDestroy()
+        {
+            base.OnDestroy();
+            if (mapCamera)
+            {
+                Destroy(mapCamera.gameObject);
+            }
+        }
+
         //[UpdateAfter(typeof(GameCommandBufferSystem))]
         //[DisableAutoCreation]
         //public class UISystem : SystemBase

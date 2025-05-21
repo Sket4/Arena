@@ -23,6 +23,7 @@ namespace Arena
 
         private EntityManager entityManager;
         private Entity targetEntity;
+        private Entity mapEntity;
         public RenderTexture CameraTexture { get; private set; }
 
         Vector3 displacement;
@@ -55,7 +56,8 @@ namespace Arena
 
         private void Update()
         {
-            if(entityManager.Exists(targetEntity) == false)
+            if(entityManager.Exists(targetEntity) == false 
+               || entityManager.HasComponent<ViewDirection>(targetEntity) == false)
             {
                 return;
             }
@@ -191,7 +193,7 @@ namespace Arena
             CameraTexture = RenderTexture.GetTemporary(mapTextureSize, mapTextureSize);
             mapCamera.targetTexture = CameraTexture;
 
-            var mapEntity = em.CreateEntity(typeof(Map));
+            mapEntity = em.CreateEntity(typeof(Map));
             em.AddComponentObject(mapEntity, this);
 
             using (var boundsQuery = em.CreateEntityQuery(ComponentType.ReadOnly<MapBounds>()))
@@ -220,6 +222,11 @@ namespace Arena
             {
                 RenderTexture.ReleaseTemporary(CameraTexture);
                 CameraTexture = null;
+            }
+
+            if (entityManager.Equals(default) == false && entityManager.Exists(mapEntity))
+            {
+                entityManager.DestroyEntity(mapEntity);
             }
         }
     }

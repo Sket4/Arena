@@ -102,6 +102,7 @@ namespace Arena.Maze
                 .WithNone<Maze>()
                 .ForEach((Entity entity, int entityInQueryIndex, DynamicBuffer<MazeCells> mazeCells) =>
             {
+                Debug.Log($"Destroying cells of maze {entity.Index}:{entity.Version}");
                 foreach(var cell in mazeCells)
                 {
                     commands.DestroyEntity(entityInQueryIndex, cell.Cell);
@@ -115,6 +116,8 @@ namespace Arena.Maze
                 .WithNone<Maze>()
                 .ForEach((Entity entity, int entityInQueryIndex, DynamicBuffer<MazeObjects> mazeObjs) =>
                 {
+                    Debug.Log($"Destroying objects of maze {entity.Index}:{entity.Version}");
+                    
                     foreach (var cell in mazeObjs)
                     {
                         commands.DestroyEntity(entityInQueryIndex, cell.Value);
@@ -127,6 +130,7 @@ namespace Arena.Maze
                 .WithoutBurst()
                 .ForEach((Entity entity, int entityInQueryIndex, in DestroyMazeRequest request) =>
             {
+                Debug.Log($"Destroying maze {request.MazeEntity.Index}:{request.MazeEntity.Version} by request");
                 commands.DestroyEntity(entityInQueryIndex, request.MazeEntity);
                 commands.DestroyEntity(entityInQueryIndex, entity);
 

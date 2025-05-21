@@ -17,6 +17,11 @@ namespace Arena
         private UpdateJob updateJob;
 
         private int FrameCounter;
+
+        public void Reset()
+        {
+            FrameCounter = 0;
+        }
         
         protected override void OnCreate()
         {

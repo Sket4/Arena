@@ -122,6 +122,9 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 5485270017481130691, guid: 6d97be5c7877f7d43adb4a2de89bce46, type: 3}
       insertIndex: -1
       addedObject: {fileID: 8592994844871689589}
+    - targetCorrespondingSourceObject: {fileID: 5485270017481130691, guid: 6d97be5c7877f7d43adb4a2de89bce46, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: -8848029799945372731}
   m_SourcePrefab: {fileID: 100100000, guid: 6d97be5c7877f7d43adb4a2de89bce46, type: 3}
 --- !u!1 &7076783654523686276 stripped
 GameObject:
@@ -426,6 +429,7 @@ MonoBehaviour:
         - id: scene
           pages: []
           states: []
+          variables: []
         - id: 6ba079be650269140b209db70f807b16
           pages:
           - ID:
@@ -435,6 +439,7 @@ MonoBehaviour:
                   y: 1207147959
                   z: 1475794574
                   w: 2740683562
+            Name: 
             ConversionTargetOptions: 7
             variables:
             - rid: 4877893781339766822
@@ -444,6 +449,7 @@ MonoBehaviour:
             - rid: 4877893781339766827
             - rid: 4877893781339766828
           states: []
+          variables: []
         Name: 
     - rid: 4877893781339766819
       type: {class: OnAbilityStartEventNode, ns: TzarGames.GameCore.Abilities, asm: TzarGames.GameCore}
@@ -499,6 +505,7 @@ MonoBehaviour:
               w: 2579245847
         Name: _delayed_commands
         NetSyncEnabled: 0
+        IsHidden: 0
     - rid: 4877893781339766826
       type: {class: SendMessageCommandNode, ns: TzarGames.GameCore.ScriptViz.Graph, asm: TzarGames.GameCore}
       data:
@@ -663,3 +670,16 @@ MonoBehaviour:
                 z: 2160251275
                 w: 2173860260
           AuthoringValue: {fileID: 0}
+--- !u!114 &-8848029799945372731
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7076783654523686276}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b23cb1d08724648a4bdaf23011674345, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ConversionTargetOptions: -1

@@ -280,6 +280,364 @@ MonoBehaviour:
   references:
     version: 2
     RefIds:
+    - rid: 986275632266608712
+      type: {class: TakeHitEventNode, ns: TzarGames.GameCore.ScriptViz.Commands, asm: TzarGames.GameCore}
+      data:
+        ID:
+          Value:
+            Value:
+              x: 2754392905
+              y: 3578107574
+              z: 3583258559
+              w: 1736565495
+        Position: {x: 592, y: 794}
+        output:
+          ID:
+            Value:
+              Value:
+                x: 2954875094
+                y: 156057227
+                z: 4267469955
+                w: 3638280868
+          ConnectedSocketIDs:
+          - Value:
+              Value:
+                x: 199034475
+                y: 3494389768
+                z: 1757348793
+                w: 1291001603
+    - rid: 986275632266608714
+      type: {class: BoolVariable, ns: TzarGames.GameCore.ScriptViz.Graph, asm: TzarGames.GameCore}
+      data:
+        ID:
+          Value:
+            Value:
+              x: 1052923421
+              y: 3175762959
+              z: 1316479121
+              w: 3520375430
+        Name: is aggressive
+        NetSyncEnabled: 0
+        IsHidden: 0
+        Value: 1
+    - rid: 986275632266608715
+      type: {class: GetBoolCommandNode, ns: TzarGames.GameCore.ScriptViz.Graph, asm: TzarGames.GameCore}
+      data:
+        ID:
+          Value:
+            Value:
+              x: 932003257
+              y: 2705504851
+              z: 3582757795
+              w: 104858608
+        Position: {x: 1590, y: 1398}
+        input:
+          ID:
+            Value:
+              Value:
+                x: 4201085202
+                y: 558662150
+                z: 1640605366
+                w: 3555619572
+          ConnectedSocketIDs:
+          - Value:
+              Value:
+                x: 3642091092
+                y: 1138644602
+                z: 1296005263
+                w: 2280301712
+        output:
+          ID:
+            Value:
+              Value:
+                x: 2139886111
+                y: 3645556732
+                z: 1058868148
+                w: 996822044
+          ConnectedSocketIDs:
+          - Value:
+              Value:
+                x: 604130859
+                y: 1213006317
+                z: 301423761
+                w: 1491257696
+        getVariableId:
+          Value:
+            Value:
+              x: 1052923421
+              y: 3175762959
+              z: 1316479121
+              w: 3520375430
+        WriteOutput:
+          ID:
+            Value:
+              Value:
+                x: 696115546
+                y: 675528223
+                z: 363569063
+                w: 3821727696
+          ConnectedSocketIDs:
+          - Value:
+              Value:
+                x: 3901493679
+                y: 3377192649
+                z: 1437785019
+                w: 1687260571
+          Value: 0
+    - rid: 986275632266608716
+      type: {class: BranchCommandNode, ns: TzarGames.GameCore.ScriptViz.Graph, asm: TzarGames.GameCore}
+      data:
+        ID:
+          Value:
+            Value:
+              x: 4234459807
+              y: 1732416461
+              z: 3737371581
+              w: 3817900231
+        Position: {x: 1784, y: 1420}
+        InputSocket:
+          ID:
+            Value:
+              Value:
+                x: 604130859
+                y: 1213006317
+                z: 301423761
+                w: 1491257696
+          ConnectedSocketIDs:
+          - Value:
+              Value:
+                x: 2139886111
+                y: 3645556732
+                z: 1058868148
+                w: 996822044
+        IfTrueSocket:
+          ID:
+            Value:
+              Value:
+                x: 95813133
+                y: 574850773
+                z: 3433006751
+                w: 226519159
+          ConnectedSocketIDs:
+          - Value:
+              Value:
+                x: 1762216960
+                y: 1237927553
+                z: 525353606
+                w: 3450040963
+        IfFalseSocket:
+          ID:
+            Value:
+              Value:
+                x: 1191243300
+                y: 3175425523
+                z: 802736266
+                w: 3505199830
+          ConnectedSocketIDs: []
+        ValueToCompareSocket:
+          ID:
+            Value:
+              Value:
+                x: 3901493679
+                y: 3377192649
+                z: 1437785019
+                w: 1687260571
+          ConnectedSocketIDs:
+          - Value:
+              Value:
+                x: 696115546
+                y: 675528223
+                z: 363569063
+                w: 3821727696
+          Value: 0
+    - rid: 986275632266608720
+      type: {class: BranchCommandNode, ns: TzarGames.GameCore.ScriptViz.Graph, asm: TzarGames.GameCore}
+      data:
+        ID:
+          Value:
+            Value:
+              x: 1197719394
+              y: 1246439631
+              z: 4184920503
+              w: 2053931568
+        Position: {x: 1784, y: 501}
+        InputSocket:
+          ID:
+            Value:
+              Value:
+                x: 785595167
+                y: 1229365896
+                z: 2717281939
+                w: 2584040869
+          ConnectedSocketIDs:
+          - Value:
+              Value:
+                x: 1464708305
+                y: 3159296342
+                z: 1993501571
+                w: 939095381
+        IfTrueSocket:
+          ID:
+            Value:
+              Value:
+                x: 2126219346
+                y: 2789778491
+                z: 4050313868
+                w: 3618298160
+          ConnectedSocketIDs:
+          - Value:
+              Value:
+                x: 347961782
+                y: 1252125420
+                z: 1895179431
+                w: 1248064880
+        IfFalseSocket:
+          ID:
+            Value:
+              Value:
+                x: 3121788670
+                y: 3092171263
+                z: 2367495088
+                w: 1743941709
+          ConnectedSocketIDs: []
+        ValueToCompareSocket:
+          ID:
+            Value:
+              Value:
+                x: 2509862710
+                y: 423909874
+                z: 3099546525
+                w: 589651946
+          ConnectedSocketIDs:
+          - Value:
+              Value:
+                x: 2771891787
+                y: 4871401
+                z: 1002654863
+                w: 382789762
+          Value: 0
+    - rid: 986275632266608721
+      type: {class: GetBoolCommandNode, ns: TzarGames.GameCore.ScriptViz.Graph, asm: TzarGames.GameCore}
+      data:
+        ID:
+          Value:
+            Value:
+              x: 2574807858
+              y: 3041233169
+              z: 3663925943
+              w: 3968523308
+        Position: {x: 1593, y: 528}
+        input:
+          ID:
+            Value:
+              Value:
+                x: 2109447454
+                y: 1229090290
+                z: 1448036796
+                w: 4237194364
+          ConnectedSocketIDs:
+          - Value:
+              Value:
+                x: 1792136026
+                y: 1259516066
+                z: 4197512639
+                w: 886401560
+        output:
+          ID:
+            Value:
+              Value:
+                x: 1464708305
+                y: 3159296342
+                z: 1993501571
+                w: 939095381
+          ConnectedSocketIDs:
+          - Value:
+              Value:
+                x: 785595167
+                y: 1229365896
+                z: 2717281939
+                w: 2584040869
+        getVariableId:
+          Value:
+            Value:
+              x: 1052923421
+              y: 3175762959
+              z: 1316479121
+              w: 3520375430
+        WriteOutput:
+          ID:
+            Value:
+              Value:
+                x: 2771891787
+                y: 4871401
+                z: 1002654863
+                w: 382789762
+          ConnectedSocketIDs:
+          - Value:
+              Value:
+                x: 2509862710
+                y: 423909874
+                z: 3099546525
+                w: 589651946
+          Value: 0
+    - rid: 986275632266608722
+      type: {class: SetBoolCommandNode, ns: TzarGames.GameCore.ScriptViz.Graph, asm: TzarGames.GameCore}
+      data:
+        ID:
+          Value:
+            Value:
+              x: 2931978837
+              y: 742702562
+              z: 722017983
+              w: 1375642458
+        Position: {x: 785, y: 794}
+        input:
+          ID:
+            Value:
+              Value:
+                x: 199034475
+                y: 3494389768
+                z: 1757348793
+                w: 1291001603
+          ConnectedSocketIDs:
+          - Value:
+              Value:
+                x: 2954875094
+                y: 156057227
+                z: 4267469955
+                w: 3638280868
+        output:
+          ID:
+            Value:
+              Value:
+                x: 1707945385
+                y: 876988384
+                z: 658947746
+                w: 906188228
+          ConnectedSocketIDs:
+          - Value:
+              Value:
+                x: 39268158
+                y: 1288213146
+                z: 4137767594
+                w: 890864649
+        setVariableId:
+          Value:
+            Value:
+              x: 1052923421
+              y: 3175762959
+              z: 1316479121
+              w: 3520375430
+        InputValueSocket:
+          ID:
+            Value:
+              Value:
+                x: 3917414628
+                y: 2017487967
+                z: 1586784917
+                w: 702458181
+          ConnectedSocketIDs: []
+          Value: 1
     - rid: 2560020591264923721
       type: {class: OnTargetChangedEventNode, ns: Arena.ScriptViz, asm: Arena.Common}
       data:
@@ -2133,6 +2491,7 @@ MonoBehaviour:
             - rid: 4877893344000475143
             - rid: 4877893400282267653
             - rid: 4877893546153083038
+            - rid: 986275632266608714
             nodes:
             - rid: 4877893344000475139
             - rid: 4877893344000475140
@@ -2168,6 +2527,12 @@ MonoBehaviour:
             - rid: 4877893781339766843
             - rid: 4877893781339766844
             - rid: 4877893781339766845
+            - rid: 986275632266608712
+            - rid: 986275632266608715
+            - rid: 986275632266608716
+            - rid: 986275632266608720
+            - rid: 986275632266608721
+            - rid: 986275632266608722
           - ID:
               Value:
                 Value:
@@ -2399,7 +2764,7 @@ MonoBehaviour:
               y: 1149440180
               z: 3197421485
               w: 2370286466
-        Position: {x: 1057.3334, y: 936}
+        Position: {x: 1057, y: 936}
         input:
           ID:
             Value:
@@ -2460,7 +2825,7 @@ MonoBehaviour:
               y: 1276242091
               z: 4195217833
               w: 1358662036
-        Position: {x: 596, y: 1369.3334}
+        Position: {x: 596, y: 1369}
         output:
           ID:
             Value:
@@ -2508,7 +2873,7 @@ MonoBehaviour:
               y: 1153719353
               z: 2748050576
               w: 3568014897
-        Position: {x: 1223.3334, y: 1369.3334}
+        Position: {x: 1223, y: 1369}
         InputSocket:
           ID:
             Value:
@@ -2550,10 +2915,10 @@ MonoBehaviour:
           ConnectedSocketIDs:
           - Value:
               Value:
-                x: 1762216960
-                y: 1237927553
-                z: 525353606
-                w: 3450040963
+                x: 4201085202
+                y: 558662150
+                z: 1640605366
+                w: 3555619572
         ValueToCompareSocket:
           ID:
             Value:
@@ -2580,7 +2945,7 @@ MonoBehaviour:
               y: 1330258601
               z: 3653346736
               w: 2084644865
-        Position: {x: 985.3334, y: 1587.3334}
+        Position: {x: 985, y: 1587}
         input:
           ID:
             Value:
@@ -2647,7 +3012,7 @@ MonoBehaviour:
               y: 1125351810
               z: 4252321209
               w: 2743333061
-        Position: {x: 835.3334, y: 1587.3334}
+        Position: {x: 835, y: 1587}
         input:
           ID:
             Value:
@@ -2710,7 +3075,7 @@ MonoBehaviour:
               y: 1125725927
               z: 1543153826
               w: 3211762686
-        Position: {x: 1765.3334, y: 1652.6666}
+        Position: {x: 1765, y: 1653}
         input:
           ID:
             Value:
@@ -2812,7 +3177,7 @@ MonoBehaviour:
               y: 1256137934
               z: 2314615988
               w: 1700038295
-        Position: {x: 995.3334, y: 1875.3334}
+        Position: {x: 995, y: 1875}
         input:
           ID:
             Value:
@@ -2879,7 +3244,7 @@ MonoBehaviour:
               y: 1170047641
               z: 1826296985
               w: 3020356817
-        Position: {x: 852, y: 1875.3334}
+        Position: {x: 852, y: 1875}
         input:
           ID:
             Value:
@@ -2999,7 +3364,7 @@ MonoBehaviour:
               y: 1081201330
               z: 1218469276
               w: 725018037
-        Position: {x: 1057.3334, y: 1102}
+        Position: {x: 1057, y: 1102}
         input:
           ID:
             Value:
@@ -3142,7 +3507,7 @@ MonoBehaviour:
               y: 1188843908
               z: 500453566
               w: 2834791189
-        Position: {x: 1370, y: 330}
+        Position: {x: 1629, y: 330}
         input:
           ID:
             Value:
@@ -3292,7 +3657,7 @@ MonoBehaviour:
               y: 1238930040
               z: 3028816801
               w: 588430501
-        Position: {x: 1575.3334, y: 1455.3334}
+        Position: {x: 1974, y: 1420}
         input:
           ID:
             Value:
@@ -3304,10 +3669,10 @@ MonoBehaviour:
           ConnectedSocketIDs:
           - Value:
               Value:
-                x: 3642091092
-                y: 1138644602
-                z: 1296005263
-                w: 2280301712
+                x: 95813133
+                y: 574850773
+                z: 3433006751
+                w: 226519159
         output:
           ID:
             Value:
@@ -3334,7 +3699,7 @@ MonoBehaviour:
               y: 1233430081
               z: 1831005867
               w: 81435461
-        Position: {x: 1575.3334, y: 1348.6666}
+        Position: {x: 1609, y: 1240}
         input:
           ID:
             Value:
@@ -3376,7 +3741,7 @@ MonoBehaviour:
               y: 1177357180
               z: 4284726189
               w: 576851774
-        Position: {x: 586, y: 1587.3334}
+        Position: {x: 586, y: 1587}
         output:
           ID:
             Value:
@@ -3409,7 +3774,7 @@ MonoBehaviour:
               y: 1176727383
               z: 828907929
               w: 147760494
-        Position: {x: 586, y: 1875.3334}
+        Position: {x: 586, y: 1875}
         output:
           ID:
             Value:
@@ -3442,7 +3807,7 @@ MonoBehaviour:
               y: 1306489393
               z: 3902471089
               w: 1416445080
-        Position: {x: 1396, y: 1587.3334}
+        Position: {x: 1396, y: 1587}
         input:
           ID:
             Value:
@@ -3520,7 +3885,7 @@ MonoBehaviour:
               y: 1267397952
               z: 2033989768
               w: 2230785318
-        Position: {x: 847.3334, y: 1278}
+        Position: {x: 847, y: 1278}
         input:
           ID:
             Value:
@@ -3585,7 +3950,7 @@ MonoBehaviour:
               y: 1318845667
               z: 1758580367
               w: 3840085113
-        Position: {x: 972, y: 424}
+        Position: {x: 1231, y: 424}
         InputSocket:
           ID:
             Value:
@@ -3627,10 +3992,10 @@ MonoBehaviour:
           ConnectedSocketIDs:
           - Value:
               Value:
-                x: 347961782
-                y: 1252125420
-                z: 1895179431
-                w: 1248064880
+                x: 2109447454
+                y: 1229090290
+                z: 1448036796
+                w: 4237194364
         ValueToCompareSocket:
           ID:
             Value:
@@ -3657,7 +4022,7 @@ MonoBehaviour:
               y: 1138997451
               z: 1380374697
               w: 4106430738
-        Position: {x: 1370, y: 487.3333}
+        Position: {x: 1960, y: 501}
         input:
           ID:
             Value:
@@ -3669,10 +4034,10 @@ MonoBehaviour:
           ConnectedSocketIDs:
           - Value:
               Value:
-                x: 1792136026
-                y: 1259516066
-                z: 4197512639
-                w: 886401560
+                x: 2126219346
+                y: 2789778491
+                z: 4050313868
+                w: 3618298160
         output:
           ID:
             Value:
@@ -3699,7 +4064,7 @@ MonoBehaviour:
               y: 1098513665
               z: 3676429701
               w: 3563422728
-        Position: {x: 726, y: 424}
+        Position: {x: 985, y: 424}
         input:
           ID:
             Value:
@@ -3715,6 +4080,12 @@ MonoBehaviour:
                 y: 1096919578
                 z: 3426953877
                 w: 2339549021
+          - Value:
+              Value:
+                x: 1707945385
+                y: 876988384
+                z: 658947746
+                w: 906188228
         output:
           ID:
             Value:
@@ -4128,7 +4499,7 @@ MonoBehaviour:
               y: 1340211302
               z: 1241225134
               w: 134135382
-        Position: {x: 867.3334, y: 2122}
+        Position: {x: 867, y: 2122}
         input:
           ID:
             Value:
@@ -4306,7 +4677,7 @@ MonoBehaviour:
               y: 1245194117
               z: 3588867204
               w: 55597266
-        Position: {x: 1424, y: 2270.6667}
+        Position: {x: 1424, y: 2271}
         input:
           ID:
             Value:
@@ -4348,7 +4719,7 @@ MonoBehaviour:
               y: 1163981741
               z: 2079467454
               w: 2807678364
-        Position: {x: 1424, y: 2389.3333}
+        Position: {x: 1424, y: 2389}
         input:
           ID:
             Value:

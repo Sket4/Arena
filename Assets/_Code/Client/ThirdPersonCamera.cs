@@ -6,6 +6,7 @@ using Unity.Physics;
 using Unity.Physics.Authoring;
 using Unity.Transforms;
 using UnityEngine;
+using UnityEngine.Serialization;
 using Random = UnityEngine.Random;
 
 namespace Arena.Client
@@ -171,12 +172,45 @@ namespace Arena.Client
     {
         ThirdPersonCamera cameraPrefab;
         private EntityQuery sceneCameraSettingsQuery;
+        private ComponentLookup<IgnoreCameraCollision> ignoreCollisionLookup;
+
+        struct HitCollector : ICollector<ColliderCastHit>
+        {
+            public ComponentLookup<IgnoreCameraCollision> IgnoreLookup;
+            public ColliderCastHit Hit;
+            
+            public bool AddHit(ColliderCastHit hit)
+            {
+                if (IgnoreLookup.HasComponent(hit.Entity))
+                {
+                    return false;
+                }
+                if (Hit.Entity == Entity.Null)
+                {
+                    Hit = hit;
+                    return true;
+                }
+
+                if (Hit.Fraction < hit.Fraction)
+                {
+                    return false;
+                }
+
+                Hit = hit;
+                return true;
+            }
+
+            public bool EarlyOutOnFirstHit => false;
+            public float MaxFraction { get; set; }
+            public int NumHits { get; set; }
+        }
 
         protected override void OnCreate()
         {
             base.OnCreate();
             cameraPrefab = ClientGameSettings.Get.CameraPrefab.GetComponent<ThirdPersonCamera>();
             sceneCameraSettingsQuery = GetEntityQuery(ComponentType.ReadOnly<SceneCameraSettings>());
+            ignoreCollisionLookup = GetComponentLookup<IgnoreCameraCollision>(true);
         }
 
         protected override void OnDestroy()
@@ -363,6 +397,9 @@ namespace Arena.Client
 
                 }).Run();
 
+            ignoreCollisionLookup.Update(this);
+            var ignoreLookup = ignoreCollisionLookup;
+
             Entities.ForEach((ref LocalTransform transform, in CameraData cameraData) =>
             {
                 var collisionFilter = CollisionFilter.Default;
@@ -376,26 +413,32 @@ namespace Arena.Client
 
                 Debug.DrawRay(traceStartPos, traceDir, Color.red);
 
-                if (physWorld.SphereCast(traceStartPos, cameraData.CollisionTraceRadius, traceDir, cameraData.CameraDistance, out ColliderCastHit collisionHit, collisionFilter, QueryInteraction.IgnoreTriggers))
+                var hitCollector = new HitCollector
                 {
-                    transform.Position = traceStartPos + traceDir * cameraData.CameraDistance * collisionHit.Fraction;
+                    IgnoreLookup = ignoreLookup,
+                    MaxFraction = 1
+                };
+
+                if (physWorld.SphereCastCustom(traceStartPos, cameraData.CollisionTraceRadius, traceDir, cameraData.CameraDistance, ref hitCollector, collisionFilter, QueryInteraction.IgnoreTriggers))
+                {
+                    transform.Position = traceStartPos + traceDir * cameraData.CameraDistance * math.min(1, hitCollector.Hit.Fraction);
                 }
                 
                 // TRACE AIM
-                var traceEnd = transform.Position + cameraData.Forward * 1000.0f;
-                
-                collisionFilter = CollisionFilter.Default;
-                collisionFilter.CollidesWith = cameraData.AimPhysicsTags;
-
-                var raycastInput = new RaycastInput
-                {
-                    Start = transform.Position + cameraData.Forward * 0.01f,
-                    End = traceEnd,
-                    Filter = collisionFilter
-                };
-
                 if(SystemAPI.HasComponent<AimHitPoint>(cameraData.Target))
                 {
+                    var traceEnd = transform.Position + cameraData.Forward * 1000.0f;
+                
+                    collisionFilter = CollisionFilter.Default;
+                    collisionFilter.CollidesWith = cameraData.AimPhysicsTags;
+
+                    var raycastInput = new RaycastInput
+                    {
+                        Start = transform.Position + cameraData.Forward * 0.01f,
+                        End = traceEnd,
+                        Filter = collisionFilter
+                    };
+                    
                     AimHitPoint aimHitPoint = default;
 
                     if (physWorld.CastRay(raycastInput, out Unity.Physics.RaycastHit hit))

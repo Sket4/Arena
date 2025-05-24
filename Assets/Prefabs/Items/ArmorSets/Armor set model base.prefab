@@ -51,10 +51,16 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   ConversionTargetOptions: -1
+  HeadSocket: {fileID: 0}
   RightHandWeaponSocket: {fileID: 0}
   LeftHandBowSocket: {fileID: 0}
+  ShieldSocket: {fileID: 0}
   LeftFoot: {fileID: 0}
   RightFoot: {fileID: 0}
+  SkinModel1: {fileID: 0}
+  SkinModel2: {fileID: 0}
+  ColoredModel1: {fileID: 0}
+  ColoredModel2: {fileID: 0}
 --- !u!114 &6452891029304872438
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -68,6 +74,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   ConversionTargetOptions: -1
+  OptionalCopyFrom: {fileID: 0}
   AnimationRoot: {fileID: 0}
   DefaultClipIndex: 0
   Clips:
@@ -76,64 +83,91 @@ MonoBehaviour:
     ID: {fileID: 11400000, guid: 53bed7b3c88fcbb478a5626f613a373a, type: 2}
     Loop: 1
     SpeedScale: 1
-    ComputeRootmotionDeltas: 0
     BakeFlags: -1
+    OtherProperties:
+      CustomSourceRigPrefab: {fileID: 0}
+      CustomSourceAvatar: {fileID: 0}
   - Label: Run
     Clip: {fileID: 7400000, guid: 2e16205563c3e6e4181cb3a1bd0fb762, type: 2}
     ID: {fileID: 11400000, guid: 37f59d96f0bef184ca0cc99cab343ea1, type: 2}
     Loop: 1
     SpeedScale: 1.3
-    ComputeRootmotionDeltas: 0
     BakeFlags: -1
+    OtherProperties:
+      CustomSourceRigPrefab: {fileID: 0}
+      CustomSourceAvatar: {fileID: 0}
   - Label: Walk
     Clip: {fileID: 7400000, guid: 2e16205563c3e6e4181cb3a1bd0fb762, type: 2}
     ID: {fileID: 11400000, guid: 057d49522c2906c429d9241599359af3, type: 2}
     Loop: 1
     SpeedScale: 1
-    ComputeRootmotionDeltas: 0
     BakeFlags: -1
+    OtherProperties:
+      CustomSourceRigPrefab: {fileID: 0}
+      CustomSourceAvatar: {fileID: 0}
   - Label: Attack 1
     Clip: {fileID: 7400000, guid: 971bd117d04a8c249895e05049099867, type: 2}
     ID: {fileID: 11400000, guid: 1f617242a093c5c4e8296860449a0b49, type: 2}
     Loop: 0
     SpeedScale: 1
-    ComputeRootmotionDeltas: 0
     BakeFlags: -1
+    OtherProperties:
+      CustomSourceRigPrefab: {fileID: 0}
+      CustomSourceAvatar: {fileID: 0}
   - Label: Attack 2
     Clip: {fileID: 7400000, guid: 7430d26d45748f74d82befd856c47185, type: 2}
     ID: {fileID: 11400000, guid: 37e9e3ba7a391e24a87d298a8373896b, type: 2}
     Loop: 0
     SpeedScale: 1
-    ComputeRootmotionDeltas: 0
     BakeFlags: -1
+    OtherProperties:
+      CustomSourceRigPrefab: {fileID: 0}
+      CustomSourceAvatar: {fileID: 0}
   - Label: Attack 3
     Clip: {fileID: 7400000, guid: 80c98487bb237114995801c9bd9db656, type: 2}
     ID: {fileID: 11400000, guid: 297ef81ea378c2b4089668c47fab984a, type: 2}
     Loop: 0
     SpeedScale: 1
-    ComputeRootmotionDeltas: 0
     BakeFlags: -1
+    OtherProperties:
+      CustomSourceRigPrefab: {fileID: 0}
+      CustomSourceAvatar: {fileID: 0}
   - Label: Ability 1
     Clip: {fileID: -203655887218126122, guid: 70f40155b001d7f47ba3cea4905228cb, type: 3}
     ID: {fileID: 11400000, guid: 716d2f776794eea48b3636612d13a391, type: 2}
     Loop: 1
     SpeedScale: 1
-    ComputeRootmotionDeltas: 0
     BakeFlags: -1
+    OtherProperties:
+      CustomSourceRigPrefab: {fileID: 0}
+      CustomSourceAvatar: {fileID: 0}
   - Label: Ability 2
     Clip: {fileID: -203655887218126122, guid: 70f40155b001d7f47ba3cea4905228cb, type: 3}
     ID: {fileID: 11400000, guid: 0d7ab556c781b4e4aaad035188f06774, type: 2}
     Loop: 0
     SpeedScale: 1
-    ComputeRootmotionDeltas: 0
     BakeFlags: 1
+    OtherProperties:
+      CustomSourceRigPrefab: {fileID: 0}
+      CustomSourceAvatar: {fileID: 0}
   - Label: Ability 3
     Clip: {fileID: -203655887218126122, guid: 70f40155b001d7f47ba3cea4905228cb, type: 3}
     ID: {fileID: 11400000, guid: e3d78e47892ebaf44a35dd2edf2c67c2, type: 2}
     Loop: 0
     SpeedScale: 1
-    ComputeRootmotionDeltas: 0
     BakeFlags: -1
+    OtherProperties:
+      CustomSourceRigPrefab: {fileID: 0}
+      CustomSourceAvatar: {fileID: 0}
+  - Label: Jump loop
+    Clip: {fileID: 7400000, guid: cda414c1ef9264574a81ac11c0b8303f, type: 2}
+    ID: {fileID: 11400000, guid: d53ec54239ca043df817b2f96d69e0e0, type: 2}
+    Loop: 1
+    SpeedScale: 1
+    BakeFlags: 0
+    OtherProperties:
+      CustomSourceRigPrefab: {fileID: 855481979518335641, guid: 53d0b8119a901bd459d5513178156d8a, type: 3}
+      CustomSourceAvatar: {fileID: 9000000, guid: af0adcb624545c24e8c836635d07b769, type: 3}
 --- !u!111 &8977191410356672726
 Animation:
   m_ObjectHideFlags: 0

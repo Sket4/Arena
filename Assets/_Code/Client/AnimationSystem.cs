@@ -28,6 +28,7 @@ namespace Arena.Client
         private const int IdleAnimationID = 2;
         private const int RunningAnimationID = 3;
         private const int WalkingAnimationID = 20;
+        private const int JumpLoopAnimationID = 22;
         
         protected override void OnSystemUpdate()
         {
@@ -123,7 +124,7 @@ namespace Arena.Client
             }).Run();
 
             Entities
-                .ForEach((Entity entity, ref CharacterAnimation animation, in AttackSpeed attackSpeed, in Velocity velocity, in LivingState livingState) =>
+                .ForEach((Entity entity, ref CharacterAnimation animation, in AttackSpeed attackSpeed, in Velocity velocity, in LivingState livingState, in DistanceToGround distanceToGround) =>
                 {
                     if (SystemAPI.HasComponent<SimpleAnimation>(animation.AnimatorEntity) == false)
                     {
@@ -227,62 +228,80 @@ namespace Arena.Client
 
                     if (livingState.IsAlive)
                     {
-                        if (velocity.CachedMagnitude > 0.01f)
+                        var isInAir = distanceToGround.CurrentDistance > 0.3f;
+                        var isPlayingAirAnimation = false;
+                        
+                        if (isInAir)
                         {
-                            int animID;
-                            float defaultAnimSpeed;
+                            var jumpLoopClipIndex =
+                                SimpleAnimation.GetClipIndexByID(clipIdToIndexBuffer, JumpLoopAnimationID);
 
-                            if(velocity.CachedMagnitude <= animation.MaxWalkingVelocity
-                               && SimpleAnimation.GetClipIndexByID(clipIdToIndexBuffer, WalkingAnimationID) >= 0)
+                            if (jumpLoopClipIndex >= 0)
                             {
-                                animID = WalkingAnimationID;
-                                defaultAnimSpeed = animation.MaxWalkingVelocity;
-                            }
-                            else
-                            {
-                                animID = RunningAnimationID;
-                                defaultAnimSpeed = animation.DefaultRunningVelocity;
-                            }
-
-                            if (defaultAnimSpeed <= 0)
-                            {
-                                defaultAnimSpeed = 1;
-                            }
-                            
-                            var animIndex = SimpleAnimation.GetClipIndexByID(clipIdToIndexBuffer, animID);
-
-                            if (animIndex != AnimationID.Invalid)
-                            {
-                                var speed = velocity.CachedMagnitude / defaultAnimSpeed;
-                                speed = math.max(speed, 0.1f);
-
-                                //if(animator.ToClipIndex !- animIndex)
-                                //{
-                                //Debug.Log($"Transiting to run, fromspd {animator.FromClipSpeed} tospd {animator.ToClipSpeed}, nextspd {speed}");
-                                //}
-
-                                animator.TransitionTo(animIndex, transitionDuration, speed, ref animBuffer, false);
-                                animator.ToClipSpeed = speed;    
-                            }
-                            else
-                            {
-                                Debug.LogError($"Failed to find animation with id {RunningAnimationID} in entity {animation.AnimatorEntity.Index}");
+                                animator.TransitionTo(jumpLoopClipIndex, transitionDuration, 1, ref animBuffer, false);
+                                isPlayingAirAnimation = true;
                             }
                         }
-                        else
+
+                        if (isPlayingAirAnimation == false)
                         {
-                            if (idleAnimIndex != -1)
+                            if (velocity.CachedMagnitude > 0.01f)
                             {
-                                //if(animator.ToClipIndex != idleAnimIndex)
-                                //{
-                                //Debug.Log($"Transiting to idle, fromspd {animator.FromClipSpeed} tospd {animator.ToClipSpeed}, nextspd {1.0f}");
-                                //}
-                                animator.TransitionTo(idleAnimIndex, transitionDuration, 1.0f, ref animBuffer, false);
-                                animator.ToClipSpeed = 1.0f;
+                                int animID;
+                                float defaultAnimSpeed;
+
+                                if(velocity.CachedMagnitude <= animation.MaxWalkingVelocity
+                                   && SimpleAnimation.GetClipIndexByID(clipIdToIndexBuffer, WalkingAnimationID) >= 0)
+                                {
+                                    animID = WalkingAnimationID;
+                                    defaultAnimSpeed = animation.MaxWalkingVelocity;
+                                }
+                                else
+                                {
+                                    animID = RunningAnimationID;
+                                    defaultAnimSpeed = animation.DefaultRunningVelocity;
+                                }
+
+                                if (defaultAnimSpeed <= 0)
+                                {
+                                    defaultAnimSpeed = 1;
+                                }
+                                
+                                var animIndex = SimpleAnimation.GetClipIndexByID(clipIdToIndexBuffer, animID);
+
+                                if (animIndex != AnimationID.Invalid)
+                                {
+                                    var speed = velocity.CachedMagnitude / defaultAnimSpeed;
+                                    speed = math.max(speed, 0.1f);
+
+                                    //if(animator.ToClipIndex !- animIndex)
+                                    //{
+                                    //Debug.Log($"Transiting to run, fromspd {animator.FromClipSpeed} tospd {animator.ToClipSpeed}, nextspd {speed}");
+                                    //}
+
+                                    animator.TransitionTo(animIndex, transitionDuration, speed, ref animBuffer, false);
+                                    animator.ToClipSpeed = speed;    
+                                }
+                                else
+                                {
+                                    Debug.LogError($"Failed to find animation with id {RunningAnimationID} in entity {animation.AnimatorEntity.Index}");
+                                }
                             }
                             else
                             {
-                                Debug.LogError($"Failed to find animation with id {IdleAnimationID} in entity {animation.AnimatorEntity.Index}");
+                                if (idleAnimIndex != -1)
+                                {
+                                    //if(animator.ToClipIndex != idleAnimIndex)
+                                    //{
+                                    //Debug.Log($"Transiting to idle, fromspd {animator.FromClipSpeed} tospd {animator.ToClipSpeed}, nextspd {1.0f}");
+                                    //}
+                                    animator.TransitionTo(idleAnimIndex, transitionDuration, 1.0f, ref animBuffer, false);
+                                    animator.ToClipSpeed = 1.0f;
+                                }
+                                else
+                                {
+                                    Debug.LogError($"Failed to find animation with id {IdleAnimationID} in entity {animation.AnimatorEntity.Index}");
+                                }
                             }
                         }
                     }

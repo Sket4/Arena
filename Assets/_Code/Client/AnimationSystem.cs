@@ -124,7 +124,7 @@ namespace Arena.Client
             }).Run();
 
             Entities
-                .ForEach((Entity entity, ref CharacterAnimation animation, in AttackSpeed attackSpeed, in Velocity velocity, in LivingState livingState, in DistanceToGround distanceToGround) =>
+                .ForEach((Entity entity, ref CharacterAnimation animation, in AttackSpeed attackSpeed, in Velocity velocity, in LivingState livingState, in Unity.CharacterController.KinematicCharacterBody body) =>
                 {
                     if (SystemAPI.HasComponent<SimpleAnimation>(animation.AnimatorEntity) == false)
                     {
@@ -228,7 +228,7 @@ namespace Arena.Client
 
                     if (livingState.IsAlive)
                     {
-                        var isInAir = distanceToGround.CurrentDistance > 0.3f;
+                        var isInAir = body.IsGrounded == false;
                         var isPlayingAirAnimation = false;
                         
                         if (isInAir)
@@ -238,7 +238,7 @@ namespace Arena.Client
 
                             if (jumpLoopClipIndex >= 0)
                             {
-                                animator.TransitionTo(jumpLoopClipIndex, transitionDuration, 1, ref animBuffer, false);
+                                animator.TransitionTo(jumpLoopClipIndex, 0.15f, 1, ref animBuffer, false);
                                 isPlayingAirAnimation = true;
                             }
                         }

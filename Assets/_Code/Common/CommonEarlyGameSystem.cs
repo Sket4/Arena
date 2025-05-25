@@ -22,6 +22,7 @@ namespace Arena
         private EntityQuery getGameProgressRequestQuery;
         private EntityQuery addGameProgressFlagRequestQuery;
         private EntityQuery setGameProgressKeyValueQuery;
+        private EntityQuery saveGameRequestQuery;
         private EntityQuery setBaseLocationRequestQuery;
         private EntityQuery startQuestQuery;
         private EntityQuery addGameProgressQuestRequestQuery;
@@ -127,6 +128,37 @@ namespace Arena
             if (startQuestQuery.IsEmpty == false)
             {
                 EntityManager.DestroyEntity(startQuestQuery);
+            }
+
+            if (saveGameRequestQuery.IsEmpty == false)
+            {
+                var registeredPlayerEntity = getMainPlayerEntity();
+                var characterEntity = SystemAPI.GetComponent<ControlledCharacter>(registeredPlayerEntity).Entity;
+                var progressDataEntity = SystemAPI.GetComponent<CharacterGameProgressReference>(characterEntity).Value;
+                
+                Entities
+                    .WithStoreEntityQueryInField(ref saveGameRequestQuery)
+                    .WithAll<SaveGameRequest>()
+                    .ForEach((Entity entity) =>
+                    {
+                        commands.DestroyEntity(0, entity);
+                        
+                        var owner = SystemAPI.GetComponent<Owner>(progressDataEntity);
+                        
+                        var playerEntity = SystemAPI.GetComponent<PlayerController>(owner.Value).Value;
+
+                        if (SystemAPI.HasComponent<AuthorizedUser>(playerEntity) == false)
+                        {
+                            Debug.Log("Failed to save player data, player not authorized");
+                            return;
+                        }
+                
+                        Debug.Log($"Saving data for player character {owner.Value.Index} by request");
+                        var user = SystemAPI.GetComponent<AuthorizedUser>(playerEntity);
+
+                        createSavePlayerDataRequest(owner, playerEntity, user, commands);
+                        
+                    }).Run();
             }
 
             if (setGameProgressKeyValueQuery.IsEmpty == false)

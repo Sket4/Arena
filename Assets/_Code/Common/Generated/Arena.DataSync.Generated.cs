@@ -5,67 +5,64 @@ using Unity.Burst;
 using Unity.Burst.Intrinsics;
 using Unity.Collections;
 
-[assembly: Unity.Jobs.RegisterGenericJobType(typeof(TzarGames.MultiplayerKit.DynamicBufferDataSync<TzarGames.MultiplayerKit.Generated.SceneSectionState_DataProcessor,TzarGames.MultiplayerKit.Generated.SceneSectionState_Sync.Data,TzarGames.MultiplayerKit.Generated.SceneSectionState_Sync.Tag>.DeserializeJob))]
-[assembly: Unity.Jobs.RegisterGenericJobType(typeof(TzarGames.MultiplayerKit.DynamicBufferDataSync<TzarGames.MultiplayerKit.Generated.SceneSectionState_DataProcessor,TzarGames.MultiplayerKit.Generated.SceneSectionState_Sync.Data,TzarGames.MultiplayerKit.Generated.SceneSectionState_Sync.Tag>.SerializeJob))]
-[assembly: Unity.Jobs.RegisterGenericJobType(typeof(TzarGames.MultiplayerKit.ComponentDataSync<TzarGames.MultiplayerKit.Generated.CharacterSkinColor_DataProcessor,TzarGames.MultiplayerKit.Generated.CharacterSkinColor_Sync.Data,TzarGames.MultiplayerKit.Generated.CharacterSkinColor_Sync.Tag>.DeserializeJob))]
-[assembly: Unity.Jobs.RegisterGenericJobType(typeof(TzarGames.MultiplayerKit.ComponentDataSync<TzarGames.MultiplayerKit.Generated.CharacterSkinColor_DataProcessor,TzarGames.MultiplayerKit.Generated.CharacterSkinColor_Sync.Data,TzarGames.MultiplayerKit.Generated.CharacterSkinColor_Sync.Tag>.SerializeJob))]
-[assembly: Unity.Jobs.RegisterGenericJobType(typeof(TzarGames.MultiplayerKit.ComponentDataSync<TzarGames.MultiplayerKit.Generated.CharacterEyeColor_DataProcessor,TzarGames.MultiplayerKit.Generated.CharacterEyeColor_Sync.Data,TzarGames.MultiplayerKit.Generated.CharacterEyeColor_Sync.Tag>.DeserializeJob))]
-[assembly: Unity.Jobs.RegisterGenericJobType(typeof(TzarGames.MultiplayerKit.ComponentDataSync<TzarGames.MultiplayerKit.Generated.CharacterEyeColor_DataProcessor,TzarGames.MultiplayerKit.Generated.CharacterEyeColor_Sync.Data,TzarGames.MultiplayerKit.Generated.CharacterEyeColor_Sync.Tag>.SerializeJob))]
-[assembly: Unity.Jobs.RegisterGenericJobType(typeof(TzarGames.MultiplayerKit.ComponentDataSync<TzarGames.MultiplayerKit.Generated.ArenaMatchStateData_DataProcessor,TzarGames.MultiplayerKit.Generated.ArenaMatchStateData_Sync.Data,TzarGames.MultiplayerKit.Generated.ArenaMatchStateData_Sync.Tag>.DeserializeJob))]
-[assembly: Unity.Jobs.RegisterGenericJobType(typeof(TzarGames.MultiplayerKit.ComponentDataSync<TzarGames.MultiplayerKit.Generated.ArenaMatchStateData_DataProcessor,TzarGames.MultiplayerKit.Generated.ArenaMatchStateData_Sync.Data,TzarGames.MultiplayerKit.Generated.ArenaMatchStateData_Sync.Tag>.SerializeJob))]
-[assembly: Unity.Jobs.RegisterGenericJobType(typeof(TzarGames.MultiplayerKit.ComponentDataSync<TzarGames.MultiplayerKit.Generated.CharacterHairstyle_DataProcessor,TzarGames.MultiplayerKit.Generated.CharacterHairstyle_Sync.Data,TzarGames.MultiplayerKit.Generated.CharacterHairstyle_Sync.Tag>.DeserializeJob))]
-[assembly: Unity.Jobs.RegisterGenericJobType(typeof(TzarGames.MultiplayerKit.ComponentDataSync<TzarGames.MultiplayerKit.Generated.CharacterHairstyle_DataProcessor,TzarGames.MultiplayerKit.Generated.CharacterHairstyle_Sync.Data,TzarGames.MultiplayerKit.Generated.CharacterHairstyle_Sync.Tag>.SerializeJob))]
-[assembly: Unity.Jobs.RegisterGenericJobType(typeof(TzarGames.MultiplayerKit.ComponentDataSync<TzarGames.MultiplayerKit.Generated.DifficultyData_DataProcessor,TzarGames.MultiplayerKit.Generated.DifficultyData_Sync.Data,TzarGames.MultiplayerKit.Generated.DifficultyData_Sync.Tag>.DeserializeJob))]
-[assembly: Unity.Jobs.RegisterGenericJobType(typeof(TzarGames.MultiplayerKit.ComponentDataSync<TzarGames.MultiplayerKit.Generated.DifficultyData_DataProcessor,TzarGames.MultiplayerKit.Generated.DifficultyData_Sync.Data,TzarGames.MultiplayerKit.Generated.DifficultyData_Sync.Tag>.SerializeJob))]
-[assembly: Unity.Jobs.RegisterGenericJobType(typeof(TzarGames.MultiplayerKit.ComponentDataSync<TzarGames.MultiplayerKit.Generated.CharacterClassData_DataProcessor,TzarGames.MultiplayerKit.Generated.CharacterClassData_Sync.Data,TzarGames.MultiplayerKit.Generated.CharacterClassData_Sync.Tag>.DeserializeJob))]
-[assembly: Unity.Jobs.RegisterGenericJobType(typeof(TzarGames.MultiplayerKit.ComponentDataSync<TzarGames.MultiplayerKit.Generated.CharacterClassData_DataProcessor,TzarGames.MultiplayerKit.Generated.CharacterClassData_Sync.Data,TzarGames.MultiplayerKit.Generated.CharacterClassData_Sync.Tag>.SerializeJob))]
-[assembly: Unity.Jobs.RegisterGenericJobType(typeof(TzarGames.MultiplayerKit.ComponentDataSync<TzarGames.MultiplayerKit.Generated.CharacterHead_DataProcessor,TzarGames.MultiplayerKit.Generated.CharacterHead_Sync.Data,TzarGames.MultiplayerKit.Generated.CharacterHead_Sync.Tag>.DeserializeJob))]
-[assembly: Unity.Jobs.RegisterGenericJobType(typeof(TzarGames.MultiplayerKit.ComponentDataSync<TzarGames.MultiplayerKit.Generated.CharacterHead_DataProcessor,TzarGames.MultiplayerKit.Generated.CharacterHead_Sync.Data,TzarGames.MultiplayerKit.Generated.CharacterHead_Sync.Tag>.SerializeJob))]
 [assembly: Unity.Jobs.RegisterGenericJobType(typeof(TzarGames.MultiplayerKit.ComponentDataSync<TzarGames.MultiplayerKit.Generated.SyncedColor_DataProcessor,TzarGames.MultiplayerKit.Generated.SyncedColor_Sync.Data,TzarGames.MultiplayerKit.Generated.SyncedColor_Sync.Tag>.DeserializeJob))]
 [assembly: Unity.Jobs.RegisterGenericJobType(typeof(TzarGames.MultiplayerKit.ComponentDataSync<TzarGames.MultiplayerKit.Generated.SyncedColor_DataProcessor,TzarGames.MultiplayerKit.Generated.SyncedColor_Sync.Data,TzarGames.MultiplayerKit.Generated.SyncedColor_Sync.Tag>.SerializeJob))]
+[assembly: Unity.Jobs.RegisterGenericJobType(typeof(TzarGames.MultiplayerKit.ComponentDataSync<TzarGames.MultiplayerKit.Generated.CharacterSkinColor_DataProcessor,TzarGames.MultiplayerKit.Generated.CharacterSkinColor_Sync.Data,TzarGames.MultiplayerKit.Generated.CharacterSkinColor_Sync.Tag>.DeserializeJob))]
+[assembly: Unity.Jobs.RegisterGenericJobType(typeof(TzarGames.MultiplayerKit.ComponentDataSync<TzarGames.MultiplayerKit.Generated.CharacterSkinColor_DataProcessor,TzarGames.MultiplayerKit.Generated.CharacterSkinColor_Sync.Data,TzarGames.MultiplayerKit.Generated.CharacterSkinColor_Sync.Tag>.SerializeJob))]
 [assembly: Unity.Jobs.RegisterGenericJobType(typeof(TzarGames.MultiplayerKit.ComponentDataSync<TzarGames.MultiplayerKit.Generated.CharacterHairColor_DataProcessor,TzarGames.MultiplayerKit.Generated.CharacterHairColor_Sync.Data,TzarGames.MultiplayerKit.Generated.CharacterHairColor_Sync.Tag>.DeserializeJob))]
 [assembly: Unity.Jobs.RegisterGenericJobType(typeof(TzarGames.MultiplayerKit.ComponentDataSync<TzarGames.MultiplayerKit.Generated.CharacterHairColor_DataProcessor,TzarGames.MultiplayerKit.Generated.CharacterHairColor_Sync.Data,TzarGames.MultiplayerKit.Generated.CharacterHairColor_Sync.Tag>.SerializeJob))]
+[assembly: Unity.Jobs.RegisterGenericJobType(typeof(TzarGames.MultiplayerKit.DynamicBufferDataSync<TzarGames.MultiplayerKit.Generated.SceneSectionState_DataProcessor,TzarGames.MultiplayerKit.Generated.SceneSectionState_Sync.Data,TzarGames.MultiplayerKit.Generated.SceneSectionState_Sync.Tag>.DeserializeJob))]
+[assembly: Unity.Jobs.RegisterGenericJobType(typeof(TzarGames.MultiplayerKit.DynamicBufferDataSync<TzarGames.MultiplayerKit.Generated.SceneSectionState_DataProcessor,TzarGames.MultiplayerKit.Generated.SceneSectionState_Sync.Data,TzarGames.MultiplayerKit.Generated.SceneSectionState_Sync.Tag>.SerializeJob))]
+[assembly: Unity.Jobs.RegisterGenericJobType(typeof(TzarGames.MultiplayerKit.ComponentDataSync<TzarGames.MultiplayerKit.Generated.CharacterHairstyle_DataProcessor,TzarGames.MultiplayerKit.Generated.CharacterHairstyle_Sync.Data,TzarGames.MultiplayerKit.Generated.CharacterHairstyle_Sync.Tag>.DeserializeJob))]
+[assembly: Unity.Jobs.RegisterGenericJobType(typeof(TzarGames.MultiplayerKit.ComponentDataSync<TzarGames.MultiplayerKit.Generated.CharacterHairstyle_DataProcessor,TzarGames.MultiplayerKit.Generated.CharacterHairstyle_Sync.Data,TzarGames.MultiplayerKit.Generated.CharacterHairstyle_Sync.Tag>.SerializeJob))]
+[assembly: Unity.Jobs.RegisterGenericJobType(typeof(TzarGames.MultiplayerKit.ComponentDataSync<TzarGames.MultiplayerKit.Generated.ArenaMatchStateData_DataProcessor,TzarGames.MultiplayerKit.Generated.ArenaMatchStateData_Sync.Data,TzarGames.MultiplayerKit.Generated.ArenaMatchStateData_Sync.Tag>.DeserializeJob))]
+[assembly: Unity.Jobs.RegisterGenericJobType(typeof(TzarGames.MultiplayerKit.ComponentDataSync<TzarGames.MultiplayerKit.Generated.ArenaMatchStateData_DataProcessor,TzarGames.MultiplayerKit.Generated.ArenaMatchStateData_Sync.Data,TzarGames.MultiplayerKit.Generated.ArenaMatchStateData_Sync.Tag>.SerializeJob))]
+[assembly: Unity.Jobs.RegisterGenericJobType(typeof(TzarGames.MultiplayerKit.ComponentDataSync<TzarGames.MultiplayerKit.Generated.CharacterHead_DataProcessor,TzarGames.MultiplayerKit.Generated.CharacterHead_Sync.Data,TzarGames.MultiplayerKit.Generated.CharacterHead_Sync.Tag>.DeserializeJob))]
+[assembly: Unity.Jobs.RegisterGenericJobType(typeof(TzarGames.MultiplayerKit.ComponentDataSync<TzarGames.MultiplayerKit.Generated.CharacterHead_DataProcessor,TzarGames.MultiplayerKit.Generated.CharacterHead_Sync.Data,TzarGames.MultiplayerKit.Generated.CharacterHead_Sync.Tag>.SerializeJob))]
+[assembly: Unity.Jobs.RegisterGenericJobType(typeof(TzarGames.MultiplayerKit.ComponentDataSync<TzarGames.MultiplayerKit.Generated.CharacterEyeColor_DataProcessor,TzarGames.MultiplayerKit.Generated.CharacterEyeColor_Sync.Data,TzarGames.MultiplayerKit.Generated.CharacterEyeColor_Sync.Tag>.DeserializeJob))]
+[assembly: Unity.Jobs.RegisterGenericJobType(typeof(TzarGames.MultiplayerKit.ComponentDataSync<TzarGames.MultiplayerKit.Generated.CharacterEyeColor_DataProcessor,TzarGames.MultiplayerKit.Generated.CharacterEyeColor_Sync.Data,TzarGames.MultiplayerKit.Generated.CharacterEyeColor_Sync.Tag>.SerializeJob))]
 [assembly: Unity.Jobs.RegisterGenericJobType(typeof(TzarGames.MultiplayerKit.ComponentDataSync<TzarGames.MultiplayerKit.Generated.SafeZoneSyncData_DataProcessor,TzarGames.MultiplayerKit.Generated.SafeZoneSyncData_Sync.Data,TzarGames.MultiplayerKit.Generated.SafeZoneSyncData_Sync.Tag>.DeserializeJob))]
 [assembly: Unity.Jobs.RegisterGenericJobType(typeof(TzarGames.MultiplayerKit.ComponentDataSync<TzarGames.MultiplayerKit.Generated.SafeZoneSyncData_DataProcessor,TzarGames.MultiplayerKit.Generated.SafeZoneSyncData_Sync.Data,TzarGames.MultiplayerKit.Generated.SafeZoneSyncData_Sync.Tag>.SerializeJob))]
+[assembly: Unity.Jobs.RegisterGenericJobType(typeof(TzarGames.MultiplayerKit.ComponentDataSync<TzarGames.MultiplayerKit.Generated.CharacterClassData_DataProcessor,TzarGames.MultiplayerKit.Generated.CharacterClassData_Sync.Data,TzarGames.MultiplayerKit.Generated.CharacterClassData_Sync.Tag>.DeserializeJob))]
+[assembly: Unity.Jobs.RegisterGenericJobType(typeof(TzarGames.MultiplayerKit.ComponentDataSync<TzarGames.MultiplayerKit.Generated.CharacterClassData_DataProcessor,TzarGames.MultiplayerKit.Generated.CharacterClassData_Sync.Data,TzarGames.MultiplayerKit.Generated.CharacterClassData_Sync.Tag>.SerializeJob))]
+[assembly: Unity.Jobs.RegisterGenericJobType(typeof(TzarGames.MultiplayerKit.ComponentDataSync<TzarGames.MultiplayerKit.Generated.DifficultyData_DataProcessor,TzarGames.MultiplayerKit.Generated.DifficultyData_Sync.Data,TzarGames.MultiplayerKit.Generated.DifficultyData_Sync.Tag>.DeserializeJob))]
+[assembly: Unity.Jobs.RegisterGenericJobType(typeof(TzarGames.MultiplayerKit.ComponentDataSync<TzarGames.MultiplayerKit.Generated.DifficultyData_DataProcessor,TzarGames.MultiplayerKit.Generated.DifficultyData_Sync.Data,TzarGames.MultiplayerKit.Generated.DifficultyData_Sync.Tag>.SerializeJob))]
 [assembly: Unity.Jobs.RegisterGenericJobType(typeof(TzarGames.MultiplayerKit.ComponentDataSync<TzarGames.MultiplayerKit.Generated.MazeNetSync_DataProcessor,TzarGames.MultiplayerKit.Generated.MazeNetSync_Sync.Data,TzarGames.MultiplayerKit.Generated.MazeNetSync_Sync.Tag>.DeserializeJob))]
 [assembly: Unity.Jobs.RegisterGenericJobType(typeof(TzarGames.MultiplayerKit.ComponentDataSync<TzarGames.MultiplayerKit.Generated.MazeNetSync_DataProcessor,TzarGames.MultiplayerKit.Generated.MazeNetSync_Sync.Data,TzarGames.MultiplayerKit.Generated.MazeNetSync_Sync.Tag>.SerializeJob))]
 
 namespace TzarGames.MultiplayerKit.Generated
 {
-	public struct SceneSectionState_DataProcessor : INetworkIdDataProcessor
+	public struct SyncedColor_DataProcessor : INetworkIdDataProcessor
 	{
-		[ReadOnly] public BufferLookup<Arena.GameSceneCode.SceneSectionState> DataFromEntity;
+		[ReadOnly] public ComponentLookup<Arena.SyncedColor> DataFromEntity;
 		[ReadOnly] public EntityFromNetworkId EntityFromNetworkId;
 		public void Deserialize(in NetworkID networkID, in NativeArray<byte> bytes, in NetworkIdDataProcessorOptions options)
 		{
+			var data = NetworkIdDataProcessorUtility.AsStruct<SyncedColor_Sync.Data>(bytes);
 			if(EntityFromNetworkId.TryGet(networkID, out Entity entity) == false)
 			{
 				return;
 			}
 			var hasComponent = DataFromEntity.HasComponent(entity);
-			DynamicBuffer<Arena.GameSceneCode.SceneSectionState> dataBuffer;
+			Arena.SyncedColor sourceData;
 			if(hasComponent)
 			{
-				dataBuffer = options.Commands.SetBuffer<Arena.GameSceneCode.SceneSectionState>(entity);
+				sourceData = DataFromEntity[entity];
 			}
 			else
 			{
-				dataBuffer = options.Commands.AddBuffer<Arena.GameSceneCode.SceneSectionState>(entity);
+				sourceData = new Arena.SyncedColor();
 			}
-			var streamReader = new DataStreamReader(bytes);
-			var reader = new ReadStream(ref streamReader);
-			while(reader.CanReadBytes<SceneSectionState_Sync.Data>())
+			sourceData.Value = data.Value;
+			if (hasComponent) options.Commands.SetComponent(entity, sourceData);
+			else
 			{
-				var data = reader.ReadStruct<SceneSectionState_Sync.Data>();
-				var sourceData = new Arena.GameSceneCode.SceneSectionState();
-				sourceData.SectionIndex = data.SectionIndex;
-				sourceData.ShouldBeLoaded = data.ShouldBeLoaded;
-				dataBuffer.Add(sourceData);
+				options.Commands.AddComponent(entity, sourceData);
 			}
 		}
 	}
 	[DisableAutoCreation]
-	public partial class SceneSectionState_Sync : DynamicBufferDataSync<SceneSectionState_DataProcessor, SceneSectionState_Sync.Data, SceneSectionState_Sync.Tag>
+	public partial class SyncedColor_Sync : ComponentDataSync<SyncedColor_DataProcessor, SyncedColor_Sync.Data, SyncedColor_Sync.Tag>
 	{
 		ComponentType sourceType;
 		EntityQuery applyQuery;
@@ -75,20 +72,19 @@ namespace TzarGames.MultiplayerKit.Generated
 		#endif
 		[RuntimeInitializeOnLoadMethod] static void Register()
 		{
-			DataSyncBase.RegisterDataSync(typeof(SceneSectionState_Sync));
+			DataSyncBase.RegisterDataSync(typeof(SyncedColor_Sync));
 		}
 		public override void Initialize(DataSyncSystemBase system)
 		{
 			base.Initialize(system);
 			applyQuery = system.GetEntityQueryForJob(ComponentType.ReadOnly<NetworkID>());
-			sourceType = ComponentType.ReadOnly<Arena.GameSceneCode.SceneSectionState>();
+			sourceType = ComponentType.ReadOnly<Arena.SyncedColor>();
 			collectQuery = system.GetEntityQueryForJob(ComponentType.ReadOnly<NetworkID>(), sourceType);
 			Priority = 0;
 		}
 		public struct Data
 		{
-			public System.Int32 SectionIndex;
-			public System.Boolean ShouldBeLoaded;
+			public Arena.PackedColor Value;
 		}
 		public struct Tag : IComponentData
 		{
@@ -97,7 +93,7 @@ namespace TzarGames.MultiplayerKit.Generated
 		{
 			var job = new CollectDataJob()
 			{
-				SourceType = system.GetBufferTypeHandle<Arena.GameSceneCode.SceneSectionState>(true),
+				SourceType = system.GetComponentTypeHandle<Arena.SyncedColor>(true),
 				NetworkIdType = system.GetComponentTypeHandle<NetworkID>(true),
 				DataMap = dataMap,
 				IsZeroSized = sourceType.IsZeroSized
@@ -108,14 +104,17 @@ namespace TzarGames.MultiplayerKit.Generated
 		struct CollectDataJob : IJobChunk
 		{
 			public SerializedDataContainer DataMap;
-			[ReadOnly] public BufferTypeHandle<Arena.GameSceneCode.SceneSectionState> SourceType;
+			[ReadOnly] public ComponentTypeHandle<Arena.SyncedColor> SourceType;
 			[ReadOnly] public ComponentTypeHandle<NetworkID> NetworkIdType;
 			public bool IsZeroSized;
 			public void Execute(in ArchetypeChunk chunk, int unfilteredChunkIndex, bool useEnabledMask, in v128 chunkEnabledMask)
 			{
 				var netIds = chunk.GetNativeArray(NetworkIdType);
-				BufferAccessor<Arena.GameSceneCode.SceneSectionState> sources = default;
-				sources = chunk.GetBufferAccessor(SourceType);
+				NativeArray<Arena.SyncedColor> sources = default;
+				if(IsZeroSized == false)
+				{
+					sources = chunk.GetNativeArray(SourceType);
+				}
 				for(int i=0; i<chunk.Count; i++)
 				{
 					var networkId = netIds[i];
@@ -123,18 +122,13 @@ namespace TzarGames.MultiplayerKit.Generated
 					{
 						continue;
 					}
-					var sourceBuffer = sources[i];
-					var tmpDataArray = new NativeArray<Data>(sourceBuffer.Length, Allocator.Temp);
-					for(int k=0; k<sourceBuffer.Length; k++)
+					var data = new Data();
+					if(IsZeroSized == false)
 					{
-						var data = new Data();
-						var source = sourceBuffer[k];
-						data.SectionIndex = source.SectionIndex;
-						data.ShouldBeLoaded = source.ShouldBeLoaded;
-						tmpDataArray[k] = data;
+						var source = sources[i];
+						data.Value = source.Value;
 					}
-					DataMap.WriteNativeArray(networkId, tmpDataArray);
-					tmpDataArray.Dispose();
+					DataMap.WriteStruct(networkId, ref data);
 				}
 			}
 		}
@@ -142,12 +136,12 @@ namespace TzarGames.MultiplayerKit.Generated
 		{
 			return inputDeps;
 		}
-		protected override JobHandle CreateDataProcessor(JobHandle inputDeps, out SceneSectionState_DataProcessor dataProcessor)
+		protected override JobHandle CreateDataProcessor(JobHandle inputDeps, out SyncedColor_DataProcessor dataProcessor)
 		{
-			dataProcessor = new SceneSectionState_DataProcessor()
+			dataProcessor = new SyncedColor_DataProcessor()
 			{
 				EntityFromNetworkId = new EntityFromNetworkId(system),
-				DataFromEntity = system.GetBufferLookup<Arena.GameSceneCode.SceneSectionState>(true)
+				DataFromEntity = system.GetComponentLookup<Arena.SyncedColor>(true)
 			};
 			return inputDeps;
 		}
@@ -274,26 +268,26 @@ namespace TzarGames.MultiplayerKit.Generated
 			return false;
 		}
 	}
-	public struct CharacterEyeColor_DataProcessor : INetworkIdDataProcessor
+	public struct CharacterHairColor_DataProcessor : INetworkIdDataProcessor
 	{
-		[ReadOnly] public ComponentLookup<Arena.CharacterEyeColor> DataFromEntity;
+		[ReadOnly] public ComponentLookup<Arena.CharacterHairColor> DataFromEntity;
 		[ReadOnly] public EntityFromNetworkId EntityFromNetworkId;
 		public void Deserialize(in NetworkID networkID, in NativeArray<byte> bytes, in NetworkIdDataProcessorOptions options)
 		{
-			var data = NetworkIdDataProcessorUtility.AsStruct<CharacterEyeColor_Sync.Data>(bytes);
+			var data = NetworkIdDataProcessorUtility.AsStruct<CharacterHairColor_Sync.Data>(bytes);
 			if(EntityFromNetworkId.TryGet(networkID, out Entity entity) == false)
 			{
 				return;
 			}
 			var hasComponent = DataFromEntity.HasComponent(entity);
-			Arena.CharacterEyeColor sourceData;
+			Arena.CharacterHairColor sourceData;
 			if(hasComponent)
 			{
 				sourceData = DataFromEntity[entity];
 			}
 			else
 			{
-				sourceData = new Arena.CharacterEyeColor();
+				sourceData = new Arena.CharacterHairColor();
 			}
 			sourceData.Value = data.Value;
 			if (hasComponent) options.Commands.SetComponent(entity, sourceData);
@@ -304,7 +298,7 @@ namespace TzarGames.MultiplayerKit.Generated
 		}
 	}
 	[DisableAutoCreation]
-	public partial class CharacterEyeColor_Sync : ComponentDataSync<CharacterEyeColor_DataProcessor, CharacterEyeColor_Sync.Data, CharacterEyeColor_Sync.Tag>
+	public partial class CharacterHairColor_Sync : ComponentDataSync<CharacterHairColor_DataProcessor, CharacterHairColor_Sync.Data, CharacterHairColor_Sync.Tag>
 	{
 		ComponentType sourceType;
 		EntityQuery applyQuery;
@@ -314,13 +308,13 @@ namespace TzarGames.MultiplayerKit.Generated
 		#endif
 		[RuntimeInitializeOnLoadMethod] static void Register()
 		{
-			DataSyncBase.RegisterDataSync(typeof(CharacterEyeColor_Sync));
+			DataSyncBase.RegisterDataSync(typeof(CharacterHairColor_Sync));
 		}
 		public override void Initialize(DataSyncSystemBase system)
 		{
 			base.Initialize(system);
 			applyQuery = system.GetEntityQueryForJob(ComponentType.ReadOnly<NetworkID>());
-			sourceType = ComponentType.ReadOnly<Arena.CharacterEyeColor>();
+			sourceType = ComponentType.ReadOnly<Arena.CharacterHairColor>();
 			collectQuery = system.GetEntityQueryForJob(ComponentType.ReadOnly<NetworkID>(), sourceType);
 			Priority = 0;
 		}
@@ -335,7 +329,7 @@ namespace TzarGames.MultiplayerKit.Generated
 		{
 			var job = new CollectDataJob()
 			{
-				SourceType = system.GetComponentTypeHandle<Arena.CharacterEyeColor>(true),
+				SourceType = system.GetComponentTypeHandle<Arena.CharacterHairColor>(true),
 				NetworkIdType = system.GetComponentTypeHandle<NetworkID>(true),
 				DataMap = dataMap,
 				IsZeroSized = sourceType.IsZeroSized
@@ -346,13 +340,13 @@ namespace TzarGames.MultiplayerKit.Generated
 		struct CollectDataJob : IJobChunk
 		{
 			public SerializedDataContainer DataMap;
-			[ReadOnly] public ComponentTypeHandle<Arena.CharacterEyeColor> SourceType;
+			[ReadOnly] public ComponentTypeHandle<Arena.CharacterHairColor> SourceType;
 			[ReadOnly] public ComponentTypeHandle<NetworkID> NetworkIdType;
 			public bool IsZeroSized;
 			public void Execute(in ArchetypeChunk chunk, int unfilteredChunkIndex, bool useEnabledMask, in v128 chunkEnabledMask)
 			{
 				var netIds = chunk.GetNativeArray(NetworkIdType);
-				NativeArray<Arena.CharacterEyeColor> sources = default;
+				NativeArray<Arena.CharacterHairColor> sources = default;
 				if(IsZeroSized == false)
 				{
 					sources = chunk.GetNativeArray(SourceType);
@@ -378,12 +372,254 @@ namespace TzarGames.MultiplayerKit.Generated
 		{
 			return inputDeps;
 		}
-		protected override JobHandle CreateDataProcessor(JobHandle inputDeps, out CharacterEyeColor_DataProcessor dataProcessor)
+		protected override JobHandle CreateDataProcessor(JobHandle inputDeps, out CharacterHairColor_DataProcessor dataProcessor)
 		{
-			dataProcessor = new CharacterEyeColor_DataProcessor()
+			dataProcessor = new CharacterHairColor_DataProcessor()
 			{
 				EntityFromNetworkId = new EntityFromNetworkId(system),
-				DataFromEntity = system.GetComponentLookup<Arena.CharacterEyeColor>(true)
+				DataFromEntity = system.GetComponentLookup<Arena.CharacterHairColor>(true)
+			};
+			return inputDeps;
+		}
+		protected override bool UseRelevancy()
+		{
+			return false;
+		}
+	}
+	public struct SceneSectionState_DataProcessor : INetworkIdDataProcessor
+	{
+		[ReadOnly] public BufferLookup<Arena.GameSceneCode.SceneSectionState> DataFromEntity;
+		[ReadOnly] public EntityFromNetworkId EntityFromNetworkId;
+		public void Deserialize(in NetworkID networkID, in NativeArray<byte> bytes, in NetworkIdDataProcessorOptions options)
+		{
+			if(EntityFromNetworkId.TryGet(networkID, out Entity entity) == false)
+			{
+				return;
+			}
+			var hasComponent = DataFromEntity.HasComponent(entity);
+			DynamicBuffer<Arena.GameSceneCode.SceneSectionState> dataBuffer;
+			if(hasComponent)
+			{
+				dataBuffer = options.Commands.SetBuffer<Arena.GameSceneCode.SceneSectionState>(entity);
+			}
+			else
+			{
+				dataBuffer = options.Commands.AddBuffer<Arena.GameSceneCode.SceneSectionState>(entity);
+			}
+			var streamReader = new DataStreamReader(bytes);
+			var reader = new ReadStream(ref streamReader);
+			while(reader.CanReadBytes<SceneSectionState_Sync.Data>())
+			{
+				var data = reader.ReadStruct<SceneSectionState_Sync.Data>();
+				var sourceData = new Arena.GameSceneCode.SceneSectionState();
+				sourceData.SectionIndex = data.SectionIndex;
+				sourceData.ShouldBeLoaded = data.ShouldBeLoaded;
+				dataBuffer.Add(sourceData);
+			}
+		}
+	}
+	[DisableAutoCreation]
+	public partial class SceneSectionState_Sync : DynamicBufferDataSync<SceneSectionState_DataProcessor, SceneSectionState_Sync.Data, SceneSectionState_Sync.Tag>
+	{
+		ComponentType sourceType;
+		EntityQuery applyQuery;
+		EntityQuery collectQuery;
+		#if UNITY_EDITOR
+		[UnityEditor.InitializeOnLoadMethod]
+		#endif
+		[RuntimeInitializeOnLoadMethod] static void Register()
+		{
+			DataSyncBase.RegisterDataSync(typeof(SceneSectionState_Sync));
+		}
+		public override void Initialize(DataSyncSystemBase system)
+		{
+			base.Initialize(system);
+			applyQuery = system.GetEntityQueryForJob(ComponentType.ReadOnly<NetworkID>());
+			sourceType = ComponentType.ReadOnly<Arena.GameSceneCode.SceneSectionState>();
+			collectQuery = system.GetEntityQueryForJob(ComponentType.ReadOnly<NetworkID>(), sourceType);
+			Priority = 0;
+		}
+		public struct Data
+		{
+			public System.Int32 SectionIndex;
+			public System.Boolean ShouldBeLoaded;
+		}
+		public struct Tag : IComponentData
+		{
+		}
+		protected override JobHandle ScheduleCollectDataJob(SerializedDataContainer dataMap, JobHandle inputDeps)
+		{
+			var job = new CollectDataJob()
+			{
+				SourceType = system.GetBufferTypeHandle<Arena.GameSceneCode.SceneSectionState>(true),
+				NetworkIdType = system.GetComponentTypeHandle<NetworkID>(true),
+				DataMap = dataMap,
+				IsZeroSized = sourceType.IsZeroSized
+			};
+			return job.Schedule(collectQuery, inputDeps);
+		}
+		[BurstCompile]
+		struct CollectDataJob : IJobChunk
+		{
+			public SerializedDataContainer DataMap;
+			[ReadOnly] public BufferTypeHandle<Arena.GameSceneCode.SceneSectionState> SourceType;
+			[ReadOnly] public ComponentTypeHandle<NetworkID> NetworkIdType;
+			public bool IsZeroSized;
+			public void Execute(in ArchetypeChunk chunk, int unfilteredChunkIndex, bool useEnabledMask, in v128 chunkEnabledMask)
+			{
+				var netIds = chunk.GetNativeArray(NetworkIdType);
+				BufferAccessor<Arena.GameSceneCode.SceneSectionState> sources = default;
+				sources = chunk.GetBufferAccessor(SourceType);
+				for(int i=0; i<chunk.Count; i++)
+				{
+					var networkId = netIds[i];
+					if(networkId.IsValid == false)
+					{
+						continue;
+					}
+					var sourceBuffer = sources[i];
+					var tmpDataArray = new NativeArray<Data>(sourceBuffer.Length, Allocator.Temp);
+					for(int k=0; k<sourceBuffer.Length; k++)
+					{
+						var data = new Data();
+						var source = sourceBuffer[k];
+						data.SectionIndex = source.SectionIndex;
+						data.ShouldBeLoaded = source.ShouldBeLoaded;
+						tmpDataArray[k] = data;
+					}
+					DataMap.WriteNativeArray(networkId, tmpDataArray);
+					tmpDataArray.Dispose();
+				}
+			}
+		}
+		protected override JobHandle ScheduleRelevancyJob(SerializedDataContainer dataMap, NativeParallelMultiHashMap<int, int> relevancyMap, JobHandle inputDeps)
+		{
+			return inputDeps;
+		}
+		protected override JobHandle CreateDataProcessor(JobHandle inputDeps, out SceneSectionState_DataProcessor dataProcessor)
+		{
+			dataProcessor = new SceneSectionState_DataProcessor()
+			{
+				EntityFromNetworkId = new EntityFromNetworkId(system),
+				DataFromEntity = system.GetBufferLookup<Arena.GameSceneCode.SceneSectionState>(true)
+			};
+			return inputDeps;
+		}
+		protected override bool UseRelevancy()
+		{
+			return false;
+		}
+	}
+	public struct CharacterHairstyle_DataProcessor : INetworkIdDataProcessor
+	{
+		[ReadOnly] public ComponentLookup<Arena.CharacterHairstyle> DataFromEntity;
+		[ReadOnly] public EntityFromNetworkId EntityFromNetworkId;
+		public void Deserialize(in NetworkID networkID, in NativeArray<byte> bytes, in NetworkIdDataProcessorOptions options)
+		{
+			var data = NetworkIdDataProcessorUtility.AsStruct<CharacterHairstyle_Sync.Data>(bytes);
+			if(EntityFromNetworkId.TryGet(networkID, out Entity entity) == false)
+			{
+				return;
+			}
+			var hasComponent = DataFromEntity.HasComponent(entity);
+			Arena.CharacterHairstyle sourceData;
+			if(hasComponent)
+			{
+				sourceData = DataFromEntity[entity];
+			}
+			else
+			{
+				sourceData = new Arena.CharacterHairstyle();
+			}
+			sourceData.ID = data.ID;
+			if (hasComponent) options.Commands.SetComponent(entity, sourceData);
+			else
+			{
+				options.Commands.AddComponent(entity, sourceData);
+			}
+		}
+	}
+	[DisableAutoCreation]
+	public partial class CharacterHairstyle_Sync : ComponentDataSync<CharacterHairstyle_DataProcessor, CharacterHairstyle_Sync.Data, CharacterHairstyle_Sync.Tag>
+	{
+		ComponentType sourceType;
+		EntityQuery applyQuery;
+		EntityQuery collectQuery;
+		#if UNITY_EDITOR
+		[UnityEditor.InitializeOnLoadMethod]
+		#endif
+		[RuntimeInitializeOnLoadMethod] static void Register()
+		{
+			DataSyncBase.RegisterDataSync(typeof(CharacterHairstyle_Sync));
+		}
+		public override void Initialize(DataSyncSystemBase system)
+		{
+			base.Initialize(system);
+			applyQuery = system.GetEntityQueryForJob(ComponentType.ReadOnly<NetworkID>());
+			sourceType = ComponentType.ReadOnly<Arena.CharacterHairstyle>();
+			collectQuery = system.GetEntityQueryForJob(ComponentType.ReadOnly<NetworkID>(), sourceType);
+			Priority = 0;
+		}
+		public struct Data
+		{
+			public TzarGames.GameCore.PrefabID ID;
+		}
+		public struct Tag : IComponentData
+		{
+		}
+		protected override JobHandle ScheduleCollectDataJob(SerializedDataContainer dataMap, JobHandle inputDeps)
+		{
+			var job = new CollectDataJob()
+			{
+				SourceType = system.GetComponentTypeHandle<Arena.CharacterHairstyle>(true),
+				NetworkIdType = system.GetComponentTypeHandle<NetworkID>(true),
+				DataMap = dataMap,
+				IsZeroSized = sourceType.IsZeroSized
+			};
+			return job.Schedule(collectQuery, inputDeps);
+		}
+		[BurstCompile]
+		struct CollectDataJob : IJobChunk
+		{
+			public SerializedDataContainer DataMap;
+			[ReadOnly] public ComponentTypeHandle<Arena.CharacterHairstyle> SourceType;
+			[ReadOnly] public ComponentTypeHandle<NetworkID> NetworkIdType;
+			public bool IsZeroSized;
+			public void Execute(in ArchetypeChunk chunk, int unfilteredChunkIndex, bool useEnabledMask, in v128 chunkEnabledMask)
+			{
+				var netIds = chunk.GetNativeArray(NetworkIdType);
+				NativeArray<Arena.CharacterHairstyle> sources = default;
+				if(IsZeroSized == false)
+				{
+					sources = chunk.GetNativeArray(SourceType);
+				}
+				for(int i=0; i<chunk.Count; i++)
+				{
+					var networkId = netIds[i];
+					if(networkId.IsValid == false)
+					{
+						continue;
+					}
+					var data = new Data();
+					if(IsZeroSized == false)
+					{
+						var source = sources[i];
+						data.ID = source.ID;
+					}
+					DataMap.WriteStruct(networkId, ref data);
+				}
+			}
+		}
+		protected override JobHandle ScheduleRelevancyJob(SerializedDataContainer dataMap, NativeParallelMultiHashMap<int, int> relevancyMap, JobHandle inputDeps)
+		{
+			return inputDeps;
+		}
+		protected override JobHandle CreateDataProcessor(JobHandle inputDeps, out CharacterHairstyle_DataProcessor dataProcessor)
+		{
+			dataProcessor = new CharacterHairstyle_DataProcessor()
+			{
+				EntityFromNetworkId = new EntityFromNetworkId(system),
+				DataFromEntity = system.GetComponentLookup<Arena.CharacterHairstyle>(true)
 			};
 			return inputDeps;
 		}
@@ -534,28 +770,28 @@ namespace TzarGames.MultiplayerKit.Generated
 			return false;
 		}
 	}
-	public struct CharacterHairstyle_DataProcessor : INetworkIdDataProcessor
+	public struct CharacterHead_DataProcessor : INetworkIdDataProcessor
 	{
-		[ReadOnly] public ComponentLookup<Arena.CharacterHairstyle> DataFromEntity;
+		[ReadOnly] public ComponentLookup<Arena.CharacterHead> DataFromEntity;
 		[ReadOnly] public EntityFromNetworkId EntityFromNetworkId;
 		public void Deserialize(in NetworkID networkID, in NativeArray<byte> bytes, in NetworkIdDataProcessorOptions options)
 		{
-			var data = NetworkIdDataProcessorUtility.AsStruct<CharacterHairstyle_Sync.Data>(bytes);
+			var data = NetworkIdDataProcessorUtility.AsStruct<CharacterHead_Sync.Data>(bytes);
 			if(EntityFromNetworkId.TryGet(networkID, out Entity entity) == false)
 			{
 				return;
 			}
 			var hasComponent = DataFromEntity.HasComponent(entity);
-			Arena.CharacterHairstyle sourceData;
+			Arena.CharacterHead sourceData;
 			if(hasComponent)
 			{
 				sourceData = DataFromEntity[entity];
 			}
 			else
 			{
-				sourceData = new Arena.CharacterHairstyle();
+				sourceData = new Arena.CharacterHead();
 			}
-			sourceData.ID = data.ID;
+			sourceData.ModelID = data.ModelID;
 			if (hasComponent) options.Commands.SetComponent(entity, sourceData);
 			else
 			{
@@ -564,7 +800,7 @@ namespace TzarGames.MultiplayerKit.Generated
 		}
 	}
 	[DisableAutoCreation]
-	public partial class CharacterHairstyle_Sync : ComponentDataSync<CharacterHairstyle_DataProcessor, CharacterHairstyle_Sync.Data, CharacterHairstyle_Sync.Tag>
+	public partial class CharacterHead_Sync : ComponentDataSync<CharacterHead_DataProcessor, CharacterHead_Sync.Data, CharacterHead_Sync.Tag>
 	{
 		ComponentType sourceType;
 		EntityQuery applyQuery;
@@ -574,19 +810,19 @@ namespace TzarGames.MultiplayerKit.Generated
 		#endif
 		[RuntimeInitializeOnLoadMethod] static void Register()
 		{
-			DataSyncBase.RegisterDataSync(typeof(CharacterHairstyle_Sync));
+			DataSyncBase.RegisterDataSync(typeof(CharacterHead_Sync));
 		}
 		public override void Initialize(DataSyncSystemBase system)
 		{
 			base.Initialize(system);
 			applyQuery = system.GetEntityQueryForJob(ComponentType.ReadOnly<NetworkID>());
-			sourceType = ComponentType.ReadOnly<Arena.CharacterHairstyle>();
+			sourceType = ComponentType.ReadOnly<Arena.CharacterHead>();
 			collectQuery = system.GetEntityQueryForJob(ComponentType.ReadOnly<NetworkID>(), sourceType);
 			Priority = 0;
 		}
 		public struct Data
 		{
-			public TzarGames.GameCore.PrefabID ID;
+			public TzarGames.GameCore.PrefabID ModelID;
 		}
 		public struct Tag : IComponentData
 		{
@@ -595,7 +831,7 @@ namespace TzarGames.MultiplayerKit.Generated
 		{
 			var job = new CollectDataJob()
 			{
-				SourceType = system.GetComponentTypeHandle<Arena.CharacterHairstyle>(true),
+				SourceType = system.GetComponentTypeHandle<Arena.CharacterHead>(true),
 				NetworkIdType = system.GetComponentTypeHandle<NetworkID>(true),
 				DataMap = dataMap,
 				IsZeroSized = sourceType.IsZeroSized
@@ -606,13 +842,13 @@ namespace TzarGames.MultiplayerKit.Generated
 		struct CollectDataJob : IJobChunk
 		{
 			public SerializedDataContainer DataMap;
-			[ReadOnly] public ComponentTypeHandle<Arena.CharacterHairstyle> SourceType;
+			[ReadOnly] public ComponentTypeHandle<Arena.CharacterHead> SourceType;
 			[ReadOnly] public ComponentTypeHandle<NetworkID> NetworkIdType;
 			public bool IsZeroSized;
 			public void Execute(in ArchetypeChunk chunk, int unfilteredChunkIndex, bool useEnabledMask, in v128 chunkEnabledMask)
 			{
 				var netIds = chunk.GetNativeArray(NetworkIdType);
-				NativeArray<Arena.CharacterHairstyle> sources = default;
+				NativeArray<Arena.CharacterHead> sources = default;
 				if(IsZeroSized == false)
 				{
 					sources = chunk.GetNativeArray(SourceType);
@@ -628,7 +864,7 @@ namespace TzarGames.MultiplayerKit.Generated
 					if(IsZeroSized == false)
 					{
 						var source = sources[i];
-						data.ID = source.ID;
+						data.ModelID = source.ModelID;
 					}
 					DataMap.WriteStruct(networkId, ref data);
 				}
@@ -638,12 +874,12 @@ namespace TzarGames.MultiplayerKit.Generated
 		{
 			return inputDeps;
 		}
-		protected override JobHandle CreateDataProcessor(JobHandle inputDeps, out CharacterHairstyle_DataProcessor dataProcessor)
+		protected override JobHandle CreateDataProcessor(JobHandle inputDeps, out CharacterHead_DataProcessor dataProcessor)
 		{
-			dataProcessor = new CharacterHairstyle_DataProcessor()
+			dataProcessor = new CharacterHead_DataProcessor()
 			{
 				EntityFromNetworkId = new EntityFromNetworkId(system),
-				DataFromEntity = system.GetComponentLookup<Arena.CharacterHairstyle>(true)
+				DataFromEntity = system.GetComponentLookup<Arena.CharacterHead>(true)
 			};
 			return inputDeps;
 		}
@@ -652,28 +888,28 @@ namespace TzarGames.MultiplayerKit.Generated
 			return false;
 		}
 	}
-	public struct DifficultyData_DataProcessor : INetworkIdDataProcessor
+	public struct CharacterEyeColor_DataProcessor : INetworkIdDataProcessor
 	{
-		[ReadOnly] public ComponentLookup<Arena.DifficultyData> DataFromEntity;
+		[ReadOnly] public ComponentLookup<Arena.CharacterEyeColor> DataFromEntity;
 		[ReadOnly] public EntityFromNetworkId EntityFromNetworkId;
 		public void Deserialize(in NetworkID networkID, in NativeArray<byte> bytes, in NetworkIdDataProcessorOptions options)
 		{
-			var data = NetworkIdDataProcessorUtility.AsStruct<DifficultyData_Sync.Data>(bytes);
+			var data = NetworkIdDataProcessorUtility.AsStruct<CharacterEyeColor_Sync.Data>(bytes);
 			if(EntityFromNetworkId.TryGet(networkID, out Entity entity) == false)
 			{
 				return;
 			}
 			var hasComponent = DataFromEntity.HasComponent(entity);
-			Arena.DifficultyData sourceData;
+			Arena.CharacterEyeColor sourceData;
 			if(hasComponent)
 			{
 				sourceData = DataFromEntity[entity];
 			}
 			else
 			{
-				sourceData = new Arena.DifficultyData();
+				sourceData = new Arena.CharacterEyeColor();
 			}
-			sourceData.EnemyStrengthMultiplier = data.EnemyStrengthMultiplier;
+			sourceData.Value = data.Value;
 			if (hasComponent) options.Commands.SetComponent(entity, sourceData);
 			else
 			{
@@ -682,7 +918,7 @@ namespace TzarGames.MultiplayerKit.Generated
 		}
 	}
 	[DisableAutoCreation]
-	public partial class DifficultyData_Sync : ComponentDataSync<DifficultyData_DataProcessor, DifficultyData_Sync.Data, DifficultyData_Sync.Tag>
+	public partial class CharacterEyeColor_Sync : ComponentDataSync<CharacterEyeColor_DataProcessor, CharacterEyeColor_Sync.Data, CharacterEyeColor_Sync.Tag>
 	{
 		ComponentType sourceType;
 		EntityQuery applyQuery;
@@ -692,19 +928,19 @@ namespace TzarGames.MultiplayerKit.Generated
 		#endif
 		[RuntimeInitializeOnLoadMethod] static void Register()
 		{
-			DataSyncBase.RegisterDataSync(typeof(DifficultyData_Sync));
+			DataSyncBase.RegisterDataSync(typeof(CharacterEyeColor_Sync));
 		}
 		public override void Initialize(DataSyncSystemBase system)
 		{
 			base.Initialize(system);
 			applyQuery = system.GetEntityQueryForJob(ComponentType.ReadOnly<NetworkID>());
-			sourceType = ComponentType.ReadOnly<Arena.DifficultyData>();
+			sourceType = ComponentType.ReadOnly<Arena.CharacterEyeColor>();
 			collectQuery = system.GetEntityQueryForJob(ComponentType.ReadOnly<NetworkID>(), sourceType);
 			Priority = 0;
 		}
 		public struct Data
 		{
-			public System.UInt16 EnemyStrengthMultiplier;
+			public Arena.PackedColor Value;
 		}
 		public struct Tag : IComponentData
 		{
@@ -713,7 +949,7 @@ namespace TzarGames.MultiplayerKit.Generated
 		{
 			var job = new CollectDataJob()
 			{
-				SourceType = system.GetComponentTypeHandle<Arena.DifficultyData>(true),
+				SourceType = system.GetComponentTypeHandle<Arena.CharacterEyeColor>(true),
 				NetworkIdType = system.GetComponentTypeHandle<NetworkID>(true),
 				DataMap = dataMap,
 				IsZeroSized = sourceType.IsZeroSized
@@ -724,13 +960,13 @@ namespace TzarGames.MultiplayerKit.Generated
 		struct CollectDataJob : IJobChunk
 		{
 			public SerializedDataContainer DataMap;
-			[ReadOnly] public ComponentTypeHandle<Arena.DifficultyData> SourceType;
+			[ReadOnly] public ComponentTypeHandle<Arena.CharacterEyeColor> SourceType;
 			[ReadOnly] public ComponentTypeHandle<NetworkID> NetworkIdType;
 			public bool IsZeroSized;
 			public void Execute(in ArchetypeChunk chunk, int unfilteredChunkIndex, bool useEnabledMask, in v128 chunkEnabledMask)
 			{
 				var netIds = chunk.GetNativeArray(NetworkIdType);
-				NativeArray<Arena.DifficultyData> sources = default;
+				NativeArray<Arena.CharacterEyeColor> sources = default;
 				if(IsZeroSized == false)
 				{
 					sources = chunk.GetNativeArray(SourceType);
@@ -746,7 +982,7 @@ namespace TzarGames.MultiplayerKit.Generated
 					if(IsZeroSized == false)
 					{
 						var source = sources[i];
-						data.EnemyStrengthMultiplier = source.EnemyStrengthMultiplier;
+						data.Value = source.Value;
 					}
 					DataMap.WriteStruct(networkId, ref data);
 				}
@@ -756,12 +992,127 @@ namespace TzarGames.MultiplayerKit.Generated
 		{
 			return inputDeps;
 		}
-		protected override JobHandle CreateDataProcessor(JobHandle inputDeps, out DifficultyData_DataProcessor dataProcessor)
+		protected override JobHandle CreateDataProcessor(JobHandle inputDeps, out CharacterEyeColor_DataProcessor dataProcessor)
 		{
-			dataProcessor = new DifficultyData_DataProcessor()
+			dataProcessor = new CharacterEyeColor_DataProcessor()
 			{
 				EntityFromNetworkId = new EntityFromNetworkId(system),
-				DataFromEntity = system.GetComponentLookup<Arena.DifficultyData>(true)
+				DataFromEntity = system.GetComponentLookup<Arena.CharacterEyeColor>(true)
+			};
+			return inputDeps;
+		}
+		protected override bool UseRelevancy()
+		{
+			return false;
+		}
+	}
+	public struct SafeZoneSyncData_DataProcessor : INetworkIdDataProcessor
+	{
+		[ReadOnly] public ComponentLookup<Arena.Server.SafeZoneSyncData> DataFromEntity;
+		[ReadOnly] public EntityFromNetworkId EntityFromNetworkId;
+		public void Deserialize(in NetworkID networkID, in NativeArray<byte> bytes, in NetworkIdDataProcessorOptions options)
+		{
+			var data = NetworkIdDataProcessorUtility.AsStruct<SafeZoneSyncData_Sync.Data>(bytes);
+			if(EntityFromNetworkId.TryGet(networkID, out Entity entity) == false)
+			{
+				return;
+			}
+			var hasComponent = DataFromEntity.HasComponent(entity);
+			Arena.Server.SafeZoneSyncData sourceData;
+			if(hasComponent)
+			{
+				sourceData = DataFromEntity[entity];
+			}
+			else
+			{
+				sourceData = new Arena.Server.SafeZoneSyncData();
+			}
+			if (hasComponent) options.Commands.SetComponent(entity, sourceData);
+			else
+			{
+				options.Commands.AddComponent(entity, sourceData);
+			}
+		}
+	}
+	[DisableAutoCreation]
+	public partial class SafeZoneSyncData_Sync : ComponentDataSync<SafeZoneSyncData_DataProcessor, SafeZoneSyncData_Sync.Data, SafeZoneSyncData_Sync.Tag>
+	{
+		ComponentType sourceType;
+		EntityQuery applyQuery;
+		EntityQuery collectQuery;
+		#if UNITY_EDITOR
+		[UnityEditor.InitializeOnLoadMethod]
+		#endif
+		[RuntimeInitializeOnLoadMethod] static void Register()
+		{
+			DataSyncBase.RegisterDataSync(typeof(SafeZoneSyncData_Sync));
+		}
+		public override void Initialize(DataSyncSystemBase system)
+		{
+			base.Initialize(system);
+			applyQuery = system.GetEntityQueryForJob(ComponentType.ReadOnly<NetworkID>());
+			sourceType = ComponentType.ReadOnly<Arena.Server.SafeZoneSyncData>();
+			collectQuery = system.GetEntityQueryForJob(ComponentType.ReadOnly<NetworkID>(), sourceType);
+			Priority = 0;
+		}
+		public struct Data
+		{
+		}
+		public struct Tag : IComponentData
+		{
+		}
+		protected override JobHandle ScheduleCollectDataJob(SerializedDataContainer dataMap, JobHandle inputDeps)
+		{
+			var job = new CollectDataJob()
+			{
+				SourceType = system.GetComponentTypeHandle<Arena.Server.SafeZoneSyncData>(true),
+				NetworkIdType = system.GetComponentTypeHandle<NetworkID>(true),
+				DataMap = dataMap,
+				IsZeroSized = sourceType.IsZeroSized
+			};
+			return job.Schedule(collectQuery, inputDeps);
+		}
+		[BurstCompile]
+		struct CollectDataJob : IJobChunk
+		{
+			public SerializedDataContainer DataMap;
+			[ReadOnly] public ComponentTypeHandle<Arena.Server.SafeZoneSyncData> SourceType;
+			[ReadOnly] public ComponentTypeHandle<NetworkID> NetworkIdType;
+			public bool IsZeroSized;
+			public void Execute(in ArchetypeChunk chunk, int unfilteredChunkIndex, bool useEnabledMask, in v128 chunkEnabledMask)
+			{
+				var netIds = chunk.GetNativeArray(NetworkIdType);
+				NativeArray<Arena.Server.SafeZoneSyncData> sources = default;
+				if(IsZeroSized == false)
+				{
+					sources = chunk.GetNativeArray(SourceType);
+				}
+				for(int i=0; i<chunk.Count; i++)
+				{
+					var networkId = netIds[i];
+					if(networkId.IsValid == false)
+					{
+						continue;
+					}
+					var data = new Data();
+					if(IsZeroSized == false)
+					{
+						var source = sources[i];
+					}
+					DataMap.WriteStruct(networkId, ref data);
+				}
+			}
+		}
+		protected override JobHandle ScheduleRelevancyJob(SerializedDataContainer dataMap, NativeParallelMultiHashMap<int, int> relevancyMap, JobHandle inputDeps)
+		{
+			return inputDeps;
+		}
+		protected override JobHandle CreateDataProcessor(JobHandle inputDeps, out SafeZoneSyncData_DataProcessor dataProcessor)
+		{
+			dataProcessor = new SafeZoneSyncData_DataProcessor()
+			{
+				EntityFromNetworkId = new EntityFromNetworkId(system),
+				DataFromEntity = system.GetComponentLookup<Arena.Server.SafeZoneSyncData>(true)
 			};
 			return inputDeps;
 		}
@@ -888,28 +1239,28 @@ namespace TzarGames.MultiplayerKit.Generated
 			return false;
 		}
 	}
-	public struct CharacterHead_DataProcessor : INetworkIdDataProcessor
+	public struct DifficultyData_DataProcessor : INetworkIdDataProcessor
 	{
-		[ReadOnly] public ComponentLookup<Arena.CharacterHead> DataFromEntity;
+		[ReadOnly] public ComponentLookup<Arena.DifficultyData> DataFromEntity;
 		[ReadOnly] public EntityFromNetworkId EntityFromNetworkId;
 		public void Deserialize(in NetworkID networkID, in NativeArray<byte> bytes, in NetworkIdDataProcessorOptions options)
 		{
-			var data = NetworkIdDataProcessorUtility.AsStruct<CharacterHead_Sync.Data>(bytes);
+			var data = NetworkIdDataProcessorUtility.AsStruct<DifficultyData_Sync.Data>(bytes);
 			if(EntityFromNetworkId.TryGet(networkID, out Entity entity) == false)
 			{
 				return;
 			}
 			var hasComponent = DataFromEntity.HasComponent(entity);
-			Arena.CharacterHead sourceData;
+			Arena.DifficultyData sourceData;
 			if(hasComponent)
 			{
 				sourceData = DataFromEntity[entity];
 			}
 			else
 			{
-				sourceData = new Arena.CharacterHead();
+				sourceData = new Arena.DifficultyData();
 			}
-			sourceData.ModelID = data.ModelID;
+			sourceData.EnemyStrengthMultiplier = data.EnemyStrengthMultiplier;
 			if (hasComponent) options.Commands.SetComponent(entity, sourceData);
 			else
 			{
@@ -918,7 +1269,7 @@ namespace TzarGames.MultiplayerKit.Generated
 		}
 	}
 	[DisableAutoCreation]
-	public partial class CharacterHead_Sync : ComponentDataSync<CharacterHead_DataProcessor, CharacterHead_Sync.Data, CharacterHead_Sync.Tag>
+	public partial class DifficultyData_Sync : ComponentDataSync<DifficultyData_DataProcessor, DifficultyData_Sync.Data, DifficultyData_Sync.Tag>
 	{
 		ComponentType sourceType;
 		EntityQuery applyQuery;
@@ -928,19 +1279,19 @@ namespace TzarGames.MultiplayerKit.Generated
 		#endif
 		[RuntimeInitializeOnLoadMethod] static void Register()
 		{
-			DataSyncBase.RegisterDataSync(typeof(CharacterHead_Sync));
+			DataSyncBase.RegisterDataSync(typeof(DifficultyData_Sync));
 		}
 		public override void Initialize(DataSyncSystemBase system)
 		{
 			base.Initialize(system);
 			applyQuery = system.GetEntityQueryForJob(ComponentType.ReadOnly<NetworkID>());
-			sourceType = ComponentType.ReadOnly<Arena.CharacterHead>();
+			sourceType = ComponentType.ReadOnly<Arena.DifficultyData>();
 			collectQuery = system.GetEntityQueryForJob(ComponentType.ReadOnly<NetworkID>(), sourceType);
 			Priority = 0;
 		}
 		public struct Data
 		{
-			public TzarGames.GameCore.PrefabID ModelID;
+			public System.UInt16 EnemyStrengthMultiplier;
 		}
 		public struct Tag : IComponentData
 		{
@@ -949,7 +1300,7 @@ namespace TzarGames.MultiplayerKit.Generated
 		{
 			var job = new CollectDataJob()
 			{
-				SourceType = system.GetComponentTypeHandle<Arena.CharacterHead>(true),
+				SourceType = system.GetComponentTypeHandle<Arena.DifficultyData>(true),
 				NetworkIdType = system.GetComponentTypeHandle<NetworkID>(true),
 				DataMap = dataMap,
 				IsZeroSized = sourceType.IsZeroSized
@@ -960,13 +1311,13 @@ namespace TzarGames.MultiplayerKit.Generated
 		struct CollectDataJob : IJobChunk
 		{
 			public SerializedDataContainer DataMap;
-			[ReadOnly] public ComponentTypeHandle<Arena.CharacterHead> SourceType;
+			[ReadOnly] public ComponentTypeHandle<Arena.DifficultyData> SourceType;
 			[ReadOnly] public ComponentTypeHandle<NetworkID> NetworkIdType;
 			public bool IsZeroSized;
 			public void Execute(in ArchetypeChunk chunk, int unfilteredChunkIndex, bool useEnabledMask, in v128 chunkEnabledMask)
 			{
 				var netIds = chunk.GetNativeArray(NetworkIdType);
-				NativeArray<Arena.CharacterHead> sources = default;
+				NativeArray<Arena.DifficultyData> sources = default;
 				if(IsZeroSized == false)
 				{
 					sources = chunk.GetNativeArray(SourceType);
@@ -982,7 +1333,7 @@ namespace TzarGames.MultiplayerKit.Generated
 					if(IsZeroSized == false)
 					{
 						var source = sources[i];
-						data.ModelID = source.ModelID;
+						data.EnemyStrengthMultiplier = source.EnemyStrengthMultiplier;
 					}
 					DataMap.WriteStruct(networkId, ref data);
 				}
@@ -992,363 +1343,12 @@ namespace TzarGames.MultiplayerKit.Generated
 		{
 			return inputDeps;
 		}
-		protected override JobHandle CreateDataProcessor(JobHandle inputDeps, out CharacterHead_DataProcessor dataProcessor)
+		protected override JobHandle CreateDataProcessor(JobHandle inputDeps, out DifficultyData_DataProcessor dataProcessor)
 		{
-			dataProcessor = new CharacterHead_DataProcessor()
+			dataProcessor = new DifficultyData_DataProcessor()
 			{
 				EntityFromNetworkId = new EntityFromNetworkId(system),
-				DataFromEntity = system.GetComponentLookup<Arena.CharacterHead>(true)
-			};
-			return inputDeps;
-		}
-		protected override bool UseRelevancy()
-		{
-			return false;
-		}
-	}
-	public struct SyncedColor_DataProcessor : INetworkIdDataProcessor
-	{
-		[ReadOnly] public ComponentLookup<Arena.SyncedColor> DataFromEntity;
-		[ReadOnly] public EntityFromNetworkId EntityFromNetworkId;
-		public void Deserialize(in NetworkID networkID, in NativeArray<byte> bytes, in NetworkIdDataProcessorOptions options)
-		{
-			var data = NetworkIdDataProcessorUtility.AsStruct<SyncedColor_Sync.Data>(bytes);
-			if(EntityFromNetworkId.TryGet(networkID, out Entity entity) == false)
-			{
-				return;
-			}
-			var hasComponent = DataFromEntity.HasComponent(entity);
-			Arena.SyncedColor sourceData;
-			if(hasComponent)
-			{
-				sourceData = DataFromEntity[entity];
-			}
-			else
-			{
-				sourceData = new Arena.SyncedColor();
-			}
-			sourceData.Value = data.Value;
-			if (hasComponent) options.Commands.SetComponent(entity, sourceData);
-			else
-			{
-				options.Commands.AddComponent(entity, sourceData);
-			}
-		}
-	}
-	[DisableAutoCreation]
-	public partial class SyncedColor_Sync : ComponentDataSync<SyncedColor_DataProcessor, SyncedColor_Sync.Data, SyncedColor_Sync.Tag>
-	{
-		ComponentType sourceType;
-		EntityQuery applyQuery;
-		EntityQuery collectQuery;
-		#if UNITY_EDITOR
-		[UnityEditor.InitializeOnLoadMethod]
-		#endif
-		[RuntimeInitializeOnLoadMethod] static void Register()
-		{
-			DataSyncBase.RegisterDataSync(typeof(SyncedColor_Sync));
-		}
-		public override void Initialize(DataSyncSystemBase system)
-		{
-			base.Initialize(system);
-			applyQuery = system.GetEntityQueryForJob(ComponentType.ReadOnly<NetworkID>());
-			sourceType = ComponentType.ReadOnly<Arena.SyncedColor>();
-			collectQuery = system.GetEntityQueryForJob(ComponentType.ReadOnly<NetworkID>(), sourceType);
-			Priority = 0;
-		}
-		public struct Data
-		{
-			public Arena.PackedColor Value;
-		}
-		public struct Tag : IComponentData
-		{
-		}
-		protected override JobHandle ScheduleCollectDataJob(SerializedDataContainer dataMap, JobHandle inputDeps)
-		{
-			var job = new CollectDataJob()
-			{
-				SourceType = system.GetComponentTypeHandle<Arena.SyncedColor>(true),
-				NetworkIdType = system.GetComponentTypeHandle<NetworkID>(true),
-				DataMap = dataMap,
-				IsZeroSized = sourceType.IsZeroSized
-			};
-			return job.Schedule(collectQuery, inputDeps);
-		}
-		[BurstCompile]
-		struct CollectDataJob : IJobChunk
-		{
-			public SerializedDataContainer DataMap;
-			[ReadOnly] public ComponentTypeHandle<Arena.SyncedColor> SourceType;
-			[ReadOnly] public ComponentTypeHandle<NetworkID> NetworkIdType;
-			public bool IsZeroSized;
-			public void Execute(in ArchetypeChunk chunk, int unfilteredChunkIndex, bool useEnabledMask, in v128 chunkEnabledMask)
-			{
-				var netIds = chunk.GetNativeArray(NetworkIdType);
-				NativeArray<Arena.SyncedColor> sources = default;
-				if(IsZeroSized == false)
-				{
-					sources = chunk.GetNativeArray(SourceType);
-				}
-				for(int i=0; i<chunk.Count; i++)
-				{
-					var networkId = netIds[i];
-					if(networkId.IsValid == false)
-					{
-						continue;
-					}
-					var data = new Data();
-					if(IsZeroSized == false)
-					{
-						var source = sources[i];
-						data.Value = source.Value;
-					}
-					DataMap.WriteStruct(networkId, ref data);
-				}
-			}
-		}
-		protected override JobHandle ScheduleRelevancyJob(SerializedDataContainer dataMap, NativeParallelMultiHashMap<int, int> relevancyMap, JobHandle inputDeps)
-		{
-			return inputDeps;
-		}
-		protected override JobHandle CreateDataProcessor(JobHandle inputDeps, out SyncedColor_DataProcessor dataProcessor)
-		{
-			dataProcessor = new SyncedColor_DataProcessor()
-			{
-				EntityFromNetworkId = new EntityFromNetworkId(system),
-				DataFromEntity = system.GetComponentLookup<Arena.SyncedColor>(true)
-			};
-			return inputDeps;
-		}
-		protected override bool UseRelevancy()
-		{
-			return false;
-		}
-	}
-	public struct CharacterHairColor_DataProcessor : INetworkIdDataProcessor
-	{
-		[ReadOnly] public ComponentLookup<Arena.CharacterHairColor> DataFromEntity;
-		[ReadOnly] public EntityFromNetworkId EntityFromNetworkId;
-		public void Deserialize(in NetworkID networkID, in NativeArray<byte> bytes, in NetworkIdDataProcessorOptions options)
-		{
-			var data = NetworkIdDataProcessorUtility.AsStruct<CharacterHairColor_Sync.Data>(bytes);
-			if(EntityFromNetworkId.TryGet(networkID, out Entity entity) == false)
-			{
-				return;
-			}
-			var hasComponent = DataFromEntity.HasComponent(entity);
-			Arena.CharacterHairColor sourceData;
-			if(hasComponent)
-			{
-				sourceData = DataFromEntity[entity];
-			}
-			else
-			{
-				sourceData = new Arena.CharacterHairColor();
-			}
-			sourceData.Value = data.Value;
-			if (hasComponent) options.Commands.SetComponent(entity, sourceData);
-			else
-			{
-				options.Commands.AddComponent(entity, sourceData);
-			}
-		}
-	}
-	[DisableAutoCreation]
-	public partial class CharacterHairColor_Sync : ComponentDataSync<CharacterHairColor_DataProcessor, CharacterHairColor_Sync.Data, CharacterHairColor_Sync.Tag>
-	{
-		ComponentType sourceType;
-		EntityQuery applyQuery;
-		EntityQuery collectQuery;
-		#if UNITY_EDITOR
-		[UnityEditor.InitializeOnLoadMethod]
-		#endif
-		[RuntimeInitializeOnLoadMethod] static void Register()
-		{
-			DataSyncBase.RegisterDataSync(typeof(CharacterHairColor_Sync));
-		}
-		public override void Initialize(DataSyncSystemBase system)
-		{
-			base.Initialize(system);
-			applyQuery = system.GetEntityQueryForJob(ComponentType.ReadOnly<NetworkID>());
-			sourceType = ComponentType.ReadOnly<Arena.CharacterHairColor>();
-			collectQuery = system.GetEntityQueryForJob(ComponentType.ReadOnly<NetworkID>(), sourceType);
-			Priority = 0;
-		}
-		public struct Data
-		{
-			public Arena.PackedColor Value;
-		}
-		public struct Tag : IComponentData
-		{
-		}
-		protected override JobHandle ScheduleCollectDataJob(SerializedDataContainer dataMap, JobHandle inputDeps)
-		{
-			var job = new CollectDataJob()
-			{
-				SourceType = system.GetComponentTypeHandle<Arena.CharacterHairColor>(true),
-				NetworkIdType = system.GetComponentTypeHandle<NetworkID>(true),
-				DataMap = dataMap,
-				IsZeroSized = sourceType.IsZeroSized
-			};
-			return job.Schedule(collectQuery, inputDeps);
-		}
-		[BurstCompile]
-		struct CollectDataJob : IJobChunk
-		{
-			public SerializedDataContainer DataMap;
-			[ReadOnly] public ComponentTypeHandle<Arena.CharacterHairColor> SourceType;
-			[ReadOnly] public ComponentTypeHandle<NetworkID> NetworkIdType;
-			public bool IsZeroSized;
-			public void Execute(in ArchetypeChunk chunk, int unfilteredChunkIndex, bool useEnabledMask, in v128 chunkEnabledMask)
-			{
-				var netIds = chunk.GetNativeArray(NetworkIdType);
-				NativeArray<Arena.CharacterHairColor> sources = default;
-				if(IsZeroSized == false)
-				{
-					sources = chunk.GetNativeArray(SourceType);
-				}
-				for(int i=0; i<chunk.Count; i++)
-				{
-					var networkId = netIds[i];
-					if(networkId.IsValid == false)
-					{
-						continue;
-					}
-					var data = new Data();
-					if(IsZeroSized == false)
-					{
-						var source = sources[i];
-						data.Value = source.Value;
-					}
-					DataMap.WriteStruct(networkId, ref data);
-				}
-			}
-		}
-		protected override JobHandle ScheduleRelevancyJob(SerializedDataContainer dataMap, NativeParallelMultiHashMap<int, int> relevancyMap, JobHandle inputDeps)
-		{
-			return inputDeps;
-		}
-		protected override JobHandle CreateDataProcessor(JobHandle inputDeps, out CharacterHairColor_DataProcessor dataProcessor)
-		{
-			dataProcessor = new CharacterHairColor_DataProcessor()
-			{
-				EntityFromNetworkId = new EntityFromNetworkId(system),
-				DataFromEntity = system.GetComponentLookup<Arena.CharacterHairColor>(true)
-			};
-			return inputDeps;
-		}
-		protected override bool UseRelevancy()
-		{
-			return false;
-		}
-	}
-	public struct SafeZoneSyncData_DataProcessor : INetworkIdDataProcessor
-	{
-		[ReadOnly] public ComponentLookup<Arena.Server.SafeZoneSyncData> DataFromEntity;
-		[ReadOnly] public EntityFromNetworkId EntityFromNetworkId;
-		public void Deserialize(in NetworkID networkID, in NativeArray<byte> bytes, in NetworkIdDataProcessorOptions options)
-		{
-			var data = NetworkIdDataProcessorUtility.AsStruct<SafeZoneSyncData_Sync.Data>(bytes);
-			if(EntityFromNetworkId.TryGet(networkID, out Entity entity) == false)
-			{
-				return;
-			}
-			var hasComponent = DataFromEntity.HasComponent(entity);
-			Arena.Server.SafeZoneSyncData sourceData;
-			if(hasComponent)
-			{
-				sourceData = DataFromEntity[entity];
-			}
-			else
-			{
-				sourceData = new Arena.Server.SafeZoneSyncData();
-			}
-			if (hasComponent) options.Commands.SetComponent(entity, sourceData);
-			else
-			{
-				options.Commands.AddComponent(entity, sourceData);
-			}
-		}
-	}
-	[DisableAutoCreation]
-	public partial class SafeZoneSyncData_Sync : ComponentDataSync<SafeZoneSyncData_DataProcessor, SafeZoneSyncData_Sync.Data, SafeZoneSyncData_Sync.Tag>
-	{
-		ComponentType sourceType;
-		EntityQuery applyQuery;
-		EntityQuery collectQuery;
-		#if UNITY_EDITOR
-		[UnityEditor.InitializeOnLoadMethod]
-		#endif
-		[RuntimeInitializeOnLoadMethod] static void Register()
-		{
-			DataSyncBase.RegisterDataSync(typeof(SafeZoneSyncData_Sync));
-		}
-		public override void Initialize(DataSyncSystemBase system)
-		{
-			base.Initialize(system);
-			applyQuery = system.GetEntityQueryForJob(ComponentType.ReadOnly<NetworkID>());
-			sourceType = ComponentType.ReadOnly<Arena.Server.SafeZoneSyncData>();
-			collectQuery = system.GetEntityQueryForJob(ComponentType.ReadOnly<NetworkID>(), sourceType);
-			Priority = 0;
-		}
-		public struct Data
-		{
-		}
-		public struct Tag : IComponentData
-		{
-		}
-		protected override JobHandle ScheduleCollectDataJob(SerializedDataContainer dataMap, JobHandle inputDeps)
-		{
-			var job = new CollectDataJob()
-			{
-				SourceType = system.GetComponentTypeHandle<Arena.Server.SafeZoneSyncData>(true),
-				NetworkIdType = system.GetComponentTypeHandle<NetworkID>(true),
-				DataMap = dataMap,
-				IsZeroSized = sourceType.IsZeroSized
-			};
-			return job.Schedule(collectQuery, inputDeps);
-		}
-		[BurstCompile]
-		struct CollectDataJob : IJobChunk
-		{
-			public SerializedDataContainer DataMap;
-			[ReadOnly] public ComponentTypeHandle<Arena.Server.SafeZoneSyncData> SourceType;
-			[ReadOnly] public ComponentTypeHandle<NetworkID> NetworkIdType;
-			public bool IsZeroSized;
-			public void Execute(in ArchetypeChunk chunk, int unfilteredChunkIndex, bool useEnabledMask, in v128 chunkEnabledMask)
-			{
-				var netIds = chunk.GetNativeArray(NetworkIdType);
-				NativeArray<Arena.Server.SafeZoneSyncData> sources = default;
-				if(IsZeroSized == false)
-				{
-					sources = chunk.GetNativeArray(SourceType);
-				}
-				for(int i=0; i<chunk.Count; i++)
-				{
-					var networkId = netIds[i];
-					if(networkId.IsValid == false)
-					{
-						continue;
-					}
-					var data = new Data();
-					if(IsZeroSized == false)
-					{
-						var source = sources[i];
-					}
-					DataMap.WriteStruct(networkId, ref data);
-				}
-			}
-		}
-		protected override JobHandle ScheduleRelevancyJob(SerializedDataContainer dataMap, NativeParallelMultiHashMap<int, int> relevancyMap, JobHandle inputDeps)
-		{
-			return inputDeps;
-		}
-		protected override JobHandle CreateDataProcessor(JobHandle inputDeps, out SafeZoneSyncData_DataProcessor dataProcessor)
-		{
-			dataProcessor = new SafeZoneSyncData_DataProcessor()
-			{
-				EntityFromNetworkId = new EntityFromNetworkId(system),
-				DataFromEntity = system.GetComponentLookup<Arena.Server.SafeZoneSyncData>(true)
+				DataFromEntity = system.GetComponentLookup<Arena.DifficultyData>(true)
 			};
 			return inputDeps;
 		}

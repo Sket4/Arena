@@ -274,6 +274,41 @@ MonoBehaviour:
   references:
     version: 2
     RefIds:
+    - rid: 986275701187149827
+      type: {class: SaveGameRequestCommandNode, ns: Arena.ScriptViz, asm: Arena.Common}
+      data:
+        ID:
+          Value:
+            Value:
+              x: 1828253514
+              y: 2538171145
+              z: 3088357550
+              w: 4144050984
+        Position: {x: 560, y: 235}
+        input:
+          ID:
+            Value:
+              Value:
+                x: 937839196
+                y: 1665351708
+                z: 3525149866
+                w: 1829554342
+          ConnectedSocketIDs:
+          - Value:
+              Value:
+                x: 3859115973
+                y: 1098133033
+                z: 2997057695
+                w: 3068561195
+        output:
+          ID:
+            Value:
+              Value:
+                x: 2045689537
+                y: 2973952186
+                z: 2436416162
+                w: 3003881247
+          ConnectedSocketIDs: []
     - rid: 5272189426745999391
       type: {class: InteractionEventNode, ns: Arena.ScriptViz, asm: Arena.Common}
       data:
@@ -284,7 +319,7 @@ MonoBehaviour:
               y: 1249778527
               z: 225837751
               w: 1944975054
-        Position: {x: -6, y: 235.33334}
+        Position: {x: -6, y: 235}
         output:
           ID:
             Value:
@@ -320,7 +355,7 @@ MonoBehaviour:
               y: 1236900554
               z: 2185659555
               w: 2227017898
-        Position: {x: 210.66666, y: 235.33334}
+        Position: {x: 211, y: 235}
         input:
           ID:
             Value:
@@ -344,7 +379,13 @@ MonoBehaviour:
                 y: 1098133033
                 z: 2997057695
                 w: 3068561195
-          ConnectedSocketIDs: []
+          ConnectedSocketIDs:
+          - Value:
+              Value:
+                x: 937839196
+                y: 1665351708
+                z: 3525149866
+                w: 1829554342
         MessageSocket:
           ID:
             Value:
@@ -387,6 +428,7 @@ MonoBehaviour:
             nodes:
             - rid: 5272189426745999391
             - rid: 5272189426745999392
+            - rid: 986275701187149827
           states: []
           variables: []
         - id: 1899f583b84d6f44684878703caf9309

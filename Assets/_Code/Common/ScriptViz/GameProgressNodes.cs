@@ -382,6 +382,24 @@ namespace Arena.ScriptViz
         }
     }
     
+    public struct SaveGameRequest : IComponentData
+    {
+    }
+    
+    [BurstCompile]
+    struct SaveGameRequestCommand : IScriptVizCommand
+    {
+        private byte fakeValue;
+        
+        [BurstCompile]
+        [AOT.MonoPInvokeCallback(typeof(ScriptVizCommandRegistry.ExecuteDelegate))]
+        public static unsafe void Execute(ref Context context, void* commandData)
+        {
+            var entityRequest = context.Commands.CreateEntity(context.SortIndex);
+            context.Commands.AddComponent(context.SortIndex, entityRequest, new SaveGameRequest());
+        }
+    }
+    
     public struct SetGameProgressKeyRequest : IComponentData
     {
         public int Key;
@@ -406,6 +424,22 @@ namespace Arena.ScriptViz
                 Key = data->Key,
                 Value = val
             });
+        }
+    }
+    
+    [Serializable]
+    [FriendlyName("Сохранить прогресс")]
+    public class SaveGameRequestCommandNode : CommandNode
+    {
+        public override void WriteCommand(CompilerAllocator compilerAllocator, out Address commandAddress)
+        {
+            var cmd = new SaveGameRequestCommand();
+            commandAddress = compilerAllocator.WriteCommand(ref cmd);
+        }
+
+        public override string GetNodeName(ScriptVizGraphPage page)
+        {
+            return "Сохранить прогресс";
         }
     }
     

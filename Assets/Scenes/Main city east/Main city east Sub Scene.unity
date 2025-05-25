@@ -9639,6 +9639,10 @@ PrefabInstance:
       value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 402216539427447191, guid: a19cab6610bee4144a505c3b32ed4b75, type: 3}
+      propertyPath: Value.MaximumSpawnCount
+      value: 15
+      objectReference: {fileID: 0}
+    - target: {fileID: 402216539427447191, guid: a19cab6610bee4144a505c3b32ed4b75, type: 3}
       propertyPath: Value.SendMessageOnAllDead
       value: 1
       objectReference: {fileID: 0}
@@ -19329,6 +19333,178 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 417344, guid: 20f342ab55865934bbb5caade178fa2b, type: 3}
   m_PrefabInstance: {fileID: 762685388}
   m_PrefabAsset: {fileID: 0}
+--- !u!1001 &768982613
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 402216539427447191, guid: a19cab6610bee4144a505c3b32ed4b75, type: 3}
+      propertyPath: AllDeadMessage.ID
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 402216539427447191, guid: a19cab6610bee4144a505c3b32ed4b75, type: 3}
+      propertyPath: Value.SpawnRadius
+      value: 20.36
+      objectReference: {fileID: 0}
+    - target: {fileID: 402216539427447191, guid: a19cab6610bee4144a505c3b32ed4b75, type: 3}
+      propertyPath: CharacterPrefabKey
+      value: 
+      objectReference: {fileID: -4843093085985861657, guid: 709759d6d50fadb4ab72406e658ed872, type: 2}
+    - target: {fileID: 402216539427447191, guid: a19cab6610bee4144a505c3b32ed4b75, type: 3}
+      propertyPath: Value.DisableRespawn
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 402216539427447191, guid: a19cab6610bee4144a505c3b32ed4b75, type: 3}
+      propertyPath: Value.SendMessageOnAllDead
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1942598522712537422, guid: a19cab6610bee4144a505c3b32ed4b75, type: 3}
+      propertyPath: m_Name
+      value: Boar spawn zone
+      objectReference: {fileID: 0}
+    - target: {fileID: 5024867123384240800, guid: a19cab6610bee4144a505c3b32ed4b75, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 356.4
+      objectReference: {fileID: 0}
+    - target: {fileID: 5024867123384240800, guid: a19cab6610bee4144a505c3b32ed4b75, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 64.37
+      objectReference: {fileID: 0}
+    - target: {fileID: 5024867123384240800, guid: a19cab6610bee4144a505c3b32ed4b75, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 439.2
+      objectReference: {fileID: 0}
+    - target: {fileID: 5024867123384240800, guid: a19cab6610bee4144a505c3b32ed4b75, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 5024867123384240800, guid: a19cab6610bee4144a505c3b32ed4b75, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5024867123384240800, guid: a19cab6610bee4144a505c3b32ed4b75, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5024867123384240800, guid: a19cab6610bee4144a505c3b32ed4b75, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5024867123384240800, guid: a19cab6610bee4144a505c3b32ed4b75, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5024867123384240800, guid: a19cab6610bee4144a505c3b32ed4b75, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5024867123384240800, guid: a19cab6610bee4144a505c3b32ed4b75, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6013725124021118109, guid: a19cab6610bee4144a505c3b32ed4b75, type: 3}
+      propertyPath: Value.Value
+      value: 15.5
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 1942598522712537422, guid: a19cab6610bee4144a505c3b32ed4b75, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 768982615}
+  m_SourcePrefab: {fileID: 100100000, guid: a19cab6610bee4144a505c3b32ed4b75, type: 3}
+--- !u!1 &768982614 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 1942598522712537422, guid: a19cab6610bee4144a505c3b32ed4b75, type: 3}
+  m_PrefabInstance: {fileID: 768982613}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &768982615
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 768982614}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 32e8b7cb7859cf84cb6838a4ef045890, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ConversionTargetOptions: -1
+  Value:
+    Label:
+      utf8LengthInBytes: 0
+      bytes:
+        offset0000:
+          byte0000: 0
+          byte0001: 0
+          byte0002: 0
+          byte0003: 0
+          byte0004: 0
+          byte0005: 0
+          byte0006: 0
+          byte0007: 0
+          byte0008: 0
+          byte0009: 0
+          byte0010: 0
+          byte0011: 0
+          byte0012: 0
+          byte0013: 0
+          byte0014: 0
+          byte0015: 0
+        offset0016:
+          byte0000: 0
+          byte0001: 0
+          byte0002: 0
+          byte0003: 0
+          byte0004: 0
+          byte0005: 0
+          byte0006: 0
+          byte0007: 0
+          byte0008: 0
+          byte0009: 0
+          byte0010: 0
+          byte0011: 0
+          byte0012: 0
+          byte0013: 0
+          byte0014: 0
+          byte0015: 0
+        offset0032:
+          byte0000: 0
+          byte0001: 0
+          byte0002: 0
+          byte0003: 0
+          byte0004: 0
+          byte0005: 0
+          byte0006: 0
+          byte0007: 0
+          byte0008: 0
+          byte0009: 0
+          byte0010: 0
+          byte0011: 0
+          byte0012: 0
+          byte0013: 0
+          byte0014: 0
+          byte0015: 0
+        byte0048: 0
+        byte0049: 0
+        byte0050: 0
+        byte0051: 0
+        byte0052: 0
+        byte0053: 0
+        byte0054: 0
+        byte0055: 0
+        byte0056: 0
+        byte0057: 0
+        byte0058: 0
+        byte0059: 0
+        byte0060: 0
+        byte0061: 0
+  Label: Creepy spawn zone
 --- !u!1001 &777224540
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -54891,6 +55067,7 @@ SceneRoots:
   - {fileID: 904551965}
   - {fileID: 620603423}
   - {fileID: 446175454}
+  - {fileID: 768982613}
   - {fileID: 1046162056}
   - {fileID: 293860294}
   - {fileID: 2059941633}

@@ -203,6 +203,7 @@ namespace Arena.Client
                     localizedMessage = localizedMessage.Trim();
                     
                     ui.HUD.Notifications.AddConstantNotification(localizedMessage, showMessageRequest.ID.ToString());
+                    ui.ShowAlert(localizedMessage);
 
                 })
                 .Run();

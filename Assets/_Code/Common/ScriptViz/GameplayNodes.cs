@@ -14,6 +14,7 @@ namespace Arena.ScriptViz
     {
         public long LocalizedMessageID;
         public long ID;
+        public bool DontShowAlert;
     }
     
     [BurstCompile]
@@ -22,6 +23,7 @@ namespace Arena.ScriptViz
         public long LocalizedMessageID;
         public long ID;
         public Address MessageEntityAddress;
+        public bool DontShowAlert;
 
         [BurstCompile]
         [AOT.MonoPInvokeCallback(typeof(ScriptVizCommandRegistry.ExecuteDelegate))]
@@ -34,7 +36,8 @@ namespace Arena.ScriptViz
             context.Commands.AddComponent(context.SortIndex, requestEntity, new ShowMessageRequest
             {
                 LocalizedMessageID = data->LocalizedMessageID,
-                ID = data->ID
+                ID = data->ID,
+                DontShowAlert = data->DontShowAlert
             });
 
             if (data->MessageEntityAddress.IsValid)
@@ -127,6 +130,7 @@ namespace Arena.ScriptViz
         [HideInInspector] public EntitySocket MessageEntityOutSocket = new();
         public string OptionalID;
         public UnityEngine.Localization.LocalizedString Message;
+        public bool ShowAlert = true;
 
         public override void DeclareSockets(List<SocketInfo> sockets)
         {
@@ -159,6 +163,8 @@ namespace Arena.ScriptViz
             {
                 cmd.MessageEntityAddress = compilerAllocator.GetSocketAddress(MessageEntityOutSocket);    
             }
+
+            cmd.DontShowAlert = !ShowAlert;
             
             commandAddress = compilerAllocator.WriteCommand(ref cmd);
         }

@@ -53,6 +53,7 @@ namespace TzarGames.GameCore.Generated
 			ScriptVizCommandRegistry.RegisterCommand(typeof(TzarGames.GameCore.ScriptViz.DelayCommand), TzarGames.GameCore.ScriptViz.DelayCommand.Exec);
 			ScriptVizCommandRegistry.RegisterCommand(typeof(TzarGames.GameCore.ScriptViz.GetSelfCommand), TzarGames.GameCore.ScriptViz.GetSelfCommand.Exec);
 			ScriptVizCommandRegistry.RegisterCommand(typeof(TzarGames.GameCore.ScriptViz.GetTransformCommand), TzarGames.GameCore.ScriptViz.GetTransformCommand.Exec);
+			ScriptVizCommandRegistry.RegisterCommand(typeof(TzarGames.GameCore.ScriptViz.NotCommand), TzarGames.GameCore.ScriptViz.NotCommand.Exec);
 			ScriptVizCommandRegistry.RegisterCommand(typeof(TzarGames.GameCore.ScriptViz.WriteTransformCommand), TzarGames.GameCore.ScriptViz.WriteTransformCommand.Exec);
 			ScriptVizCommandRegistry.RegisterCommand(typeof(TzarGames.GameCore.ScriptViz.TryGetTransformFromLookupCommand), TzarGames.GameCore.ScriptViz.TryGetTransformFromLookupCommand.Exec);
 			ScriptVizCommandRegistry.RegisterCommand(typeof(TzarGames.GameCore.ScriptViz.Graph.SequenceCommand), TzarGames.GameCore.ScriptViz.Graph.SequenceCommand.Exec);

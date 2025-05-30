@@ -166,6 +166,7 @@ MonoBehaviour:
       MaxPitch: 1.1
       Loop: 0
       SpatializeBlend: 1
+      BypassEffects: 0
       SetMinDistance: 0
       MinDistance: 0
       SetMaxDistance: 0
@@ -238,6 +239,7 @@ MonoBehaviour:
       MaxPitch: 1.1
       Loop: 0
       SpatializeBlend: 1
+      BypassEffects: 0
       SetMinDistance: 0
       MinDistance: 0
       SetMaxDistance: 0
@@ -308,6 +310,7 @@ MonoBehaviour:
       MaxPitch: 1.03
       Loop: 0
       SpatializeBlend: 1
+      BypassEffects: 0
       SetMinDistance: 0
       MinDistance: 0
       SetMaxDistance: 0
@@ -375,6 +378,7 @@ MonoBehaviour:
       MaxPitch: 1.1
       Loop: 0
       SpatializeBlend: 1
+      BypassEffects: 0
       SetMinDistance: 0
       MinDistance: 0
       SetMaxDistance: 0
@@ -411,6 +415,7 @@ Transform:
   m_Children:
   - {fileID: 1601659810226548845}
   - {fileID: 6546861242564761105}
+  - {fileID: 7238343490130573292}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &5875255789594985925
@@ -496,6 +501,7 @@ MonoBehaviour:
       MaxPitch: 1.1
       Loop: 0
       SpatializeBlend: 1
+      BypassEffects: 0
       SetMinDistance: 0
       MinDistance: 0
       SetMaxDistance: 0
@@ -568,6 +574,7 @@ MonoBehaviour:
       MaxPitch: 1.1
       Loop: 0
       SpatializeBlend: 1
+      BypassEffects: 0
       SetMinDistance: 0
       MinDistance: 0
       SetMaxDistance: 0
@@ -619,6 +626,53 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   ConversionTargetOptions: 5
   swordSwings: {fileID: 6912526343790624598}
+--- !u!1 &7742436561665655536
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 7238343490130573292}
+  - component: {fileID: 8472093201936364456}
+  m_Layer: 0
+  m_Name: Water effects
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &7238343490130573292
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7742436561665655536}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 7065657368635813840}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &8472093201936364456
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7742436561665655536}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d568e430888e28f45af9565641df7259, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ConversionTargetOptions: -1
+  SplashPrefab: {fileID: 1722726733478836, guid: 3d92b416a6da01c42a7c17380647a322, type: 3}
+  RipplesPrefab: {fileID: 1722726733478836, guid: de53301e231874241b9df5dbc0c9a6f4, type: 3}
 --- !u!1 &7945042632093445459
 GameObject:
   m_ObjectHideFlags: 0
@@ -687,6 +741,7 @@ MonoBehaviour:
       MaxPitch: 1.1
       Loop: 0
       SpatializeBlend: 1
+      BypassEffects: 0
       SetMinDistance: 0
       MinDistance: 0
       SetMaxDistance: 0

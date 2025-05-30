@@ -1,4 +1,5 @@
 ﻿using TzarGames.GameCore;
+using TzarGames.Rendering;
 using Unity.Entities;
 using Unity.Mathematics;
 using Unity.Transforms;
@@ -26,11 +27,45 @@ namespace Arena.Client
             base.OnCreate();
             levelQuery = GetEntityQuery(ComponentType.ReadOnly<Level>());
             levelQuery.SetChangedVersionFilter(typeof(Level));
+            RequireForUpdate<WaterEffects>();
         }
 
         protected override void OnSystemUpdate()
         {
             var commands = CommandBufferSystem.CreateCommandBuffer();
+            var waterEffects = SystemAPI.GetSingleton<WaterEffects>();
+            
+            Entities.ForEach((in WaterEnterEvent enterEvent) =>
+            {
+                if (enterEvent.EnterSpeed >= WaterEnterEvent.EnterEventTreshold)
+                {
+                    var effectEntity = commands.Instantiate(waterEffects.SplashPrefab);
+                    commands.SetComponent(effectEntity, LocalTransform.FromPosition(enterEvent.WaterPointLocation));
+                }
+
+                var rippleEffects = commands.Instantiate(waterEffects.RipplesPrefab);
+                commands.SetComponent(rippleEffects, LocalTransform.FromPositionRotation(enterEvent.WaterPointLocation, enterEvent.EntityRotation));
+                commands.SetComponent(rippleEffects, new Target(enterEvent.EnteredEntity));
+                
+                commands.SetComponent(enterEvent.EnteredEntity, new WaterRippleEffectInstance
+                {
+                    Instance = rippleEffects
+                });
+
+            }).Run();
+            
+            Entities.ForEach((in WaterExitEvent exitEvent) =>
+            {
+                var rippleEffectInstance = SystemAPI.GetComponent<WaterRippleEffectInstance>(exitEvent.EnteredEntity);
+                
+                if (rippleEffectInstance.Instance != Entity.Null)
+                {
+                    commands.SetComponent(exitEvent.EnteredEntity, new WaterRippleEffectInstance { Instance = Entity.Null });
+                    commands.AddComponent(rippleEffectInstance.Instance, new DestroyTimer(3));
+                    commands.SetComponent(rippleEffectInstance.Instance, new ParticleSystemEmissionState { Enabled = false });
+                }
+
+            }).Run();
             
             Entities
                 .WithoutBurst()

@@ -2,6 +2,7 @@ using Unity.Entities;
 using Unity.Transforms;
 using UnityEngine;
 using TzarGames.GameCore;
+using TzarGames.GameCore.Client;
 using Unity.Mathematics;
 using UnityEngine.Splines;
 
@@ -10,9 +11,15 @@ namespace Arena.Client
     [DisableAutoCreation]
     [UpdateInGroup(typeof(PresentationSystemGroup))]
     [RequireMatchingQueriesForUpdate]
-    public partial class AudioSystem : SystemBase
+    public partial class AudioSystem : GameSystemBase
     {
-        protected override void OnUpdate()
+        protected override void OnCreate()
+        {
+            base.OnCreate();
+            RequireForUpdate<WaterEffects>();
+        }
+
+        protected override void OnSystemUpdate()
         {
             var l2wLookup = GetComponentLookup<LocalToWorld>(true);
             

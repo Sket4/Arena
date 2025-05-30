@@ -2,6 +2,7 @@ using TzarGames.GameCore;
 using Unity.Burst;
 using Unity.Collections;
 using Unity.Entities;
+using Unity.Mathematics;
 using Unity.Transforms;
 
 namespace Arena
@@ -20,7 +21,8 @@ namespace Arena
             updateJob = new StateUpdateJob
             {
                 WaterStateLookup = state.GetComponentLookup<WaterState>(true),
-                LocalToWorldLookup = state.GetComponentLookup<LocalToWorld>(true)
+                LocalToWorldLookup = state.GetComponentLookup<LocalToWorld>(true),
+                VelocityLookup = state.GetComponentLookup<Velocity>(true)
             };
         }
 
@@ -28,6 +30,7 @@ namespace Arena
         {
             updateJob.WaterStateLookup.Update(ref state);
             updateJob.LocalToWorldLookup.Update(ref state);
+            updateJob.VelocityLookup.Update(ref state);
             
             var singleton = SystemAPI.GetSingleton<GameCommandBufferSystem.Singleton>();
             var ecb = singleton.CreateCommandBuffer(state.WorldUnmanaged);
@@ -46,6 +49,9 @@ namespace Arena
         
         [ReadOnly]
         public ComponentLookup<LocalToWorld> LocalToWorldLookup;
+        
+        [ReadOnly]
+        public ComponentLookup<Velocity> VelocityLookup;
         
         public EntityCommandBuffer.ParallelWriter Commands;
 
@@ -71,6 +77,22 @@ namespace Arena
             if (LocalToWorldLookup.TryGetComponent(enteredEntity, out var enteredL2W))
             {
                 enteredState.Depth = waterWorld_Y - enteredL2W.Position.y;
+                if (VelocityLookup.TryGetComponent(enteredEntity, out var velocity))
+                {
+                    var enterEventEntity = Commands.CreateEntity(currentJobIndex);
+                    var waterPointLocation = enteredL2W.Position;
+                    waterPointLocation.y = waterWorld_Y;
+                    
+                    Commands.AddComponent(currentJobIndex, enterEventEntity, new WaterEnterEvent
+                    {
+                        EnteredEntity = enteredEntity,
+                        EnterSpeed = math.abs(velocity.Value.y),
+                        EntityLocation = enteredL2W.Position,
+                        EntityRotation = enteredL2W.Rotation,
+                        WaterPointLocation = waterPointLocation
+                    });
+                    Commands.AddComponent(currentJobIndex, enterEventEntity, new EventTag());
+                }
                 Commands.SetComponent(currentJobIndex, enteredEntity, enteredState);   
             }
         }
@@ -95,6 +117,12 @@ namespace Arena
                 return;
             }
             Commands.SetComponentEnabled<WaterState>(currentJobIndex, exitedEntity, false);
+            
+            var eventEntity = Commands.CreateEntity(currentJobIndex);
+            Commands.AddComponent(currentJobIndex, eventEntity, new WaterExitEvent {
+                EnteredEntity = exitedEntity,
+            });
+            Commands.AddComponent(currentJobIndex, eventEntity, new EventTag());
         }
     }
 }

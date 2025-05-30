@@ -63,6 +63,7 @@ GameObject:
   - component: {fileID: 4396800888185883783}
   - component: {fileID: 6177037126267745666}
   - component: {fileID: -5085149199455043946}
+  - component: {fileID: 4800255158582416893}
   m_Layer: 8
   m_Name: Player (Common)
   m_TagString: Untagged
@@ -386,6 +387,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   ConversionTargetOptions: -1
+  Modificators: []
 --- !u!114 &-1710907032466787594
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -935,6 +937,22 @@ MonoBehaviour:
   ConversionTargetOptions: -1
   Value:
     Value: 0
+--- !u!114 &4800255158582416893
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6502343895768782618}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 51454a9677d81ac4bb67eda5ef56438c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ConversionTargetOptions: -1
+  Value:
+    IsInAir: 0
+    FallingStartHeight: 0
 --- !u!1 &7769290499078135943
 GameObject:
   m_ObjectHideFlags: 0

@@ -18,20 +18,23 @@ MonoBehaviour:
     Sounds:
       Name: 
       Clips:
-      - {fileID: 8300000, guid: 06a28adf9f5928941b18f51219537a3d, type: 3}
-      - {fileID: 8300000, guid: 2e941d1ebbaaeb445bfa39a49ea256ce, type: 3}
-      - {fileID: 8300000, guid: df283e4ee8e09d143a9fc1086fe15a9e, type: 3}
-      OptionalMixerGroup: {fileID: 0}
+      - {fileID: 8300000, guid: 7b8285a6282d6f9498f6b71144ac2c54, type: 3}
+      - {fileID: 8300000, guid: 399ae31c7ca5c2240b2d47fe699f681c, type: 3}
+      - {fileID: 8300000, guid: c76b432b462debd4bb0d466ab1b05279, type: 3}
+      - {fileID: 8300000, guid: cce712dcf77576147bc5ca511a3370d7, type: 3}
+      OptionalMixerGroup: {fileID: 24300002, guid: 64c795c25d71240459ab99e981490730, type: 2}
       Settings:
         RandomizeVolume: 1
-        MinVolume: 0.9
-        MaxVolume: 1
+        MinVolume: 1
+        MaxVolume: 1.2
         RandomizePitch: 1
         MinPitch: 0.9
         MaxPitch: 1.1
+        Loop: 0
         SpatializeBlend: 1
-        SetMinDistance: 0
-        MinDistance: 0
+        BypassEffects: 0
+        SetMinDistance: 1
+        MinDistance: 5
         SetMaxDistance: 0
         MaxDistance: 0
   - Surface1: {fileID: 11400000, guid: e37d05324acaf4964a5657ff0288cace, type: 2}
@@ -39,21 +42,22 @@ MonoBehaviour:
     Sounds:
       Name: 
       Clips:
-      - {fileID: 8300000, guid: eac03e627bd3e444da3a0ea86f06ec0b, type: 3}
-      - {fileID: 8300000, guid: 74657ab8f95ac3b40abd29ad97622f26, type: 3}
-      - {fileID: 8300000, guid: 585067c1be2869d4fa5b1ba4ed23d230, type: 3}
-      - {fileID: 8300000, guid: 4184f850b55e4054aa576b501cb8791d, type: 3}
-      OptionalMixerGroup: {fileID: 0}
+      - {fileID: 8300000, guid: e13325721879ad0418b4ddbcb65409e8, type: 3}
+      - {fileID: 8300000, guid: dd919e8283aedaf4b9ef1c91e3b924e7, type: 3}
+      - {fileID: 8300000, guid: cb16aeb21af1b444f9d57a14c395a71c, type: 3}
+      OptionalMixerGroup: {fileID: 24300002, guid: 64c795c25d71240459ab99e981490730, type: 2}
       Settings:
         RandomizeVolume: 1
-        MinVolume: 0.9
-        MaxVolume: 1
+        MinVolume: 1
+        MaxVolume: 1.2
         RandomizePitch: 1
         MinPitch: 0.9
         MaxPitch: 1.1
+        Loop: 0
         SpatializeBlend: 1
-        SetMinDistance: 0
-        MinDistance: 0
+        BypassEffects: 0
+        SetMinDistance: 1
+        MinDistance: 5
         SetMaxDistance: 0
         MaxDistance: 0
   - Surface1: {fileID: 11400000, guid: e37d05324acaf4964a5657ff0288cace, type: 2}
@@ -61,19 +65,45 @@ MonoBehaviour:
     Sounds:
       Name: 
       Clips:
-      - {fileID: 8300000, guid: 06a28adf9f5928941b18f51219537a3d, type: 3}
-      - {fileID: 8300000, guid: 2e941d1ebbaaeb445bfa39a49ea256ce, type: 3}
-      - {fileID: 8300000, guid: df283e4ee8e09d143a9fc1086fe15a9e, type: 3}
-      OptionalMixerGroup: {fileID: 0}
+      - {fileID: 8300000, guid: 871a059f08c3f4348b2d8fe39550a55f, type: 3}
+      - {fileID: 8300000, guid: 1d914d910f819594fad991cfadbf476f, type: 3}
+      OptionalMixerGroup: {fileID: 24300002, guid: 64c795c25d71240459ab99e981490730, type: 2}
       Settings:
         RandomizeVolume: 1
-        MinVolume: 0.9
-        MaxVolume: 1
+        MinVolume: 1
+        MaxVolume: 1.2
         RandomizePitch: 1
         MinPitch: 0.9
         MaxPitch: 1.1
+        Loop: 0
         SpatializeBlend: 1
-        SetMinDistance: 0
-        MinDistance: 0
+        BypassEffects: 0
+        SetMinDistance: 1
+        MinDistance: 5
+        SetMaxDistance: 0
+        MaxDistance: 0
+  - Surface1: {fileID: 11400000, guid: cd4cea758ceb643b39e2008c1eebdd30, type: 2}
+    Surface2: {fileID: 11400000, guid: cd4cea758ceb643b39e2008c1eebdd30, type: 2}
+    Sounds:
+      Name: 
+      Clips:
+      - {fileID: 8300000, guid: 5517dea2caf19da4f95dada5b4c87634, type: 3}
+      - {fileID: 8300000, guid: 095bd3e7abc6d4c429e9b0c48f4a7933, type: 3}
+      - {fileID: 8300000, guid: 7be525a2f91cdb84b99466b6b849996b, type: 3}
+      - {fileID: 8300000, guid: 7a057466b09e0f743b55526756c102cb, type: 3}
+      - {fileID: 8300000, guid: bd167156ea8c4a34eaa6d8c72e034dda, type: 3}
+      OptionalMixerGroup: {fileID: 24300002, guid: 64c795c25d71240459ab99e981490730, type: 2}
+      Settings:
+        RandomizeVolume: 1
+        MinVolume: 1
+        MaxVolume: 1.2
+        RandomizePitch: 1
+        MinPitch: 0.9
+        MaxPitch: 1.1
+        Loop: 0
+        SpatializeBlend: 1
+        BypassEffects: 0
+        SetMinDistance: 1
+        MinDistance: 5
         SetMaxDistance: 0
         MaxDistance: 0

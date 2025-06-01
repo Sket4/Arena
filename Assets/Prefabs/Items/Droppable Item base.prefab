@@ -205,17 +205,18 @@ MonoBehaviour:
     Group:
       Name: Pickup
       Clips:
-      - {fileID: 8300000, guid: 15d6cac6bb5c24d40b1d8b69351663f5, type: 3}
+      - {fileID: 8300000, guid: b67705a7108133149856087c058dbcf2, type: 3}
       OptionalMixerGroup: {fileID: 24300002, guid: 64c795c25d71240459ab99e981490730, type: 2}
       Settings:
         RandomizeVolume: 1
-        MinVolume: 0.9
-        MaxVolume: 1
+        MinVolume: 1.2
+        MaxVolume: 1.2
         RandomizePitch: 1
-        MinPitch: 0.9
-        MaxPitch: 1.1
+        MinPitch: 1.4
+        MaxPitch: 1.6
         Loop: 0
         SpatializeBlend: 0
+        BypassEffects: 1
         SetMinDistance: 0
         MinDistance: 0
         SetMaxDistance: 0
@@ -381,6 +382,7 @@ MonoBehaviour:
                   y: 1202920313
                   z: 1865551762
                   w: 2544379472
+            Name: 
             ConversionTargetOptions: 7
             variables:
             - rid: 6322991396439457803
@@ -395,6 +397,7 @@ MonoBehaviour:
             - rid: 4877893522593153033
             - rid: 4877893522593153036
           states: []
+          variables: []
         Name: 
     - rid: 6322991396439457801
       type: {class: ItemDroppedStateChangedNode, ns: TzarGames.GameCore.ScriptViz.Graph, asm: TzarGames.GameCore}
@@ -460,6 +463,7 @@ MonoBehaviour:
               w: 304364295
         Name: droppable model pivot
         NetSyncEnabled: 0
+        IsHidden: 0
         Value: {fileID: 6479164485802186104}
     - rid: 6322991396439457806
       type: {class: DynamicArrayVariable, ns: TzarGames.GameCore.ScriptViz.Graph, asm: TzarGames.GameCore}
@@ -473,6 +477,7 @@ MonoBehaviour:
               w: 3319587332
         Name: _delayed_commands
         NetSyncEnabled: 0
+        IsHidden: 0
     - rid: 6322991396439457808
       type: {class: BranchCommandNode, ns: TzarGames.GameCore.ScriptViz.Graph, asm: TzarGames.GameCore}
       data:

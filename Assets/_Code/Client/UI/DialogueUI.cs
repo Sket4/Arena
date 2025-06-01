@@ -6,6 +6,8 @@ using TzarGames.GameCore;
 using TzarGames.GameCore.ScriptViz;
 using Unity.Entities;
 using UnityEngine;
+using UnityEngine.Events;
+using UnityEngine.Serialization;
 using UnityEngine.UI;
 
 namespace Arena.Client.UI
@@ -21,6 +23,7 @@ namespace Arena.Client.UI
         public TMPro.TextMeshProUGUI MessageText;
         public GameObject AnswerPrefab;
         public Transform AnswerContainer;
+        public UnityEvent OnAnswerChosen;
 
         protected override void Awake()
         {
@@ -85,6 +88,8 @@ namespace Arena.Client.UI
                         DialogueEntity = dialogueEntity,
                         CommandAddress = answer.CommandAddress
                     });
+                    
+                    OnAnswerChosen.Invoke();
                 });
             }
         }

@@ -1,6 +1,6 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
---- !u!1 &2975333245769389781
+--- !u!1 &1309722136810478
 GameObject:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -8,135 +8,44 @@ GameObject:
   m_PrefabAsset: {fileID: 0}
   serializedVersion: 6
   m_Component:
-  - component: {fileID: 6786404980882954418}
-  - component: {fileID: 7513840374541677178}
-  m_Layer: 14
-  m_Name: Loot position 4
-  m_TagString: Untagged
-  m_Icon: {fileID: -5487077368411116049, guid: 0000000000000000d000000000000000, type: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &6786404980882954418
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2975333245769389781}
-  serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -1, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 461897898195485860}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &7513840374541677178
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2975333245769389781}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e601cf78e0340d145bc8652f1f729add, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  ConversionTargetOptions: -1
-  IncludeChilds: 0
---- !u!1 &3980856345830707367
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 133194615394701461}
-  - component: {fileID: 8329655906488173186}
-  m_Layer: 14
-  m_Name: Loot position 1
-  m_TagString: Untagged
-  m_Icon: {fileID: -5487077368411116049, guid: 0000000000000000d000000000000000, type: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &133194615394701461
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3980856345830707367}
-  serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 1, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 461897898195485860}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &8329655906488173186
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3980856345830707367}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e601cf78e0340d145bc8652f1f729add, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  ConversionTargetOptions: -1
-  IncludeChilds: 0
---- !u!1 &5093342986377779604
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 6925749298639323798}
-  - component: {fileID: 4854152395698672356}
-  - component: {fileID: 2778118631741808664}
+  - component: {fileID: 4168779852418468}
+  - component: {fileID: 198007762488883732}
+  - component: {fileID: 199168586269274460}
+  - component: {fileID: 2199283695576270901}
   m_Layer: 0
-  m_Name: Death particles
+  m_Name: Player hit
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
---- !u!4 &6925749298639323798
+  m_IsActive: 1
+--- !u!4 &4168779852418468
 Transform:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5093342986377779604}
+  m_GameObject: {fileID: 1309722136810478}
   serializedVersion: 2
-  m_LocalRotation: {x: -0.50857043, y: -0.1823229, z: -0.29290125, w: 0.7888748}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 6698777333042385048}
-  m_LocalEulerAnglesHint: {x: -65.395, y: 1.412, z: -41.646}
---- !u!198 &4854152395698672356
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!198 &198007762488883732
 ParticleSystem:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5093342986377779604}
+  m_GameObject: {fileID: 1309722136810478}
   serializedVersion: 8
-  lengthInSec: 1.5
+  lengthInSec: 0.1
   simulationSpeed: 1
   stopAction: 0
-  cullingMode: 0
+  cullingMode: 3
   ringBufferMode: 0
   ringBufferLoopRange: {x: 0, y: 1}
   emitterVelocityMode: 1
@@ -155,7 +64,7 @@ ParticleSystem:
       m_Curve:
       - serializedVersion: 3
         time: 0
-        value: 0
+        value: 1
         inSlope: 0
         outSlope: 0
         tangentMode: 0
@@ -164,7 +73,7 @@ ParticleSystem:
         outWeight: 0.33333334
       - serializedVersion: 3
         time: 1
-        value: 0
+        value: 1
         inSlope: 0
         outSlope: 0
         tangentMode: 0
@@ -200,7 +109,7 @@ ParticleSystem:
       m_RotationOrder: 4
   moveWithTransform: 1
   moveWithCustomTransform: {fileID: 0}
-  scalingMode: 0
+  scalingMode: 1
   randomSeed: 0
   InitialModule:
     serializedVersion: 3
@@ -208,7 +117,7 @@ ParticleSystem:
     startLifetime:
       serializedVersion: 2
       minMaxState: 0
-      scalar: 5
+      scalar: 0.2
       minScalar: 5
       maxCurve:
         serializedVersion: 2
@@ -239,7 +148,7 @@ ParticleSystem:
         m_Curve:
         - serializedVersion: 3
           time: 0
-          value: 1
+          value: 0
           inSlope: 0
           outSlope: 0
           tangentMode: 0
@@ -248,7 +157,7 @@ ParticleSystem:
           outWeight: 0.33333334
         - serializedVersion: 3
           time: 1
-          value: 1
+          value: 0
           inSlope: 0
           outSlope: 0
           tangentMode: 0
@@ -261,7 +170,7 @@ ParticleSystem:
     startSpeed:
       serializedVersion: 2
       minMaxState: 0
-      scalar: 0.13
+      scalar: 3
       minScalar: 5
       maxCurve:
         serializedVersion: 2
@@ -292,7 +201,7 @@ ParticleSystem:
         m_Curve:
         - serializedVersion: 3
           time: 0
-          value: 1
+          value: 0
           inSlope: 0
           outSlope: 0
           tangentMode: 0
@@ -301,7 +210,7 @@ ParticleSystem:
           outWeight: 0.33333334
         - serializedVersion: 3
           time: 1
-          value: 1
+          value: 0
           inSlope: 0
           outSlope: 0
           tangentMode: 0
@@ -313,9 +222,9 @@ ParticleSystem:
         m_RotationOrder: 4
     startColor:
       serializedVersion: 2
-      minMaxState: 0
-      minColor: {r: 1, g: 1, b: 1, a: 1}
-      maxColor: {r: 0.030325223, g: 0.6226415, b: 0, a: 1}
+      minMaxState: 2
+      minColor: {r: 1, g: 0.917505, b: 0.4980392, a: 1}
+      maxColor: {r: 1, g: 0.40111423, b: 0, a: 1}
       maxGradient:
         serializedVersion: 2
         key0: {r: 1, g: 1, b: 1, a: 1}
@@ -378,9 +287,9 @@ ParticleSystem:
         m_NumAlphaKeys: 2
     startSize:
       serializedVersion: 2
-      minMaxState: 0
-      scalar: 0.0025
-      minScalar: 1
+      minMaxState: 3
+      scalar: 0.02
+      minScalar: 0.01
       maxCurve:
         serializedVersion: 2
         m_Curve:
@@ -410,7 +319,7 @@ ParticleSystem:
         m_Curve:
         - serializedVersion: 3
           time: 0
-          value: 1
+          value: 0
           inSlope: 0
           outSlope: 0
           tangentMode: 0
@@ -419,7 +328,7 @@ ParticleSystem:
           outWeight: 0.33333334
         - serializedVersion: 3
           time: 1
-          value: 1
+          value: 0
           inSlope: 0
           outSlope: 0
           tangentMode: 0
@@ -431,9 +340,9 @@ ParticleSystem:
         m_RotationOrder: 4
     startSizeY:
       serializedVersion: 2
-      minMaxState: 0
-      scalar: 0.01
-      minScalar: 1
+      minMaxState: 3
+      scalar: 0.16
+      minScalar: 0.24
       maxCurve:
         serializedVersion: 2
         m_Curve:
@@ -463,7 +372,7 @@ ParticleSystem:
         m_Curve:
         - serializedVersion: 3
           time: 0
-          value: 1
+          value: 0
           inSlope: 0
           outSlope: 0
           tangentMode: 0
@@ -472,7 +381,7 @@ ParticleSystem:
           outWeight: 0.33333334
         - serializedVersion: 3
           time: 1
-          value: 1
+          value: 0
           inSlope: 0
           outSlope: 0
           tangentMode: 0
@@ -484,9 +393,9 @@ ParticleSystem:
         m_RotationOrder: 4
     startSizeZ:
       serializedVersion: 2
-      minMaxState: 0
-      scalar: 0.0025
-      minScalar: 1
+      minMaxState: 3
+      scalar: 0.02
+      minScalar: 0.01
       maxCurve:
         serializedVersion: 2
         m_Curve:
@@ -516,7 +425,7 @@ ParticleSystem:
         m_Curve:
         - serializedVersion: 3
           time: 0
-          value: 1
+          value: 0
           inSlope: 0
           outSlope: 0
           tangentMode: 0
@@ -525,7 +434,7 @@ ParticleSystem:
           outWeight: 0.33333334
         - serializedVersion: 3
           time: 1
-          value: 1
+          value: 0
           inSlope: 0
           outSlope: 0
           tangentMode: 0
@@ -538,14 +447,14 @@ ParticleSystem:
     startRotationX:
       serializedVersion: 2
       minMaxState: 0
-      scalar: 0
+      scalar: 1.5707963
       minScalar: 0
       maxCurve:
         serializedVersion: 2
         m_Curve:
         - serializedVersion: 3
           time: 0
-          value: 0
+          value: 1
           inSlope: 0
           outSlope: 0
           tangentMode: 0
@@ -554,7 +463,7 @@ ParticleSystem:
           outWeight: 0.33333334
         - serializedVersion: 3
           time: 1
-          value: 0
+          value: 1
           inSlope: 0
           outSlope: 0
           tangentMode: 0
@@ -598,7 +507,7 @@ ParticleSystem:
         m_Curve:
         - serializedVersion: 3
           time: 0
-          value: 0
+          value: 1
           inSlope: 0
           outSlope: 0
           tangentMode: 0
@@ -607,7 +516,7 @@ ParticleSystem:
           outWeight: 0.33333334
         - serializedVersion: 3
           time: 1
-          value: 0
+          value: 1
           inSlope: 0
           outSlope: 0
           tangentMode: 0
@@ -651,7 +560,7 @@ ParticleSystem:
         m_Curve:
         - serializedVersion: 3
           time: 0
-          value: 0
+          value: 1
           inSlope: 0
           outSlope: 0
           tangentMode: 0
@@ -660,7 +569,7 @@ ParticleSystem:
           outWeight: 0.33333334
         - serializedVersion: 3
           time: 1
-          value: 0
+          value: 1
           inSlope: 0
           outSlope: 0
           tangentMode: 0
@@ -699,18 +608,18 @@ ParticleSystem:
     maxNumParticles: 1000
     customEmitterVelocity: {x: 0, y: 0, z: 0}
     size3D: 1
-    rotation3D: 0
+    rotation3D: 1
     gravityModifier:
       serializedVersion: 2
       minMaxState: 0
-      scalar: 1
+      scalar: 0
       minScalar: 0
       maxCurve:
         serializedVersion: 2
         m_Curve:
         - serializedVersion: 3
           time: 0
-          value: 0
+          value: 1
           inSlope: 0
           outSlope: 0
           tangentMode: 0
@@ -719,7 +628,7 @@ ParticleSystem:
           outWeight: 0.33333334
         - serializedVersion: 3
           time: 1
-          value: 0
+          value: 1
           inSlope: 0
           outSlope: 0
           tangentMode: 0
@@ -756,8 +665,8 @@ ParticleSystem:
   ShapeModule:
     serializedVersion: 6
     enabled: 1
-    type: 4
-    angle: 21.52
+    type: 0
+    angle: 80
     length: 5
     boxThickness: {x: 0, y: 0, z: 0}
     radiusThickness: 1
@@ -831,7 +740,7 @@ ParticleSystem:
     m_SpriteRenderer: {fileID: 0}
     m_UseMeshMaterialIndex: 0
     m_UseMeshColors: 1
-    alignToDirection: 0
+    alignToDirection: 1
     m_Texture: {fileID: 0}
     m_TextureClipChannel: 3
     m_TextureClipThreshold: 0
@@ -843,7 +752,7 @@ ParticleSystem:
     sphericalDirectionAmount: 0
     randomPositionAmount: 0
     radius:
-      value: 0.001
+      value: 0.01
       mode: 0
       spread: 0
       speed:
@@ -901,7 +810,7 @@ ParticleSystem:
           m_RotationOrder: 4
     arc:
       value: 360
-      mode: 1
+      mode: 0
       spread: 0
       speed:
         serializedVersion: 2
@@ -993,7 +902,7 @@ ParticleSystem:
         m_Curve:
         - serializedVersion: 3
           time: 0
-          value: 1
+          value: 0
           inSlope: 0
           outSlope: 0
           tangentMode: 0
@@ -1002,7 +911,7 @@ ParticleSystem:
           outWeight: 0.33333334
         - serializedVersion: 3
           time: 1
-          value: 1
+          value: 0
           inSlope: 0
           outSlope: 0
           tangentMode: 0
@@ -1022,7 +931,7 @@ ParticleSystem:
         m_Curve:
         - serializedVersion: 3
           time: 0
-          value: 0
+          value: 1
           inSlope: 0
           outSlope: 0
           tangentMode: 0
@@ -1031,7 +940,7 @@ ParticleSystem:
           outWeight: 0.33333334
         - serializedVersion: 3
           time: 1
-          value: 0
+          value: 1
           inSlope: 0
           outSlope: 0
           tangentMode: 0
@@ -1065,8 +974,66 @@ ParticleSystem:
         m_PreInfinity: 2
         m_PostInfinity: 2
         m_RotationOrder: 4
-    m_BurstCount: 0
-    m_Bursts: []
+    m_BurstCount: 1
+    m_Bursts:
+    - serializedVersion: 2
+      time: 0
+      countCurve:
+        serializedVersion: 2
+        minMaxState: 3
+        scalar: 15
+        minScalar: 10
+        maxCurve:
+          serializedVersion: 2
+          m_Curve:
+          - serializedVersion: 3
+            time: 0
+            value: 1
+            inSlope: 0
+            outSlope: 0
+            tangentMode: 0
+            weightedMode: 0
+            inWeight: 0.33333334
+            outWeight: 0.33333334
+          - serializedVersion: 3
+            time: 1
+            value: 1
+            inSlope: 0
+            outSlope: 0
+            tangentMode: 0
+            weightedMode: 0
+            inWeight: 0.33333334
+            outWeight: 0.33333334
+          m_PreInfinity: 2
+          m_PostInfinity: 2
+          m_RotationOrder: 4
+        minCurve:
+          serializedVersion: 2
+          m_Curve:
+          - serializedVersion: 3
+            time: 0
+            value: 1
+            inSlope: 0
+            outSlope: 0
+            tangentMode: 0
+            weightedMode: 0
+            inWeight: 0.33333334
+            outWeight: 0.33333334
+          - serializedVersion: 3
+            time: 1
+            value: 1
+            inSlope: 0
+            outSlope: 0
+            tangentMode: 0
+            weightedMode: 0
+            inWeight: 0.33333334
+            outWeight: 0.33333334
+          m_PreInfinity: 2
+          m_PostInfinity: 2
+          m_RotationOrder: 4
+      cycleCount: 1
+      repeatInterval: 0.01
+      probability: 1
   SizeModule:
     enabled: 0
     curve:
@@ -1079,9 +1046,9 @@ ParticleSystem:
         m_Curve:
         - serializedVersion: 3
           time: 0
-          value: 0
+          value: 1
           inSlope: 0
-          outSlope: 1
+          outSlope: 0
           tangentMode: 0
           weightedMode: 0
           inWeight: 0.33333334
@@ -1089,7 +1056,7 @@ ParticleSystem:
         - serializedVersion: 3
           time: 1
           value: 1
-          inSlope: 1
+          inSlope: 0
           outSlope: 0
           tangentMode: 0
           weightedMode: 0
@@ -1103,7 +1070,7 @@ ParticleSystem:
         m_Curve:
         - serializedVersion: 3
           time: 0
-          value: 1
+          value: 0
           inSlope: 0
           outSlope: 0
           tangentMode: 0
@@ -1112,7 +1079,7 @@ ParticleSystem:
           outWeight: 0.33333334
         - serializedVersion: 3
           time: 1
-          value: 1
+          value: 0
           inSlope: 0
           outSlope: 0
           tangentMode: 0
@@ -1132,9 +1099,9 @@ ParticleSystem:
         m_Curve:
         - serializedVersion: 3
           time: 0
-          value: 0
+          value: 1
           inSlope: 0
-          outSlope: 1
+          outSlope: 0
           tangentMode: 0
           weightedMode: 0
           inWeight: 0.33333334
@@ -1142,7 +1109,7 @@ ParticleSystem:
         - serializedVersion: 3
           time: 1
           value: 1
-          inSlope: 1
+          inSlope: 0
           outSlope: 0
           tangentMode: 0
           weightedMode: 0
@@ -1156,7 +1123,7 @@ ParticleSystem:
         m_Curve:
         - serializedVersion: 3
           time: 0
-          value: 1
+          value: 0
           inSlope: 0
           outSlope: 0
           tangentMode: 0
@@ -1165,7 +1132,7 @@ ParticleSystem:
           outWeight: 0.33333334
         - serializedVersion: 3
           time: 1
-          value: 1
+          value: 0
           inSlope: 0
           outSlope: 0
           tangentMode: 0
@@ -1185,9 +1152,9 @@ ParticleSystem:
         m_Curve:
         - serializedVersion: 3
           time: 0
-          value: 0
+          value: 1
           inSlope: 0
-          outSlope: 1
+          outSlope: 0
           tangentMode: 0
           weightedMode: 0
           inWeight: 0.33333334
@@ -1195,7 +1162,7 @@ ParticleSystem:
         - serializedVersion: 3
           time: 1
           value: 1
-          inSlope: 1
+          inSlope: 0
           outSlope: 0
           tangentMode: 0
           weightedMode: 0
@@ -1209,7 +1176,7 @@ ParticleSystem:
         m_Curve:
         - serializedVersion: 3
           time: 0
-          value: 1
+          value: 0
           inSlope: 0
           outSlope: 0
           tangentMode: 0
@@ -1218,7 +1185,7 @@ ParticleSystem:
           outWeight: 0.33333334
         - serializedVersion: 3
           time: 1
-          value: 1
+          value: 0
           inSlope: 0
           outSlope: 0
           tangentMode: 0
@@ -1241,7 +1208,7 @@ ParticleSystem:
         m_Curve:
         - serializedVersion: 3
           time: 0
-          value: 0
+          value: 1
           inSlope: 0
           outSlope: 0
           tangentMode: 0
@@ -1250,7 +1217,7 @@ ParticleSystem:
           outWeight: 0.33333334
         - serializedVersion: 3
           time: 1
-          value: 0
+          value: 1
           inSlope: 0
           outSlope: 0
           tangentMode: 0
@@ -1294,7 +1261,7 @@ ParticleSystem:
         m_Curve:
         - serializedVersion: 3
           time: 0
-          value: 0
+          value: 1
           inSlope: 0
           outSlope: 0
           tangentMode: 0
@@ -1303,7 +1270,7 @@ ParticleSystem:
           outWeight: 0.33333334
         - serializedVersion: 3
           time: 1
-          value: 0
+          value: 1
           inSlope: 0
           outSlope: 0
           tangentMode: 0
@@ -1371,7 +1338,7 @@ ParticleSystem:
         m_Curve:
         - serializedVersion: 3
           time: 0
-          value: 1
+          value: 0
           inSlope: 0
           outSlope: 0
           tangentMode: 0
@@ -1380,7 +1347,7 @@ ParticleSystem:
           outWeight: 0.33333334
         - serializedVersion: 3
           time: 1
-          value: 1
+          value: 0
           inSlope: 0
           outSlope: 0
           tangentMode: 0
@@ -1460,7 +1427,7 @@ ParticleSystem:
         m_NumAlphaKeys: 2
   UVModule:
     serializedVersion: 2
-    enabled: 1
+    enabled: 0
     mode: 0
     timeMode: 0
     fps: 30
@@ -1498,9 +1465,9 @@ ParticleSystem:
         m_Curve:
         - serializedVersion: 3
           time: 0
-          value: 1
+          value: 0
           inSlope: 0
-          outSlope: 0
+          outSlope: 1
           tangentMode: 0
           weightedMode: 0
           inWeight: 0.33333334
@@ -1508,7 +1475,7 @@ ParticleSystem:
         - serializedVersion: 3
           time: 1
           value: 1
-          inSlope: 0
+          inSlope: 1
           outSlope: 0
           tangentMode: 0
           weightedMode: 0
@@ -1527,7 +1494,7 @@ ParticleSystem:
         m_Curve:
         - serializedVersion: 3
           time: 0
-          value: 0
+          value: 1
           inSlope: 0
           outSlope: 0
           tangentMode: 0
@@ -1536,7 +1503,7 @@ ParticleSystem:
           outWeight: 0.33333334
         - serializedVersion: 3
           time: 1
-          value: 0
+          value: 1
           inSlope: 0
           outSlope: 0
           tangentMode: 0
@@ -1571,8 +1538,8 @@ ParticleSystem:
         m_PostInfinity: 2
         m_RotationOrder: 4
     speedRange: {x: 0, y: 1}
-    tilesX: 2
-    tilesY: 2
+    tilesX: 1
+    tilesY: 1
     animationType: 0
     rowIndex: 0
     cycles: 1
@@ -1594,7 +1561,7 @@ ParticleSystem:
         m_Curve:
         - serializedVersion: 3
           time: 0
-          value: 0
+          value: 1
           inSlope: 0
           outSlope: 0
           tangentMode: 0
@@ -1603,7 +1570,7 @@ ParticleSystem:
           outWeight: 0.33333334
         - serializedVersion: 3
           time: 1
-          value: 0
+          value: 1
           inSlope: 0
           outSlope: 0
           tangentMode: 0
@@ -1647,7 +1614,7 @@ ParticleSystem:
         m_Curve:
         - serializedVersion: 3
           time: 0
-          value: 0
+          value: 1
           inSlope: 0
           outSlope: 0
           tangentMode: 0
@@ -1656,7 +1623,7 @@ ParticleSystem:
           outWeight: 0.33333334
         - serializedVersion: 3
           time: 1
-          value: 0
+          value: 1
           inSlope: 0
           outSlope: 0
           tangentMode: 0
@@ -1700,7 +1667,7 @@ ParticleSystem:
         m_Curve:
         - serializedVersion: 3
           time: 0
-          value: 0
+          value: 1
           inSlope: 0
           outSlope: 0
           tangentMode: 0
@@ -1709,7 +1676,7 @@ ParticleSystem:
           outWeight: 0.33333334
         - serializedVersion: 3
           time: 1
-          value: 0
+          value: 1
           inSlope: 0
           outSlope: 0
           tangentMode: 0
@@ -2181,7 +2148,7 @@ ParticleSystem:
         m_Curve:
         - serializedVersion: 3
           time: 0
-          value: 0
+          value: 1
           inSlope: 0
           outSlope: 0
           tangentMode: 0
@@ -2190,7 +2157,7 @@ ParticleSystem:
           outWeight: 0.33333334
         - serializedVersion: 3
           time: 1
-          value: 0
+          value: 1
           inSlope: 0
           outSlope: 0
           tangentMode: 0
@@ -2292,7 +2259,7 @@ ParticleSystem:
         m_Curve:
         - serializedVersion: 3
           time: 0
-          value: 0
+          value: 1
           inSlope: 0
           outSlope: 0
           tangentMode: 0
@@ -2301,7 +2268,7 @@ ParticleSystem:
           outWeight: 0.33333334
         - serializedVersion: 3
           time: 1
-          value: 0
+          value: 1
           inSlope: 0
           outSlope: 0
           tangentMode: 0
@@ -2345,7 +2312,7 @@ ParticleSystem:
         m_Curve:
         - serializedVersion: 3
           time: 0
-          value: 0
+          value: 1
           inSlope: 0
           outSlope: 0
           tangentMode: 0
@@ -2354,7 +2321,7 @@ ParticleSystem:
           outWeight: 0.33333334
         - serializedVersion: 3
           time: 1
-          value: 0
+          value: 1
           inSlope: 0
           outSlope: 0
           tangentMode: 0
@@ -2398,7 +2365,7 @@ ParticleSystem:
         m_Curve:
         - serializedVersion: 3
           time: 0
-          value: 0
+          value: 1
           inSlope: 0
           outSlope: 0
           tangentMode: 0
@@ -2407,7 +2374,7 @@ ParticleSystem:
           outWeight: 0.33333334
         - serializedVersion: 3
           time: 1
-          value: 0
+          value: 1
           inSlope: 0
           outSlope: 0
           tangentMode: 0
@@ -2540,7 +2507,7 @@ ParticleSystem:
         m_Curve:
         - serializedVersion: 3
           time: 0
-          value: 1
+          value: 0
           inSlope: 0
           outSlope: 0
           tangentMode: 0
@@ -2549,7 +2516,7 @@ ParticleSystem:
           outWeight: 0.33333334
         - serializedVersion: 3
           time: 1
-          value: 1
+          value: 0
           inSlope: 0
           outSlope: 0
           tangentMode: 0
@@ -2593,7 +2560,7 @@ ParticleSystem:
         m_Curve:
         - serializedVersion: 3
           time: 0
-          value: 1
+          value: 0
           inSlope: 0
           outSlope: 0
           tangentMode: 0
@@ -2602,7 +2569,7 @@ ParticleSystem:
           outWeight: 0.33333334
         - serializedVersion: 3
           time: 1
-          value: 1
+          value: 0
           inSlope: 0
           outSlope: 0
           tangentMode: 0
@@ -2646,7 +2613,7 @@ ParticleSystem:
         m_Curve:
         - serializedVersion: 3
           time: 0
-          value: 1
+          value: 0
           inSlope: 0
           outSlope: 0
           tangentMode: 0
@@ -2655,7 +2622,7 @@ ParticleSystem:
           outWeight: 0.33333334
         - serializedVersion: 3
           time: 1
-          value: 1
+          value: 0
           inSlope: 0
           outSlope: 0
           tangentMode: 0
@@ -2699,7 +2666,7 @@ ParticleSystem:
         m_Curve:
         - serializedVersion: 3
           time: 0
-          value: 1
+          value: 0
           inSlope: 0
           outSlope: 0
           tangentMode: 0
@@ -2708,7 +2675,7 @@ ParticleSystem:
           outWeight: 0.33333334
         - serializedVersion: 3
           time: 1
-          value: 1
+          value: 0
           inSlope: 0
           outSlope: 0
           tangentMode: 0
@@ -2722,7 +2689,7 @@ ParticleSystem:
     inWorldSpace: 0
     multiplyDragByParticleSize: 1
     multiplyDragByParticleVelocity: 1
-    dampen: 0
+    dampen: 1
     drag:
       serializedVersion: 2
       minMaxState: 0
@@ -2812,7 +2779,7 @@ ParticleSystem:
         m_Curve:
         - serializedVersion: 3
           time: 0
-          value: 1
+          value: 0
           inSlope: 0
           outSlope: 0
           tangentMode: 0
@@ -2821,7 +2788,7 @@ ParticleSystem:
           outWeight: 0.33333334
         - serializedVersion: 3
           time: 1
-          value: 1
+          value: 0
           inSlope: 0
           outSlope: 0
           tangentMode: 0
@@ -2865,7 +2832,7 @@ ParticleSystem:
         m_Curve:
         - serializedVersion: 3
           time: 0
-          value: 1
+          value: 0
           inSlope: 0
           outSlope: 0
           tangentMode: 0
@@ -2874,7 +2841,7 @@ ParticleSystem:
           outWeight: 0.33333334
         - serializedVersion: 3
           time: 1
-          value: 1
+          value: 0
           inSlope: 0
           outSlope: 0
           tangentMode: 0
@@ -2918,7 +2885,7 @@ ParticleSystem:
         m_Curve:
         - serializedVersion: 3
           time: 0
-          value: 1
+          value: 0
           inSlope: 0
           outSlope: 0
           tangentMode: 0
@@ -2927,7 +2894,7 @@ ParticleSystem:
           outWeight: 0.33333334
         - serializedVersion: 3
           time: 1
-          value: 1
+          value: 0
           inSlope: 0
           outSlope: 0
           tangentMode: 0
@@ -2943,7 +2910,7 @@ ParticleSystem:
     octaves: 1
     octaveMultiplier: 0.5
     octaveScale: 2
-    quality: 1
+    quality: 2
     scrollSpeed:
       serializedVersion: 2
       minMaxState: 0
@@ -2954,7 +2921,7 @@ ParticleSystem:
         m_Curve:
         - serializedVersion: 3
           time: 0
-          value: 0
+          value: 1
           inSlope: 0
           outSlope: 0
           tangentMode: 0
@@ -2963,7 +2930,7 @@ ParticleSystem:
           outWeight: 0.33333334
         - serializedVersion: 3
           time: 1
-          value: 0
+          value: 1
           inSlope: 0
           outSlope: 0
           tangentMode: 0
@@ -3031,7 +2998,7 @@ ParticleSystem:
         m_Curve:
         - serializedVersion: 3
           time: 0
-          value: 1
+          value: 0
           inSlope: 0
           outSlope: 0
           tangentMode: 0
@@ -3040,7 +3007,7 @@ ParticleSystem:
           outWeight: 0.33333334
         - serializedVersion: 3
           time: 1
-          value: 1
+          value: 0
           inSlope: 0
           outSlope: 0
           tangentMode: 0
@@ -3084,7 +3051,7 @@ ParticleSystem:
         m_Curve:
         - serializedVersion: 3
           time: 0
-          value: 1
+          value: 0
           inSlope: 0
           outSlope: 0
           tangentMode: 0
@@ -3093,7 +3060,7 @@ ParticleSystem:
           outWeight: 0.33333334
         - serializedVersion: 3
           time: 1
-          value: 1
+          value: 0
           inSlope: 0
           outSlope: 0
           tangentMode: 0
@@ -3137,7 +3104,7 @@ ParticleSystem:
         m_Curve:
         - serializedVersion: 3
           time: 0
-          value: 1
+          value: 0
           inSlope: 0
           outSlope: 0
           tangentMode: 0
@@ -3146,7 +3113,7 @@ ParticleSystem:
           outWeight: 0.33333334
         - serializedVersion: 3
           time: 1
-          value: 1
+          value: 0
           inSlope: 0
           outSlope: 0
           tangentMode: 0
@@ -3328,9 +3295,9 @@ ParticleSystem:
         m_Curve:
         - serializedVersion: 3
           time: 0
-          value: 0
+          value: 1
           inSlope: 0
-          outSlope: 1
+          outSlope: 0
           tangentMode: 0
           weightedMode: 0
           inWeight: 0.33333334
@@ -3338,7 +3305,7 @@ ParticleSystem:
         - serializedVersion: 3
           time: 1
           value: 1
-          inSlope: 1
+          inSlope: 0
           outSlope: 0
           tangentMode: 0
           weightedMode: 0
@@ -3352,7 +3319,7 @@ ParticleSystem:
         m_Curve:
         - serializedVersion: 3
           time: 0
-          value: 1
+          value: 0
           inSlope: 0
           outSlope: 0
           tangentMode: 0
@@ -3361,7 +3328,7 @@ ParticleSystem:
           outWeight: 0.33333334
         - serializedVersion: 3
           time: 1
-          value: 1
+          value: 0
           inSlope: 0
           outSlope: 0
           tangentMode: 0
@@ -3381,9 +3348,9 @@ ParticleSystem:
         m_Curve:
         - serializedVersion: 3
           time: 0
-          value: 0
+          value: 1
           inSlope: 0
-          outSlope: 1
+          outSlope: 0
           tangentMode: 0
           weightedMode: 0
           inWeight: 0.33333334
@@ -3391,7 +3358,7 @@ ParticleSystem:
         - serializedVersion: 3
           time: 1
           value: 1
-          inSlope: 1
+          inSlope: 0
           outSlope: 0
           tangentMode: 0
           weightedMode: 0
@@ -3405,7 +3372,7 @@ ParticleSystem:
         m_Curve:
         - serializedVersion: 3
           time: 0
-          value: 1
+          value: 0
           inSlope: 0
           outSlope: 0
           tangentMode: 0
@@ -3414,7 +3381,7 @@ ParticleSystem:
           outWeight: 0.33333334
         - serializedVersion: 3
           time: 1
-          value: 1
+          value: 0
           inSlope: 0
           outSlope: 0
           tangentMode: 0
@@ -3434,9 +3401,9 @@ ParticleSystem:
         m_Curve:
         - serializedVersion: 3
           time: 0
-          value: 0
+          value: 1
           inSlope: 0
-          outSlope: 1
+          outSlope: 0
           tangentMode: 0
           weightedMode: 0
           inWeight: 0.33333334
@@ -3444,7 +3411,7 @@ ParticleSystem:
         - serializedVersion: 3
           time: 1
           value: 1
-          inSlope: 1
+          inSlope: 0
           outSlope: 0
           tangentMode: 0
           weightedMode: 0
@@ -3458,7 +3425,7 @@ ParticleSystem:
         m_Curve:
         - serializedVersion: 3
           time: 0
-          value: 1
+          value: 0
           inSlope: 0
           outSlope: 0
           tangentMode: 0
@@ -3467,7 +3434,7 @@ ParticleSystem:
           outWeight: 0.33333334
         - serializedVersion: 3
           time: 1
-          value: 1
+          value: 0
           inSlope: 0
           outSlope: 0
           tangentMode: 0
@@ -3480,7 +3447,7 @@ ParticleSystem:
     range: {x: 0, y: 1}
     separateAxes: 0
   RotationBySpeedModule:
-    enabled: 1
+    enabled: 0
     x:
       serializedVersion: 2
       minMaxState: 0
@@ -3491,7 +3458,7 @@ ParticleSystem:
         m_Curve:
         - serializedVersion: 3
           time: 0
-          value: 0
+          value: 1
           inSlope: 0
           outSlope: 0
           tangentMode: 0
@@ -3500,7 +3467,7 @@ ParticleSystem:
           outWeight: 0.33333334
         - serializedVersion: 3
           time: 1
-          value: 0
+          value: 1
           inSlope: 0
           outSlope: 0
           tangentMode: 0
@@ -3544,7 +3511,7 @@ ParticleSystem:
         m_Curve:
         - serializedVersion: 3
           time: 0
-          value: 0
+          value: 1
           inSlope: 0
           outSlope: 0
           tangentMode: 0
@@ -3553,7 +3520,7 @@ ParticleSystem:
           outWeight: 0.33333334
         - serializedVersion: 3
           time: 1
-          value: 0
+          value: 1
           inSlope: 0
           outSlope: 0
           tangentMode: 0
@@ -3590,7 +3557,7 @@ ParticleSystem:
     curve:
       serializedVersion: 2
       minMaxState: 0
-      scalar: 4.712389
+      scalar: 0.7853982
       minScalar: 0.7853982
       maxCurve:
         serializedVersion: 2
@@ -3621,7 +3588,7 @@ ParticleSystem:
         m_Curve:
         - serializedVersion: 3
           time: 0
-          value: 1
+          value: 0
           inSlope: 0
           outSlope: 0
           tangentMode: 0
@@ -3630,7 +3597,7 @@ ParticleSystem:
           outWeight: 0.33333334
         - serializedVersion: 3
           time: 1
-          value: 1
+          value: 0
           inSlope: 0
           outSlope: 0
           tangentMode: 0
@@ -3719,7 +3686,13 @@ ParticleSystem:
     multiplyColliderForceByParticleSize: 0
     multiplyColliderForceByParticleSpeed: 0
     multiplyColliderForceByCollisionAngle: 1
-    m_Planes: []
+    m_Planes:
+    - {fileID: 0}
+    - {fileID: 0}
+    - {fileID: 0}
+    - {fileID: 0}
+    - {fileID: 0}
+    - {fileID: 0}
     m_Dampen:
       serializedVersion: 2
       minMaxState: 0
@@ -3730,7 +3703,7 @@ ParticleSystem:
         m_Curve:
         - serializedVersion: 3
           time: 0
-          value: 0
+          value: 1
           inSlope: 0
           outSlope: 0
           tangentMode: 0
@@ -3739,7 +3712,7 @@ ParticleSystem:
           outWeight: 0.33333334
         - serializedVersion: 3
           time: 1
-          value: 0
+          value: 1
           inSlope: 0
           outSlope: 0
           tangentMode: 0
@@ -3807,7 +3780,7 @@ ParticleSystem:
         m_Curve:
         - serializedVersion: 3
           time: 0
-          value: 1
+          value: 0
           inSlope: 0
           outSlope: 0
           tangentMode: 0
@@ -3816,7 +3789,7 @@ ParticleSystem:
           outWeight: 0.33333334
         - serializedVersion: 3
           time: 1
-          value: 1
+          value: 0
           inSlope: 0
           outSlope: 0
           tangentMode: 0
@@ -3836,7 +3809,7 @@ ParticleSystem:
         m_Curve:
         - serializedVersion: 3
           time: 0
-          value: 0
+          value: 1
           inSlope: 0
           outSlope: 0
           tangentMode: 0
@@ -3845,7 +3818,7 @@ ParticleSystem:
           outWeight: 0.33333334
         - serializedVersion: 3
           time: 1
-          value: 0
+          value: 1
           inSlope: 0
           outSlope: 0
           tangentMode: 0
@@ -3890,7 +3863,7 @@ ParticleSystem:
     voxelSize: 0.5
     collisionMessages: 0
     collidesWithDynamic: 1
-    interiorCollisions: 0
+    interiorCollisions: 1
   TriggerModule:
     enabled: 0
     serializedVersion: 2
@@ -3900,7 +3873,13 @@ ParticleSystem:
     exit: 0
     colliderQueryMode: 0
     radiusScale: 1
-    primitives: []
+    primitives:
+    - {fileID: 0}
+    - {fileID: 0}
+    - {fileID: 0}
+    - {fileID: 0}
+    - {fileID: 0}
+    - {fileID: 0}
   SubModule:
     serializedVersion: 2
     enabled: 0
@@ -3952,7 +3931,7 @@ ParticleSystem:
         m_Curve:
         - serializedVersion: 3
           time: 0
-          value: 1
+          value: 0
           inSlope: 0
           outSlope: 0
           tangentMode: 0
@@ -3961,7 +3940,7 @@ ParticleSystem:
           outWeight: 0.33333334
         - serializedVersion: 3
           time: 1
-          value: 1
+          value: 0
           inSlope: 0
           outSlope: 0
           tangentMode: 0
@@ -4005,7 +3984,7 @@ ParticleSystem:
         m_Curve:
         - serializedVersion: 3
           time: 0
-          value: 1
+          value: 0
           inSlope: 0
           outSlope: 0
           tangentMode: 0
@@ -4014,7 +3993,7 @@ ParticleSystem:
           outWeight: 0.33333334
         - serializedVersion: 3
           time: 1
-          value: 1
+          value: 0
           inSlope: 0
           outSlope: 0
           tangentMode: 0
@@ -4063,7 +4042,7 @@ ParticleSystem:
         m_Curve:
         - serializedVersion: 3
           time: 0
-          value: 1
+          value: 0
           inSlope: 0
           outSlope: 0
           tangentMode: 0
@@ -4072,7 +4051,7 @@ ParticleSystem:
           outWeight: 0.33333334
         - serializedVersion: 3
           time: 1
-          value: 1
+          value: 0
           inSlope: 0
           outSlope: 0
           tangentMode: 0
@@ -4194,7 +4173,7 @@ ParticleSystem:
         m_Curve:
         - serializedVersion: 3
           time: 0
-          value: 1
+          value: 0
           inSlope: 0
           outSlope: 0
           tangentMode: 0
@@ -4203,7 +4182,7 @@ ParticleSystem:
           outWeight: 0.33333334
         - serializedVersion: 3
           time: 1
-          value: 1
+          value: 0
           inSlope: 0
           outSlope: 0
           tangentMode: 0
@@ -4848,28 +4827,28 @@ ParticleSystem:
         m_PostInfinity: 2
         m_RotationOrder: 4
     vectorLabel1_3: W
---- !u!199 &2778118631741808664
+--- !u!199 &199168586269274460
 ParticleSystemRenderer:
   serializedVersion: 6
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5093342986377779604}
+  m_GameObject: {fileID: 1309722136810478}
   m_Enabled: 1
   m_CastShadows: 0
   m_ReceiveShadows: 0
   m_DynamicOccludee: 1
   m_StaticShadowCaster: 0
   m_MotionVectors: 1
-  m_LightProbeUsage: 0
+  m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 0
   m_RayTracingMode: 0
   m_RayTraceProcedural: 0
-  m_RenderingLayerMask: 1
+  m_RenderingLayerMask: 4294967295
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 0cfe86d8df5e8461abd912180e0080a6, type: 2}
+  - {fileID: 10308, guid: 0000000000000000f000000000000000, type: 0}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -4881,8 +4860,8 @@ ParticleSystemRenderer:
   m_PreserveUVs: 0
   m_IgnoreNormalsForChartDetection: 0
   m_ImportantGI: 0
-  m_StitchLightmapSeams: 1
-  m_SelectedEditorRenderState: 3
+  m_StitchLightmapSeams: 0
+  m_SelectedEditorRenderState: 0
   m_MinimumChartSize: 4
   m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
@@ -4904,13 +4883,13 @@ ParticleSystemRenderer:
   m_RenderAlignment: 0
   m_Pivot: {x: 0, y: 0, z: 0}
   m_Flip: {x: 0, y: 0, z: 0}
-  m_EnableGPUInstancing: 1
-  m_ApplyActiveColorSpace: 1
+  m_EnableGPUInstancing: 0
+  m_ApplyActiveColorSpace: 0
   m_AllowRoll: 1
   m_FreeformStretching: 0
   m_RotateWithStretchDirection: 1
   m_UseCustomVertexStreams: 0
-  m_VertexStreams: 00010304
+  m_VertexStreams: 0001030405
   m_UseCustomTrailVertexStreams: 0
   m_TrailVertexStreams: 00010304
   m_Mesh: {fileID: 0}
@@ -4922,1228 +4901,16 @@ ParticleSystemRenderer:
   m_MeshWeighting2: 1
   m_MeshWeighting3: 1
   m_MaskInteraction: 0
---- !u!1 &5321511588166116204
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 21179803576765007}
-  - component: {fileID: 2349727344610648843}
-  m_Layer: 14
-  m_Name: Loot position 2
-  m_TagString: Untagged
-  m_Icon: {fileID: -5487077368411116049, guid: 0000000000000000d000000000000000, type: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &21179803576765007
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5321511588166116204}
-  serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 1}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 461897898195485860}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &2349727344610648843
+--- !u!114 &2199283695576270901
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5321511588166116204}
+  m_GameObject: {fileID: 1309722136810478}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e601cf78e0340d145bc8652f1f729add, type: 3}
+  m_Script: {fileID: 11500000, guid: 1f481bde485f3154abac9d71b78b3efc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  ConversionTargetOptions: -1
-  IncludeChilds: 0
---- !u!1 &5418288066970727683
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 8926956751991820191}
-  - component: {fileID: 4226914677753783044}
-  m_Layer: 14
-  m_Name: Loot position 3
-  m_TagString: Untagged
-  m_Icon: {fileID: -5487077368411116049, guid: 0000000000000000d000000000000000, type: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &8926956751991820191
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5418288066970727683}
-  serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: -1}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 461897898195485860}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &4226914677753783044
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5418288066970727683}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e601cf78e0340d145bc8652f1f729add, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  ConversionTargetOptions: -1
-  IncludeChilds: 0
---- !u!1001 &3271448984758763522
-PrefabInstance:
-  m_ObjectHideFlags: 0
-  serializedVersion: 2
-  m_Modification:
-    serializedVersion: 3
-    m_TransformParent: {fileID: 0}
-    m_Modifications:
-    - target: {fileID: 89082477004889952, guid: 7e318a5053d3f0c4dbccb38c5a2b7604, type: 3}
-      propertyPath: Value.Value
-      value: 2
-      objectReference: {fileID: 0}
-    - target: {fileID: 949806476462917110, guid: 7e318a5053d3f0c4dbccb38c5a2b7604, type: 3}
-      propertyPath: Animator
-      value: 
-      objectReference: {fileID: 5535505382135713148}
-    - target: {fileID: 1986160197031790190, guid: 7e318a5053d3f0c4dbccb38c5a2b7604, type: 3}
-      propertyPath: Value.BaseValue
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 3102549359064695974, guid: 7e318a5053d3f0c4dbccb38c5a2b7604, type: 3}
-      propertyPath: m_LocalPosition.x
-      value: -13.602
-      objectReference: {fileID: 0}
-    - target: {fileID: 3102549359064695974, guid: 7e318a5053d3f0c4dbccb38c5a2b7604, type: 3}
-      propertyPath: m_LocalPosition.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 3102549359064695974, guid: 7e318a5053d3f0c4dbccb38c5a2b7604, type: 3}
-      propertyPath: m_LocalPosition.z
-      value: 5.758
-      objectReference: {fileID: 0}
-    - target: {fileID: 3102549359064695974, guid: 7e318a5053d3f0c4dbccb38c5a2b7604, type: 3}
-      propertyPath: m_LocalRotation.w
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 3102549359064695974, guid: 7e318a5053d3f0c4dbccb38c5a2b7604, type: 3}
-      propertyPath: m_LocalRotation.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 3102549359064695974, guid: 7e318a5053d3f0c4dbccb38c5a2b7604, type: 3}
-      propertyPath: m_LocalRotation.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 3102549359064695974, guid: 7e318a5053d3f0c4dbccb38c5a2b7604, type: 3}
-      propertyPath: m_LocalRotation.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 3102549359064695974, guid: 7e318a5053d3f0c4dbccb38c5a2b7604, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 3102549359064695974, guid: 7e318a5053d3f0c4dbccb38c5a2b7604, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 3102549359064695974, guid: 7e318a5053d3f0c4dbccb38c5a2b7604, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 3251293730308209213, guid: 7e318a5053d3f0c4dbccb38c5a2b7604, type: 3}
-      propertyPath: Value.BaseValue
-      value: 6
-      objectReference: {fileID: 0}
-    - target: {fileID: 4300974209243071795, guid: 7e318a5053d3f0c4dbccb38c5a2b7604, type: 3}
-      propertyPath: spawnPositions.Array.size
-      value: 4
-      objectReference: {fileID: 0}
-    - target: {fileID: 4300974209243071795, guid: 7e318a5053d3f0c4dbccb38c5a2b7604, type: 3}
-      propertyPath: spawnPositions.Array.data[0]
-      value: 
-      objectReference: {fileID: 3980856345830707367}
-    - target: {fileID: 4300974209243071795, guid: 7e318a5053d3f0c4dbccb38c5a2b7604, type: 3}
-      propertyPath: spawnPositions.Array.data[1]
-      value: 
-      objectReference: {fileID: 5321511588166116204}
-    - target: {fileID: 4300974209243071795, guid: 7e318a5053d3f0c4dbccb38c5a2b7604, type: 3}
-      propertyPath: spawnPositions.Array.data[2]
-      value: 
-      objectReference: {fileID: 5418288066970727683}
-    - target: {fileID: 4300974209243071795, guid: 7e318a5053d3f0c4dbccb38c5a2b7604, type: 3}
-      propertyPath: spawnPositions.Array.data[3]
-      value: 
-      objectReference: {fileID: 2975333245769389781}
-    - target: {fileID: 4519167168416656177, guid: 7e318a5053d3f0c4dbccb38c5a2b7604, type: 3}
-      propertyPath: Abilities.Array.size
-      value: 2
-      objectReference: {fileID: 0}
-    - target: {fileID: 4519167168416656177, guid: 7e318a5053d3f0c4dbccb38c5a2b7604, type: 3}
-      propertyPath: Abilities.Array.data[1]
-      value: 
-      objectReference: {fileID: 8786100018445104991, guid: 709759d6d50fadb4ab72406e658ed872, type: 2}
-    - target: {fileID: 5347791873750223606, guid: 7e318a5053d3f0c4dbccb38c5a2b7604, type: 3}
-      propertyPath: ID
-      value: 
-      objectReference: {fileID: 4049816961473284833, guid: 709759d6d50fadb4ab72406e658ed872, type: 2}
-    - target: {fileID: 6258623416334139124, guid: 7e318a5053d3f0c4dbccb38c5a2b7604, type: 3}
-      propertyPath: m_Radius
-      value: 0.74
-      objectReference: {fileID: 0}
-    - target: {fileID: 6279708959359840059, guid: 7e318a5053d3f0c4dbccb38c5a2b7604, type: 3}
-      propertyPath: HitEffectPrefab
-      value: 
-      objectReference: {fileID: 1219394305205882, guid: 781157b84c85f4e4f8aafc717134f21d, type: 3}
-    - target: {fileID: 7278604672373075099, guid: 7e318a5053d3f0c4dbccb38c5a2b7604, type: 3}
-      propertyPath: HitEffectPrefab
-      value: 
-      objectReference: {fileID: 1219394305205882, guid: 781157b84c85f4e4f8aafc717134f21d, type: 3}
-    - target: {fileID: 7334291140803663390, guid: 7e318a5053d3f0c4dbccb38c5a2b7604, type: 3}
-      propertyPath: m_Name
-      value: Worm from hole
-      objectReference: {fileID: 0}
-    m_RemovedComponents:
-    - {fileID: 7024777662069821688, guid: 7e318a5053d3f0c4dbccb38c5a2b7604, type: 3}
-    - {fileID: 2931668029453089402, guid: 7e318a5053d3f0c4dbccb38c5a2b7604, type: 3}
-    - {fileID: 2232529582706308508, guid: 7e318a5053d3f0c4dbccb38c5a2b7604, type: 3}
-    - {fileID: 3546062050356481310, guid: 7e318a5053d3f0c4dbccb38c5a2b7604, type: 3}
-    m_RemovedGameObjects: []
-    m_AddedGameObjects:
-    - targetCorrespondingSourceObject: {fileID: 3102549359064695974, guid: 7e318a5053d3f0c4dbccb38c5a2b7604, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 6698777333042385040}
-    - targetCorrespondingSourceObject: {fileID: 3102549359064695974, guid: 7e318a5053d3f0c4dbccb38c5a2b7604, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 133194615394701461}
-    - targetCorrespondingSourceObject: {fileID: 3102549359064695974, guid: 7e318a5053d3f0c4dbccb38c5a2b7604, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 21179803576765007}
-    - targetCorrespondingSourceObject: {fileID: 3102549359064695974, guid: 7e318a5053d3f0c4dbccb38c5a2b7604, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 8926956751991820191}
-    - targetCorrespondingSourceObject: {fileID: 3102549359064695974, guid: 7e318a5053d3f0c4dbccb38c5a2b7604, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 6786404980882954418}
-    m_AddedComponents:
-    - targetCorrespondingSourceObject: {fileID: 7334291140803663390, guid: 7e318a5053d3f0c4dbccb38c5a2b7604, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 4959055293210141463}
-    - targetCorrespondingSourceObject: {fileID: 7334291140803663390, guid: 7e318a5053d3f0c4dbccb38c5a2b7604, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 8180657417812811431}
-    - targetCorrespondingSourceObject: {fileID: 7334291140803663390, guid: 7e318a5053d3f0c4dbccb38c5a2b7604, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 9080637859951362461}
-  m_SourcePrefab: {fileID: 100100000, guid: 7e318a5053d3f0c4dbccb38c5a2b7604, type: 3}
---- !u!4 &461897898195485860 stripped
-Transform:
-  m_CorrespondingSourceObject: {fileID: 3102549359064695974, guid: 7e318a5053d3f0c4dbccb38c5a2b7604, type: 3}
-  m_PrefabInstance: {fileID: 3271448984758763522}
-  m_PrefabAsset: {fileID: 0}
---- !u!1 &5237166760477480476 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 7334291140803663390, guid: 7e318a5053d3f0c4dbccb38c5a2b7604, type: 3}
-  m_PrefabInstance: {fileID: 3271448984758763522}
-  m_PrefabAsset: {fileID: 0}
---- !u!114 &4959055293210141463
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5237166760477480476}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 25d87a6b957a60841942c7e71e0c252f, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  ConversionTargetOptions: -1
-  Graph:
-    rid: 5431782183231553560
-  references:
-    version: 2
-    RefIds:
-    - rid: 986275273148465154
-      type: {class: AudioClipVariable, ns: TzarGames.GameCore.ScriptViz, asm: TzarGames.GameCore.Client}
-      data:
-        ID:
-          Value:
-            Value:
-              x: 2117319419
-              y: 1129028617
-              z: 2686195335
-              w: 3145201704
-        Name: dead audio
-        NetSyncEnabled: 0
-        IsHidden: 0
-        AudioClip: {fileID: 8300000, guid: 9366f2aa6c913254ab9817a2d9d5d14e, type: 3}
-    - rid: 986275273148465156
-      type: {class: PlayAudioClipNode, ns: TzarGames.GameCore.ScriptViz, asm: TzarGames.GameCore.Client}
-      data:
-        ID:
-          Value:
-            Value:
-              x: 1325898273
-              y: 3611403239
-              z: 2200912036
-              w: 70407833
-        Position: {x: 1448, y: 431}
-        input:
-          ID:
-            Value:
-              Value:
-                x: 644498941
-                y: 1967636015
-                z: 1356100998
-                w: 2193493771
-          ConnectedSocketIDs:
-          - Value:
-              Value:
-                x: 102570943
-                y: 2554932868
-                z: 2068655251
-                w: 1643414339
-        output:
-          ID:
-            Value:
-              Value:
-                x: 1413092758
-                y: 1598811510
-                z: 3586081950
-                w: 1140623016
-          ConnectedSocketIDs:
-          - Value:
-              Value:
-                x: 1768536671
-                y: 2840375278
-                z: 694464129
-                w: 3451005041
-        Clip:
-          ID:
-            Value:
-              Value:
-                x: 2987052057
-                y: 3796261330
-                z: 892928905
-                w: 2611485789
-          ConnectedSocketIDs:
-          - Value:
-              Value:
-                x: 2835010653
-                y: 3511144519
-                z: 3555361155
-                w: 1718517864
-          Value:
-            Value:
-              Id:
-                GlobalId:
-                  SceneObjectIdentifier0: 0
-                  SceneObjectIdentifier1: 0
-                  AssetGUID:
-                    Value:
-                      x: 0
-                      y: 0
-                      z: 0
-                      w: 0
-                  IdentifierType: 0
-                GenerationType: 0
-        InstigatorSocket:
-          ID:
-            Value:
-              Value:
-                x: 900841118
-                y: 1178810843
-                z: 2967042233
-                w: 2580976977
-          ConnectedSocketIDs:
-          - Value:
-              Value:
-                x: 193633321
-                y: 3493883602
-                z: 3749059492
-                w: 2677732902
-          AuthoringValue: {fileID: 0}
-        OutputAudioEventEntitySocket:
-          ID:
-            Value:
-              Value:
-                x: 4034080036
-                y: 256877511
-                z: 1981848466
-                w: 1774823284
-          ConnectedSocketIDs: []
-          AuthoringValue: {fileID: 0}
-        DisableAutoDestroy: 0
-        AttachToInstigator: 1
-        Settings:
-          RandomizeVolume: 1
-          MinVolume: 0.8
-          MaxVolume: 1
-          RandomizePitch: 1
-          MinPitch: 0.9
-          MaxPitch: 1.1
-          Loop: 0
-          SpatializeBlend: 1
-          BypassEffects: 0
-          SetMinDistance: 0
-          MinDistance: 0
-          SetMaxDistance: 1
-          MaxDistance: 30
-        AudioMixerGroup: {fileID: 24300002, guid: 64c795c25d71240459ab99e981490730, type: 2}
-    - rid: 986275273148465157
-      type: {class: GetSelfNode, ns: TzarGames.GameCore.ScriptViz.Graph, asm: TzarGames.GameCore}
-      data:
-        ID:
-          Value:
-            Value:
-              x: 543206955
-              y: 3594542421
-              z: 3327566769
-              w: 2055340015
-        Position: {x: 1111, y: 453}
-        input:
-          ID:
-            Value:
-              Value:
-                x: 2470050330
-                y: 3645309286
-                z: 2575619463
-                w: 225431127
-          ConnectedSocketIDs:
-          - Value:
-              Value:
-                x: 2281465431
-                y: 1317798454
-                z: 1318376864
-                w: 3894719517
-        output:
-          ID:
-            Value:
-              Value:
-                x: 2659658573
-                y: 2940690916
-                z: 1715828642
-                w: 2585005183
-          ConnectedSocketIDs:
-          - Value:
-              Value:
-                x: 3782392976
-                y: 2118222197
-                z: 3169394322
-                w: 4286926550
-        SelfOutSocket:
-          ID:
-            Value:
-              Value:
-                x: 193633321
-                y: 3493883602
-                z: 3749059492
-                w: 2677732902
-          ConnectedSocketIDs:
-          - Value:
-              Value:
-                x: 900841118
-                y: 1178810843
-                z: 2967042233
-                w: 2580976977
-          AuthoringValue: {fileID: 0}
-    - rid: 986275273148465158
-      type: {class: GetAudioClipReferenceVarCommandNode, ns: TzarGames.GameCore.ScriptViz, asm: TzarGames.GameCore.Client}
-      data:
-        ID:
-          Value:
-            Value:
-              x: 712036205
-              y: 2420165161
-              z: 2710617275
-              w: 4120095261
-        Position: {x: 1250, y: 403}
-        input:
-          ID:
-            Value:
-              Value:
-                x: 3782392976
-                y: 2118222197
-                z: 3169394322
-                w: 4286926550
-          ConnectedSocketIDs:
-          - Value:
-              Value:
-                x: 2659658573
-                y: 2940690916
-                z: 1715828642
-                w: 2585005183
-        output:
-          ID:
-            Value:
-              Value:
-                x: 102570943
-                y: 2554932868
-                z: 2068655251
-                w: 1643414339
-          ConnectedSocketIDs:
-          - Value:
-              Value:
-                x: 644498941
-                y: 1967636015
-                z: 1356100998
-                w: 2193493771
-        getVariableId:
-          Value:
-            Value:
-              x: 2117319419
-              y: 1129028617
-              z: 2686195335
-              w: 3145201704
-        WriteOutput:
-          ID:
-            Value:
-              Value:
-                x: 2835010653
-                y: 3511144519
-                z: 3555361155
-                w: 1718517864
-          ConnectedSocketIDs:
-          - Value:
-              Value:
-                x: 2987052057
-                y: 3796261330
-                z: 892928905
-                w: 2611485789
-          Value:
-            Value:
-              Id:
-                GlobalId:
-                  SceneObjectIdentifier0: 0
-                  SceneObjectIdentifier1: 0
-                  AssetGUID:
-                    Value:
-                      x: 0
-                      y: 0
-                      z: 0
-                      w: 0
-                  IdentifierType: 0
-                GenerationType: 0
-    - rid: 986275273148465194
-      type: {class: ChangeDisabledStateNode, ns: TzarGames.GameCore.ScriptViz.Graph, asm: TzarGames.GameCore}
-      data:
-        ID:
-          Value:
-            Value:
-              x: 1469227969
-              y: 692956499
-              z: 1314476422
-              w: 3809178952
-        Position: {x: 2058, y: 431}
-        input:
-          ID:
-            Value:
-              Value:
-                x: 1768536671
-                y: 2840375278
-                z: 694464129
-                w: 3451005041
-          ConnectedSocketIDs:
-          - Value:
-              Value:
-                x: 1413092758
-                y: 1598811510
-                z: 3586081950
-                w: 1140623016
-        output:
-          ID:
-            Value:
-              Value:
-                x: 2819283855
-                y: 1028479416
-                z: 2404741772
-                w: 3287601176
-          ConnectedSocketIDs: []
-        TargetEntity:
-          ID:
-            Value:
-              Value:
-                x: 1913920951
-                y: 2252976070
-                z: 2686267030
-                w: 265807923
-          ConnectedSocketIDs: []
-          AuthoringValue: {fileID: 5093342986377779604}
-        Enable: 1
-        AffectChilds: 1
-    - rid: 986275294506123288
-      type: {class: DeadEventNodeBase, ns: TzarGames.GameCore.ScriptViz.Commands, asm: TzarGames.GameCore}
-      data:
-        ID:
-          Value:
-            Value:
-              x: 811302035
-              y: 2924117639
-              z: 2537501569
-              w: 1100173749
-        Position: {x: 1410, y: 688}
-        output:
-          ID:
-            Value:
-              Value:
-                x: 3010126108
-                y: 3242681733
-                z: 563829634
-                w: 609287487
-          ConnectedSocketIDs:
-          - Value:
-              Value:
-                x: 178899208
-                y: 424389949
-                z: 2865842584
-                w: 4143243263
-    - rid: 986275294506123290
-      type: {class: MessageVariable, ns: TzarGames.GameCore.ScriptViz.Graph, asm: TzarGames.GameCore}
-      data:
-        ID:
-          Value:
-            Value:
-              x: 3234151468
-              y: 1917467394
-              z: 2428233607
-              w: 1976565923
-        Name: death message
-        NetSyncEnabled: 0
-        IsHidden: 0
-        Value: worm dead
-    - rid: 986275294506123291
-      type: {class: SendMessageCommandNode, ns: TzarGames.GameCore.ScriptViz.Graph, asm: TzarGames.GameCore}
-      data:
-        ID:
-          Value:
-            Value:
-              x: 207857294
-              y: 2168810037
-              z: 1978774166
-              w: 1488486649
-        Position: {x: 1758, y: 640}
-        input:
-          ID:
-            Value:
-              Value:
-                x: 4070643100
-                y: 2755896693
-                z: 2363887237
-                w: 2230169815
-          ConnectedSocketIDs:
-          - Value:
-              Value:
-                x: 3338437090
-                y: 2135252944
-                z: 1719193993
-                w: 857564986
-        output:
-          ID:
-            Value:
-              Value:
-                x: 2038690292
-                y: 1010982523
-                z: 2523211705
-                w: 4007637612
-          ConnectedSocketIDs: []
-        MessageSocket:
-          ID:
-            Value:
-              Value:
-                x: 4171492486
-                y: 877070788
-                z: 4097953165
-                w: 3448356216
-          ConnectedSocketIDs:
-          - Value:
-              Value:
-                x: 255396005
-                y: 2957669446
-                z: 2306557337
-                w: 3243491918
-          Value: 
-        OptionalTarget:
-          ID:
-            Value:
-              Value:
-                x: 3221096700
-                y: 2487482497
-                z: 1648777346
-                w: 1170917343
-          ConnectedSocketIDs: []
-          AuthoringValue: {fileID: 0}
-    - rid: 986275294506123292
-      type: {class: GetMessageVariableCommandNode, ns: TzarGames.GameCore.ScriptViz.Graph, asm: TzarGames.GameCore}
-      data:
-        ID:
-          Value:
-            Value:
-              x: 565511715
-              y: 1195417098
-              z: 2237454507
-              w: 2555065197
-        Position: {x: 1556, y: 640}
-        input:
-          ID:
-            Value:
-              Value:
-                x: 178899208
-                y: 424389949
-                z: 2865842584
-                w: 4143243263
-          ConnectedSocketIDs:
-          - Value:
-              Value:
-                x: 3010126108
-                y: 3242681733
-                z: 563829634
-                w: 609287487
-        output:
-          ID:
-            Value:
-              Value:
-                x: 3338437090
-                y: 2135252944
-                z: 1719193993
-                w: 857564986
-          ConnectedSocketIDs:
-          - Value:
-              Value:
-                x: 4070643100
-                y: 2755896693
-                z: 2363887237
-                w: 2230169815
-        getVariableId:
-          Value:
-            Value:
-              x: 3234151468
-              y: 1917467394
-              z: 2428233607
-              w: 1976565923
-        WriteOutput:
-          ID:
-            Value:
-              Value:
-                x: 255396005
-                y: 2957669446
-                z: 2306557337
-                w: 3243491918
-          ConnectedSocketIDs:
-          - Value:
-              Value:
-                x: 4171492486
-                y: 877070788
-                z: 4097953165
-                w: 3448356216
-          Value: 
-    - rid: 5431782183231553560
-      type: {class: ScriptVizGraph, ns: TzarGames.GameCore.ScriptViz.Graph, asm: TzarGames.GameCore}
-      data:
-        pages: []
-        states: []
-        layers:
-        - id: scene
-          pages:
-          - ID:
-              Value:
-                Value:
-                  x: 1479928894
-                  y: 1274176181
-                  z: 3573481356
-                  w: 3581216088
-            Name: 
-            ConversionTargetOptions: 5
-            variables:
-            - rid: 5431782183231553562
-            - rid: 986275273148465154
-            nodes:
-            - rid: 5431782183231553561
-            - rid: 5431782183231553566
-            - rid: 5431782183231553574
-            - rid: 5431782183231553580
-            - rid: 986275273148465156
-            - rid: 986275273148465157
-            - rid: 986275273148465158
-            - rid: 986275273148465194
-          states: []
-          variables: []
-        - id: 2c48b9a9b232bc34abc53cc2bc53b679
-          pages:
-          - ID:
-              Value:
-                Value:
-                  x: 1206416476
-                  y: 2941053329
-                  z: 754122933
-                  w: 3130550937
-            Name: 
-            ConversionTargetOptions: -1
-            variables:
-            - rid: 986275294506123290
-            nodes:
-            - rid: 986275294506123288
-            - rid: 986275294506123291
-            - rid: 986275294506123292
-          states: []
-          variables: []
-        Name: 
-    - rid: 5431782183231553561
-      type: {class: DeadEventNodeBase, ns: TzarGames.GameCore.ScriptViz.Commands, asm: TzarGames.GameCore}
-      data:
-        ID:
-          Value:
-            Value:
-              x: 1153299465
-              y: 1158097239
-              z: 1647582369
-              w: 3840295874
-        Position: {x: 511, y: 453}
-        output:
-          ID:
-            Value:
-              Value:
-                x: 3801937163
-                y: 1235709335
-                z: 1983878316
-                w: 2719477683
-          ConnectedSocketIDs:
-          - Value:
-              Value:
-                x: 1277517669
-                y: 1076173956
-                z: 1983373978
-                w: 2150976023
-    - rid: 5431782183231553562
-      type: {class: DynamicArrayVariable, ns: TzarGames.GameCore.ScriptViz.Graph, asm: TzarGames.GameCore}
-      data:
-        ID:
-          Value:
-            Value:
-              x: 3665633861
-              y: 1308422196
-              z: 1802764720
-              w: 2973673222
-        Name: _delayed_commands
-        NetSyncEnabled: 0
-        IsHidden: 1
-    - rid: 5431782183231553566
-      type: {class: PlayCharacterAnimationCommandNode, ns: Arena.Client.ScriptViz, asm: Arena.Client}
-      data:
-        ID:
-          Value:
-            Value:
-              x: 1607245
-              y: 1141370133
-              z: 2563107243
-              w: 1227857535
-        Position: {x: 773, y: 453}
-        input:
-          ID:
-            Value:
-              Value:
-                x: 1277517669
-                y: 1076173956
-                z: 1983373978
-                w: 2150976023
-          ConnectedSocketIDs:
-          - Value:
-              Value:
-                x: 3801937163
-                y: 1235709335
-                z: 1983878316
-                w: 2719477683
-        output:
-          ID:
-            Value:
-              Value:
-                x: 2281465431
-                y: 1317798454
-                z: 1318376864
-                w: 3894719517
-          ConnectedSocketIDs:
-          - Value:
-              Value:
-                x: 2470050330
-                y: 3645309286
-                z: 2575619463
-                w: 225431127
-        TargetAnimatorSocket:
-          ID:
-            Value:
-              Value:
-                x: 3927654671
-                y: 1106847952
-                z: 2986021306
-                w: 2001725310
-          ConnectedSocketIDs: []
-          AuthoringValue: {fileID: 5237166760477480476}
-        AnimationID: {fileID: 11400000, guid: 2dd27c835332c0943a4b150d01452e4e, type: 2}
-        TransitionTimeSocket:
-          ID:
-            Value:
-              Value:
-                x: 2995758455
-                y: 1152088209
-                z: 652829878
-                w: 218487908
-          ConnectedSocketIDs: []
-          Value: 0.2
-        DurationSocket:
-          ID:
-            Value:
-              Value:
-                x: 2875055946
-                y: 1087495762
-                z: 72742578
-                w: 3710365634
-          ConnectedSocketIDs: []
-          Value: 0
-    - rid: 5431782183231553574
-      type: {class: RemoveParentCommandNode, ns: TzarGames.GameCore.ScriptViz.Graph, asm: TzarGames.GameCore}
-      data:
-        ID:
-          Value:
-            Value:
-              x: 2306717564
-              y: 1304412838
-              z: 3327627169
-              w: 2967307113
-        Position: {x: 717, y: 232}
-        input:
-          ID:
-            Value:
-              Value:
-                x: 1590148738
-                y: 1212056928
-                z: 28940428
-                w: 692520667
-          ConnectedSocketIDs:
-          - Value:
-              Value:
-                x: 2894626940
-                y: 1099588992
-                z: 2223030716
-                w: 3111386607
-        output:
-          ID:
-            Value:
-              Value:
-                x: 1990400439
-                y: 1101973172
-                z: 1634396848
-                w: 2913692881
-          ConnectedSocketIDs: []
-        TargetChildSocket:
-          ID:
-            Value:
-              Value:
-                x: 3197289572
-                y: 1313471414
-                z: 3161275781
-                w: 2377844549
-          ConnectedSocketIDs: []
-          AuthoringValue: {fileID: 6698777333042089094}
-    - rid: 5431782183231553580
-      type: {class: StartEventNode, ns: TzarGames.GameCore.ScriptViz.Graph, asm: TzarGames.GameCore}
-      data:
-        ID:
-          Value:
-            Value:
-              x: 818297359
-              y: 1106545174
-              z: 2785142434
-              w: 2281395481
-        Position: {x: 511, y: 256}
-        output:
-          ID:
-            Value:
-              Value:
-                x: 2894626940
-                y: 1099588992
-                z: 2223030716
-                w: 3111386607
-          ConnectedSocketIDs:
-          - Value:
-              Value:
-                x: 1590148738
-                y: 1212056928
-                z: 28940428
-                w: 692520667
---- !u!114 &8180657417812811431
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5237166760477480476}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d59219cd127516e409f54ff6ae6bde6d, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  ConversionTargetOptions: -1
-  AppearSettings:
-    FadeTime: 1
-  DisappearSettings:
-    FadeDelay: 2
-    FadeTime: 2
-  fadingMaterials:
-  - Original: {fileID: 2100000, guid: 65e6f1bce25d49842918fde320630a64, type: 2}
-    Replacement: {fileID: 2100000, guid: a8e85887421cdc74e9b6facefd6bdfab, type: 2}
-  - Original: {fileID: 2100000, guid: be54a4326ece44e7a8b58bd9e9a1cdb7, type: 2}
-    Replacement: {fileID: 2100000, guid: 46709602c31184e688091ab0e35f4568, type: 2}
---- !u!114 &9080637859951362461
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5237166760477480476}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 296c605cd5ca47e49bdff008fbcffa5f, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  ConversionTargetOptions: -1
-  abilities:
-  - AbilityID: {fileID: 8786100018445104991, guid: 709759d6d50fadb4ab72406e658ed872, type: 2}
-    UseMinRadius: 1
-    MinRadius: 2
-    UseMaxRadius: 1
-    MaxRadius: 20
-    UsageInterval: 3
-    FirstUsageDelay: 2
-    SearchTarget: 0
-    CheckObstacles: 0
-    ObstacleTraceVerticalOffset: 0
-    ObstacleLayers:
-      Category00: 0
-      Category01: 0
-      Category02: 0
-      Category03: 0
-      Category04: 0
-      Category05: 0
-      Category06: 0
-      Category07: 0
-      Category08: 0
-      Category09: 0
-      Category10: 0
-      Category11: 0
-      Category12: 0
-      Category13: 0
-      Category14: 0
-      Category15: 0
-      Category16: 0
-      Category17: 0
-      Category18: 0
-      Category19: 0
-      Category20: 0
-      Category21: 0
-      Category22: 0
-      Category23: 0
-      Category24: 0
-      Category25: 0
-      Category26: 0
-      Category27: 0
-      Category28: 0
-      Category29: 0
-      Category30: 0
-      Category31: 0
---- !u!1001 &6698777333041990200
-PrefabInstance:
-  m_ObjectHideFlags: 0
-  serializedVersion: 2
-  m_Modification:
-    serializedVersion: 3
-    m_TransformParent: {fileID: 461897898195485860}
-    m_Modifications:
-    - target: {fileID: 100040, guid: 277228b304158d542a7c37c42d431ed1, type: 3}
-      propertyPath: m_Name
-      value: Worms
-      objectReference: {fileID: 0}
-    - target: {fileID: 400030, guid: 277228b304158d542a7c37c42d431ed1, type: 3}
-      propertyPath: m_LocalScale.z
-      value: 126.86
-      objectReference: {fileID: 0}
-    - target: {fileID: 400030, guid: 277228b304158d542a7c37c42d431ed1, type: 3}
-      propertyPath: m_LocalPosition.y
-      value: 0.216
-      objectReference: {fileID: 0}
-    - target: {fileID: 400038, guid: 277228b304158d542a7c37c42d431ed1, type: 3}
-      propertyPath: m_LocalScale.x
-      value: 112.8876
-      objectReference: {fileID: 0}
-    - target: {fileID: 400040, guid: 277228b304158d542a7c37c42d431ed1, type: 3}
-      propertyPath: m_LocalScale.x
-      value: 0.35
-      objectReference: {fileID: 0}
-    - target: {fileID: 400040, guid: 277228b304158d542a7c37c42d431ed1, type: 3}
-      propertyPath: m_LocalScale.y
-      value: 0.35
-      objectReference: {fileID: 0}
-    - target: {fileID: 400040, guid: 277228b304158d542a7c37c42d431ed1, type: 3}
-      propertyPath: m_LocalScale.z
-      value: 0.35
-      objectReference: {fileID: 0}
-    - target: {fileID: 400040, guid: 277228b304158d542a7c37c42d431ed1, type: 3}
-      propertyPath: m_LocalPosition.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 400040, guid: 277228b304158d542a7c37c42d431ed1, type: 3}
-      propertyPath: m_LocalPosition.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 400040, guid: 277228b304158d542a7c37c42d431ed1, type: 3}
-      propertyPath: m_LocalPosition.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 400040, guid: 277228b304158d542a7c37c42d431ed1, type: 3}
-      propertyPath: m_LocalRotation.w
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 400040, guid: 277228b304158d542a7c37c42d431ed1, type: 3}
-      propertyPath: m_LocalRotation.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 400040, guid: 277228b304158d542a7c37c42d431ed1, type: 3}
-      propertyPath: m_LocalRotation.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 400040, guid: 277228b304158d542a7c37c42d431ed1, type: 3}
-      propertyPath: m_LocalRotation.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 400040, guid: 277228b304158d542a7c37c42d431ed1, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 400040, guid: 277228b304158d542a7c37c42d431ed1, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 400040, guid: 277228b304158d542a7c37c42d431ed1, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 2300000, guid: 277228b304158d542a7c37c42d431ed1, type: 3}
-      propertyPath: m_Materials.Array.data[0]
-      value: 
-      objectReference: {fileID: 2100000, guid: be54a4326ece44e7a8b58bd9e9a1cdb7, type: 2}
-    m_RemovedComponents: []
-    m_RemovedGameObjects:
-    - {fileID: 100036, guid: 277228b304158d542a7c37c42d431ed1, type: 3}
-    m_AddedGameObjects:
-    - targetCorrespondingSourceObject: {fileID: 400032, guid: 277228b304158d542a7c37c42d431ed1, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 6925749298639323798}
-    m_AddedComponents:
-    - targetCorrespondingSourceObject: {fileID: 100040, guid: 277228b304158d542a7c37c42d431ed1, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 5535505382135713148}
-  m_SourcePrefab: {fileID: 100100000, guid: 277228b304158d542a7c37c42d431ed1, type: 3}
---- !u!1 &6698777333042089094 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 100030, guid: 277228b304158d542a7c37c42d431ed1, type: 3}
-  m_PrefabInstance: {fileID: 6698777333041990200}
-  m_PrefabAsset: {fileID: 0}
---- !u!1 &6698777333042089200 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 100040, guid: 277228b304158d542a7c37c42d431ed1, type: 3}
-  m_PrefabInstance: {fileID: 6698777333041990200}
-  m_PrefabAsset: {fileID: 0}
---- !u!114 &5535505382135713148
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6698777333042089200}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 9fab821ee69768a4e956758cab33057b, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  ConversionTargetOptions: -1
-  OptionalCopyFrom: {fileID: 0}
-  AnimationRoot: {fileID: 0}
-  DefaultClipIndex: 0
-  Clips:
-  - Label: Idle
-    Clip: {fileID: 7400012, guid: 277228b304158d542a7c37c42d431ed1, type: 3}
-    ID: {fileID: 11400000, guid: 53bed7b3c88fcbb478a5626f613a373a, type: 2}
-    Loop: 1
-    SpeedScale: 1
-    BakeFlags: -1
-    OtherProperties:
-      CustomSourceRigPrefab: {fileID: 0}
-      CustomSourceAvatar: {fileID: 0}
-  - Label: Attack 1
-    Clip: {fileID: 7400004, guid: 277228b304158d542a7c37c42d431ed1, type: 3}
-    ID: {fileID: 11400000, guid: 1f617242a093c5c4e8296860449a0b49, type: 2}
-    Loop: 0
-    SpeedScale: 1
-    BakeFlags: -1
-    OtherProperties:
-      CustomSourceRigPrefab: {fileID: 0}
-      CustomSourceAvatar: {fileID: 0}
-  - Label: Attack 2
-    Clip: {fileID: 7400006, guid: 277228b304158d542a7c37c42d431ed1, type: 3}
-    ID: {fileID: 11400000, guid: 37e9e3ba7a391e24a87d298a8373896b, type: 2}
-    Loop: 0
-    SpeedScale: 1
-    BakeFlags: -1
-    OtherProperties:
-      CustomSourceRigPrefab: {fileID: 0}
-      CustomSourceAvatar: {fileID: 0}
-  - Label: Attack 3
-    Clip: {fileID: 7400008, guid: 277228b304158d542a7c37c42d431ed1, type: 3}
-    ID: {fileID: 11400000, guid: 297ef81ea378c2b4089668c47fab984a, type: 2}
-    Loop: 0
-    SpeedScale: 1
-    BakeFlags: -1
-    OtherProperties:
-      CustomSourceRigPrefab: {fileID: 0}
-      CustomSourceAvatar: {fileID: 0}
-  - Label: Death
-    Clip: {fileID: 7400020, guid: 277228b304158d542a7c37c42d431ed1, type: 3}
-    ID: {fileID: 11400000, guid: 2dd27c835332c0943a4b150d01452e4e, type: 2}
-    Loop: 0
-    SpeedScale: 2
-    BakeFlags: -1
-    OtherProperties:
-      CustomSourceRigPrefab: {fileID: 0}
-      CustomSourceAvatar: {fileID: 0}
---- !u!4 &6698777333042385040 stripped
-Transform:
-  m_CorrespondingSourceObject: {fileID: 400040, guid: 277228b304158d542a7c37c42d431ed1, type: 3}
-  m_PrefabInstance: {fileID: 6698777333041990200}
-  m_PrefabAsset: {fileID: 0}
---- !u!4 &6698777333042385048 stripped
-Transform:
-  m_CorrespondingSourceObject: {fileID: 400032, guid: 277228b304158d542a7c37c42d431ed1, type: 3}
-  m_PrefabInstance: {fileID: 6698777333041990200}
-  m_PrefabAsset: {fileID: 0}
+  destroyTime: 3

@@ -57,7 +57,11 @@ namespace Arena.Client
                 }
                 else if (funcName == "WeaponSwing")
                 {
-                    playWeaponSwing(in animEvent, ref commands, ref ecb);
+                    playSwing(in animEvent, ref commands, ref ecb, false);
+                }
+                else if (funcName == "Swing")
+                {
+                    playSwing(in animEvent, ref commands, ref ecb, true);
                 }
                 else
                 {
@@ -233,13 +237,13 @@ namespace Arena.Client
             commands.AddComponent(0, groupInstance, LocalTransform.FromPosition(soundPos));
         }
 
-        void playWeaponSwing(in AnimationEventData animEvent, ref EntityCommandBuffer.ParallelWriter commands, ref EntityCommandBuffer ecb)
+        void playSwing(in AnimationEventData animEvent, ref EntityCommandBuffer.ParallelWriter commands, ref EntityCommandBuffer ecb, bool useCommon)
         {
             initCommands(ref commands, ref ecb);
-
+            
             var sounds = SystemAPI.GetSingleton<WeaponSounds>();
 
-            var group = sounds.SwordSwingsGroup;
+            Entity group = useCommon ? sounds.CommonSwingsGroup : sounds.SwordSwingsGroup;
 
             var groupInstance = commands.Instantiate(0, group);
             commands.AddComponent(0, groupInstance, new PlaySoundEvent());

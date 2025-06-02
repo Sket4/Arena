@@ -8,6 +8,7 @@ namespace Arena.Client
     public class AnimationEventsComponent : MonoBehaviour
     {
         public void Footstep(string footName) {}
-        public void WeaponSwing() {} 
+        public void WeaponSwing() {}
+        public void Swing() {} 
     }
 }

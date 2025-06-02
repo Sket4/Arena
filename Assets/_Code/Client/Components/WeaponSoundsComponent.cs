@@ -10,6 +10,7 @@ namespace Arena.Client
     public struct WeaponSounds : IComponentData
     {
         public Entity SwordSwingsGroup;
+        public Entity CommonSwingsGroup;
     }
 
     [UseDefaultInspector]
@@ -17,10 +18,14 @@ namespace Arena.Client
     {
         [SerializeField]
         SoundGroupComponent swordSwings;
+        
+        [SerializeField]
+        SoundGroupComponent commonSwings;
 
         protected override void Bake<K>(ref WeaponSounds serializedData, K baker)
         {
-            serializedData.SwordSwingsGroup = swordSwings ? baker.GetEntity(swordSwings) : default;
+            serializedData.SwordSwingsGroup = baker.GetEntity(swordSwings);
+            serializedData.CommonSwingsGroup = baker.GetEntity(commonSwings);
         }
 
         protected override ConversionTargetOptions GetDefaultConversionOptions()

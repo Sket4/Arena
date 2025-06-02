@@ -52,6 +52,7 @@ GameObject:
   - component: {fileID: 6713175048441578693}
   - component: {fileID: 2155553633344454180}
   - component: {fileID: 6469198600469420657}
+  - component: {fileID: -7823755057740197545}
   m_Layer: 0
   m_Name: Character base
   m_TagString: Untagged
@@ -374,10 +375,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   ConversionTargetOptions: -1
-  Value:
-    AbilityID:
-      value: 18
   AbilityID: {fileID: -4287214146056593855, guid: 709759d6d50fadb4ab72406e658ed872, type: 2}
+  Abilities:
+  - {fileID: -4287214146056593855, guid: 709759d6d50fadb4ab72406e658ed872, type: 2}
 --- !u!114 &3012611948393460952
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -813,6 +813,20 @@ MonoBehaviour:
   Value:
     IsInAir: 0
     FallingStartHeight: 0
+--- !u!114 &-7823755057740197545
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1415852907774143442}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: db66481622f4b8e45a4dbb82795f289f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ConversionTargetOptions: 5
+  HitEffectPrefab: {fileID: 1219394305205882, guid: d3a2e26c88b344e3aa93055f67da222e, type: 3}
 --- !u!1001 &175404097197374408
 PrefabInstance:
   m_ObjectHideFlags: 0

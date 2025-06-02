@@ -99,6 +99,25 @@ namespace Arena.Client
         }
 
         #if UNITY_EDITOR
+        [ConsoleCommand]
+        void hp()
+        {
+            Entities
+                .ForEach((ref Health hp, in PlayerController pc) =>
+                {
+                    var player = SystemAPI.GetComponent<Player>(pc.Value);
+                    
+                    if (player.ItsMe == false)
+                    {
+                        return;
+                    }
+
+                    hp.ActualHP = float.MaxValue;
+                    hp.HP = float.MaxValue;
+                    hp.ModifiedHP = float.MaxValue;
+                }).Run();
+        }
+        
         [UnityEditor.MenuItem("Arena/Утилиты/Перенести персонажа к камере сцены _F11")]
         static void movePlayerToSceneCamera()
         {

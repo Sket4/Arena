@@ -437,6 +437,72 @@ MonoBehaviour:
   ConversionTargetOptions: -1
   Value:
     MapMaterial: {fileID: 2100000, guid: 12337db931d7f4ddca7d283ef06c278c, type: 2}
+--- !u!1 &5342275859039452556
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 8427392245032102459}
+  - component: {fileID: 7704710147169451330}
+  m_Layer: 0
+  m_Name: Swings
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &8427392245032102459
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5342275859039452556}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 6546861242564761105}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &7704710147169451330
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5342275859039452556}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7cdab39ac42db41ecaaa1b44e4134483, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ConversionTargetOptions: 5
+  SoundGroup:
+    Name: 
+    Clips:
+    - {fileID: 8300000, guid: 99b48ace21cbbf94ebf5d5fde4a16af5, type: 3}
+    - {fileID: 8300000, guid: 51517f184d9349a42ad82c211c12a8c6, type: 3}
+    - {fileID: 8300000, guid: cdbcfa54311937042ba90555b334a3dc, type: 3}
+    OptionalMixerGroup: {fileID: 24300002, guid: 64c795c25d71240459ab99e981490730, type: 2}
+    Settings:
+      RandomizeVolume: 1
+      MinVolume: 0.9
+      MaxVolume: 1
+      RandomizePitch: 1
+      MinPitch: 0.5
+      MaxPitch: 0.6
+      Loop: 0
+      SpatializeBlend: 1
+      BypassEffects: 0
+      SetMinDistance: 0
+      MinDistance: 0
+      SetMaxDistance: 0
+      MaxDistance: 0
 --- !u!1 &5391471488266137368
 GameObject:
   m_ObjectHideFlags: 0
@@ -620,6 +686,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 8321354878066456306}
+  - {fileID: 8427392245032102459}
   m_Father: {fileID: 7065657368635813840}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &7199402985873945837
@@ -636,6 +703,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   ConversionTargetOptions: 5
   swordSwings: {fileID: 6912526343790624598}
+  commonSwings: {fileID: 7704710147169451330}
 --- !u!1 &7742436561665655536
 GameObject:
   m_ObjectHideFlags: 0

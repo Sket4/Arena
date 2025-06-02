@@ -75,7 +75,11 @@ namespace TzarGames.GameCore.Abilities.Generated
 		[NativeDisableContainerSafetyRestriction]
 		[ReadOnly] public BufferTypeHandle<TzarGames.GameCore.Abilities.HitQueryAbilityAction> HitQueryAbilityActionType;
 		[NativeDisableContainerSafetyRestriction]
-		[ReadOnly] public BufferTypeHandle<Arena.Abilities.ActionSequenceAbilityEventNodeData> ActionSequenceAbilityEventNodeDataType;
+		[ReadOnly] public BufferTypeHandle<Arena.Abilities.ActionSequenceStartedAbilityEventNodeData> ActionSequenceStartedAbilityEventNodeDataType;
+		[NativeDisableContainerSafetyRestriction]
+		public BufferTypeHandle<TzarGames.GameCore.EntityInstance> EntityInstanceType;
+		[NativeDisableContainerSafetyRestriction]
+		[ReadOnly] public BufferTypeHandle<Arena.Abilities.ActionSequenceTimerEventNodeData> ActionSequenceTimerEventNodeDataType;
 
 		public TzarGames.GameCore.Abilities.MoveToTargetAbilityComponentJob _MoveToTargetAbilityComponentJob;
 		public TzarGames.GameCore.Abilities.AttackHeightJob _AttackHeightJob;
@@ -89,7 +93,8 @@ namespace TzarGames.GameCore.Abilities.Generated
 		public TzarGames.GameCore.Abilities.ModifyOwnerCharacteristicsJob _ModifyOwnerCharacteristicsJob;
 		public Arena.Abilities.ActionSequenceAbilityJob _ActionSequenceAbilityJob;
 		public TzarGames.GameCore.Abilities.AbilityCylinderHitActionJob _AbilityCylinderHitActionJob;
-		public Arena.Abilities.ScriptVizSequenceActionJob _ScriptVizSequenceActionJob;
+		public Arena.Abilities.ScriptVizSequenceStartActionJob _ScriptVizSequenceStartActionJob;
+		public Arena.Abilities.ScriptVizSequenceTimerEventActionJob _ScriptVizSequenceTimerEventActionJob;
 		public TzarGames.GameCore.Abilities.ScriptVizAbilityJob _ScriptVizAbilityJob;
 
 
@@ -124,7 +129,9 @@ namespace TzarGames.GameCore.Abilities.Generated
 			var CopyOwnerTransformToAbilityOnStartArray = chunk.GetNativeArray(ref CopyOwnerTransformToAbilityOnStartType);
 			var ModifyOwnerCharacteristicsArray = chunk.GetNativeArray(ref ModifyOwnerCharacteristicsType);
 			var HitQueryAbilityActionAccessor = chunk.GetBufferAccessor(ref HitQueryAbilityActionType);
-			var ActionSequenceAbilityEventNodeDataAccessor = chunk.GetBufferAccessor(ref ActionSequenceAbilityEventNodeDataType);
+			var ActionSequenceStartedAbilityEventNodeDataAccessor = chunk.GetBufferAccessor(ref ActionSequenceStartedAbilityEventNodeDataType);
+			var EntityInstanceAccessor = chunk.GetBufferAccessor(ref EntityInstanceType);
+			var ActionSequenceTimerEventNodeDataAccessor = chunk.GetBufferAccessor(ref ActionSequenceTimerEventNodeDataType);
 
 			var entityCount = chunk.Count;
 
@@ -208,12 +215,15 @@ namespace TzarGames.GameCore.Abilities.Generated
 				ref var _ActionSequenceSharedData = ref _ActionSequenceSharedDataRef.ValueRW;
 				var _AbilitySequenceActionBuffer = AbilitySequenceActionAccessor[c];
 				var _HitQueryAbilityActionBuffer = HitQueryAbilityActionAccessor[c];
-				var _ActionSequenceAbilityEventNodeDataBuffer = ActionSequenceAbilityEventNodeDataAccessor[c];
+				var _ActionSequenceStartedAbilityEventNodeDataBuffer = ActionSequenceStartedAbilityEventNodeDataAccessor[c];
+				var _EntityInstanceBuffer = EntityInstanceAccessor[c];
+				var _ActionSequenceTimerEventNodeDataBuffer = ActionSequenceTimerEventNodeDataAccessor[c];
 
 				var callWrapper = new ActionCallWrapper();
 				callWrapper.Init();
 				callWrapper._AbilityCylinderHitActionJob = _AbilityCylinderHitActionJob;
-				callWrapper._ScriptVizSequenceActionJob = _ScriptVizSequenceActionJob;
+				callWrapper._ScriptVizSequenceStartActionJob = _ScriptVizSequenceStartActionJob;
+				callWrapper._ScriptVizSequenceTimerEventActionJob = _ScriptVizSequenceTimerEventActionJob;
 				callWrapper.unfilteredChunkIndex = unfilteredChunkIndex;
 				callWrapper._AbilityOwner = _AbilityOwner;
 				callWrapper._HitQueryAbilityActionBuffer = _HitQueryAbilityActionBuffer;
@@ -225,11 +235,13 @@ namespace TzarGames.GameCore.Abilities.Generated
 				callWrapper._EntityVariableDataBuffer = _EntityVariableDataBuffer;
 				callWrapper._ConstantEntityVariableDataBuffer = _ConstantEntityVariableDataBuffer;
 				callWrapper._ScriptVizStateRef = _ScriptVizStateRef;
-				callWrapper._ActionSequenceAbilityEventNodeDataBuffer = _ActionSequenceAbilityEventNodeDataBuffer;
+				callWrapper._ActionSequenceStartedAbilityEventNodeDataBuffer = _ActionSequenceStartedAbilityEventNodeDataBuffer;
 				callWrapper._ScriptVizCodeInfo = _ScriptVizCodeInfo;
 				callWrapper._ActionSequenceSharedDataRef = _ActionSequenceSharedDataRef;
 				callWrapper._DurationRef = _DurationRef;
 				callWrapper.deltaTime = deltaTime;
+				callWrapper._EntityInstanceBuffer = _EntityInstanceBuffer;
+				callWrapper._ActionSequenceTimerEventNodeDataBuffer = _ActionSequenceTimerEventNodeDataBuffer;
 				ref var actionCaller = ref Unity.Collections.LowLevel.Unsafe.UnsafeUtility.As<ActionCallWrapper, ActionCaller>(ref callWrapper);
 				var _AddOwnerAttackVerticalOffsetAsTranslation = AddOwnerAttackVerticalOffsetAsTranslationArray[c];
 				var _ConvertRotationToDirection = ConvertRotationToDirectionArray[c];
@@ -311,7 +323,8 @@ namespace TzarGames.GameCore.Abilities.Generated
 			public static readonly SharedStatic<FunctionPointer<ActionCaller.ActionCallDelegate>> ExecFunction = SharedStatic<FunctionPointer<ActionCaller.ActionCallDelegate>>.GetOrCreate<ActionCaller, ActionCallWrapper>();
 
 			public TzarGames.GameCore.Abilities.AbilityCylinderHitActionJob _AbilityCylinderHitActionJob;
-			public Arena.Abilities.ScriptVizSequenceActionJob _ScriptVizSequenceActionJob;
+			public Arena.Abilities.ScriptVizSequenceStartActionJob _ScriptVizSequenceStartActionJob;
+			public Arena.Abilities.ScriptVizSequenceTimerEventActionJob _ScriptVizSequenceTimerEventActionJob;
 
 			public int unfilteredChunkIndex;
 			public TzarGames.GameCore.Abilities.AbilityOwner _AbilityOwner;
@@ -324,11 +337,13 @@ namespace TzarGames.GameCore.Abilities.Generated
 			public DynamicBuffer<TzarGames.GameCore.ScriptViz.EntityVariableData> _EntityVariableDataBuffer;
 			public DynamicBuffer<TzarGames.GameCore.ScriptViz.ConstantEntityVariableData> _ConstantEntityVariableDataBuffer;
 			public RefRW<TzarGames.GameCore.ScriptViz.ScriptVizState> _ScriptVizStateRef;
-			public DynamicBuffer<Arena.Abilities.ActionSequenceAbilityEventNodeData> _ActionSequenceAbilityEventNodeDataBuffer;
+			public DynamicBuffer<Arena.Abilities.ActionSequenceStartedAbilityEventNodeData> _ActionSequenceStartedAbilityEventNodeDataBuffer;
 			public TzarGames.GameCore.ScriptViz.ScriptVizCodeInfo _ScriptVizCodeInfo;
 			public RefRW<Arena.Abilities.ActionSequenceSharedData> _ActionSequenceSharedDataRef;
 			public RefRW<TzarGames.GameCore.Abilities.Duration> _DurationRef;
 			public float deltaTime;
+			public DynamicBuffer<TzarGames.GameCore.EntityInstance> _EntityInstanceBuffer;
+			public DynamicBuffer<Arena.Abilities.ActionSequenceTimerEventNodeData> _ActionSequenceTimerEventNodeDataBuffer;
 			public void Init()
 			{
 				Caller = new ActionCaller(ExecFunction.Data);
@@ -346,11 +361,19 @@ namespace TzarGames.GameCore.Abilities.Generated
 						break;
 					}
 				}
-				foreach(var _ActionSequenceAbilityEventNodeData in caller._ActionSequenceAbilityEventNodeDataBuffer)
+				foreach(var _ActionSequenceStartedAbilityEventNodeData in caller._ActionSequenceStartedAbilityEventNodeDataBuffer)
 				{
-					if(_ActionSequenceAbilityEventNodeData.CallerId == callerId && _ActionSequenceAbilityEventNodeData.ActionId == actionId)
+					if(_ActionSequenceStartedAbilityEventNodeData.CallerId == callerId && _ActionSequenceStartedAbilityEventNodeData.ActionId == actionId)
 					{
-						caller._ScriptVizSequenceActionJob.Execute(caller.abilityEntity, caller.unfilteredChunkIndex, in caller._AbilityOwner, caller.Commands, ref caller._VariableDataByteBuffer, ref caller._EntityVariableDataBuffer, ref caller._ConstantEntityVariableDataBuffer, ref caller._ScriptVizStateRef.ValueRW, in _ActionSequenceAbilityEventNodeData, in caller._ScriptVizCodeInfo, in caller._ActionSequenceSharedDataRef.ValueRW, in caller._DurationRef.ValueRW, caller.deltaTime);
+						caller._ScriptVizSequenceStartActionJob.Execute(caller.abilityEntity, caller.unfilteredChunkIndex, in caller._AbilityOwner, caller.Commands, ref caller._VariableDataByteBuffer, ref caller._EntityVariableDataBuffer, ref caller._ConstantEntityVariableDataBuffer, ref caller._ScriptVizStateRef.ValueRW, in _ActionSequenceStartedAbilityEventNodeData, in caller._ScriptVizCodeInfo, in caller._ActionSequenceSharedDataRef.ValueRW, in caller._DurationRef.ValueRW, caller.deltaTime);
+						break;
+					}
+				}
+				foreach(var _ActionSequenceTimerEventNodeData in caller._ActionSequenceTimerEventNodeDataBuffer)
+				{
+					if(_ActionSequenceTimerEventNodeData.CallerId == callerId && _ActionSequenceTimerEventNodeData.ActionId == actionId)
+					{
+						caller._ScriptVizSequenceTimerEventActionJob.Execute(caller.abilityEntity, caller.unfilteredChunkIndex, in caller._AbilityOwner, caller.Commands, ref caller._VariableDataByteBuffer, ref caller._EntityVariableDataBuffer, ref caller._ConstantEntityVariableDataBuffer, in caller._EntityInstanceBuffer, ref caller._ScriptVizStateRef.ValueRW, in _ActionSequenceTimerEventNodeData, in caller._ScriptVizCodeInfo, in caller._ActionSequenceSharedDataRef.ValueRW, in caller._LocalTransformRef.ValueRW, caller.deltaTime);
 						break;
 					}
 				}
@@ -419,7 +442,9 @@ namespace TzarGames.GameCore.Abilities.Generated
 					ComponentType.ReadOnly<TzarGames.GameCore.Abilities.CopyOwnerTransformToAbilityOnStart>(),
 					ComponentType.ReadWrite<TzarGames.GameCore.Abilities.ModifyOwnerCharacteristics>(),
 					ComponentType.ReadOnly<TzarGames.GameCore.Abilities.HitQueryAbilityAction>(),
-					ComponentType.ReadOnly<Arena.Abilities.ActionSequenceAbilityEventNodeData>(),
+					ComponentType.ReadOnly<Arena.Abilities.ActionSequenceStartedAbilityEventNodeData>(),
+					ComponentType.ReadOnly<TzarGames.GameCore.EntityInstance>(),
+					ComponentType.ReadOnly<Arena.Abilities.ActionSequenceTimerEventNodeData>(),
 				}
 			};
 			query = state.GetEntityQuery(entityQueryDesc);
@@ -471,7 +496,9 @@ namespace TzarGames.GameCore.Abilities.Generated
 			job.CopyOwnerTransformToAbilityOnStartType = state.GetComponentTypeHandle<TzarGames.GameCore.Abilities.CopyOwnerTransformToAbilityOnStart>(true);
 			job.ModifyOwnerCharacteristicsType = state.GetComponentTypeHandle<TzarGames.GameCore.Abilities.ModifyOwnerCharacteristics>();
 			job.HitQueryAbilityActionType = state.GetBufferTypeHandle<TzarGames.GameCore.Abilities.HitQueryAbilityAction>(true);
-			job.ActionSequenceAbilityEventNodeDataType = state.GetBufferTypeHandle<Arena.Abilities.ActionSequenceAbilityEventNodeData>(true);
+			job.ActionSequenceStartedAbilityEventNodeDataType = state.GetBufferTypeHandle<Arena.Abilities.ActionSequenceStartedAbilityEventNodeData>(true);
+			job.EntityInstanceType = state.GetBufferTypeHandle<TzarGames.GameCore.EntityInstance>(true);
+			job.ActionSequenceTimerEventNodeDataType = state.GetBufferTypeHandle<Arena.Abilities.ActionSequenceTimerEventNodeData>(true);
 
 			var ComponentLookupCharacterInputs = state.GetComponentLookup<TzarGames.GameCore.CharacterInputs>(true);
 			var ComponentLookupTarget = state.GetComponentLookup<TzarGames.GameCore.Target>(true);
@@ -543,6 +570,7 @@ namespace TzarGames.GameCore.Abilities.Generated
 			job._AbilityCylinderHitActionJob.SurfaceType = ComponentTypeHandleWeaponSurface;
 
 
+
 			job._ScriptVizAbilityJob.StartEventType = BufferTypeHandleOnAbilityStartEventCommandData;
 			job._ScriptVizAbilityJob.StopEventType = BufferTypeHandleOnAbilityStopEventCommandData;
 			job._ScriptVizAbilityJob.UpdateEventType = BufferTypeHandleOnAbilityUpdateEventCommandData;
@@ -589,7 +617,9 @@ namespace TzarGames.GameCore.Abilities.Generated
 			job.CopyOwnerTransformToAbilityOnStartType.Update(ref state);
 			job.ModifyOwnerCharacteristicsType.Update(ref state);
 			job.HitQueryAbilityActionType.Update(ref state);
-			job.ActionSequenceAbilityEventNodeDataType.Update(ref state);
+			job.ActionSequenceStartedAbilityEventNodeDataType.Update(ref state);
+			job.EntityInstanceType.Update(ref state);
+			job.ActionSequenceTimerEventNodeDataType.Update(ref state);
 
 
 			job._MoveToTargetAbilityComponentJob.InputFromEntity.Update(ref state);
@@ -631,6 +661,7 @@ namespace TzarGames.GameCore.Abilities.Generated
 			job._AbilityCylinderHitActionJob.EntityInstanceArrayType.Update(ref state);
 			job._AbilityCylinderHitActionJob.Targets.Update(ref state);
 			job._AbilityCylinderHitActionJob.SurfaceType.Update(ref state);
+
 
 
 			job._ScriptVizAbilityJob.StartEventType.Update(ref state);

@@ -135,7 +135,8 @@ public class SimpleAnimationAuthoring : ComponentDataBehaviourBase
                                 DefaultRemapper.RetargetRootTransform,
                                 props.CustomSourceAvatar, 
                                 DefaultRemapper.RetargetAvatar, 
-                                DefaultRemapper.RetargetRootTransform);
+                                DefaultRemapper.RetargetRootTransform,
+                                DefaultRemapper.HipsScale);
 
                             remapper = new CustomRemapper(props.CustomSourceRigPrefab, remapData);
                             remapDataCache.Add(props.CustomSourceAvatar, remapper);

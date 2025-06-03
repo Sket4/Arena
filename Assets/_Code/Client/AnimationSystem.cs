@@ -29,7 +29,15 @@ namespace Arena.Client
         private const int RunningAnimationID = 3;
         private const int WalkingAnimationID = 20;
         private const int JumpLoopAnimationID = 22;
-        
+
+        private ComponentLookup<Unity.CharacterController.KinematicCharacterBody> BodyLookup;
+
+        protected override void OnCreate()
+        {
+            base.OnCreate();
+            BodyLookup = GetComponentLookup<Unity.CharacterController.KinematicCharacterBody>(true);
+        }
+
         protected override void OnSystemUpdate()
         {
             var commands = CommandBufferSystem.CreateCommandBuffer();
@@ -123,8 +131,12 @@ namespace Arena.Client
 
             }).Run();
 
+            var bodyLookup = BodyLookup;
+            bodyLookup.Update(this);
+            
             Entities
-                .ForEach((Entity entity, ref CharacterAnimation animation, in AttackSpeed attackSpeed, in Velocity velocity, in LivingState livingState, in Unity.CharacterController.KinematicCharacterBody body) =>
+                .WithReadOnly(bodyLookup)
+                .ForEach((Entity entity, ref CharacterAnimation animation, in AttackSpeed attackSpeed, in Velocity velocity, in LivingState livingState) =>
                 {
                     if (SystemAPI.HasComponent<SimpleAnimation>(animation.AnimatorEntity) == false)
                     {
@@ -228,7 +240,18 @@ namespace Arena.Client
 
                     if (livingState.IsAlive)
                     {
-                        var isInAir = body.IsGrounded == false;
+                        bool isGrounded;
+
+                        if (bodyLookup.TryGetComponent(entity, out var body))
+                        {
+                            isGrounded = body.IsGrounded;
+                        }
+                        else
+                        {
+                            isGrounded = false;
+                        }
+                        
+                        var isInAir = isGrounded == false;
                         var isPlayingAirAnimation = false;
                         
                         if (isInAir)

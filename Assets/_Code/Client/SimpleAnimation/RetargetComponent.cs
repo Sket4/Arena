@@ -11,6 +11,7 @@ namespace Arena.Client.Anima
         public Avatar SourceAvatar;
         public Transform RetargetRootTransform;
         public Avatar RetargetAvatar;
+        public float HipsScale = 1;
 
         private RemapData cachedRemapData;
 
@@ -19,7 +20,7 @@ namespace Arena.Client.Anima
             return SourceRigPrefab.transform;
         }
         
-        public static RemapData CreateRemapData(Transform srcRig, Transform dstRig, Avatar sourceAvatar, Avatar retargetAvatar, Transform fallbackRootTransform)
+        public static RemapData CreateRemapData(Transform srcRig, Transform dstRig, Avatar sourceAvatar, Avatar retargetAvatar, Transform fallbackRootTransform, float hipsScale)
         {
 #if UNITY_EDITOR
             // если объект находится на сцене, то он, скорее всего, не находится в начале координат,
@@ -98,7 +99,10 @@ namespace Arena.Client.Anima
                 {
                     // heuristic that computes retarget scale based on translation node (ex: hips) height (assumed to be y)
                     var translationOffsetScale = targetBoneTransform.position.y / sourceBoneTransform.position.y;
-
+                    if (targetHumanName == "Hips")
+                    {
+                        translationOffsetScale *= hipsScale;
+                    }
                     quaternion dstParentRot = math.mul(destRootRotInv, targetBoneTransform.parent.rotation);
                     quaternion srcParentRot = math.mul(srcRootRotInv, sourceBoneTransform.parent.rotation);
 
@@ -157,7 +161,7 @@ namespace Arena.Client.Anima
             if (cachedRemapData == null)
             {
                 var dstRig = RetargetRootTransform ? RetargetRootTransform : transform;
-                cachedRemapData = CreateRemapData(SourceRigPrefab.transform, dstRig, SourceAvatar, RetargetAvatar, transform);
+                cachedRemapData = CreateRemapData(SourceRigPrefab.transform, dstRig, SourceAvatar, RetargetAvatar, transform, HipsScale);
             }
             return cachedRemapData;
         }

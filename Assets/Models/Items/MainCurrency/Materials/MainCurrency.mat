@@ -11,10 +11,10 @@ Material:
   m_Shader: {fileID: 4800000, guid: 537b6c3f7a4218d459a2cdaea0cd4bf7, type: 3}
   m_Parent: {fileID: 0}
   m_ModifiedSerializedProperties: 0
-  m_ValidKeywords:
+  m_ValidKeywords: []
+  m_InvalidKeywords:
   - USE_LIGHTING
   - _EMISSION
-  m_InvalidKeywords:
   - _ZWRITE_ON
   m_LightmapFlags: 2
   m_EnableInstancingVariants: 0
@@ -94,6 +94,10 @@ Material:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
+    - _SurfaceMap:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
     - unity_Lightmaps:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
@@ -122,11 +126,13 @@ Material:
     - _DstBlend: 0
     - _EmissionStrength: 1
     - _EnvironmentReflections: 1
+    - _FogHeight: 0
     - _GlossMapScale: 0
     - _Glossiness: 0
     - _GlossyReflections: 0
+    - _HeightFogFade: 0.005
     - _HighlightRemove: 0
-    - _Metallic: 1
+    - _Metallic: 0.955
     - _OcclusionStrength: 1
     - _Parallax: 0.005
     - _QueueControl: 0
@@ -137,9 +143,13 @@ Material:
     - _SpecularHighlights: 1
     - _SrcBlend: 1
     - _Surface: 0
+    - _SurfaceBlendFactor: 1
     - _Underwater_fog_density_factor: 1
     - _Underwater_fog_height_mult: 1
+    - _UseBaseColorInstance: 0
+    - _UseHeightFog: 0
     - _UseLighting: 1
+    - _UseSurfaceBlend: 0
     - _UseUnderwater: 0
     - _WorkflowMode: 1
     - _ZWrite: 1
@@ -151,7 +161,7 @@ Material:
     - _AddColor3: {r: 1, g: 1, b: 1, a: 1}
     - _BaseColor: {r: 1, g: 0.9073008, b: 0.039215684, a: 1}
     - _Color: {r: 1, g: 1, b: 1, a: 1}
-    - _EmissionColor: {r: 1.2140608, g: 0.3890261, b: 0, a: 1}
+    - _EmissionColor: {r: 9.734288, g: 1.7781875, b: 0, a: 1}
     - _SpecColor: {r: 0.2, g: 0.2, b: 0.2, a: 1}
     - _Underwater_color: {r: 1, g: 1, b: 1, a: 1}
   m_BuildTextureStacks: []

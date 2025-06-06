@@ -5,8 +5,12 @@
 struct appdata
 {
     half3 vertex : POSITION;
+
+    #if !USE_UP_NORMAL
     half3 normal : NORMAL;
+    #endif
     half4 tangent : TANGENT;
+    
     half4 color : COLOR;
     half2 uv : TEXCOORD0;
 #if LIGHTMAP_ON
@@ -67,8 +71,13 @@ void billboard(inout half3 vertex, inout half3 normal, inout half3 tangent)
     
     vertex = mul(rotationMatrix, vertex);
 
+    #if USE_UP_NORMAL
+    normal = half3(0,1,0);
+    tangent = half3(1,0,0);
+    #else
     normal = normalDir;
     tangent = right;
+    #endif
 }
 
 v2f vert (appdata v)
@@ -87,13 +96,18 @@ v2f vert (appdata v)
     #else
     half windForceMult = v.color.x;
     #endif
-    
-    half wind = (sin(time.z + (positionOS.x + positionOS.z) * 2) + sin(time.y) + sin(time.w)) * 0.05 * windForceMult;
+
+    float3 baseWorldPos = UNITY_MATRIX_M._m03_m13_m23;
+    half wind = (sin(time.z + (baseWorldPos.x + baseWorldPos.z + positionOS.x + positionOS.z) * 2) + sin(time.y) + sin(time.w)) * 0.05 * windForceMult;
     wind *= _WindForce * (1.0 - instanceData.w);
     positionOS.x += wind;
     positionOS.z += wind;
-    
+ 
+    #if USE_UP_NORMAL
+    half3 normalOS = half3(0,1,0);
+    #else
     half3 normalOS = v.normal;
+    #endif
     half4 tangentOS = v.tangent;
 
     #if USE_BILLBOARD

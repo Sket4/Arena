@@ -21,6 +21,11 @@ namespace Arena
         public static readonly FixedString32Bytes MazeSizeParamName = new("maze_size");
         public static readonly FixedString32Bytes MazeSeedParamName = new("maze_seed");
     }
+
+    public static class ArenaMessages
+    {
+        public static readonly Message DestroyMessage = Message.CreateFromString("destroy");
+    }
     
     public enum ArenaMatchState
     {

@@ -8,6 +8,9 @@ Shader "Arena/Vegetation"
     	[Toggle(USE_BILLBOARD)]
     	_UseBillboard("Use billboard", int) = 0
         
+        [Toggle(USE_UP_NORMAL)]
+    	_UseUpNormal("Use up normal", int) = 0
+        
         [Toggle(USE_MULT_WINDFORCE_BY_UV)]
     	_UseMultWindForceByUV("Multiply wind force by UV.y", int) = 0
         
@@ -80,6 +83,7 @@ Shader "Arena/Vegetation"
             #pragma shader_feature_local __ TG_TRANSPARENT
             #pragma shader_feature_local TG_USE_ALPHACLIP
             #pragma shader_feature_local_vertex __ USE_BILLBOARD
+            #pragma shader_feature_local_vertex __ USE_UP_NORMAL
             #pragma shader_feature_local_vertex __ USE_MULT_WINDFORCE_BY_UV
             
             #pragma multi_compile _ LIGHTMAP_ON

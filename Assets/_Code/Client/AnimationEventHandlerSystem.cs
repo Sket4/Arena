@@ -19,28 +19,10 @@ namespace Arena.Client
     {
         private static readonly int FootstepFuncHash = TzarGames.AnimationFramework.Utility.GetStableHashCode("Footstep");
         private static readonly int WeaponSwingFuncHash = TzarGames.AnimationFramework.Utility.GetStableHashCode("WeaponSwing");
-
-        protected override void OnDestroy()
-        {
-            base.OnDestroy();
-            
-            foreach (var terrainMat in SystemAPI.Query<TerrainPhysicsMaterial>())
-            {
-                terrainMat.LayerTextureRef.Release();
-            }
-        }
+        
 
         protected override void OnSystemUpdate()
         {
-            // предзагрузка текстуры для трейса террейна, иначе при первом использовании она будет недоступна
-            foreach (var terrainMat in SystemAPI.Query<TerrainPhysicsMaterial>().WithChangeFilter<TerrainPhysicsMaterial>())
-            {
-                if (terrainMat.LayerTextureRef.LoadingStatus == ObjectLoadingStatus.None)
-                {
-                    terrainMat.LayerTextureRef.LoadAsync();
-                }
-            }
-            
             var ecb = CreateCommandBuffer();
             var commands = ecb.AsParallelWriter();
             var deltaTime = SystemAPI.Time.DeltaTime;

@@ -120,7 +120,7 @@ Shader"Arena/Water"
                 float2 wave2_uv : TEXCOORD1;
                 nointerpolation half2 instanceData : TEXCOORD2;
                 half3 color : TEXCOORD3;
-                half3 foamData : TEXCOORD4;
+                float3 foamData : TEXCOORD4;
 
                 float4 positionWS_fog : TEXCOORD5;
 

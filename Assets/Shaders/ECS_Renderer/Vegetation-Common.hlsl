@@ -4,7 +4,7 @@
 
 struct appdata
 {
-    half3 vertex : POSITION;
+    float3 vertex : POSITION;
 
     #if !USE_UP_NORMAL
     half3 normal : NORMAL;
@@ -12,7 +12,7 @@ struct appdata
     half4 tangent : TANGENT;
     
     half4 color : COLOR;
-    half2 uv : TEXCOORD0;
+    float2 uv : TEXCOORD0;
 #if LIGHTMAP_ON
     TG_DECLARE_LIGHTMAP_UV(1)
 #endif
@@ -92,13 +92,13 @@ v2f vert (appdata v)
     float4 instanceData = tg_InstanceData;
     o.instanceData = instanceData;
     #if USE_MULT_WINDFORCE_BY_UV
-    half windForceMult = v.uv.y;
+    float windForceMult = v.uv.y;
     #else
-    half windForceMult = v.color.x;
+    float windForceMult = v.color.x;
     #endif
 
     float3 baseWorldPos = UNITY_MATRIX_M._m03_m13_m23;
-    half wind = (sin(time.z + (baseWorldPos.x + baseWorldPos.z + positionOS.x + positionOS.z) * 2) + sin(time.y) + sin(time.w)) * 0.05 * windForceMult;
+    float wind = (sin(time.z + (baseWorldPos.x + baseWorldPos.z + positionOS.x + positionOS.z) * 2) + sin(time.y) + sin(time.w)) * 0.05 * windForceMult;
     wind *= _WindForce * (1.0 - instanceData.w);
     positionOS.x += wind;
     positionOS.z += wind;

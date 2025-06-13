@@ -21,6 +21,7 @@ namespace Arena.Client
         public CollisionFilter TraceLayers;
         public float TraceVerticalOffset;
         [HideInAuthoring] public byte PhysicsMaterialTags;
+        public bool AlignToNormal;
         public float MinimalLayerStrength;
         public float MinScale;
         public float MaxScale;

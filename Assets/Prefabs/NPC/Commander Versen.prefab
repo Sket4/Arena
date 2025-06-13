@@ -347,6 +347,7 @@ MonoBehaviour:
   SourceAvatar: {fileID: 9000000, guid: d216789bbf4a81e48a325e3005fd5843, type: 3}
   RetargetRootTransform: {fileID: 0}
   RetargetAvatar: {fileID: 9000000, guid: 0bf51a1bca34e654e921aa8665597d21, type: 3}
+  HipsScale: 1
 --- !u!4 &960684626201448021 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: 0bf51a1bca34e654e921aa8665597d21, type: 3}
@@ -436,6 +437,9 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 7476958594612992396, guid: 3461cc97e8d8ed64bbf5d46e1e23e747, type: 3}
       insertIndex: -1
       addedObject: {fileID: 4785027097451091146}
+    - targetCorrespondingSourceObject: {fileID: 7476958594612992396, guid: 3461cc97e8d8ed64bbf5d46e1e23e747, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1877298308139700520}
   m_SourcePrefab: {fileID: 100100000, guid: 3461cc97e8d8ed64bbf5d46e1e23e747, type: 3}
 --- !u!4 &2781987897268442457 stripped
 Transform:
@@ -1448,6 +1452,63 @@ MonoBehaviour:
                 z: 1100099507
                 w: 2203149329
           AuthoringValue: {fileID: 0}
+    - rid: 1790314207423758402
+      type: {class: GetSelfNode, ns: TzarGames.GameCore.ScriptViz.Graph, asm: TzarGames.GameCore}
+      data:
+        ID:
+          Value:
+            Value:
+              x: 3500217639
+              y: 809638400
+              z: 2610783883
+              w: 234999937
+        Position: {x: 447, y: 237}
+        input:
+          ID:
+            Value:
+              Value:
+                x: 1138183239
+                y: 4266130954
+                z: 1273918617
+                w: 3114466810
+          ConnectedSocketIDs:
+          - Value:
+              Value:
+                x: 2873850283
+                y: 1327833476
+                z: 2236799415
+                w: 3579168354
+        output:
+          ID:
+            Value:
+              Value:
+                x: 1372581967
+                y: 2924451555
+                z: 3303605687
+                w: 2373771739
+          ConnectedSocketIDs:
+          - Value:
+              Value:
+                x: 4202368376
+                y: 1242796916
+                z: 2557294240
+                w: 3343157026
+        SelfOutSocket:
+          ID:
+            Value:
+              Value:
+                x: 2180188691
+                y: 4165745971
+                z: 3999115709
+                w: 2699663775
+          ConnectedSocketIDs:
+          - Value:
+              Value:
+                x: 3065449281
+                y: 1239444812
+                z: 1233370815
+                w: 2081395702
+          AuthoringValue: {fileID: 0}
     - rid: 4877893797366726656
       type: {class: ScriptVizGraph, ns: TzarGames.GameCore.ScriptViz.Graph, asm: TzarGames.GameCore}
       data:
@@ -1516,6 +1577,7 @@ MonoBehaviour:
             - rid: 986275313831116831
             - rid: 5431782657137836120
             - rid: 5431782657137836251
+            - rid: 1790314207423758402
           - ID:
               Value:
                 Value:
@@ -1664,7 +1726,7 @@ MonoBehaviour:
               y: 1233300299
               z: 3559476126
               w: 1185609667
-        Position: {x: -1378.6666, y: 419.33334}
+        Position: {x: -1379, y: 419}
         output:
           ID:
             Value:
@@ -1789,7 +1851,7 @@ MonoBehaviour:
               y: 1154803587
               z: 2162981562
               w: 2667523871
-        Position: {x: 405.3333, y: 293.33334}
+        Position: {x: 690, y: 287}
         input:
           ID:
             Value:
@@ -1801,10 +1863,10 @@ MonoBehaviour:
           ConnectedSocketIDs:
           - Value:
               Value:
-                x: 2873850283
-                y: 1327833476
-                z: 2236799415
-                w: 3579168354
+                x: 1372581967
+                y: 2924451555
+                z: 3303605687
+                w: 2373771739
         output:
           ID:
             Value:
@@ -1844,7 +1906,13 @@ MonoBehaviour:
                 y: 1239444812
                 z: 1233370815
                 w: 2081395702
-          ConnectedSocketIDs: []
+          ConnectedSocketIDs:
+          - Value:
+              Value:
+                x: 2180188691
+                y: 4165745971
+                z: 3999115709
+                w: 2699663775
           AuthoringValue: {fileID: 0}
     - rid: 4877893797366726663
       type: {class: DynamicArrayVariable, ns: TzarGames.GameCore.ScriptViz.Graph, asm: TzarGames.GameCore}
@@ -1897,7 +1965,7 @@ MonoBehaviour:
               y: 1292516219
               z: 2389908630
               w: 2859012066
-        Position: {x: 7699.3335, y: 73.333336}
+        Position: {x: 7699, y: 73}
         input:
           ID:
             Value:
@@ -1933,7 +2001,7 @@ MonoBehaviour:
               y: 1285281678
               z: 3418541447
               w: 1206539166
-        Position: {x: 2355.3333, y: 215.33334}
+        Position: {x: 2355, y: 215}
         Message:
           m_TableReference:
             m_TableCollectionName: GUID:aad91b28e51f6fc489b46b3d5b4a981a
@@ -2016,7 +2084,7 @@ MonoBehaviour:
               y: 1077986832
               z: 3143810495
               w: 308038022
-        Position: {x: 3252, y: 293.33334}
+        Position: {x: 3252, y: 293}
         Message:
           m_TableReference:
             m_TableCollectionName: GUID:aad91b28e51f6fc489b46b3d5b4a981a
@@ -2093,7 +2161,7 @@ MonoBehaviour:
               y: 1141173353
               z: 440250765
               w: 2321951217
-        Position: {x: 2753.3333, y: 239.33334}
+        Position: {x: 2753, y: 239}
         Message:
           m_TableReference:
             m_TableCollectionName: GUID:aad91b28e51f6fc489b46b3d5b4a981a
@@ -2222,7 +2290,7 @@ MonoBehaviour:
               y: 1174205946
               z: 1841608094
               w: 1693913359
-        Position: {x: 6298.6665, y: 73.333336}
+        Position: {x: 6299, y: 73}
         Message:
           m_TableReference:
             m_TableCollectionName: GUID:aad91b28e51f6fc489b46b3d5b4a981a
@@ -2311,7 +2379,7 @@ MonoBehaviour:
               y: 1144797781
               z: 2733575573
               w: 1229780591
-        Position: {x: 2094, y: -226.66667}
+        Position: {x: 2094, y: -227}
         Message:
           m_TableReference:
             m_TableCollectionName: GUID:aad91b28e51f6fc489b46b3d5b4a981a
@@ -2460,7 +2528,7 @@ MonoBehaviour:
               y: 1306867689
               z: 1258378635
               w: 3997284047
-        Position: {x: 1476, y: 163.33333}
+        Position: {x: 1476, y: 163}
         InputSocket:
           ID:
             Value:
@@ -2532,7 +2600,7 @@ MonoBehaviour:
               y: 1269025994
               z: 1153592723
               w: 3820659677
-        Position: {x: 1254, y: 141.33333}
+        Position: {x: 1254, y: 141}
         input:
           ID:
             Value:
@@ -2596,7 +2664,7 @@ MonoBehaviour:
               y: 1324022588
               z: 969235863
               w: 3104230235
-        Position: {x: 1748, y: 185.33333}
+        Position: {x: 1748, y: 185}
         input:
           ID:
             Value:
@@ -2654,7 +2722,7 @@ MonoBehaviour:
               y: 1323110203
               z: 2792774072
               w: 1962379184
-        Position: {x: 4655.3335, y: 324}
+        Position: {x: 4655, y: 324}
         Message:
           m_TableReference:
             m_TableCollectionName: GUID:aad91b28e51f6fc489b46b3d5b4a981a
@@ -2783,7 +2851,7 @@ MonoBehaviour:
               y: 1313410957
               z: 2886541459
               w: 527097838
-        Position: {x: 5276, y: 465.33334}
+        Position: {x: 5276, y: 465}
         input:
           ID:
             Value:
@@ -2861,7 +2929,7 @@ MonoBehaviour:
               y: 1136157862
               z: 2350834876
               w: 4031076669
-        Position: {x: 5276, y: 193.33333}
+        Position: {x: 5276, y: 193}
         input:
           ID:
             Value:
@@ -2939,7 +3007,7 @@ MonoBehaviour:
               y: 1233325717
               z: 1408691597
               w: 1170349594
-        Position: {x: 4363.3335, y: -24.666666}
+        Position: {x: 4363, y: -25}
         input:
           ID:
             Value:
@@ -2997,7 +3065,7 @@ MonoBehaviour:
               y: 1277778865
               z: 3566176440
               w: 4006476638
-        Position: {x: -532.6666, y: 353.33334}
+        Position: {x: -533, y: 353}
         InputSocket:
           ID:
             Value:
@@ -3039,16 +3107,16 @@ MonoBehaviour:
           ConnectedSocketIDs:
           - Value:
               Value:
-                x: 2511577034
-                y: 1340297850
-                z: 3501795775
-                w: 3321674948
-          - Value:
-              Value:
                 x: 1878725422
                 y: 1113770823
                 z: 948474514
                 w: 4260897044
+          - Value:
+              Value:
+                x: 2511577034
+                y: 1340297850
+                z: 3501795775
+                w: 3321674948
     - rid: 4877893797366726917
       type: {class: GetGameProgressKeyValueNode, ns: Arena.ScriptViz, asm: Arena.Common}
       data:
@@ -3059,7 +3127,7 @@ MonoBehaviour:
               y: 1116380742
               z: 1728422536
               w: 1138438691
-        Position: {x: -240.66667, y: 267.33334}
+        Position: {x: -241, y: 267}
         input:
           ID:
             Value:
@@ -3132,7 +3200,7 @@ MonoBehaviour:
               y: 1087506420
               z: 4080200866
               w: 333442190
-        Position: {x: 3525.3333, y: -176.66667}
+        Position: {x: 3525, y: -177}
         input:
           ID:
             Value:
@@ -3205,7 +3273,7 @@ MonoBehaviour:
               y: 1341974693
               z: 3129474218
               w: 992432067
-        Position: {x: 3974, y: -176.66667}
+        Position: {x: 3974, y: -177}
         InputSocket:
           ID:
             Value:
@@ -3302,7 +3370,7 @@ MonoBehaviour:
               y: 1172359816
               z: 2924011705
               w: 2081108707
-        Position: {x: 3210, y: -176.66667}
+        Position: {x: 3210, y: -177}
         InputSocket:
           ID:
             Value:
@@ -3364,7 +3432,7 @@ MonoBehaviour:
               y: 1148857539
               z: 2842564763
               w: 557723598
-        Position: {x: 7278, y: 73.333336}
+        Position: {x: 7278, y: 73}
         input:
           ID:
             Value:
@@ -3407,7 +3475,7 @@ MonoBehaviour:
               y: 1169972205
               z: 1112068515
               w: 3946471400
-        Position: {x: 5668, y: 193.33333}
+        Position: {x: 5668, y: 193}
         input:
           ID:
             Value:
@@ -3452,6 +3520,7 @@ MonoBehaviour:
           m_FallbackState: 0
           m_WaitForCompletion: 0
           m_LocalVariables: []
+        ShowAlert: 1
     - rid: 5191230023250739342
       type: {class: HideMessageNode, ns: Arena.ScriptViz, asm: Arena.Common}
       data:
@@ -3462,7 +3531,7 @@ MonoBehaviour:
               y: 1130197682
               z: 1229153417
               w: 3237568449
-        Position: {x: -1214.6667, y: 321.33334}
+        Position: {x: -1215, y: 321}
         input:
           ID:
             Value:
@@ -3513,7 +3582,7 @@ MonoBehaviour:
               y: 1203904131
               z: 544660146
               w: 681668322
-        Position: {x: 1723.3334, y: 528}
+        Position: {x: 1723, y: 528}
         input:
           ID:
             Value:
@@ -3648,7 +3717,7 @@ MonoBehaviour:
               y: 1304780789
               z: 2915347898
               w: 3913212725
-        Position: {x: 2579.3333, y: 547.3333}
+        Position: {x: 2579, y: 547}
         input:
           ID:
             Value:
@@ -3816,7 +3885,7 @@ MonoBehaviour:
               y: 1139189412
               z: 1245466280
               w: 4075711149
-        Position: {x: 1159.3334, y: 1181.3334}
+        Position: {x: 1159, y: 1181}
         Message:
           m_TableReference:
             m_TableCollectionName: GUID:aad91b28e51f6fc489b46b3d5b4a981a
@@ -3939,7 +4008,7 @@ MonoBehaviour:
               y: 1139172021
               z: 2184364716
               w: 3971511839
-        Position: {x: 800, y: 538}
+        Position: {x: 936, y: 602}
         InputSocket:
           ID:
             Value:
@@ -4036,7 +4105,7 @@ MonoBehaviour:
               y: 1135079058
               z: 1984235392
               w: 2584599891
-        Position: {x: 1896, y: 1181.3334}
+        Position: {x: 1896, y: 1181}
         input:
           ID:
             Value:
@@ -4109,7 +4178,7 @@ MonoBehaviour:
               y: 1212409561
               z: 1255734675
               w: 2245687144
-        Position: {x: 1601.3334, y: 1181.3334}
+        Position: {x: 1601, y: 1181}
         InputSocket:
           ID:
             Value:
@@ -4165,7 +4234,7 @@ MonoBehaviour:
               y: 1329250236
               z: 1333055159
               w: 1710488349
-        Position: {x: 2342, y: 1181.3334}
+        Position: {x: 2342, y: 1181}
         InputSocket:
           ID:
             Value:
@@ -4307,7 +4376,7 @@ MonoBehaviour:
               y: 1194132717
               z: 2135838621
               w: 1318908205
-        Position: {x: 2603.3333, y: 1722}
+        Position: {x: 2603, y: 1722}
         Message:
           m_TableReference:
             m_TableCollectionName: GUID:aad91b28e51f6fc489b46b3d5b4a981a
@@ -5573,7 +5642,7 @@ MonoBehaviour:
               y: 1144180925
               z: 1084428723
               w: 949826126
-        Position: {x: 2630, y: 1027.3334}
+        Position: {x: 2630, y: 1027}
         input:
           ID:
             Value:
@@ -5632,7 +5701,7 @@ MonoBehaviour:
               y: 1257869993
               z: 3286676401
               w: 1288381047
-        Position: {x: -852, y: 369.33334}
+        Position: {x: -852, y: 369}
         input:
           ID:
             Value:
@@ -5697,7 +5766,7 @@ MonoBehaviour:
               y: 1240603635
               z: 809067138
               w: 2794910068
-        Position: {x: 233.33334, y: 267.33334}
+        Position: {x: 233, y: 267}
         input:
           ID:
             Value:
@@ -5724,10 +5793,10 @@ MonoBehaviour:
           ConnectedSocketIDs:
           - Value:
               Value:
-                x: 4202368376
-                y: 1242796916
-                z: 2557294240
-                w: 3343157026
+                x: 1138183239
+                y: 4266130954
+                z: 1273918617
+                w: 3114466810
         getVariableId:
           Value:
             Value:
@@ -5761,7 +5830,7 @@ MonoBehaviour:
               y: 1255634176
               z: 2656632736
               w: 2168805942
-        Position: {x: 2436, y: 547.3333}
+        Position: {x: 2436, y: 547}
         input:
           ID:
             Value:
@@ -5825,7 +5894,7 @@ MonoBehaviour:
               y: 1230870864
               z: 2440427186
               w: 1236433550
-        Position: {x: 5095.3335, y: 447.33334}
+        Position: {x: 5095, y: 447}
         input:
           ID:
             Value:
@@ -5889,7 +5958,7 @@ MonoBehaviour:
               y: 1292186088
               z: 3867340179
               w: 26506475
-        Position: {x: 5095.3335, y: 210}
+        Position: {x: 5095, y: 210}
         input:
           ID:
             Value:
@@ -6380,7 +6449,7 @@ MonoBehaviour:
               y: 3527950258
               z: 1083736483
               w: 1112830510
-        Position: {x: 2630, y: 1251.3334}
+        Position: {x: 2630, y: 1251}
         input:
           ID:
             Value:
@@ -7806,7 +7875,7 @@ MonoBehaviour:
               y: 1273217561
               z: 566207397
               w: 2989550269
-        Position: {x: 2627.3333, y: 1498.6666}
+        Position: {x: 2627, y: 1499}
         input:
           ID:
             Value:
@@ -8253,7 +8322,7 @@ MonoBehaviour:
               y: 1335656372
               z: 3434024383
               w: 975723697
-        Position: {x: 6799.3335, y: -16.666666}
+        Position: {x: 6799, y: -17}
         Message:
           m_TableReference:
             m_TableCollectionName: GUID:aad91b28e51f6fc489b46b3d5b4a981a
@@ -8807,6 +8876,34 @@ MonoBehaviour:
           IdentifierType: 0
         GenerationType: 0
   sprite: {fileID: 21300000, guid: b83080d92786f42589381bbe09110c3c, type: 3}
+--- !u!114 &1877298308139700520
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7520239090811291617}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fff9fb2c35b4e48b48172cb987d779ba, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ConversionTargetOptions: 5
+  Value:
+    Value:
+      Id:
+        GlobalId:
+          SceneObjectIdentifier0: 0
+          SceneObjectIdentifier1: 0
+          AssetGUID:
+            Value:
+              x: 0
+              y: 0
+              z: 0
+              w: 0
+          IdentifierType: 0
+        GenerationType: 0
+  texture: {fileID: 2800000, guid: 6d1d297672eec474f938e1db821185e4, type: 3}
 --- !u!1001 &6722371495654625712
 PrefabInstance:
   m_ObjectHideFlags: 0

@@ -451,7 +451,7 @@ namespace Arena.Client.UI
         public void TestDialogue()
         {
             ShowDialogueWindow(true);
-            dialogueUI.ShowDialogue(default, default, "Здрасти", new[] { new DialogueAnswerData { Text = "Мордасти", CommandAddress = default } });
+            dialogueUI.ShowDialogue(default, default, "Здрасти", null, new[] { new DialogueAnswerData { Text = "Мордасти", CommandAddress = default } });
         }
 
         class WorldObserver : UiBaseState

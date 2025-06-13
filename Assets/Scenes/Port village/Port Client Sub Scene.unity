@@ -39698,6 +39698,7 @@ GameObject:
   - component: {fileID: 1258870726}
   - component: {fileID: 1258870725}
   - component: {fileID: 1258870727}
+  - component: {fileID: 1258870728}
   m_Layer: 16
   m_Name: Villager
   m_TagString: Untagged
@@ -39848,6 +39849,63 @@ MonoBehaviour:
   references:
     version: 2
     RefIds:
+    - rid: 1790314207423758373
+      type: {class: GetSelfNode, ns: TzarGames.GameCore.ScriptViz.Graph, asm: TzarGames.GameCore}
+      data:
+        ID:
+          Value:
+            Value:
+              x: 3397724363
+              y: 1547974514
+              z: 1166074007
+              w: 1068665905
+        Position: {x: 409, y: 350}
+        input:
+          ID:
+            Value:
+              Value:
+                x: 2612183778
+                y: 1262706257
+                z: 2141039534
+                w: 978476296
+          ConnectedSocketIDs:
+          - Value:
+              Value:
+                x: 1051426791
+                y: 1116213328
+                z: 1893870518
+                w: 652083859
+        output:
+          ID:
+            Value:
+              Value:
+                x: 141522746
+                y: 2302947640
+                z: 1524221097
+                w: 3259507254
+          ConnectedSocketIDs:
+          - Value:
+              Value:
+                x: 2696146718
+                y: 1285139144
+                z: 3948479645
+                w: 2589474977
+        SelfOutSocket:
+          ID:
+            Value:
+              Value:
+                x: 1915670735
+                y: 3947627513
+                z: 3824452753
+                w: 340934488
+          ConnectedSocketIDs:
+          - Value:
+              Value:
+                x: 1973398310
+                y: 1115370058
+                z: 2974964108
+                w: 2583485089
+          AuthoringValue: {fileID: 0}
     - rid: 4937816088277155865
       type: {class: ScriptVizGraph, ns: TzarGames.GameCore.ScriptViz.Graph, asm: TzarGames.GameCore}
       data:
@@ -39899,6 +39957,7 @@ MonoBehaviour:
             - rid: 4937816109645037797
             - rid: 4937816109645037849
             - rid: 4937816109645037850
+            - rid: 1790314207423758373
           states: []
           variables: []
         Name: 
@@ -39924,10 +39983,10 @@ MonoBehaviour:
           ConnectedSocketIDs:
           - Value:
               Value:
-                x: 2696146718
-                y: 1285139144
-                z: 3948479645
-                w: 2589474977
+                x: 2612183778
+                y: 1262706257
+                z: 2141039534
+                w: 978476296
         InteractorEntityOutSocket:
           ID:
             Value:
@@ -39954,7 +40013,7 @@ MonoBehaviour:
               y: 1253248774
               z: 2642258587
               w: 4245808354
-        Position: {x: 353, y: 391}
+        Position: {x: 653, y: 391}
         input:
           ID:
             Value:
@@ -39966,10 +40025,10 @@ MonoBehaviour:
           ConnectedSocketIDs:
           - Value:
               Value:
-                x: 1051426791
-                y: 1116213328
-                z: 1893870518
-                w: 652083859
+                x: 141522746
+                y: 2302947640
+                z: 1524221097
+                w: 3259507254
         output:
           ID:
             Value:
@@ -40009,7 +40068,13 @@ MonoBehaviour:
                 y: 1115370058
                 z: 2974964108
                 w: 2583485089
-          ConnectedSocketIDs: []
+          ConnectedSocketIDs:
+          - Value:
+              Value:
+                x: 1915670735
+                y: 3947627513
+                z: 3824452753
+                w: 340934488
           AuthoringValue: {fileID: 0}
     - rid: 4937816088277155869
       type: {class: ShowDialogueNode, ns: Arena.Dialogue, asm: Arena.Common}
@@ -40919,7 +40984,7 @@ MonoBehaviour:
               y: 1235831802
               z: 611614089
               w: 3197879582
-        Position: {x: 713, y: 391}
+        Position: {x: 1013, y: 391}
         InputSocket:
           ID:
             Value:
@@ -41065,7 +41130,7 @@ MonoBehaviour:
               y: 1105258540
               z: 392108726
               w: 4169335594
-        Position: {x: 981, y: 391}
+        Position: {x: 1281, y: 391}
         InputSocket:
           ID:
             Value:
@@ -41614,16 +41679,16 @@ MonoBehaviour:
           ConnectedSocketIDs:
           - Value:
               Value:
-                x: 858573906
-                y: 1300819355
-                z: 1234609307
-                w: 1220678318
-          - Value:
-              Value:
                 x: 953614144
                 y: 1302778325
                 z: 1575110816
                 w: 2308077428
+          - Value:
+              Value:
+                x: 858573906
+                y: 1300819355
+                z: 1234609307
+                w: 1220678318
           Value: 0
     - rid: 4937816109645037751
       type: {class: AddGameProgressQuestCommandNode, ns: Arena.ScriptViz, asm: Arena.Common}
@@ -42087,6 +42152,34 @@ MonoBehaviour:
           AuthoringValue: {fileID: 981639363}
         Enable: 1
         AffectChilds: 1
+--- !u!114 &1258870728
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1258870720}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fff9fb2c35b4e48b48172cb987d779ba, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ConversionTargetOptions: 5
+  Value:
+    Value:
+      Id:
+        GlobalId:
+          SceneObjectIdentifier0: 0
+          SceneObjectIdentifier1: 0
+          AssetGUID:
+            Value:
+              x: 0
+              y: 0
+              z: 0
+              w: 0
+          IdentifierType: 0
+        GenerationType: 0
+  texture: {fileID: 2800000, guid: 73c1eb499b3de42728a7ca5c689e5ef0, type: 3}
 --- !u!1001 &1262010420
 PrefabInstance:
   m_ObjectHideFlags: 0

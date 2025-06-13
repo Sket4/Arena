@@ -20,6 +20,8 @@ namespace Arena.Client.UI
     
     public class DialogueUI : TzarGames.GameFramework.UI.GameUIBase
     {
+        public Texture2D DefaultImage;
+        public RawImage Image;
         public TMPro.TextMeshProUGUI MessageText;
         public GameObject AnswerPrefab;
         public Transform AnswerContainer;
@@ -36,7 +38,7 @@ namespace Arena.Client.UI
             return original.Replace("{playername}", playerName);
         }
 
-        public void ShowDialogue(Entity playerEntity, Entity dialogueEntity, string message, IEnumerable<DialogueAnswerData> answers)
+        public void ShowDialogue(Entity playerEntity, Entity dialogueEntity, string message, Texture2D image, IEnumerable<DialogueAnswerData> answers)
         {
             var playerName = "Dinar";
 
@@ -46,6 +48,15 @@ namespace Arena.Client.UI
             }
             
             Debug.Log($"Show dialogue from entity {dialogueEntity}");
+
+            if (image)
+            {
+                Image.texture = image;
+            }
+            else
+            {
+                Image.texture = DefaultImage;
+            }
 
             message = message.Trim();
             

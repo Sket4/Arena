@@ -4,6 +4,7 @@ using Arena.Client.UI;
 using Arena.Dialogue;
 using Arena.ScriptViz;
 using TzarGames.GameCore;
+using TzarGames.GameCore.Items;
 using Unity.Entities;
 using UnityEngine;
 using UnityEngine.Localization;
@@ -349,9 +350,17 @@ namespace Arena.Client
             {
                 return;
             }
+
+            Texture2D image = null;
+
+            if (ui.EntityManager.HasComponent<DialogueIcon>(message.Companion))
+            {
+                var icon = ui.EntityManager.GetComponentData<DialogueIcon>(message.Companion);
+                image = await DialogueIcon.LoadIcon(icon.Value);
+            }
             
             ui.ShowDialogueWindow(true);
-            ui.DialogueUI.ShowDialogue(message.Player, message.DialogueEntity, loadTask.Result, answerList);
+            ui.DialogueUI.ShowDialogue(message.Player, message.DialogueEntity, loadTask.Result, image, answerList);
         }
 
         protected override void OnDestroy()

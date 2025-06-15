@@ -1,0 +1,46 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>netcoreapp3.1</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.Extensions.Configuration" Version="5.0.0" />
+    <PackageReference Include="Microsoft.Extensions.Configuration.Binder" Version="5.0.0" />
+    <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="5.0.0" />
+    <PackageReference Include="System.Collections" Version="4.3.0" />
+    <PackageReference Include="Google.Protobuf" Version="3.15.8" />
+    <PackageReference Include="Grpc" Version="2.38.0" />
+    <PackageReference Include="Grpc.Tools" Version="2.38.0">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Common\FrontendServerLib\FrontendServerLib.csproj" />
+    <ProjectReference Include="..\SharedGameLib\SharedGameLib.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Protobuf Include="..\ProtoFiles\ArenaClientService.proto" Link="Proto\ArenaClientService.proto" GrpcServices="Server" ProtoRoot="../" />
+    <Protobuf Include="..\ProtoFiles\DatabaseGameService.proto" Link="Proto\DatabaseGameService.proto" GrpcServices="Client" ProtoRoot="..\" />
+    
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="nlog.config">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="settings.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
+  <PropertyGroup>
+    <ServerGarbageCollection>true</ServerGarbageCollection>
+    <ConcurrentGarbageCollection>true</ConcurrentGarbageCollection>
+  </PropertyGroup>
+
+</Project>

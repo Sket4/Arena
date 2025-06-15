@@ -1,0 +1,41 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+    <RootNamespace>TzarGames.Arena</RootNamespace>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Google.Protobuf" Version="3.15.8" />
+    <PackageReference Include="Grpc" Version="2.38.0" />
+    <PackageReference Include="Grpc.Tools" Version="2.38.0">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Common\SharedLib\SharedLib.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Protobuf Include="..\ProtoFiles\Shared.proto" GrpcServices="None" Link="Proto\Shared.proto" ProtoRoot="..\" />
+  </ItemGroup>
+
+  <PropertyGroup>
+    <ServerGarbageCollection>true</ServerGarbageCollection>
+    <ConcurrentGarbageCollection>true</ConcurrentGarbageCollection>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(OS)' != 'Unix'">
+    <PostBuildEvent>
+      copy SharedGameLib.dll $(SolutionDir)..\Assets\Plugins\ClientLibs\SharedGameLib.dll
+      SET ERRORLEVEL=0
+    </PostBuildEvent>
+  </PropertyGroup>
+
+   <PropertyGroup Condition="'$(OS)' == 'Unix'">
+    <PostBuildEvent>cp SharedGameLib.dll ../../../../../Assets/Plugins/ClientLibs/SharedGameLib.dll</PostBuildEvent>
+  </PropertyGroup>
+  
+</Project>

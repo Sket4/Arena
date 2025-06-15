@@ -1,0 +1,41 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+    <RestoreProjectStyle>PackageReference</RestoreProjectStyle>
+  </PropertyGroup>
+  <ItemGroup>
+    <None Remove="Proto\DatabaseService.proto" />
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="Grpc" Version="2.38.0" />
+    <PackageReference Include="Grpc.Tools" Version="2.38.0">
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+      <PrivateAssets>all</PrivateAssets>
+    </PackageReference>
+    <PackageReference Include="Google.Protobuf" Version="3.15.8" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Common\DatabaseClientLib\DatabaseClientLib.csproj" />
+    <ProjectReference Include="..\SharedGameLib\SharedGameLib.csproj" />
+  </ItemGroup>
+  <ItemGroup>
+    <Protobuf Include="..\ProtoFiles\DatabaseGameService.proto" Link="Proto\DatabaseGameService.proto" GrpcServices="Client" ProtoRoot="..\" />
+  </ItemGroup>
+
+  <PropertyGroup>
+    <ServerGarbageCollection>true</ServerGarbageCollection>
+    <ConcurrentGarbageCollection>true</ConcurrentGarbageCollection>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(OS)' != 'Unix'">
+    <PostBuildEvent>
+      copy DatabaseClientGameLib.dll $(SolutionDir)..\Assets\Plugins\ServerLibs\DatabaseClientGameLib.dll
+      SET ERRORLEVEL=0
+    </PostBuildEvent>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(OS)' == 'Unix'">
+    <PostBuildEvent>cp DatabaseClientGameLib.dll ../../../../../Assets/Plugins/ServerLibs/DatabaseClientGameLib.dll</PostBuildEvent>
+  </PropertyGroup>
+</Project>

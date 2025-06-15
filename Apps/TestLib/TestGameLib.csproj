@@ -1,0 +1,37 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Google.Protobuf" Version="3.15.8" />
+    <PackageReference Include="Grpc" Version="2.38.0" />
+    <PackageReference Include="Grpc.Tools" Version="2.38.0">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\SharedGameLib\SharedGameLib.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Protobuf Include="..\ProtoFiles\TestService.proto" Link="Proto\TestService.proto" />
+  </ItemGroup>
+
+  <PropertyGroup>
+    <ServerGarbageCollection>true</ServerGarbageCollection>
+    <ConcurrentGarbageCollection>true</ConcurrentGarbageCollection>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(OS)' != 'Unix'">
+    <PostBuildEvent>copy TestGameLib.dll $(SolutionDir)..\Assets\Plugins\ClientLibs\TestGameLib.dll</PostBuildEvent>
+  </PropertyGroup>
+    
+  <PropertyGroup Condition="'$(OS)' == 'Unix'">
+    <PostBuildEvent>cp TestGameLib.dll ../../../../../Assets/Plugins/ClientLibs/TestGameLib.dll</PostBuildEvent>
+  </PropertyGroup>
+
+</Project>

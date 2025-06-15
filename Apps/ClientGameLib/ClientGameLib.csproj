@@ -1,0 +1,48 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <None Remove="Proto\AuthService.proto" />
+    <None Remove="Proto\GameService.proto" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Google.Protobuf" Version="3.15.8" />
+    <PackageReference Include="Grpc" Version="2.38.0" />
+    <PackageReference Include="Grpc.Tools" Version="2.38.0">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Common\ClientLib\ClientLib.csproj" />
+    <ProjectReference Include="..\Common\SharedLib\SharedLib.csproj" />
+    <ProjectReference Include="..\SharedGameLib\SharedGameLib.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Protobuf Include="..\ProtoFiles\ArenaClientService.proto" Link="Proto\ArenaClientService.proto" GrpcServices="Client" ProtoRoot="..\" />
+    <!--Protobuf Include="..\ProtoFiles\Shared.proto" Link="Proto\Shared.proto" GrpcServices="None" /-->
+  </ItemGroup>
+
+  <PropertyGroup>
+    <ServerGarbageCollection>true</ServerGarbageCollection>
+    <ConcurrentGarbageCollection>true</ConcurrentGarbageCollection>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(OS)' != 'Unix'">
+    <PostBuildEvent>
+      copy ClientGameLib.dll $(SolutionDir)..\Assets\Plugins\ClientLibs\ClientGameLib.dll
+      SET ERRORLEVEL=0
+    </PostBuildEvent>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(OS)' == 'Unix'">
+    <PostBuildEvent>cp ClientGameLib.dll ../../../../../Assets/Plugins/ClientLibs/ClientGameLib.dll</PostBuildEvent>
+  </PropertyGroup>
+
+</Project>

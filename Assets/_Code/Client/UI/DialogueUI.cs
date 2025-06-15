@@ -1,4 +1,4 @@
-﻿// Copyright 2012-2024 Dinar Khasanov (E-mail: lespaul@live.ru) All Rights Reserved.
+﻿// Copyright 2012-2025 Dinar Khasanov (E-mail: lespaul@live.ru) All Rights Reserved.
 
 using System.Collections.Generic;
 using Arena.Dialogue;
@@ -7,7 +7,6 @@ using TzarGames.GameCore.ScriptViz;
 using Unity.Entities;
 using UnityEngine;
 using UnityEngine.Events;
-using UnityEngine.Serialization;
 using UnityEngine.UI;
 
 namespace Arena.Client.UI
@@ -21,7 +20,7 @@ namespace Arena.Client.UI
     public class DialogueUI : TzarGames.GameFramework.UI.GameUIBase
     {
         public Texture2D DefaultImage;
-        public RawImage Image;
+        public Image Image;
         public TMPro.TextMeshProUGUI MessageText;
         public GameObject AnswerPrefab;
         public Transform AnswerContainer;
@@ -49,14 +48,19 @@ namespace Arena.Client.UI
             
             Debug.Log($"Show dialogue from entity {dialogueEntity}");
 
+            Texture2D targetTexture;
+            
             if (image)
             {
-                Image.texture = image;
+                targetTexture = image;
             }
             else
             {
-                Image.texture = DefaultImage;
+                targetTexture = DefaultImage;
             }
+
+            Image.sprite = Sprite.Create(targetTexture, new Rect(0, 0, targetTexture.width, targetTexture.height),
+                new Vector2(targetTexture.width / 2, targetTexture.height / 2));
 
             message = message.Trim();
             

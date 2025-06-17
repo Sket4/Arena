@@ -294,8 +294,6 @@ namespace Arena.Client
 
                         var uiCreatedMessageEntity = EntityManager.CreateEntity(typeof(Message));
                         EntityManager.SetComponentData(uiCreatedMessageEntity, UI_CreatedMessage);
-                        
-                        return;
                     }
                 }
             }).Run();
@@ -325,6 +323,27 @@ namespace Arena.Client
                     ui.HUD.EnableMinimap(false);
                 }
             }).Run();
+
+            foreach (var (_, entity) 
+                     in SystemAPI.Query<RefRO<PlayerAbilities>>().WithChangeFilter<PlayerAbilities>().WithEntityAccess())
+            {
+                var playerController = EntityManager.GetComponentData<PlayerController>(entity);
+                var player = EntityManager.GetComponentData<Player>(playerController.Value);
+
+                if (player.ItsMe == false)
+                {
+                    return;
+                }
+                
+                if(uiQuery.TryGetSingleton<GameUI>(out var ui) == false)
+                {
+                    Debug.LogError("Failed to find UI entity");
+                    return;
+                }
+
+                var panel = ui.HUD.GetComponentInChildren<SkillPanelUI>();
+                panel.UpdateData();
+            }
         }
 
         private static async void showDialogueMessageAsync(DialogueMessage message, DynamicBuffer<DialogueAnswer> answers, GameUI ui)

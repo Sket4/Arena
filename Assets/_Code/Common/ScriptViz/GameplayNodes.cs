@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using TzarGames.GameCore;
+using TzarGames.GameCore.Abilities;
 using TzarGames.GameCore.ScriptViz;
 using TzarGames.GameCore.ScriptViz.Graph;
 using Unity.Burst;
@@ -262,6 +263,73 @@ namespace Arena.ScriptViz
             else
             {
                 return "Скрыть сообщение";
+            }
+        }
+    }
+    
+    [BurstCompile]
+    public struct AddAbilityCommand : IScriptVizCommand
+    {
+        public AbilityID AbilityID;
+        public InputEntityVar Target;
+
+        [BurstCompile]
+        [AOT.MonoPInvokeCallback(typeof(ScriptVizCommandRegistry.ExecuteDelegate))]
+        public static unsafe void Exec(ref Context context, void* commandData)
+        {
+            var cmd = (AddAbilityCommand*)commandData;
+            var target = cmd->Target.Read(ref context);
+            
+            if (target == Entity.Null)
+            {
+                return;
+            }
+
+            var request = context.Commands.CreateEntity(context.SortIndex);
+            
+            context.Commands.AddComponent(context.SortIndex, request, new LearnAbilityRequest
+            {
+                AbilityID = cmd->AbilityID,
+            });
+            context.Commands.AddComponent(context.SortIndex, request, new Target
+            {
+                Value = target,
+            });
+        }
+    }
+    
+    [Serializable]
+    [FriendlyName("Добавить умение")]
+    public class AddAbilityNode : CommandNode
+    {
+        [HideInInspector]
+        public EntitySocket TargetSocket = new();
+
+        public AbilityKey AbilityID;
+        
+        public override void WriteCommand(CompilerAllocator compilerAllocator, out Address commandAddress)
+        {
+            var cmd = new AddAbilityCommand();
+            compilerAllocator.InitializeInputVar(ref cmd.Target, TargetSocket);
+            cmd.AbilityID = (AbilityID ? new AbilityID(AbilityID.Id) : TzarGames.GameCore.Abilities.AbilityID.Null);
+            commandAddress = compilerAllocator.WriteCommand(ref cmd);
+        }
+
+        public override void DeclareSockets(List<SocketInfo> sockets)
+        {
+            base.DeclareSockets(sockets);
+            sockets.Add(new SocketInfo(TargetSocket, SocketType.In, "Target"));
+        }
+
+        public override string GetNodeName(ScriptVizGraphPage page)
+        {
+            if (AbilityID)
+            {
+                return $"Добавить умение {AbilityID.name}";    
+            }
+            else
+            {
+                return "Добавить умение";
             }
         }
     }

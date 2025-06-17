@@ -15,14 +15,15 @@ namespace Arena.Client.UI
         {
             public UsePlayerAbility UseSkill = default;
             public SkillButtonUI SkillButton = default;
-            public byte SlotIndex = 0;
         }
 
-        [SerializeField]
-        SkillInfoUI[] skillButtons = default;
+        [SerializeField] private SkillInfoUI attack;
+        [SerializeField] private SkillInfoUI ability1;
+        [SerializeField] private SkillInfoUI ability2;
+        [SerializeField] private SkillInfoUI ability3;
+        
 
         Coroutine coroutine;
-        bool initialized = false;
 
         private void OnEnable()
         {
@@ -31,14 +32,7 @@ namespace Arena.Client.UI
                 return;
             }
 
-            if(initialized == false)
-            {
-                if(coroutine != null)
-                {
-                    StopCoroutine(coroutine);
-                }
-                coroutine = StartCoroutine(init());
-            }
+            UpdateData();
         }
 
         IEnumerator init()
@@ -48,50 +42,30 @@ namespace Arena.Client.UI
                 yield return null;
             }
 
-            var abilities = GetBuffer<AbilityElement>();
+            var playerAbilities = GetData<PlayerAbilities>();
 
-            if (abilities.Length == 0)
-            {
-                yield return null;
-                abilities = GetBuffer<AbilityElement>();
-            }
-
-            for (int i = 0; i < skillButtons.Length; i++)
-            {
-                if (abilities.Length <= i)
-                {
-                    Debug.LogError("Not enough abilities");
-                    break;
-                }
-                
-                var skillButton = skillButtons[i];
-
-                Entity targetAbility = Entity.Null;
-
-                foreach(var ability in abilities)
-                {
-                    var abilityEntity = ability.AbilityEntity;
-
-                    var slot = GetData<Slot>(abilityEntity);
-
-                    if(slot.Value == skillButton.SlotIndex)
-                    {
-                        targetAbility = abilityEntity;
-                        break;
-                    }
-                }
-                
-                if (targetAbility == Entity.Null)
-                {
-                    Debug.LogError("No skill instance at index " + i);
-                    continue;
-                }
-
-                skillButton.SkillButton.SetSkillInstance(targetAbility, EntityManager);
-                skillButton.UseSkill.SetDefaultSkill(targetAbility, EntityManager);
-            }
+            attack.SkillButton.SetSkillInstance(playerAbilities.AttackAbility.Ability, EntityManager);
+            attack.UseSkill.SetDefaultSkill(playerAbilities.AttackAbility.Ability, EntityManager);
+            
+            ability1.SkillButton.SetSkillInstance(playerAbilities.Ability1.Ability, EntityManager);
+            ability1.UseSkill.SetDefaultSkill(playerAbilities.Ability1.Ability, EntityManager);
+            
+            ability2.SkillButton.SetSkillInstance(playerAbilities.Ability2.Ability, EntityManager);
+            ability2.UseSkill.SetDefaultSkill(playerAbilities.Ability2.Ability, EntityManager);
+            
+            ability3.SkillButton.SetSkillInstance(playerAbilities.Ability3.Ability, EntityManager);
+            ability3.UseSkill.SetDefaultSkill(playerAbilities.Ability3.Ability, EntityManager);
+            
             coroutine = null;
-            initialized = true;
+        }
+
+        public void UpdateData()
+        {
+            if(coroutine != null)
+            {
+                StopCoroutine(coroutine);
+            }
+            coroutine = StartCoroutine(init());
         }
 
         protected override void OnSetup(Entity ownerEntity, Entity uiEntity, EntityManager manager)
@@ -103,11 +77,7 @@ namespace Arena.Client.UI
                 return;
             }
 
-            if(coroutine != null)
-            {
-                StopCoroutine(coroutine);
-            }
-            coroutine = StartCoroutine(init());
+            UpdateData();
         }
     }
 }

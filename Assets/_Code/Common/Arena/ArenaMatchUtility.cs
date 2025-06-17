@@ -138,6 +138,8 @@ namespace Arena.Server
                     }
                 }
             }
+
+            PlayerAbilities playerAbilities = default;
             
             foreach (var ability in data.AbilityData.Abilities)
             {
@@ -149,6 +151,27 @@ namespace Arena.Server
                     //commands.AddComponent(abilityEntity, new UniqueID { Value = ability.ID });
                     commands.SetComponent(abilityEntity, new AbilityOwner { Value = entity });
                     //abilities.Add(new AbilityElement { AbilityEntity = abilityEntity });
+
+                    if (ability.TypeID == data.AbilityData.ActiveAbility1)
+                    {
+                        playerAbilities.Ability1.ID = new AbilityID(ability.TypeID);
+                        playerAbilities.Ability1.Ability = abilityEntity;
+                    }
+                    else if (ability.TypeID == data.AbilityData.ActiveAbility2)
+                    {
+                        playerAbilities.Ability2.ID = new AbilityID(ability.TypeID);
+                        playerAbilities.Ability2.Ability = abilityEntity;
+                    }
+                    else if (ability.TypeID == data.AbilityData.ActiveAbility3)
+                    {
+                        playerAbilities.Ability3.ID = new AbilityID(ability.TypeID);
+                        playerAbilities.Ability3.Ability = abilityEntity;
+                    }
+                    else if (ability.TypeID == data.AbilityData.AttackAbility)
+                    {
+                        playerAbilities.AttackAbility.ID = new AbilityID(ability.TypeID);
+                        playerAbilities.AttackAbility.Ability = abilityEntity;
+                    }
                 }
                 catch (System.Exception ex)
                 {
@@ -156,6 +179,8 @@ namespace Arena.Server
                     UnityEngine.Debug.LogException(ex);
                 }
             }
+            
+            commands.SetComponent(entity, playerAbilities);
         }
 
         public static void SetupGameSceneForGameSessionEntity(StateSystemBase.State state, Entity entity, EntityCommandBuffer Commands)

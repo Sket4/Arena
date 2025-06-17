@@ -316,6 +316,7 @@ namespace Arena.Abilities
     public struct ActionSequenceStartedAbilityEventNodeData : IBufferElementData, ICommandAddressData, IAbilityAction, IAbilityActionJob<ScriptVizSequenceStartActionJob>, IAbilityScriptVizEvent
     {
         [SerializeField] private Address commandAddress;
+        [SerializeField] private Address writeDataAddress;
         public Address CommandAddress { get => commandAddress; set => commandAddress = value; }
         
         [SerializeField] private Address AbilityOwnerAddress;
@@ -327,6 +328,12 @@ namespace Arena.Abilities
         {
             get => AbilityOwnerAddress;
             set => AbilityOwnerAddress = value;
+        }
+
+        public Address WriteDataAddress
+        {
+            get => writeDataAddress;
+            set => writeDataAddress = value;
         }
 
         [SerializeField] private int calledId;
@@ -349,7 +356,7 @@ namespace Arena.Abilities
     {
         [SerializeField] private Address commandAddress;
         public Address CommandAddress { get => commandAddress; set => commandAddress = value; }
-        
+        [SerializeField] private Address writeDataAddress;
         [SerializeField] private Address AbilityOwnerAddress;
         
         public Address SequenceActionIndexAddress;
@@ -375,6 +382,11 @@ namespace Arena.Abilities
         {
             get => actionId;
             set => actionId = value;
+        }
+        public Address WriteDataAddress
+        {
+            get => writeDataAddress;
+            set => writeDataAddress = value;
         }
     }
     

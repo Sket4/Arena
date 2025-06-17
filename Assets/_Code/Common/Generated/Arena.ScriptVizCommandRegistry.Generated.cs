@@ -14,6 +14,7 @@ namespace TzarGames.GameCore.Generated
 			ScriptVizCommandRegistry.RegisterCommand(typeof(Arena.ScriptViz.ShowMessageCommand), Arena.ScriptViz.ShowMessageCommand.Exec);
 			ScriptVizCommandRegistry.RegisterCommand(typeof(Arena.ScriptViz.SetMessageNumbersCommand), Arena.ScriptViz.SetMessageNumbersCommand.Exec);
 			ScriptVizCommandRegistry.RegisterCommand(typeof(Arena.ScriptViz.HideMessageCommand), Arena.ScriptViz.HideMessageCommand.Exec);
+			ScriptVizCommandRegistry.RegisterCommand(typeof(Arena.ScriptViz.AddAbilityCommand), Arena.ScriptViz.AddAbilityCommand.Exec);
 			ScriptVizCommandRegistry.RegisterCommand(typeof(Arena.ScriptViz.SetCharacterEyeColorCommand), Arena.ScriptViz.SetCharacterEyeColorCommand.Exec);
 			ScriptVizCommandRegistry.RegisterCommand(typeof(Arena.ScriptViz.SetCharacterHairColorCommand), Arena.ScriptViz.SetCharacterHairColorCommand.Exec);
 			ScriptVizCommandRegistry.RegisterCommand(typeof(Arena.ScriptViz.SetCharacterHeadCommand), Arena.ScriptViz.SetCharacterHeadCommand.Exec);

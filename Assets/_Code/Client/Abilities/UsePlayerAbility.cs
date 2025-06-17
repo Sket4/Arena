@@ -9,7 +9,7 @@ namespace Arena.Client.Abilities
     [DefaultExecutionOrder(-50)]
     public class UsePlayerAbility : CircleTouchButtonBase
     {
-        Entity defaultSkill = default;
+        Entity defaultSkill = Entity.Null;
 
         private EntityManager manager;
         private World world;
@@ -42,6 +42,12 @@ namespace Arena.Client.Abilities
         public void SetDefaultSkill(Entity skill, EntityManager manager)
         {
             defaultSkill = skill;
+            
+            if (defaultSkill == Entity.Null)
+            {
+                return;    
+            }
+            
             this.manager = manager;
             world = manager.World;
             id = manager.GetComponentData<AbilityID>(defaultSkill);
@@ -49,7 +55,7 @@ namespace Arena.Client.Abilities
 
         public void UseDefaultSkill()
         {
-            if (manager.World.IsCreated == false)
+            if (defaultSkill == Entity.Null)
             {
                 return;
             }

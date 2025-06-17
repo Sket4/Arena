@@ -82,6 +82,7 @@ namespace TzarGames.GameCore.Generated
 			ScriptVizCommandRegistry.RegisterCommand(typeof(TzarGames.GameCore.ScriptViz.Commands.FriendshipCheckCommand), TzarGames.GameCore.ScriptViz.Commands.FriendshipCheckCommand.Exec);
 			ScriptVizCommandRegistry.RegisterCommand(typeof(TzarGames.GameCore.ScriptViz.Commands.GetTargetHealthCommand), TzarGames.GameCore.ScriptViz.Commands.GetTargetHealthCommand.Exec);
 			ScriptVizCommandRegistry.RegisterCommand(typeof(TzarGames.GameCore.ScriptViz.Commands.GetViewDirectionCommand), TzarGames.GameCore.ScriptViz.Commands.GetViewDirectionCommand.Exec);
+			ScriptVizCommandRegistry.RegisterCommand(typeof(TzarGames.GameCore.Abilities.RequestAbilityStopCommand), TzarGames.GameCore.Abilities.RequestAbilityStopCommand.Exec);
 		}
 	}
 }

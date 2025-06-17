@@ -7,6 +7,7 @@ namespace Arena
 {
     public class SkillButtonUI : MonoBehaviour
     {
+        [SerializeField] private Sprite defaultIcon;
         [SerializeField] private Image skillIconImage = default;
         [SerializeField] private Image cooldownImage = default;
         
@@ -16,6 +17,13 @@ namespace Arena
 
         public void SetSkillInstance(Entity newSkill, EntityManager manager)
         {
+            if (newSkill == Entity.Null)
+            {
+                update = false;
+                skillIconImage.sprite = defaultIcon;
+                return;
+            }
+            
             this.manager = manager;
             skillInstance = newSkill;
 

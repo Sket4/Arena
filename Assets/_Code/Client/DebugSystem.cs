@@ -118,6 +118,34 @@ namespace Arena.Client
                 }).Run();
         }
         
+        [ConsoleCommand]
+        void activateAbility(int abilityId, int slot)
+        {
+            Target target = default;
+            
+            foreach(var (player, character) 
+                    in SystemAPI.Query<RefRO<Player>, RefRO<ControlledCharacter>>())
+            {
+                if (player.ValueRO.ItsMe)
+                {
+                    target = new Target(character.ValueRO.Entity);
+                }
+            }
+
+            if (target.Value == Entity.Null)
+            {
+                return;
+            }
+            
+            var request = EntityManager.CreateEntity();
+            EntityManager.AddComponentData(request, new ActivateAbilityRequest
+            {
+                AbilityID = new AbilityID(abilityId),
+                Slot = (byte)slot
+            });
+            EntityManager.AddComponentData(request, target);
+        }
+        
         [UnityEditor.MenuItem("Arena/Утилиты/Перенести персонажа к камере сцены _F11")]
         static void movePlayerToSceneCamera()
         {

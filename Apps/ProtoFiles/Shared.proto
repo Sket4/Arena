@@ -28,7 +28,12 @@ message AbilityData
 
 message AbilitiesData
 {
-	repeated AbilityData Abilities = 1;
+	int32 AttackAbility = 1;
+	int32 ActiveAbility1 = 2;
+	int32 ActiveAbility2 = 3;
+	int32 ActiveAbility3 = 4;
+
+	repeated AbilityData Abilities = 5;
 }
 
 message ItemBagData

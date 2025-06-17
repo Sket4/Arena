@@ -10,7 +10,8 @@ namespace Arena
         public int BaseArmorID_Male;
         public int BaseWeaponID;
 
-        public int[] AbilityIDs;
+        public int AttackAbility;
+        public int ActiveAbility1;
     }
 
     [StructLayout(LayoutKind.Explicit)]
@@ -65,14 +66,8 @@ namespace Arena
             BaseArmorID_Male = 35,
             BaseArmorID_Female = 35, // TODO
             BaseWeaponID = 42,
-            AbilityIDs = new int[]
-            {
-                31, // главная атака
-                20, // усиленная атака
-                21, // рывок
-                22, // круговая атака
-                23, // боевое лечение
-            }
+            AttackAbility = 31,      // ближняя атака
+            ActiveAbility1 = 20,     // усиленная атака
         };
 
         public static readonly CharacterTemplate Knight = new CharacterTemplate
@@ -80,14 +75,8 @@ namespace Arena
             BaseArmorID_Male = 36,
             BaseArmorID_Female = 118,
             BaseWeaponID = 38,
-            AbilityIDs = new int[]
-            {
-                19, // главная атака
-                20, // усиленная атака
-                21, // рывок
-                22, // круговая атака
-                23, // боевое лечение
-            }
+            AttackAbility = 19,      // ближняя атака
+            ActiveAbility1 = 20,     // усиленная атака
         };
 
         public static readonly int DefaultStartLocationID = 56;     // port village
@@ -256,10 +245,12 @@ namespace Arena
             {
                 data.AbilityData = new AbilitiesData();
             }
-            foreach (var abilityId in template.AbilityIDs)
-            {
-                addAbility(data, abilityId);
-            }
+            
+            data.AbilityData.AttackAbility = template.AttackAbility;
+            data.AbilityData.ActiveAbility1 = template.ActiveAbility1;
+
+            addAbility(data, template.AttackAbility);
+            addAbility(data, template.ActiveAbility1);
         }
 
         static void addAbility(CharacterData data, int typeId)

@@ -3715,6 +3715,7 @@ Transform:
   - {fileID: 383236415}
   - {fileID: 1317001323}
   - {fileID: 488742281}
+  - {fileID: 1151254386}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &980746685
@@ -3904,6 +3905,571 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &1151254385
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1151254386}
+  - component: {fileID: 1151254387}
+  m_Layer: 0
+  m_Name: Add ability
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1151254386
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1151254385}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 967085519}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1151254387
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1151254385}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 25d87a6b957a60841942c7e71e0c252f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ConversionTargetOptions: -1
+  Graph:
+    rid: 5858742592779583494
+  references:
+    version: 2
+    RefIds:
+    - rid: 5858742592779583494
+      type: {class: ScriptVizGraph, ns: TzarGames.GameCore.ScriptViz.Graph, asm: TzarGames.GameCore}
+      data:
+        pages: []
+        states: []
+        layers:
+        - id: scene
+          pages:
+          - ID:
+              Value:
+                Value:
+                  x: 4042115567
+                  y: 1209773816
+                  z: 497878151
+                  w: 2185285900
+            Name: 
+            ConversionTargetOptions: 7
+            variables:
+            - rid: 5858742592779583500
+            - rid: 5858742592779583508
+            nodes:
+            - rid: 5858742592779583495
+            - rid: 5858742592779583496
+            - rid: 5858742592779583505
+            - rid: 5858742592779583506
+            - rid: 5858742592779583510
+            - rid: 5858742592779583511
+            - rid: 5858742592779583570
+            - rid: 5858742592779583581
+          states: []
+          variables: []
+        Name: 
+    - rid: 5858742592779583495
+      type: {class: GetMainCharacterCommandNode, ns: Arena.ScriptViz, asm: Arena.Common}
+      data:
+        ID:
+          Value:
+            Value:
+              x: 3052197967
+              y: 1193148245
+              z: 599279777
+              w: 2052661684
+        Position: {x: 140, y: -8.666668}
+        InputSocket:
+          ID:
+            Value:
+              Value:
+                x: 2827332801
+                y: 1176171032
+                z: 2515731129
+                w: 1491441705
+          ConnectedSocketIDs:
+          - Value:
+              Value:
+                x: 1153664873
+                y: 1224307326
+                z: 122594711
+                w: 470495999
+        OnCharacterLoadedSocket:
+          ID:
+            Value:
+              Value:
+                x: 2004187394
+                y: 1074801522
+                z: 3015611819
+                w: 1846161332
+          ConnectedSocketIDs:
+          - Value:
+              Value:
+                x: 84539127
+                y: 1083186002
+                z: 1586265774
+                w: 129136256
+        CharacterSocket:
+          ID:
+            Value:
+              Value:
+                x: 3125855334
+                y: 1232745656
+                z: 2639592875
+                w: 2010477495
+          ConnectedSocketIDs:
+          - Value:
+              Value:
+                x: 667130343
+                y: 1117474295
+                z: 2671504033
+                w: 3183336840
+          - Value:
+              Value:
+                x: 3851969843
+                y: 1230728488
+                z: 3741977004
+                w: 3845044129
+          AuthoringValue: {fileID: 0}
+    - rid: 5858742592779583496
+      type: {class: StartEventNode, ns: TzarGames.GameCore.ScriptViz.Graph, asm: TzarGames.GameCore}
+      data:
+        ID:
+          Value:
+            Value:
+              x: 1410873983
+              y: 1312721855
+              z: 878833823
+              w: 472663521
+        Position: {x: 0, y: 0}
+        output:
+          ID:
+            Value:
+              Value:
+                x: 1153664873
+                y: 1224307326
+                z: 122594711
+                w: 470495999
+          ConnectedSocketIDs:
+          - Value:
+              Value:
+                x: 2827332801
+                y: 1176171032
+                z: 2515731129
+                w: 1491441705
+    - rid: 5858742592779583500
+      type: {class: DynamicArrayVariable, ns: TzarGames.GameCore.ScriptViz.Graph, asm: TzarGames.GameCore}
+      data:
+        ID:
+          Value:
+            Value:
+              x: 1241636945
+              y: 1150021082
+              z: 1207247771
+              w: 3420126193
+        Name: _delayed_commands
+        NetSyncEnabled: 0
+        IsHidden: 1
+    - rid: 5858742592779583505
+      type: {class: UseAbilityCommandNode, ns: TzarGames.GameCore.ScriptViz.Commands, asm: TzarGames.GameCore}
+      data:
+        ID:
+          Value:
+            Value:
+              x: 1509266050
+              y: 1286603615
+              z: 3997916848
+              w: 2421348359
+        Position: {x: 1778, y: 441.33334}
+        input:
+          ID:
+            Value:
+              Value:
+                x: 2038917120
+                y: 1251978429
+                z: 164733102
+                w: 355971317
+          ConnectedSocketIDs:
+          - Value:
+              Value:
+                x: 3401066609
+                y: 1202344929
+                z: 1731665571
+                w: 3005264682
+        output:
+          ID:
+            Value:
+              Value:
+                x: 3453002568
+                y: 1245274933
+                z: 823119262
+                w: 1001299743
+          ConnectedSocketIDs:
+          - Value:
+              Value:
+                x: 2278097728
+                y: 1279450673
+                z: 892092587
+                w: 3784910594
+        TargetEntity:
+          ID:
+            Value:
+              Value:
+                x: 1237410183
+                y: 1080049497
+                z: 3550298299
+                w: 1954611491
+          ConnectedSocketIDs:
+          - Value:
+              Value:
+                x: 484286320
+                y: 1328822550
+                z: 494292153
+                w: 324998538
+          AuthoringValue: {fileID: 0}
+        AbilityID: {fileID: -1107970305061808957, guid: 709759d6d50fadb4ab72406e658ed872, type: 2}
+    - rid: 5858742592779583506
+      type: {class: DelayCommandNode, ns: TzarGames.GameCore.ScriptViz.Graph, asm: TzarGames.GameCore}
+      data:
+        ID:
+          Value:
+            Value:
+              x: 1017814559
+              y: 1077127420
+              z: 3592373387
+              w: 3380778475
+        Position: {x: 1115.3334, y: 78.666664}
+        InputCommandSocket:
+          ID:
+            Value:
+              Value:
+                x: 2278097728
+                y: 1279450673
+                z: 892092587
+                w: 3784910594
+          ConnectedSocketIDs:
+          - Value:
+              Value:
+                x: 3453002568
+                y: 1245274933
+                z: 823119262
+                w: 1001299743
+          - Value:
+              Value:
+                x: 1750988372
+                y: 1153507511
+                z: 153027256
+                w: 2312074522
+        DelaySocket:
+          ID:
+            Value:
+              Value:
+                x: 3534642755
+                y: 1310321279
+                z: 2939390099
+                w: 2974708511
+          ConnectedSocketIDs: []
+          Value: 5
+        NextCommandSocket:
+          ID:
+            Value:
+              Value:
+                x: 3955074162
+                y: 1220682801
+                z: 2871648429
+                w: 700455324
+          ConnectedSocketIDs:
+          - Value:
+              Value:
+                x: 2364086543
+                y: 1316027903
+                z: 4029984390
+                w: 1769069410
+    - rid: 5858742592779583508
+      type: {class: EntityVariable, ns: TzarGames.GameCore.ScriptViz.Graph, asm: TzarGames.GameCore}
+      data:
+        ID:
+          Value:
+            Value:
+              x: 806723060
+              y: 1233249086
+              z: 2841991334
+              w: 1632444898
+        Name: player
+        NetSyncEnabled: 0
+        IsHidden: 0
+        Value: {fileID: 0}
+    - rid: 5858742592779583510
+      type: {class: SetEntityVarCommandNode, ns: TzarGames.GameCore.ScriptViz.Graph, asm: TzarGames.GameCore}
+      data:
+        ID:
+          Value:
+            Value:
+              x: 3689066287
+              y: 1121480347
+              z: 756690355
+              w: 394356605
+        Position: {x: 422, y: -43.333332}
+        input:
+          ID:
+            Value:
+              Value:
+                x: 84539127
+                y: 1083186002
+                z: 1586265774
+                w: 129136256
+          ConnectedSocketIDs:
+          - Value:
+              Value:
+                x: 2004187394
+                y: 1074801522
+                z: 3015611819
+                w: 1846161332
+        output:
+          ID:
+            Value:
+              Value:
+                x: 3095563026
+                y: 1133435124
+                z: 1270740634
+                w: 94134994
+          ConnectedSocketIDs:
+          - Value:
+              Value:
+                x: 3413470814
+                y: 1113339449
+                z: 3181281698
+                w: 823231636
+        setVariableId:
+          Value:
+            Value:
+              x: 806723060
+              y: 1233249086
+              z: 2841991334
+              w: 1632444898
+        InputValueSocket:
+          ID:
+            Value:
+              Value:
+                x: 667130343
+                y: 1117474295
+                z: 2671504033
+                w: 3183336840
+          ConnectedSocketIDs:
+          - Value:
+              Value:
+                x: 3125855334
+                y: 1232745656
+                z: 2639592875
+                w: 2010477495
+          AuthoringValue: {fileID: 0}
+        SetDelayed: 0
+    - rid: 5858742592779583511
+      type: {class: GetEntityVarCommandNode, ns: TzarGames.GameCore.ScriptViz.Graph, asm: TzarGames.GameCore}
+      data:
+        ID:
+          Value:
+            Value:
+              x: 1529275465
+              y: 1092305430
+              z: 2903523206
+              w: 3129860708
+        Position: {x: 1307.3334, y: 441.33334}
+        input:
+          ID:
+            Value:
+              Value:
+                x: 2364086543
+                y: 1316027903
+                z: 4029984390
+                w: 1769069410
+          ConnectedSocketIDs:
+          - Value:
+              Value:
+                x: 3955074162
+                y: 1220682801
+                z: 2871648429
+                w: 700455324
+        output:
+          ID:
+            Value:
+              Value:
+                x: 2054158576
+                y: 1103709627
+                z: 3159013542
+                w: 2541381970
+          ConnectedSocketIDs:
+          - Value:
+              Value:
+                x: 396692854
+                y: 1190202520
+                z: 1659411077
+                w: 3603000080
+        getVariableId:
+          Value:
+            Value:
+              x: 806723060
+              y: 1233249086
+              z: 2841991334
+              w: 1632444898
+        WriteOutput:
+          ID:
+            Value:
+              Value:
+                x: 484286320
+                y: 1328822550
+                z: 494292153
+                w: 324998538
+          ConnectedSocketIDs:
+          - Value:
+              Value:
+                x: 1237410183
+                y: 1080049497
+                z: 3550298299
+                w: 1954611491
+          - Value:
+              Value:
+                x: 1372194762
+                y: 1096110381
+                z: 2608001969
+                w: 708749729
+          AuthoringValue: {fileID: 0}
+    - rid: 5858742592779583570
+      type: {class: LogCommandNode, ns: TzarGames.GameCore.ScriptViz.Graph, asm: TzarGames.GameCore}
+      data:
+        ID:
+          Value:
+            Value:
+              x: 3285696264
+              y: 1139074352
+              z: 3257740686
+              w: 3011255054
+        Position: {x: 1476.6666, y: 334}
+        input:
+          ID:
+            Value:
+              Value:
+                x: 396692854
+                y: 1190202520
+                z: 1659411077
+                w: 3603000080
+          ConnectedSocketIDs:
+          - Value:
+              Value:
+                x: 2054158576
+                y: 1103709627
+                z: 3159013542
+                w: 2541381970
+        output:
+          ID:
+            Value:
+              Value:
+                x: 3401066609
+                y: 1202344929
+                z: 1731665571
+                w: 3005264682
+          ConnectedSocketIDs:
+          - Value:
+              Value:
+                x: 2038917120
+                y: 1251978429
+                z: 164733102
+                w: 355971317
+        EntitySocket:
+          ID:
+            Value:
+              Value:
+                x: 1372194762
+                y: 1096110381
+                z: 2608001969
+                w: 708749729
+          ConnectedSocketIDs:
+          - Value:
+              Value:
+                x: 484286320
+                y: 1328822550
+                z: 494292153
+                w: 324998538
+          AuthoringValue: {fileID: 0}
+        Message: 'USE ABILITY ON '
+        LogType: 3
+    - rid: 5858742592779583581
+      type: {class: AddAbilityNode, ns: Arena.ScriptViz, asm: Arena.Common}
+      data:
+        ID:
+          Value:
+            Value:
+              x: 2437303777
+              y: 1203721615
+              z: 2717468054
+              w: 3751065248
+        Position: {x: 747.3334, y: -22}
+        input:
+          ID:
+            Value:
+              Value:
+                x: 3413470814
+                y: 1113339449
+                z: 3181281698
+                w: 823231636
+          ConnectedSocketIDs:
+          - Value:
+              Value:
+                x: 3095563026
+                y: 1133435124
+                z: 1270740634
+                w: 94134994
+        output:
+          ID:
+            Value:
+              Value:
+                x: 1750988372
+                y: 1153507511
+                z: 153027256
+                w: 2312074522
+          ConnectedSocketIDs:
+          - Value:
+              Value:
+                x: 2278097728
+                y: 1279450673
+                z: 892092587
+                w: 3784910594
+        TargetSocket:
+          ID:
+            Value:
+              Value:
+                x: 3851969843
+                y: 1230728488
+                z: 3741977004
+                w: 3845044129
+          ConnectedSocketIDs:
+          - Value:
+              Value:
+                x: 3125855334
+                y: 1232745656
+                z: 2639592875
+                w: 2010477495
+          AuthoringValue: {fileID: 0}
+        AbilityID: {fileID: -1107970305061808957, guid: 709759d6d50fadb4ab72406e658ed872, type: 2}
 --- !u!1 &1154994404
 GameObject:
   m_ObjectHideFlags: 0

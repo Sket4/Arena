@@ -1,6 +1,7 @@
 ﻿using System.Runtime.InteropServices;
 using System;
 using TzarGames.MatchFramework;
+using System.Collections.Generic;
 
 namespace Arena
 {
@@ -12,6 +13,22 @@ namespace Arena
 
         public int AttackAbility;
         public int ActiveAbility1;
+
+        public List<CharacterTemplateAbility> AvailableAbilities;
+    }
+
+    public class CharacterTemplateAbility
+    {
+        public readonly int AbilityID;
+        public readonly int MinimalLevel;
+        public readonly int MaxUpgradeLevel;
+
+        public CharacterTemplateAbility(int abilityID, int minimalLevel)
+        {
+            AbilityID = abilityID;
+            MinimalLevel = minimalLevel;
+            MaxUpgradeLevel = 10;
+        }
     }
 
     [StructLayout(LayoutKind.Explicit)]
@@ -77,6 +94,14 @@ namespace Arena
             BaseWeaponID = 38,
             AttackAbility = 19,      // ближняя атака
             ActiveAbility1 = 20,     // усиленная атака
+
+            AvailableAbilities = new List<CharacterTemplateAbility>
+            {
+                new CharacterTemplateAbility(20, 0),        // усиленная атака
+                new CharacterTemplateAbility(21, 0),        // рывок
+                new CharacterTemplateAbility(22, 0),        // круговая атака
+                new CharacterTemplateAbility(172, 0),        // ускорение
+            }
         };
 
         public static readonly int DefaultStartLocationID = 56;     // port village
@@ -205,20 +230,27 @@ namespace Arena
                 CurrentStage = 0,
             };
 
-            switch (characterClass)
-            {
-                case CharacterClass.Knight:
-                    initCharacterData(data, Identifiers.Knight, armorColor);
-                    break;
-                case CharacterClass.Mage:
-                    break;
-                case CharacterClass.Archer:
-                    initCharacterData(data, Identifiers.Archer, armorColor);
-                    break;
-            }
+            var template = GetCharacterTemplate(characterClass);
+            initCharacterData(data, template, armorColor);
 
             return data;
         }
+
+        public static CharacterTemplate GetCharacterTemplate(CharacterClass characterClass)
+        {
+            switch (characterClass)
+            {
+                case CharacterClass.Knight:
+                    return Identifiers.Knight;
+                case CharacterClass.Mage:
+                    throw new NotImplementedException();
+                case CharacterClass.Archer:
+                    return Identifiers.Archer;
+                default:
+                    throw new NotImplementedException();
+            }
+        }
+
 
         public static GameData CreateDefaultGameData()
         {

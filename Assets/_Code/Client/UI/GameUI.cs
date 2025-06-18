@@ -41,9 +41,6 @@ namespace Arena.Client.UI
         [SerializeField] private TravelLocationWindowUI locationLocationWindow;
 
         [SerializeField]
-        XpPointManagementUI xpManagement = default;
-
-        [SerializeField]
         AlertUI alert = default;
 
         [SerializeField]
@@ -68,7 +65,7 @@ namespace Arena.Client.UI
         [SerializeField] private RubyShopUI rubyShop = default;
 
         [SerializeField] private ShopUI itemShop = default;
-        [SerializeField] private InventoryUI inventory = default;
+        [SerializeField] private CharacterUI characterUI = default;
 
         [SerializeField] private TzarGames.GameFramework.UI.GameUIBase loading = default;
 
@@ -493,12 +490,13 @@ namespace Arena.Client.UI
             {
                 base.OnStateBegin(prevState);
 
-                UI.showMenu(UI.xpManagement, true);
+                UI.showMenu(UI.characterUI, true);
+                UI.characterUI.ShowAbilities();
             }
             public override void OnStateEnd(State nextState)
             {
                 base.OnStateEnd(nextState);
-                UI.showMenu(UI.xpManagement, false);
+                UI.showMenu(UI.characterUI, false);
             }
 
             protected override bool shouldStopPlayerMovement()
@@ -601,14 +599,14 @@ namespace Arena.Client.UI
             public override void OnStateBegin(State prevState)
             {
                 base.OnStateBegin(prevState);
-                ShowOnlyThisMenu(UI.inventory);
-                UI.inventory.RefreshItems();
+                ShowOnlyThisMenu(UI.characterUI);
+                UI.characterUI.ShowInventory();
                 UI.showFadingBackground(true);
             }
             public override void OnStateEnd(State nextState)
             {
                 base.OnStateEnd(nextState);
-                UI.showMenu(UI.inventory, false);
+                UI.showMenu(UI.characterUI, false);
                 UI.showFadingBackground(false);
             }
 
@@ -688,7 +686,7 @@ namespace Arena.Client.UI
 
         public void UpdateInventory()
         {
-            inventory.UpdateUI();
+            characterUI.Inventory.UpdateUI();
         }
 
         public void ShowMap()

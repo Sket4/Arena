@@ -82,6 +82,11 @@ namespace TzarGames.GameFramework.UI
         {
             return EntityManager.GetSharedComponentManaged<T>(entity);
         }
+        
+        public T GetSharedComponent<T>(Entity entity) where T : unmanaged, ISharedComponentData
+        {
+            return EntityManager.GetSharedComponent<T>(entity);
+        }
 
         public void Setup(Entity ownerEntity, Entity uiEntity, EntityManager manager)
 		{

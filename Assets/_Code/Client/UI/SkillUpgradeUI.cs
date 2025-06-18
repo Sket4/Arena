@@ -10,37 +10,23 @@ namespace Arena.Client.UI
         Image icon = default;
 
         [SerializeField]
-        TextUI commonCounterLabel = default;
+        TextUI label = default;
 
-        [SerializeField]
-        TextUI cooldownCounterLabel = default;
+        public IntCounterUI Counter;
 
-        public IntCounterUI CommonCounter;
-        public string CommonCounterLabel
+        public Button ActivateButton;
+        
+        public string Label
         {
             get
             {
-                return commonCounterLabel.text;
+                return label.text;
             }
             set
             {
-                commonCounterLabel.text = value;
+                label.text = value;
             }
         }
-
-        public string CooldownCounterLabel
-        {
-            get
-            {
-                return cooldownCounterLabel.text;
-            }
-            set
-            {
-                cooldownCounterLabel.text = value;
-            }
-        }
-
-        public IntCounterUI CooldownCounter;
 
         public Sprite Icon 
         {
@@ -57,16 +43,14 @@ namespace Arena.Client.UI
         public void OnPushedToPool()
         {
             icon.sprite = null;
-            commonCounterLabel.enabled = false;
-            cooldownCounterLabel.enabled = false;
-            CommonCounter.enabled = false;
+            label.enabled = false;
+            Counter.enabled = false;
         }
 
         public void OnPulledFromPool()
         {
-            commonCounterLabel.enabled = true;
-            cooldownCounterLabel.enabled = true;
-            CommonCounter.enabled = true;
+            label.enabled = true;
+            Counter.enabled = true;
         }
     }
 }

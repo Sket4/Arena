@@ -14,6 +14,12 @@ namespace Arena
         public Entity Character;
         public ushort Count;
     }
+
+    [Serializable]
+    public struct AbilityPointChangedEvent : IComponentData
+    {
+        public Entity Character;
+    }
     
     [Serializable]
     public struct LearnAbilityRequest : IComponentData
@@ -32,6 +38,12 @@ namespace Arena
     {
         public AbilityID AbilityID;
         public byte Slot;
+    }
+
+    [Serializable]
+    public struct AbilityActivatedEvent : IComponentData
+    {
+        public Entity Character;
     }
     
     /// <summary>
@@ -67,20 +79,61 @@ namespace Arena
         {
             abilityPointsLookup.Update(ref state);
             
-            ProcessAddAbilityPointRequests(ref state);
+            var commands = SystemAPI.GetSingleton<GameCommandBufferSystem.Singleton>()
+                .CreateCommandBuffer(state.WorldUnmanaged);
+            
+            new AddAbilityPointJob
+            {
+                Commands = commands,
+                AbilityPointsLookup = abilityPointsLookup
+            }.Run();
+
+            new ProcessLevelUpEventJob
+            {
+                Commands = commands,
+                AbilityPointsLookup = abilityPointsLookup
+            }.Run();
             
             if (learnAbilityRequestQuery.IsEmpty == false)
             {
-                ProcessLearnAbilityRequests(ref state);
+                ProcessLearnAbilityRequests(ref state, commands);
             }
 
             if (activateAblilityRequestQuery.IsEmpty == false)
             {
-                ProcessActivateAbilitiesRequest(ref state);
+                ProcessActivateAbilitiesRequest(ref state, commands);
+            }
+        }
+        
+        [BurstCompile]
+        partial struct ProcessLevelUpEventJob : IJobEntity
+        {
+            public EntityCommandBuffer Commands;
+            public ComponentLookup<AbilityPoints> AbilityPointsLookup;
+            
+            public void Execute(Entity entity, in LevelUpEventData eventData)
+            {
+                var points = AbilityPointsLookup.GetRefRWOptional(eventData.Target);
+
+                if (points.IsValid == false)
+                {
+                    return;
+                }
+                #if UNITY_EDITOR
+                Debug.Log("Added ability point for level up");
+                #endif
+                points.ValueRW.Count++;
+
+                var eventEntity = Commands.CreateEntity();
+                Commands.AddComponent(eventEntity, new AbilityPointChangedEvent
+                {
+                    Character = eventData.Target
+                });
+                Commands.AddComponent(eventEntity, new EventTag());
             }
         }
 
-        private void ProcessActivateAbilitiesRequest(ref SystemState state)
+        private void ProcessActivateAbilitiesRequest(ref SystemState state, EntityCommandBuffer commands)
         {
             var requests = activateAblilityRequestQuery.ToComponentDataArray<ActivateAbilityRequest>(Allocator.Temp);
             var targets = activateAblilityRequestQuery.ToComponentDataArray<Target>(Allocator.Temp);
@@ -138,6 +191,12 @@ namespace Arena
                         break;
                     }
                 }
+                var eventEntity = commands.CreateEntity();
+                commands.AddComponent(eventEntity, new AbilityActivatedEvent
+                {
+                    Character = entity
+                });
+                commands.AddComponent(eventEntity, new EventTag());
             }
             
             state.EntityManager.DestroyEntity(activateAblilityRequestQuery);
@@ -160,26 +219,18 @@ namespace Arena
                     return;
                 }
                 pointsRW.ValueRW.Count += request.Count;
+                
+                var pointEventEntity = Commands.CreateEntity();
+                Commands.AddComponent(pointEventEntity, new AbilityPointChangedEvent
+                {
+                    Character = request.Character
+                });
+                Commands.AddComponent(pointEventEntity, new EventTag());
             }
         }
-
-        private void ProcessAddAbilityPointRequests(ref SystemState state)
+        
+        private void ProcessLearnAbilityRequests(ref SystemState state, EntityCommandBuffer commands)
         {
-            var commands = SystemAPI.GetSingleton<GameCommandBufferSystem.Singleton>()
-                .CreateCommandBuffer(state.WorldUnmanaged);
-            
-            new AddAbilityPointJob
-            {
-                Commands = commands,
-                AbilityPointsLookup = abilityPointsLookup
-            }.Run();
-        }
-
-        private void ProcessLearnAbilityRequests(ref SystemState state)
-        {
-            var commands = SystemAPI.GetSingleton<GameCommandBufferSystem.Singleton>()
-                .CreateCommandBuffer(state.WorldUnmanaged);
-            
             var mainDB_entity = SystemAPI.GetSingletonEntity<MainDatabaseTag>();
             var mainDB = SystemAPI.GetBuffer<IdToEntity>(mainDB_entity);
 
@@ -229,6 +280,13 @@ namespace Arena
                     Debug.Log($"Learn ability with id {request.AbilityID.Value}");
 #endif
                     abilityPoints.Count--;
+                    
+                    var pointEventEntity = commands.CreateEntity();
+                    commands.AddComponent(pointEventEntity, new AbilityPointChangedEvent
+                    {
+                        Character = entity
+                    });
+                    commands.AddComponent(pointEventEntity, new EventTag());
                     
                     abilityPrefabs.Add(new AbilityPrefabElement
                     {

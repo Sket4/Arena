@@ -27,7 +27,7 @@ namespace Arena.Server
         
         public event System.Action<PlayerId, GameSessionID> OnUserDisconnected;
 
-        struct TransationProcessedTag : IComponentData
+        struct ProcessedBySystemTag : IComponentData
         {
         }
 
@@ -148,6 +148,7 @@ namespace Arena.Server
             
             // сохранение данных игроков
             Entities
+                .WithoutBurst()
                 .WithNone<InitialPlayerDataLoad>()
                 .ForEach((Entity transactionEntity, in InventoryTransaction invTransaction, in Target target) =>
             {
@@ -155,46 +156,65 @@ namespace Arena.Server
                 {
                     return;
                 }
-            
-                if (SystemAPI.HasComponent<PlayerController>(target.Value) == false)
-                {
-                    Debug.Log($"Failed to save player data - character {target.Value.Index} has no player controller");
-                    return;
-                }
-                var playerEntity = SystemAPI.GetComponent<PlayerController>(target.Value).Value;
-            
-                if (SystemAPI.HasComponent<AuthorizedUser>(playerEntity) == false)
-                {
-                    Debug.Log($"Failed to save player data - player {playerEntity.Index} is not authorized");
-                    return;
-                }
-            
-                Debug.Log($"Saving data for player character {target.Value.Index}");
-                var playerId = SystemAPI.GetComponent<AuthorizedUser>(playerEntity).Value;
-                
-                var requestEntity = commands.CreateEntity();
-                
-                commands.AddComponent(requestEntity, new PlayerDataSaveRequest
-                {
-                    Owner = Entity.Null,
-                    PlayerId = playerId,
-                    State = PlayerDataRequestState.Pending
-                });
-                commands.AddComponent(requestEntity, new Target { Value = playerEntity });
-                commands.AddComponent(requestEntity, new PlayerSaveData
-                {
-                    CharacterEntity = target.Value
-                });
 
-                if (SystemAPI.HasComponent<AutoDestroyItemTransaction>(transactionEntity) == false
-                    && SystemAPI.HasComponent<TransationProcessedTag>(transactionEntity) == false
-                    )
+                if (createSaveDataRequest(commands, target.Value) == false)
                 {
-                    commands.AddComponent<TransationProcessedTag>(transactionEntity);    
+                    return;
+                }
+                
+                if (SystemAPI.HasComponent<AutoDestroyItemTransaction>(transactionEntity) == false
+                    && SystemAPI.HasComponent<ProcessedBySystemTag>(transactionEntity) == false
+                   )
+                {
+                    commands.AddComponent<ProcessedBySystemTag>(transactionEntity);    
                 }
                 
                 
             }).Run();
+
+            foreach (var eventData in SystemAPI.Query<RefRO<AbilityPointChangedEvent>>())
+            {
+                createSaveDataRequest(commands, eventData.ValueRO.Character);
+            }
+            
+            foreach (var eventData in SystemAPI.Query<RefRO<AbilityActivatedEvent>>())
+            {
+                createSaveDataRequest(commands, eventData.ValueRO.Character);
+            }
+        }
+
+        bool createSaveDataRequest(EntityCommandBuffer commands, Entity targetCharacter)
+        {
+            if (SystemAPI.HasComponent<PlayerController>(targetCharacter) == false)
+            {
+                Debug.Log($"Failed to save player data - character {targetCharacter.Index} has no player controller");
+                return false;
+            }
+            var playerEntity = SystemAPI.GetComponent<PlayerController>(targetCharacter).Value;
+            
+            if (SystemAPI.HasComponent<AuthorizedUser>(playerEntity) == false)
+            {
+                Debug.Log($"Failed to save player data - player {playerEntity.Index} is not authorized");
+                return false;
+            }
+            
+            Debug.Log($"Saving data for player character {targetCharacter.Index}");
+            var playerId = SystemAPI.GetComponent<AuthorizedUser>(playerEntity).Value;
+            
+            var requestEntity = commands.CreateEntity();
+                
+            commands.AddComponent(requestEntity, new PlayerDataSaveRequest
+            {
+                Owner = Entity.Null,
+                PlayerId = playerId,
+                State = PlayerDataRequestState.Pending
+            });
+            commands.AddComponent(requestEntity, new Target { Value = playerEntity });
+            commands.AddComponent(requestEntity, new PlayerSaveData
+            {
+                CharacterEntity = targetCharacter
+            });
+            return true;
         }
 
         protected class WaitingForNewPlayer : WaitingForPlayers

@@ -9,9 +9,22 @@ using UnityEngine;
 namespace Arena
 {
     [Serializable]
+    public struct AddAbilityPointRequest : IComponentData
+    {
+        public Entity Character;
+        public ushort Count;
+    }
+    
+    [Serializable]
     public struct LearnAbilityRequest : IComponentData
     {
         public AbilityID AbilityID;
+    }
+
+    [Serializable]
+    public struct AbilityLearnedEvent : IComponentData
+    {
+        public Entity Character;
     }
 
     [Serializable]
@@ -29,6 +42,7 @@ namespace Arena
     {
         private EntityQuery learnAbilityRequestQuery;
         private EntityQuery activateAblilityRequestQuery;
+        private ComponentLookup<AbilityPoints> abilityPointsLookup;
         
         public void OnCreate(ref SystemState state)
         {
@@ -44,13 +58,20 @@ namespace Arena
             });
             
             state.RequireForUpdate<MainDatabaseTag>();
+            state.RequireForUpdate<GameCommandBufferSystem.Singleton>();
+
+            abilityPointsLookup = state.GetComponentLookup<AbilityPoints>();
         }
 
         public void OnUpdate(ref SystemState state)
         {
+            abilityPointsLookup.Update(ref state);
+            
+            ProcessAddAbilityPointRequests(ref state);
+            
             if (learnAbilityRequestQuery.IsEmpty == false)
             {
-                ProcessLearAbilityRequests(ref state);
+                ProcessLearnAbilityRequests(ref state);
             }
 
             if (activateAblilityRequestQuery.IsEmpty == false)
@@ -122,16 +143,55 @@ namespace Arena
             state.EntityManager.DestroyEntity(activateAblilityRequestQuery);
         }
 
-        private void ProcessLearAbilityRequests(ref SystemState state)
+        [BurstCompile]
+        partial struct AddAbilityPointJob : IJobEntity
         {
+            public EntityCommandBuffer Commands;
+            public ComponentLookup<AbilityPoints> AbilityPointsLookup;
+            
+            public void Execute(Entity entity, in AddAbilityPointRequest request)
+            {
+                Commands.DestroyEntity(entity);
+                
+                var pointsRW = AbilityPointsLookup.GetRefRWOptional(request.Character);
+                
+                if (pointsRW.IsValid == false)
+                {
+                    return;
+                }
+                pointsRW.ValueRW.Count += request.Count;
+            }
+        }
+
+        private void ProcessAddAbilityPointRequests(ref SystemState state)
+        {
+            var commands = SystemAPI.GetSingleton<GameCommandBufferSystem.Singleton>()
+                .CreateCommandBuffer(state.WorldUnmanaged);
+            
+            new AddAbilityPointJob
+            {
+                Commands = commands,
+                AbilityPointsLookup = abilityPointsLookup
+            }.Run();
+        }
+
+        private void ProcessLearnAbilityRequests(ref SystemState state)
+        {
+            var commands = SystemAPI.GetSingleton<GameCommandBufferSystem.Singleton>()
+                .CreateCommandBuffer(state.WorldUnmanaged);
+            
             var mainDB_entity = SystemAPI.GetSingletonEntity<MainDatabaseTag>();
             var mainDB = SystemAPI.GetBuffer<IdToEntity>(mainDB_entity);
 
             var requests = learnAbilityRequestQuery.ToComponentDataArray<LearnAbilityRequest>(Allocator.Temp);
             var targets = learnAbilityRequestQuery.ToComponentDataArray<Target>(Allocator.Temp);
 
-            foreach (var (abilityPrefabs, entity) in SystemAPI.Query<DynamicBuffer<AbilityPrefabElement>>()
-                         .WithAll<PlayerController>().WithEntityAccess())
+            foreach (var (abilityPrefabs, abilityPointsRW, level, entity) 
+                     in SystemAPI.Query<
+                             DynamicBuffer<AbilityPrefabElement>,
+                             RefRW<AbilityPoints>,
+                             RefRO<Level>
+                         >().WithAll<PlayerController>().WithEntityAccess())
             {
                 int requestIndex = -1;
 
@@ -153,6 +213,14 @@ namespace Arena
 
                 var request = requests[requestIndex];
 
+                ref var abilityPoints = ref abilityPointsRW.ValueRW;
+
+                if (abilityPoints.Count == 0)
+                {
+                    Debug.LogError("not enough ability points");
+                    continue;
+                }
+
                 var prefab = IdToEntity.GetEntityByID(in mainDB, request.AbilityID.Value);
 
                 if (prefab != Entity.Null)
@@ -160,15 +228,24 @@ namespace Arena
 #if UNITY_EDITOR
                     Debug.Log($"Learn ability with id {request.AbilityID.Value}");
 #endif
+                    abilityPoints.Count--;
+                    
                     abilityPrefabs.Add(new AbilityPrefabElement
                     {
                         Value = prefab
                     });
+
+                    var eventEntity = commands.CreateEntity();
+                    commands.AddComponent(eventEntity, new AbilityLearnedEvent
+                    {
+                        Character = entity
+                    });
+                    commands.AddComponent(eventEntity, new EventTag());
                     break;
                 }
             }
 
-            state.EntityManager.DestroyEntity(learnAbilityRequestQuery);
+            commands.DestroyEntity(learnAbilityRequestQuery, EntityQueryCaptureMode.AtPlayback);
         }
     }
 }

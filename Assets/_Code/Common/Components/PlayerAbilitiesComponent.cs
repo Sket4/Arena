@@ -21,7 +21,18 @@ namespace Arena
         [HideInAuthoring] public PlayerAbilityInfo Ability3;
     }
 
+    [Serializable]
+    public struct AbilityPoints : IComponentData
+    {
+        [HideInAuthoring] public ushort Count;
+    }
+
     public class PlayerAbilitiesComponent : ComponentDataBehaviour<PlayerAbilities>
     {
+        protected override void Bake<K>(ref PlayerAbilities serializedData, K baker)
+        {
+            base.Bake(ref serializedData, baker);
+            baker.AddComponent(new AbilityPoints());
+        }
     }
 }

@@ -119,6 +119,60 @@ namespace Arena.Client
         }
         
         [ConsoleCommand]
+        void learnAbility(int abilityId)
+        {
+            Target target = default;
+            
+            foreach(var (player, character) 
+                    in SystemAPI.Query<RefRO<Player>, RefRO<ControlledCharacter>>())
+            {
+                if (player.ValueRO.ItsMe)
+                {
+                    target = new Target(character.ValueRO.Entity);
+                }
+            }
+
+            if (target.Value == Entity.Null)
+            {
+                return;
+            }
+            
+            var request = EntityManager.CreateEntity();
+            EntityManager.AddComponentData(request, new LearnAbilityRequest()
+            {
+                AbilityID = new AbilityID(abilityId),
+            });
+            EntityManager.AddComponentData(request, target);
+        }
+        
+        [ConsoleCommand]
+        void addAbilityPoints(int count)
+        {
+            Target target = default;
+            
+            foreach(var (player, character) 
+                    in SystemAPI.Query<RefRO<Player>, RefRO<ControlledCharacter>>())
+            {
+                if (player.ValueRO.ItsMe)
+                {
+                    target = new Target(character.ValueRO.Entity);
+                }
+            }
+
+            if (target.Value == Entity.Null)
+            {
+                return;
+            }
+            
+            var request = EntityManager.CreateEntity();
+            EntityManager.AddComponentData(request, new AddAbilityPointRequest
+            {
+                Count = (ushort)count,
+                Character = target.Value
+            });
+        }
+        
+        [ConsoleCommand]
         void activateAbility(int abilityId, int slot)
         {
             Target target = default;

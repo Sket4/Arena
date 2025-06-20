@@ -9,6 +9,7 @@ using TzarGames.GameFramework.UI;
 using Unity.Entities;
 using UnityEngine;
 using UnityEngine.UI;
+using LocalizedString = UnityEngine.Localization.LocalizedString;
 
 namespace Arena.Client.UI
 {
@@ -55,7 +56,7 @@ namespace Arena.Client.UI
         CharacteristicUpgradeUI blockChanceUpgradePointsUI = default;
 
         [SerializeField]
-        LocalizedStringAsset currentPointsFormat = default;
+        LocalizedString currentPointsFormat = default;
 
         [Header("Skills")]
         [SerializeField]
@@ -70,11 +71,7 @@ namespace Arena.Client.UI
         [SerializeField]
         SkillUpgradeUI skillUpgradePrefab = default;
 
-        [SerializeField]
-        LocalizedStringAsset damageSkillUpgradeLabel = default;
-
-        [SerializeField]
-        LocalizedStringAsset cooldownUpgradeLabel = default;
+        [SerializeField] private LocalizedString requiredLevelText;
 
         Pool<SkillUpgradeUI> skillUpgradeUiPool;
         List<SkillUpgradeUI> activeSkillUiList = new List<SkillUpgradeUI>();
@@ -87,23 +84,6 @@ namespace Arena.Client.UI
             bool AddUpgrade(int level);
             int UpgradeLevel { get; }
             float GetBonusValueForLevel(int level);
-        }
-
-        public interface ISkillUpgrade
-        {
-            int SkillId { get; }
-            //CharacteristicModificator DamageModificator { get; }
-            //CharacteristicModificator CooldownModificator { get; }
-            int CooldownUpgradeLevel { get; }
-            int CommonUpgradeLevel { get; }
-            void AddCooldownUpgrade(int levelAddition);
-            void AddCommonUpgrade(int levelAddition);
-            bool CanUpgradeCommonByLevel(int levelAddition);
-            bool CanUpgradeCooldownByLevel(int levelAddition);
-            int GetRequiredPointsToUpgdateCommon(int levelAddition);
-            int GetRequiredPointsToUpgdateCooldown(int levelAddition);
-            float GetCommonUpgradeBonusForLevel(int level);
-            float GetCooldownUpgradeBonusForLevel(int level);
         }
 
         public const int MAXIMUM_CHARACTERISTIC_UPGRADE_LEVEL = 10;
@@ -160,14 +140,16 @@ namespace Arena.Client.UI
             public ICharacteristicUpgrade Upgrade;
         }
 
-        class SkillUpgradeInfo
+        class AbilityUpgradeInfo
         {
-            public SkillUpgradeUI SkillUI;
-            public ISkillUpgrade Upgrade;
+            public SkillUpgradeUI AbilityUI;
+            public Entity AbilityPrefab;
+            public Entity AbilityEntity;
+            public bool LevelMatch;
         }
 
-        List<CharacteristicUpgradeInfo> upgrades = new List<CharacteristicUpgradeInfo>();
-        List<SkillUpgradeInfo> skillUpgrades = new List<SkillUpgradeInfo>();
+        List<CharacteristicUpgradeInfo> upgrades = new();
+        List<AbilityUpgradeInfo> abilityUpgrades = new();
 
         void registerUpgrade(CharacteristicUpgradeUI ui, ICharacteristicUpgrade upgrade)
         {
@@ -193,30 +175,30 @@ namespace Arena.Client.UI
                 result += calculateRequiredPoints(upgrade.Counter.CurrentValue, upgrade.Upgrade);    
             }
 
-            foreach(var skillUpgrade in skillUpgrades)
+            foreach(var skillUpgrade in abilityUpgrades)
             {
-                result += calculateRequiredPointsForSkill(skillUpgrade);
+                result += calculateRequiredPointsForAbility(skillUpgrade);
             }
 
             return result;
         }
 
-        int calculateRequiredPointsForSkill(SkillUpgradeInfo skillInfo)
+        int calculateRequiredPointsForAbility(AbilityUpgradeInfo abilityInfo)
         {
-            var upgrade = skillInfo.Upgrade;
+            var currentValue = abilityInfo.AbilityUI.Counter.CurrentValue;
 
-            if (upgrade == null)
+            int result;
+            
+            if (abilityInfo.AbilityEntity != Entity.Null)
             {
-                Debug.LogError("not implemented");
-                return 0;
+                result = currentValue - GetData<Level>(abilityInfo.AbilityEntity).Value;    
+            }
+            else
+            {
+                result = currentValue;
             }
             
-            var currentValue = skillInfo.SkillUI.Counter.CurrentValue;
-
-            var lvlCommon = currentValue - upgrade.CommonUpgradeLevel;
-            lvlCommon = upgrade.GetRequiredPointsToUpgdateCommon(lvlCommon);
-
-            return lvlCommon;
+            return result;
         }
 
         int calculateRequiredPoints(int currentValue, ICharacteristicUpgrade upgrade)
@@ -357,7 +339,7 @@ namespace Arena.Client.UI
             }
             activeSkillUiList.Clear();
             
-            skillUpgrades.Clear();
+            abilityUpgrades.Clear();
             
             
             
@@ -365,7 +347,8 @@ namespace Arena.Client.UI
             using (var dbQuery = EntityManager.CreateEntityQuery(ComponentType.ReadOnly<MainDatabaseTag>(), ComponentType.ReadOnly<IdToEntity>()))
             {
                 var db = dbQuery.GetSingletonBuffer<IdToEntity>();
-                
+                var abilityPrefabs = new List<Entity>();
+
                 foreach (var availableAbility in characterTemplate.AvailableAbilities)
                 {
                     if (IdToEntity.TryGetEntityById(db, availableAbility.AbilityID, out var abilityPrefab) == false)
@@ -373,7 +356,15 @@ namespace Arena.Client.UI
                         Debug.LogError($"Failed to find ability prefab with id {availableAbility.AbilityID}");
                         continue;
                     }
-                    
+                    abilityPrefabs.Add(abilityPrefab);
+                }
+                abilityPrefabs.Sort((a,b) => GetData<MinimalLevel>(a).Value.CompareTo(GetData<MinimalLevel>(b).Value));
+
+                var currentLevel = GetData<Level>().Value;
+                var activeAbilities = GetBuffer<AbilityElement>();
+                
+                foreach (var abilityPrefab in abilityPrefabs)
+                {
                     //var skill = playerCharacter.GetSkillInstanceAtIndex(i); 
                     var skillUI = skillUpgradeUiPool.Get();
                     if(skillUI.gameObject.activeSelf == false)
@@ -383,6 +374,8 @@ namespace Arena.Client.UI
                     activeSkillUiList.Add(skillUI);
                     skillUI.Icon = GetSharedComponentManaged<AbilityIcon>(abilityPrefab).Sprite;
                     skillUI.Label = GetSharedComponentManaged<ItemName>(abilityPrefab).ToString();
+                    var abilityMinimalLevel = GetData<MinimalLevel>(abilityPrefab).Value;
+                    skillUI.RequiredLevel = string.Format(requiredLevelText.GetLocalizedString(), abilityMinimalLevel);
                     
                     // var skillUpgrade = playerCharacter.GetSkillUpgradeBySkillId(skill.Id);
                     // if(skillUpgrade == null)
@@ -391,13 +384,33 @@ namespace Arena.Client.UI
                     // }
             
                     skillUI.Counter.MinValue = 0;
-                    skillUI.Counter.MaxValue = availableAbility.MaxUpgradeLevel;
-                    skillUI.Counter.CurrentValue = 0;//skillUpgrade.CommonUpgradeLevel;
+                    skillUI.Counter.MaxValue = 10;
                      
-                    var newInfo = new SkillUpgradeInfo();
-                    newInfo.SkillUI = skillUI;
+                    var newInfo = new AbilityUpgradeInfo();
+                    newInfo.AbilityUI = skillUI;
+                    newInfo.AbilityPrefab = abilityPrefab;
+                    newInfo.AbilityEntity = Entity.Null;
+
+                    foreach (var ability in activeAbilities)
+                    {
+                        var id = GetData<AbilityID>(ability.AbilityEntity);
+                        if (id == GetData<AbilityID>(abilityPrefab))
+                        {
+                            newInfo.AbilityEntity = ability.AbilityEntity;
+                        }
+                    }
+
+                    if (newInfo.AbilityEntity != Entity.Null)
+                    {
+                        skillUI.Counter.CurrentValue = GetData<Level>(newInfo.AbilityEntity).Value;
+                    }
+                    else
+                    {
+                        skillUI.Counter.CurrentValue = 0;
+                    }
+                    
                     //newInfo.Upgrade = skillUpgrade;
-                    skillUpgrades.Add(newInfo);
+                    abilityUpgrades.Add(newInfo);
             
                     skillUI.transform.SetParent(skillContainer, false);
                     skillUI.transform.localScale = Vector3.one;
@@ -449,53 +462,72 @@ namespace Arena.Client.UI
             var required = getRequiredPoints();
             var points = GetData<AbilityPoints>().Count;
             //
-            currentPoints.text = string.Format(currentPointsFormat, points - required);
-            //
-            // bool canIncrement = required < points;
-            //
+            currentPoints.text = string.Format(currentPointsFormat.GetLocalizedString(), points - required);
+            
+            bool hasPoints = required < points;
+            
             // foreach(var upgrade in upgrades)
             // {
-            //     upgrade.Counter.EnableIncrement(canIncrement);    
+            //     upgrade.Counter.EnableIncrement(hasPoints);    
             //     upgrade.Counter.MinValue = upgrade.Upgrade.UpgradeLevel;
             //     var bonus = upgrade.Upgrade.GetBonusValueForLevel(upgrade.UI.Counter.CurrentValue);
             //     var bonusStr = (bonus > 0 ? "+" : "") + bonus;
             //     //bonus = Mathf.Round(bonus);
             //     upgrade.UI.Label = string.Format(upgrade.UI.TemplateText, bonusStr);
             // }
-            //
-            // foreach (var skillUpgrade in skillUpgrades)
-            // {
-            //     var skillUI = skillUpgrade.SkillUI;
-            //
-            //     skillUI.CommonCounter.EnableIncrement(canIncrement);
-            //     skillUI.CooldownCounter.EnableIncrement(canIncrement);
-            //     skillUI.CommonCounter.MinValue = skillUpgrade.Upgrade.CommonUpgradeLevel;
-            //     skillUI.CooldownCounter.MinValue = skillUpgrade.Upgrade.CooldownUpgradeLevel;
-            //
-            //     var skill = playerCharacter.GetSkillInstanceById(skillUpgrade.Upgrade.SkillId);
-            //
-            //     var commonBonus = skillUpgrade.Upgrade.GetCommonUpgradeBonusForLevel(skillUpgrade.SkillUI.CommonCounter.CurrentValue);
-            //     if (skill is IDamageSkill)
-            //     {
-            //         var damagePercent = Utility.FloatToPercent(commonBonus);
-            //         var damageString = (damagePercent > 0 ? "+" : "") + damagePercent;
-            //         skillUI.CommonCounterLabel = string.Format(damageSkillUpgradeLabel, damageString);
-            //         
-            //     }
-            //     else if (skill is Skills.ICommonSkillUpgrade)
-            //     {
-            //         var label = (skill as Skills.ICommonSkillUpgrade).GetUpgradeLabelWithBonus(commonBonus);
-            //         skillUI.CommonCounterLabel = label;
-            //     }
-            //
-            //     var cooldownBonus = skillUpgrade.Upgrade.GetCooldownUpgradeBonusForLevel(skillUpgrade.SkillUI.CooldownCounter.CurrentValue);
-            //     var cooldownPercent = Utility.FloatToPercent(cooldownBonus);
-            //     var cooldownString = (cooldownPercent > 0 ? "+" : "") + cooldownPercent;
-            //
-            //     skillUI.CooldownCounterLabel = string.Format(cooldownUpgradeLabel, cooldownString);
-            // }
+            
+            foreach (var upgrade in abilityUpgrades)
+            {
+                var ui = upgrade.AbilityUI;
+                
+                var abilityMinimalLevel = GetData<MinimalLevel>(upgrade.AbilityPrefab).Value;
+                var currentLevel= GetData<Level>().Value;
+                upgrade.LevelMatch = currentLevel >= abilityMinimalLevel;
 
-            confirmButton.interactable = required > 0;
+                if (upgrade.LevelMatch)
+                {
+                    ui.Counter.EnableIncrement(hasPoints);
+                    ui.Counter.EnableDecrement(true);
+                    int minValue = 0;
+                    if (upgrade.AbilityEntity != Entity.Null)
+                    {
+                        minValue = GetData<Level>(upgrade.AbilityEntity).Value;
+                    }
+                    ui.Counter.MinValue = minValue;    
+                }
+                else
+                {
+                    ui.Counter.EnableIncrement(false);
+                    ui.Counter.EnableDecrement(false);
+                    ui.Counter.MinValue = 0;
+                }
+                
+                var isActiveSkill = true;
+
+                if (isActiveSkill)
+                {
+                    var playerAbilities = GetData<PlayerAbilities>();
+                        
+                    ui.ActivateButton.gameObject.SetActive(true);
+                    ui.ActivateButton.interactable = upgrade.LevelMatch 
+                                                     && upgrade.AbilityEntity != Entity.Null 
+                                                     && playerAbilities.Contains(upgrade.AbilityEntity) == false;
+                        
+                    ui.PassiveAbilityLabel.SetActive(false);
+                }
+                else
+                {
+                    ui.PassiveAbilityLabel.SetActive(true);
+                    ui.ActivateButton.gameObject.SetActive(false);
+                }
+            
+                //var skill = playerCharacter.GetSkillInstanceById(upgrade.AbilityEntity);
+                // var commonBonus = skillUpgrade.Upgrade.GetCommonUpgradeBonusForLevel(skillUpgrade.SkillUI.CommonCounter.CurrentValue);
+                // var label = (skill as Skills.ICommonSkillUpgrade).GetUpgradeLabelWithBonus(commonBonus);
+                // skillUI.Description = label;
+            }
+
+            confirmButton.gameObject.SetActive(required > 0);
         }
     }
 }

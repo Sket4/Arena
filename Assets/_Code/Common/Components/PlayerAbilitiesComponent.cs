@@ -19,6 +19,24 @@ namespace Arena
         [HideInAuthoring] public PlayerAbilityInfo Ability1;
         [HideInAuthoring] public PlayerAbilityInfo Ability2;
         [HideInAuthoring] public PlayerAbilityInfo Ability3;
+
+        public bool Contains(Entity abilityEntity)
+        {
+            if (abilityEntity == Entity.Null)
+            {
+                return false;
+            }
+
+            if (AttackAbility.Ability == abilityEntity 
+                || Ability1.Ability == abilityEntity 
+                || Ability2.Ability == abilityEntity 
+                || Ability3.Ability == abilityEntity)
+            {
+                return true;
+            }
+
+            return false;
+        }
     }
 
     [Serializable]

@@ -12,9 +12,14 @@ namespace Arena.Client.UI
         [SerializeField]
         TextUI label = default;
 
+        [SerializeField] private TextUI requiredLevel;
+
+        [SerializeField] private TextUI desc;
+
         public IntCounterUI Counter;
 
         public Button ActivateButton;
+        public GameObject PassiveAbilityLabel;
         
         public string Label
         {
@@ -26,6 +31,18 @@ namespace Arena.Client.UI
             {
                 label.text = value;
             }
+        }
+
+        public string RequiredLevel
+        {
+            get => requiredLevel.text;
+            set => requiredLevel.text = value;
+        }
+
+        public string Description
+        {
+            get => desc.text;
+            set => desc.text = value;
         }
 
         public Sprite Icon 

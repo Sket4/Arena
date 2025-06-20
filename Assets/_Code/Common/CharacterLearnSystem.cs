@@ -113,6 +113,10 @@ namespace Arena
             
             public void Execute(Entity entity, in LevelUpEventData eventData)
             {
+                if (eventData.CurrentLevel <= eventData.PreviousLevel)
+                {
+                    return;
+                }
                 var points = AbilityPointsLookup.GetRefRWOptional(eventData.Target);
 
                 if (points.IsValid == false)
@@ -122,7 +126,7 @@ namespace Arena
                 #if UNITY_EDITOR
                 Debug.Log("Added ability point for level up");
                 #endif
-                points.ValueRW.Count++;
+                points.ValueRW.Count += (ushort)(eventData.CurrentLevel - eventData.PreviousLevel);
 
                 var eventEntity = Commands.CreateEntity();
                 Commands.AddComponent(eventEntity, new AbilityPointChangedEvent

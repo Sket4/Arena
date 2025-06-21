@@ -342,7 +342,10 @@ namespace Arena.Client
                 }
 
                 var panel = ui.HUD.GetComponentInChildren<SkillPanelUI>();
-                panel.UpdateData();
+                if (panel)
+                {
+                    panel.UpdateData();
+                }
             }
         }
 

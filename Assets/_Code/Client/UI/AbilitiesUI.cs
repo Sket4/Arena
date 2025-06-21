@@ -74,9 +74,21 @@ namespace Arena.Client.UI
 
         [SerializeField] private LocalizedString requiredLevelText;
 
+        [Header("Activate ability panel")] 
+        [SerializeField] private UIBase activateAbilityWindow;
+        [SerializeField] private Button slot1_button;
+        [SerializeField] private Image slot1_icon;
+        [SerializeField] private Button slot2_button;
+        [SerializeField] private Image slot2_icon;
+        [SerializeField] private Button slot3_button;
+        [SerializeField] private Image slot3_icon;
+        [SerializeField] private Sprite emptySlotIcon;
+
         Pool<SkillUpgradeUI> skillUpgradeUiPool;
         List<SkillUpgradeUI> activeSkillUiList = new List<SkillUpgradeUI>();
         List<SkillUpgradeUI> createdSkillUiList = new List<SkillUpgradeUI>();
+
+        private Entity currentAbilityToActivate = Entity.Null;
 
         public interface ICharacteristicUpgrade
         {
@@ -98,6 +110,31 @@ namespace Arena.Client.UI
             instance.Counter.OnValueChanged += onCounterChanged;
             createdSkillUiList.Add(instance);
             return instance;
+        }
+
+        protected override void Start()
+        {
+            base.Start();
+            slot1_button.onClick.AddListener(() => activateCurrentAbility(1));
+            slot2_button.onClick.AddListener(() => activateCurrentAbility(2));
+            slot3_button.onClick.AddListener(() => activateCurrentAbility(3));
+        }
+
+        async void activateCurrentAbility(byte slot)
+        {
+            activateAbilityWindow.SetVisible(false);
+            
+            var request = EntityManager.CreateEntity();
+            EntityManager.AddComponentData(request, new ActivateAbilityRequest
+            {
+                AbilityID = GetData<AbilityID>(currentAbilityToActivate),
+                Slot = slot
+            });
+            EntityManager.AddComponentData(request, new Target(OwnerEntity));
+
+            await Task.Delay(500);
+            
+            UpdateUI();
         }
 
         private void OnDestroy()
@@ -145,7 +182,14 @@ namespace Arena.Client.UI
         {
             public SkillUpgradeUI AbilityUI;
             public Entity AbilityPrefab;
-            public Entity AbilityEntity;
+
+            private Entity abilityEntity;
+
+            public Entity AbilityEntity
+            {
+                get => abilityEntity;
+                set => abilityEntity = value;
+            }
             public bool LevelMatch;
         }
 
@@ -212,7 +256,7 @@ namespace Arena.Client.UI
             return 0;
         }
 
-        public void Confirm()
+        public async void Confirm()
         {
             var requestEntity = EntityManager.CreateEntity();
 
@@ -235,6 +279,13 @@ namespace Arena.Client.UI
                     Points = points
                 });
             }
+
+            confirmButton.interactable = false;
+
+            await Task.Delay(300);
+
+            confirmButton.interactable = true;
+            UpdateUI();
 
             // var required = getRequiredPoints();
             // if(required > playerCharacter.AvailableUpgradePoints)
@@ -347,6 +398,8 @@ namespace Arena.Client.UI
                 isInitialized = true;    
             }
             
+            activateAbilityWindow.SetVisible(false);
+            
             foreach(var upgrade in upgrades)
             {
                 upgrade.Counter.CurrentValue = upgrade.Upgrade.UpgradeLevel;    
@@ -364,8 +417,6 @@ namespace Arena.Client.UI
             
             abilityUpgrades.Clear();
             
-            
-            
             var characterTemplate = Arena.SharedUtility.GetCharacterTemplate(GetData<CharacterClassData>().Value);
             using (var dbQuery = EntityManager.CreateEntityQuery(ComponentType.ReadOnly<MainDatabaseTag>(), ComponentType.ReadOnly<IdToEntity>()))
             {
@@ -382,9 +433,7 @@ namespace Arena.Client.UI
                     abilityPrefabs.Add(abilityPrefab);
                 }
                 abilityPrefabs.Sort((a,b) => GetData<MinimalLevel>(a).Value.CompareTo(GetData<MinimalLevel>(b).Value));
-
-                var currentLevel = GetData<Level>().Value;
-                var activeAbilities = GetBuffer<TzarGames.GameCore.Abilities.AbilityArray>();
+                var activeAbilities = GetBuffer<AbilityArray>();
                 
                 foreach (var abilityPrefab in abilityPrefabs)
                 {
@@ -412,24 +461,24 @@ namespace Arena.Client.UI
                     var newInfo = new AbilityUpgradeInfo();
                     newInfo.AbilityUI = skillUI;
                     newInfo.AbilityPrefab = abilityPrefab;
-                    newInfo.AbilityEntity = Entity.Null;
-
+                    
                     foreach (var ability in activeAbilities)
                     {
                         var id = GetData<AbilityID>(ability.AbilityEntity);
-                        if (id == GetData<AbilityID>(abilityPrefab))
+                        if (id == GetData<AbilityID>(newInfo.AbilityPrefab))
                         {
                             newInfo.AbilityEntity = ability.AbilityEntity;
+                            break;
                         }
-                    }
-
+                    }  
+                    
                     if (newInfo.AbilityEntity != Entity.Null)
                     {
-                        skillUI.Counter.CurrentValue = GetData<Level>(newInfo.AbilityEntity).Value;
+                        newInfo.AbilityUI.Counter.CurrentValue = GetData<Level>(newInfo.AbilityEntity).Value;
                     }
                     else
                     {
-                        skillUI.Counter.CurrentValue = 0;
+                        newInfo.AbilityUI.Counter.CurrentValue = 0;
                     }
                     
                     //newInfo.Upgrade = skillUpgrade;
@@ -439,6 +488,41 @@ namespace Arena.Client.UI
                     skillUI.transform.localScale = Vector3.one;
                     skillUI.transform.localPosition = Vector3.one;
                     skillUI.transform.localRotation = Quaternion.identity;
+                    
+                    skillUI.ActivateButton.onClick.RemoveAllListeners();
+                    skillUI.ActivateButton.onClick.AddListener(() =>
+                    {
+                        skillUI.ActivateButton.interactable = false;
+                        
+                        currentAbilityToActivate = newInfo.AbilityEntity;
+                        activateAbilityWindow.SetVisible(true);
+
+                        var playerAbilities = GetData<PlayerAbilities>();
+                        if (playerAbilities.Ability1.Ability != Entity.Null)
+                        {
+                            slot1_icon.sprite = GetSharedComponentManaged<AbilityIcon>(playerAbilities.Ability1.Ability).Sprite;
+                        }
+                        else
+                        {
+                            slot1_icon.sprite = emptySlotIcon;
+                        }
+                        if (playerAbilities.Ability2.Ability != Entity.Null)
+                        {
+                            slot2_icon.sprite = GetSharedComponentManaged<AbilityIcon>(playerAbilities.Ability2.Ability).Sprite;
+                        }
+                        else
+                        {
+                            slot2_icon.sprite = emptySlotIcon;
+                        }
+                        if (playerAbilities.Ability3.Ability != Entity.Null)
+                        {
+                            slot3_icon.sprite = GetSharedComponentManaged<AbilityIcon>(playerAbilities.Ability3.Ability).Sprite;
+                        }
+                        else
+                        {
+                            slot3_icon.sprite = emptySlotIcon;
+                        }
+                    });
                 }
             }
             
@@ -480,6 +564,25 @@ namespace Arena.Client.UI
             if(OwnerEntity == Entity.Null)
             {
                 return;
+            }
+            
+            var activeAbilities = GetBuffer<AbilityArray>();
+
+            foreach (var upgrade in abilityUpgrades)
+            {
+                if (upgrade.AbilityEntity == Entity.Null)
+                {
+                    foreach (var ability in activeAbilities)
+                    {
+                        var id = GetData<AbilityID>(ability.AbilityEntity);
+                        if (id == GetData<AbilityID>(upgrade.AbilityPrefab))
+                        {
+                            upgrade.AbilityEntity = ability.AbilityEntity;
+                            upgrade.AbilityUI.Counter.CurrentValue = GetData<Level>(upgrade.AbilityEntity).Value;
+                            break;
+                        }
+                    }    
+                }
             }
 
             var required = getRequiredPoints();

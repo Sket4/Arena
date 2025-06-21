@@ -138,9 +138,11 @@ namespace Arena.Client
             }
             
             var request = EntityManager.CreateEntity();
-            EntityManager.AddComponentData(request, new LearnAbilityRequest()
+            var requests = EntityManager.AddBuffer<LearnAbilityRequest>(request);
+            requests.Add(new LearnAbilityRequest()
             {
                 AbilityID = new AbilityID(abilityId),
+                Points = 1,
             });
             EntityManager.AddComponentData(request, target);
         }

@@ -104,23 +104,34 @@ namespace Arena
                     }
                 }
             }
-
-            if(manager.HasComponent<AbilityElement>(entity))
+            
+            if(data.AbilityData == null)
             {
-                var abilities = manager.GetBuffer<AbilityElement>(entity);
+                data.AbilityData = new AbilitiesData();
+            }
+
+            var playerAbilities = manager.GetComponentData<PlayerAbilities>(entity);
+            data.AbilityData.AttackAbility = playerAbilities.AttackAbility.ID.Value;
+            data.AbilityData.ActiveAbility1 = playerAbilities.Ability1.ID.Value;
+            data.AbilityData.ActiveAbility2 = playerAbilities.Ability2.ID.Value;
+            data.AbilityData.ActiveAbility3 = playerAbilities.Ability3.ID.Value;
+            
+            data.AbilityData.AbilityPoints = manager.GetComponentData<AbilityPoints>(entity).Count;
+            
+            if(manager.HasComponent<TzarGames.GameCore.Abilities.AbilityArray>(entity))
+            {
+                var abilities = manager.GetBuffer<TzarGames.GameCore.Abilities.AbilityArray>(entity);
 
                 for(int i=0; i<abilities.Length; i++)
                 {
                     var ability = abilities[i].AbilityEntity;
                     var serializedData = new AbilityData();
                     serializedData.TypeID = manager.GetComponentData<AbilityID>(ability).Value;
+                    serializedData.Level = manager.GetComponentData<Level>(ability).Value;
                     //serializedData.ID = manager.GetComponentData<UniqueID>(ability).Value;
                     serializedData.Data = null;
 
-                    if(data.AbilityData == null)
-                    {
-                        data.AbilityData = new AbilitiesData();
-                    }
+                    
                     data.AbilityData.Abilities.Add(serializedData);
                 }
             }

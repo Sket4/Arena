@@ -22,9 +22,10 @@ namespace Arena
     }
     
     [Serializable]
-    public struct LearnAbilityRequest : IComponentData
+    public struct LearnAbilityRequest : IBufferElementData
     {
         public AbilityID AbilityID;
+        public byte Points;
     }
 
     [Serializable]
@@ -52,17 +53,16 @@ namespace Arena
     [BurstCompile]
     public partial struct CharacterLearnSystem : ISystem
     {
-        private EntityQuery learnAbilityRequestQuery;
         private EntityQuery activateAblilityRequestQuery;
         private ComponentLookup<AbilityPoints> abilityPointsLookup;
+        private ComponentLookup<AbilityID> abilityIdLookup;
+        private ComponentLookup<MaximumLevel> maxLevelLookup;
+        private ComponentLookup<Level> levelLookup;
+        private ComponentLookup<MinimalLevel> minimalLevelLookup;
+        private BufferLookup<AbilityArray> abilitiesLookup;
         
         public void OnCreate(ref SystemState state)
         {
-            learnAbilityRequestQuery = state.GetEntityQuery( new []
-            {
-                ComponentType.ReadOnly<LearnAbilityRequest>(),
-                ComponentType.ReadOnly<Target>(),
-            });
             activateAblilityRequestQuery = state.GetEntityQuery( new []
             {
                 ComponentType.ReadOnly<ActivateAbilityRequest>(),
@@ -73,6 +73,11 @@ namespace Arena
             state.RequireForUpdate<GameCommandBufferSystem.Singleton>();
 
             abilityPointsLookup = state.GetComponentLookup<AbilityPoints>();
+            abilitiesLookup = state.GetBufferLookup<AbilityArray>(true);
+            maxLevelLookup = state.GetComponentLookup<MaximumLevel>(true);
+            minimalLevelLookup = state.GetComponentLookup<MinimalLevel>(true);
+            abilityIdLookup = state.GetComponentLookup<AbilityID>(true);
+            levelLookup = state.GetComponentLookup<Level>(true);
         }
 
         public void OnUpdate(ref SystemState state)
@@ -94,10 +99,27 @@ namespace Arena
                 AbilityPointsLookup = abilityPointsLookup
             }.Run();
             
-            if (learnAbilityRequestQuery.IsEmpty == false)
+            
+            var mainDB_entity = SystemAPI.GetSingletonEntity<MainDatabaseTag>();
+            var mainDB = SystemAPI.GetBuffer<IdToEntity>(mainDB_entity);
+            
+            abilitiesLookup.Update(ref state);
+            abilityIdLookup.Update(ref state);
+            minimalLevelLookup.Update(ref state);
+            maxLevelLookup.Update(ref state);
+            levelLookup.Update(ref state);
+            
+            new LearnAbilityRequestsJob
             {
-                ProcessLearnAbilityRequests(ref state, commands);
-            }
+                PrefabDatabase = mainDB.AsNativeArray(),
+                Commands = commands,
+                AbilityPointsLookup = abilityPointsLookup,
+                AbilitiesLookup = abilitiesLookup,
+                AbilityIdLookup = abilityIdLookup,
+                MinimalLevelLookup = minimalLevelLookup,
+                MaximumLevelLookup = maxLevelLookup, 
+                LevelLookup = levelLookup
+            }.Run();
 
             if (activateAblilityRequestQuery.IsEmpty == false)
             {
@@ -143,7 +165,7 @@ namespace Arena
             var targets = activateAblilityRequestQuery.ToComponentDataArray<Target>(Allocator.Temp);
 
             foreach (var (playerAbilitiesRW, abilities, entity) 
-                     in SystemAPI.Query<RefRW<PlayerAbilities>, DynamicBuffer<AbilityElement>>()
+                     in SystemAPI.Query<RefRW<PlayerAbilities>, DynamicBuffer<TzarGames.GameCore.Abilities.AbilityArray>>()
                          .WithAll<PlayerController>().WithEntityAccess())
             {
                 int requestIndex = -1;
@@ -232,82 +254,183 @@ namespace Arena
                 Commands.AddComponent(pointEventEntity, new EventTag());
             }
         }
-        
-        private void ProcessLearnAbilityRequests(ref SystemState state, EntityCommandBuffer commands)
+
+        [BurstCompile]
+        partial struct LearnAbilityRequestsJob : IJobEntity
         {
-            var mainDB_entity = SystemAPI.GetSingletonEntity<MainDatabaseTag>();
-            var mainDB = SystemAPI.GetBuffer<IdToEntity>(mainDB_entity);
+            [ReadOnly] public NativeArray<IdToEntity> PrefabDatabase;
+            public ComponentLookup<AbilityPoints> AbilityPointsLookup;
+            [ReadOnly] public ComponentLookup<Level> LevelLookup;
+            [ReadOnly] public ComponentLookup<AbilityID> AbilityIdLookup;
+            [ReadOnly] public BufferLookup<AbilityArray> AbilitiesLookup;
+            [ReadOnly] public ComponentLookup<MinimalLevel> MinimalLevelLookup;
+            [ReadOnly] public ComponentLookup<MaximumLevel> MaximumLevelLookup;
+            public EntityCommandBuffer Commands;
 
-            var requests = learnAbilityRequestQuery.ToComponentDataArray<LearnAbilityRequest>(Allocator.Temp);
-            var targets = learnAbilityRequestQuery.ToComponentDataArray<Target>(Allocator.Temp);
-
-            foreach (var (abilityPrefabs, abilityPointsRW, level, entity) 
-                     in SystemAPI.Query<
-                             DynamicBuffer<AbilityPrefabElement>,
-                             RefRW<AbilityPoints>,
-                             RefRO<Level>
-                         >().WithAll<PlayerController>().WithEntityAccess())
+            struct AbilityLearnInfo
             {
-                int requestIndex = -1;
-
-                for (int i = 0; i < targets.Length; i++)
+                public Entity Prefab;
+                public Entity Instance;
+                public Level InstanceLevel;
+                public LearnAbilityRequest Request;
+            }
+            
+            public void Execute(Entity entity, in DynamicBuffer<LearnAbilityRequest> requests, in Target target)
+            {
+                Commands.DestroyEntity(entity);
+                
+                var abilityPointsRW = AbilityPointsLookup.GetRefRWOptional(target.Value);
+                if (abilityPointsRW.IsValid == false)
                 {
-                    var target = targets[i];
+                    Debug.LogError($"Failed to learn abilities, invalid target {target.Value.Index}");
+                    return;
+                }
 
-                    if (target.Value == entity)
+                int requiredPoints = 0;
+
+                foreach (var request in requests)
+                {
+                    requiredPoints += request.Points;
+                }
+
+                if (abilityPointsRW.ValueRW.Count < requiredPoints)
+                {
+                    Debug.LogError($"Failed to learn abilities, not enough ability points on {target.Value.Index}");
+                    return;
+                }
+
+                if (AbilitiesLookup.TryGetBuffer(target.Value, out var abilities) == false)
+                {
+                    Debug.LogError($"Failed to learn abilities, target {target.Value.Index} has no abilities array");
+                    return;
+                }
+
+                if (LevelLookup.TryGetComponent(target.Value, out var targetLevel) == false)
+                {
+                    Debug.LogError("Failed to learn abilities, target has no level component");
+                    return;
+                }
+                var learnList = new NativeList<AbilityLearnInfo>(requests.Length, Allocator.Temp);
+
+                foreach (var request in requests)
+                {
+                    if (request.Points == 0)
                     {
-                        requestIndex = i;
-                        break;
+                        Debug.LogError($"Failed to learn ability, request for ability {request.AbilityID.Value} has 0 points");
+                        return;
+                    }
+                    var prefab = IdToEntity.GetEntityByID(in PrefabDatabase, request.AbilityID.Value);
+
+                    if (prefab == Entity.Null)
+                    {
+                        Debug.LogError($"Failed to learn ability {request.AbilityID.Value}, no prefab found");
+                        return;
+                    }
+
+                    if (MinimalLevelLookup.TryGetComponent(prefab, out var minimalLevel) == false)
+                    {
+                        Debug.LogError($"Failed to learn abilities, ability prefab {prefab.Index} has no minimal level component");
+                        return;
+                    }
+
+                    if (minimalLevel.Value > targetLevel.Value)
+                    {
+                        Debug.LogError($"Failed to learn abilities, target {target.Value.Index} level {targetLevel.Value} less than required {minimalLevel.Value} from ability prefab {prefab.Index}");
+                        return;
+                    }
+
+                    Entity instance = Entity.Null;
+                    Level instanceLevel = default;
+                    
+                    foreach (var ability in abilities)
+                    {
+                        if (AbilityIdLookup.TryGetComponent(ability.AbilityEntity, out var id) == false)
+                        {
+                            Debug.LogError($"Failed to learn abilities, player ability {ability.AbilityEntity.Index} has no ID");
+                            return;
+                        }
+
+                        if (LevelLookup.TryGetComponent(ability.AbilityEntity, out var level) == false)
+                        {
+                            Debug.LogError($"Failed to learn abilities, player ability {ability.AbilityEntity.Index} has no level");
+                            return;
+                        }
+
+                        if (id == request.AbilityID)
+                        {
+                            instance = ability.AbilityEntity;
+                            instanceLevel = level;
+                            break;
+                        }
+                    }
+                    
+                    if (MaximumLevelLookup.TryGetComponent(prefab, out var maxLevel) == false)
+                    {
+                        Debug.LogError($"Failed to learn abilities, ability prefab {prefab.Index} with id {request.AbilityID.Value} has no max level component");
+                        return;
+                    }
+                    
+                    int requestedLevel = request.Points + instanceLevel.Value;
+
+                    if (requestedLevel > maxLevel.Value)
+                    {
+                        Debug.LogError($"Failed to learn abilities, max level cap on ability {instance.Index} (max {maxLevel.Value}) with level {instanceLevel.Value} and required points to add: {request.Points}");
+                        return;
+                    }
+                    
+                    learnList.Add(new AbilityLearnInfo
+                    {
+                        Prefab = prefab,
+                        Request = request,
+                        Instance = instance,
+                        InstanceLevel = instanceLevel
+                    });
+                }
+                
+                foreach (var request in learnList)
+                {
+                    if (request.Instance != Entity.Null)
+                    {
+                        var instanceLevel = request.InstanceLevel;
+                        instanceLevel.Value += request.Request.Points;
+                        
+                        Commands.SetComponent(request.Instance, instanceLevel);
+                    }
+                    else
+                    {
+                        var instance = Commands.Instantiate(request.Prefab);
+                        Commands.AppendToBuffer(target.Value, new AbilityArray
+                        {
+                            AbilityEntity = instance
+                        });
+                        Commands.SetComponent(instance, new AbilityOwner { Value = target.Value });
+                        Commands.SetComponent(instance, new Level
+                        {
+                            Value = request.Request.Points
+                        });
                     }
                 }
 
-                if (requestIndex == -1)
+                abilityPointsRW.ValueRW.Count -= (ushort)requiredPoints;
+                
+                var pointEventEntity = Commands.CreateEntity();
+                Commands.AddComponent(pointEventEntity, new AbilityPointChangedEvent
                 {
-                    continue;
-                }
-
-                var request = requests[requestIndex];
-
-                ref var abilityPoints = ref abilityPointsRW.ValueRW;
-
-                if (abilityPoints.Count == 0)
+                    Character = target.Value
+                });
+                Commands.AddComponent(pointEventEntity, new EventTag());
+                
+                var eventEntity = Commands.CreateEntity();
+                Commands.AddComponent(eventEntity, new AbilityLearnedEvent
                 {
-                    Debug.LogError("not enough ability points");
-                    continue;
-                }
-
-                var prefab = IdToEntity.GetEntityByID(in mainDB, request.AbilityID.Value);
-
-                if (prefab != Entity.Null)
-                {
-#if UNITY_EDITOR
-                    Debug.Log($"Learn ability with id {request.AbilityID.Value}");
-#endif
-                    abilityPoints.Count--;
-                    
-                    var pointEventEntity = commands.CreateEntity();
-                    commands.AddComponent(pointEventEntity, new AbilityPointChangedEvent
-                    {
-                        Character = entity
-                    });
-                    commands.AddComponent(pointEventEntity, new EventTag());
-                    
-                    abilityPrefabs.Add(new AbilityPrefabElement
-                    {
-                        Value = prefab
-                    });
-
-                    var eventEntity = commands.CreateEntity();
-                    commands.AddComponent(eventEntity, new AbilityLearnedEvent
-                    {
-                        Character = entity
-                    });
-                    commands.AddComponent(eventEntity, new EventTag());
-                    break;
-                }
+                    Character = target.Value
+                });
+                Commands.AddComponent(eventEntity, new EventTag());
+                
+                #if UNITY_EDITOR
+                Debug.Log("Ability learn success");
+                #endif
             }
-
-            commands.DestroyEntity(learnAbilityRequestQuery, EntityQueryCaptureMode.AtPlayback);
         }
     }
 }

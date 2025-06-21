@@ -20,14 +20,10 @@ namespace Arena
     public class CharacterTemplateAbility
     {
         public readonly int AbilityID;
-        public readonly int MinimalLevel;
-        public readonly int MaxUpgradeLevel;
 
-        public CharacterTemplateAbility(int abilityID, int minimalLevel)
+        public CharacterTemplateAbility(int abilityID)
         {
             AbilityID = abilityID;
-            MinimalLevel = minimalLevel;
-            MaxUpgradeLevel = 10;
         }
     }
 
@@ -97,10 +93,10 @@ namespace Arena
 
             AvailableAbilities = new List<CharacterTemplateAbility>
             {
-                new CharacterTemplateAbility(20, 0),        // усиленная атака
-                new CharacterTemplateAbility(21, 0),        // рывок
-                new CharacterTemplateAbility(22, 0),        // круговая атака
-                new CharacterTemplateAbility(172, 0),        // ускорение
+                new CharacterTemplateAbility(20),        // усиленная атака
+                new CharacterTemplateAbility(21),        // рывок
+                new CharacterTemplateAbility(22),        // круговая атака
+                new CharacterTemplateAbility(172),        // ускорение
             }
         };
 
@@ -281,14 +277,15 @@ namespace Arena
             data.AbilityData.AttackAbility = template.AttackAbility;
             data.AbilityData.ActiveAbility1 = template.ActiveAbility1;
 
-            addAbility(data, template.AttackAbility);
-            addAbility(data, template.ActiveAbility1);
+            addAbility(data, template.AttackAbility, 1);
+            addAbility(data, template.ActiveAbility1, 1);
         }
 
-        static void addAbility(CharacterData data, int typeId)
+        static void addAbility(CharacterData data, int typeId, int level)
         {
             var abilityData = new AbilityData();
             abilityData.TypeID = typeId;
+            abilityData.Level = level;
             data.AbilityData.Abilities.Add(abilityData);
         }
 

@@ -37,7 +37,7 @@ namespace Arena.Client.UI
 
         IEnumerator init()
         {
-            while (HasData<AbilityElement>() == false)
+            while (HasData<TzarGames.GameCore.Abilities.AbilityArray>() == false)
             {
                 yield return null;
             }

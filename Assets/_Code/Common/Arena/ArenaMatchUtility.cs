@@ -47,6 +47,7 @@ namespace Arena.Server
             commands.SetComponent(entity, new Gender(data.Gender));
 
             commands.AddBuffer<InventoryElement>(entity);
+            commands.AddBuffer<AbilityArray>(entity);
 
             var gameProgressEntity = commands.CreateEntity();
             commands.AppendToBuffer(entity, new LinkedEntityGroup { Value = gameProgressEntity });
@@ -140,6 +141,7 @@ namespace Arena.Server
             }
 
             PlayerAbilities playerAbilities = default;
+            playerAbilities.Reset();
             
             foreach (var ability in data.AbilityData.Abilities)
             {
@@ -150,6 +152,7 @@ namespace Arena.Server
                     var abilityEntity = commands.Instantiate(abilityPrefab);
                     //commands.AddComponent(abilityEntity, new UniqueID { Value = ability.ID });
                     commands.SetComponent(abilityEntity, new AbilityOwner { Value = entity });
+                    commands.SetComponent(abilityEntity, new Level { Value = (ushort)ability.Level });
                     //abilities.Add(new AbilityElement { AbilityEntity = abilityEntity });
 
                     if (ability.TypeID == data.AbilityData.ActiveAbility1)

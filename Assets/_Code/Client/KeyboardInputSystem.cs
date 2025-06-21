@@ -39,7 +39,7 @@ namespace Arena.Client
             var rightMouseDown = attack;
 #endif
 
-            Entities.ForEach((Entity entity, DynamicBuffer<AbilityElement> abilities, DynamicBuffer<PendingAbilityID> pendingAbilities, ref PlayerInput input) =>
+            Entities.ForEach((Entity entity, DynamicBuffer<TzarGames.GameCore.Abilities.AbilityArray> abilities, DynamicBuffer<PendingAbilityID> pendingAbilities, ref PlayerInput input) =>
             {
                 if (math.abs(input.Horizontal) < float.Epsilon)
                 {
@@ -54,7 +54,7 @@ namespace Arena.Client
 #if UNITY_EDITOR
             Entities
                 .WithoutBurst()
-                .ForEach((DynamicBuffer<AbilityElement> abilities, ref PlayerInput input) =>
+                .ForEach((DynamicBuffer<TzarGames.GameCore.Abilities.AbilityArray> abilities, ref PlayerInput input) =>
             {
                 if (rightMouseDown)
                 {

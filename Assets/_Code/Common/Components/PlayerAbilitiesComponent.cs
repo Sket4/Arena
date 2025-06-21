@@ -10,6 +10,12 @@ namespace Arena
     {
         [HideInAuthoring] public AbilityID ID;
         [HideInAuthoring] public Entity Ability;
+
+        public void Reset()
+        {
+            ID = AbilityID.Null;
+            Ability = Entity.Null;
+        }
     }
     
     [Serializable]
@@ -36,6 +42,14 @@ namespace Arena
             }
 
             return false;
+        }
+
+        public void Reset()
+        {
+            AttackAbility.Reset();
+            Ability1.Reset();
+            Ability2.Reset();
+            Ability3.Reset();
         }
     }
 

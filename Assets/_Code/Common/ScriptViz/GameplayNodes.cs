@@ -287,10 +287,14 @@ namespace Arena.ScriptViz
 
             var request = context.Commands.CreateEntity(context.SortIndex);
             
-            context.Commands.AddComponent(context.SortIndex, request, new LearnAbilityRequest
+            var requests = context.Commands.AddBuffer<LearnAbilityRequest>(context.SortIndex, request);
+
+            requests.Add(new LearnAbilityRequest
             {
                 AbilityID = cmd->AbilityID,
+                Points = 1
             });
+            
             context.Commands.AddComponent(context.SortIndex, request, new Target
             {
                 Value = target,

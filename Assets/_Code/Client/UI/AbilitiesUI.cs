@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Threading.Tasks;
 using TzarGames.Common;
 using TzarGames.Common.UI;
 using TzarGames.GameCore;
@@ -86,7 +87,7 @@ namespace Arena.Client.UI
             float GetBonusValueForLevel(int level);
         }
 
-        public const int MAXIMUM_CHARACTERISTIC_UPGRADE_LEVEL = 10;
+        //public const int MAXIMUM_CHARACTERISTIC_UPGRADE_LEVEL = 10;
 
         private SkillUpgradeUI createSkillUpgradeUI()
         {
@@ -151,20 +152,20 @@ namespace Arena.Client.UI
         List<CharacteristicUpgradeInfo> upgrades = new();
         List<AbilityUpgradeInfo> abilityUpgrades = new();
 
-        void registerUpgrade(CharacteristicUpgradeUI ui, ICharacteristicUpgrade upgrade)
-        {
-            if (upgrade == null)
-            {
-                return;
-            }
-            var info = new CharacteristicUpgradeInfo();
-            ui.Counter.MinValue = 0;
-            ui.Counter.MaxValue = MAXIMUM_CHARACTERISTIC_UPGRADE_LEVEL;
-            info.UI = ui;
-            info.Counter = ui.Counter;
-            info.Upgrade = upgrade;
-            upgrades.Add(info);
-        }
+        // void registerUpgrade(CharacteristicUpgradeUI ui, ICharacteristicUpgrade upgrade)
+        // {
+        //     if (upgrade == null)
+        //     {
+        //         return;
+        //     }
+        //     var info = new CharacteristicUpgradeInfo();
+        //     ui.Counter.MinValue = 0;
+        //     ui.Counter.MaxValue = MAXIMUM_CHARACTERISTIC_UPGRADE_LEVEL;
+        //     info.UI = ui;
+        //     info.Counter = ui.Counter;
+        //     info.Upgrade = upgrade;
+        //     upgrades.Add(info);
+        // }
 
         private int getRequiredPoints()
         {
@@ -213,6 +214,28 @@ namespace Arena.Client.UI
 
         public void Confirm()
         {
+            var requestEntity = EntityManager.CreateEntity();
+
+            EntityManager.AddComponentData(requestEntity, new Target(OwnerEntity));
+            
+            var requests = EntityManager.AddBuffer<LearnAbilityRequest>(requestEntity);
+
+            foreach (var upgrade in abilityUpgrades)
+            {
+                var points = (byte)(upgrade.AbilityUI.Counter.CurrentValue - upgrade.AbilityUI.Counter.MinValue);
+
+                if (points <= 0)
+                {
+                    continue;
+                }
+                
+                requests.Add(new LearnAbilityRequest
+                {
+                    AbilityID = GetData<AbilityID>(upgrade.AbilityPrefab),
+                    Points = points
+                });
+            }
+
             // var required = getRequiredPoints();
             // if(required > playerCharacter.AvailableUpgradePoints)
             // {
@@ -311,15 +334,15 @@ namespace Arena.Client.UI
 
             if(isInitialized == false)
             {
-                registerUpgrade(damageUpgradePointsUI, null);//playerCharacter.DamageUpgrade);
-                registerUpgrade(defenceUpgradePointsUI, null);//playerCharacter.DefenceUpgrade);
-                registerUpgrade(speedUpgradePointsUI, null);//playerCharacter.SpeedUpgrade);
-                registerUpgrade(attackSpeedUpgradePointsUI, null);//playerCharacter.AttackSpeedUpgrade);
-                registerUpgrade(hpUpgradePointsUI, null);//playerCharacter.HitPointsUpgrade);
-                registerUpgrade(hpRegenUpgradePointsUI, null);//playerCharacter.HitPointsRegenUpgrade);
-                registerUpgrade(critChanceUpgradePointsUI, null);//playerCharacter.CritChanceUpgrade);
-                registerUpgrade(critMultiplierUpgradePointsUI, null);//playerCharacter.CritMultiplierUpgrade);
-                registerUpgrade(blockChanceUpgradePointsUI, null);//playerCharacter.BlockChanceUpgrade);
+                // registerUpgrade(damageUpgradePointsUI, null);//playerCharacter.DamageUpgrade);
+                // registerUpgrade(defenceUpgradePointsUI, null);//playerCharacter.DefenceUpgrade);
+                // registerUpgrade(speedUpgradePointsUI, null);//playerCharacter.SpeedUpgrade);
+                // registerUpgrade(attackSpeedUpgradePointsUI, null);//playerCharacter.AttackSpeedUpgrade);
+                // registerUpgrade(hpUpgradePointsUI, null);//playerCharacter.HitPointsUpgrade);
+                // registerUpgrade(hpRegenUpgradePointsUI, null);//playerCharacter.HitPointsRegenUpgrade);
+                // registerUpgrade(critChanceUpgradePointsUI, null);//playerCharacter.CritChanceUpgrade);
+                // registerUpgrade(critMultiplierUpgradePointsUI, null);//playerCharacter.CritMultiplierUpgrade);
+                // registerUpgrade(blockChanceUpgradePointsUI, null);//playerCharacter.BlockChanceUpgrade);
             
                 isInitialized = true;    
             }
@@ -361,7 +384,7 @@ namespace Arena.Client.UI
                 abilityPrefabs.Sort((a,b) => GetData<MinimalLevel>(a).Value.CompareTo(GetData<MinimalLevel>(b).Value));
 
                 var currentLevel = GetData<Level>().Value;
-                var activeAbilities = GetBuffer<AbilityElement>();
+                var activeAbilities = GetBuffer<TzarGames.GameCore.Abilities.AbilityArray>();
                 
                 foreach (var abilityPrefab in abilityPrefabs)
                 {
@@ -384,7 +407,7 @@ namespace Arena.Client.UI
                     // }
             
                     skillUI.Counter.MinValue = 0;
-                    skillUI.Counter.MaxValue = 10;
+                    skillUI.Counter.MaxValue = GetData<MaximumLevel>(abilityPrefab).Value;
                      
                     var newInfo = new AbilityUpgradeInfo();
                     newInfo.AbilityUI = skillUI;

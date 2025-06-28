@@ -46,7 +46,7 @@ namespace DGX.SRP
         }
     }
     
-    public struct ReflectionProbeManager : IDisposable
+    public class ReflectionProbeManager : IDisposable
     {
         private ulong version;
         public ulong Version => version;
@@ -65,7 +65,7 @@ namespace DGX.SRP
 
         // There is a global max of 7 mips in Unity.
         const int k_MaxMipCount = 7;
-        const string k_ReflectionProbeAtlasName = "URP Reflection Probe Atlas";
+        const string k_ReflectionProbeAtlasName = "DGX Reflection Probe Atlas";
 
         private const int MAX_COUNT = 32;
 
@@ -87,9 +87,9 @@ namespace DGX.SRP
 
         static class ShaderProperties
         {
-            public static readonly int BoxMin = Shader.PropertyToID("tg_ReflProbes_BoxMin");
-            public static readonly int BoxMax = Shader.PropertyToID("tg_ReflProbes_BoxMax");
-            public static readonly int ProbePosition = Shader.PropertyToID("tg_ReflProbes_ProbePosition");
+            // public static readonly int BoxMin = Shader.PropertyToID("tg_ReflProbes_BoxMin");
+            // public static readonly int BoxMax = Shader.PropertyToID("tg_ReflProbes_BoxMax");
+            // public static readonly int ProbePosition = Shader.PropertyToID("tg_ReflProbes_ProbePosition");
             public static readonly int MipScaleOffset = Shader.PropertyToID("tg_ReflProbes_MipScaleOffset");
             public static readonly int Count = Shader.PropertyToID("tg_ReflProbes_Count");
             public static readonly int Atlas = Shader.PropertyToID("tg_ReflProbes_Atlas");
@@ -399,8 +399,6 @@ namespace DGX.SRP
             }
             UnityEngine.Object.DestroyImmediate(m_AtlasTexture0);
             UnityEngine.Object.DestroyImmediate(m_AtlasTexture1);
-
-            this = default;
         }
     }
 }

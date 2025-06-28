@@ -21,7 +21,7 @@ namespace DGX.SRP
     
     [CreateAssetMenu(menuName = "Rendering/DinogeniX render pipeline asset")]
     [ReloadGroup]
-    public class RenderPipelineAsset : UnityEngine.Rendering.RenderPipelineAsset
+    public class RenderPipelineAsset : RenderPipelineAsset<RenderPipeline>
     {
         [SerializeField]
         private ShadowSettings _shadowSettings;
@@ -44,6 +44,8 @@ namespace DGX.SRP
         [SerializeField]
         Shader _terrainDetailGrassShader;
         #endif
+        
+        public override string renderPipelineShaderTag => string.Empty;
 
 #if UNITY_EDITOR
         public override Shader terrainDetailLitShader => _terrainDetailLitShader;
@@ -54,9 +56,25 @@ namespace DGX.SRP
 
         // Unity calls this method before rendering the first frame.
         // If a setting on the Render Pipeline Asset changes, Unity destroys the current Render Pipeline Instance and calls this method again before rendering the next frame
+
+        const string defaultAssetName = "DgxRenderPipelineGlobalSettings";
+        static string defaultPath => $"Assets/{defaultAssetName}.asset";
+        
         protected override UnityEngine.Rendering.RenderPipeline CreatePipeline()
         {
             var result = new RenderPipeline(this);
+            
+            this.EnsureGlobalSettings();
+            
+            #if UNITY_EDITOR
+            var currentInstance = GraphicsSettings.
+                GetSettingsForRenderPipeline<RenderPipeline>() as DgxRenderPipelineGlobalSettings;
+
+            if (RenderPipelineGlobalSettingsUtils.TryEnsure<DgxRenderPipelineGlobalSettings, RenderPipeline>(ref currentInstance, defaultPath, true))
+            {
+            }
+            #endif
+            
             if (BlitShader && BlitColorAndDepthShader)
             {
                 Blitter.Cleanup();

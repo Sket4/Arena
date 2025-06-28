@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using UnityEngine;
 using UnityEngine.Rendering;
+using UnityEngine.Rendering.RenderGraphModule;
 using Object = UnityEngine.Object;
 
 namespace DGX.SRP
@@ -9,11 +11,13 @@ namespace DGX.SRP
     public class RenderPipeline : UnityEngine.Rendering.RenderPipeline
     {
         public RenderPipelineAsset Asset { get; }
+        
+        private readonly RenderGraph renderGraph = new("DGX render graph");
 
         Material LightingPassMaterial;
         Material LinearizeDepthMaterial;
-        private Mesh fullscreenTriangle;
-        private Mesh fullscreenQuad;
+        private static Mesh fullscreenTriangle;
+        private static Mesh fullscreenQuad;
         private bool isOpenGL;
         public ReflectionProbeManager ReflectionProbeManager;
         static readonly ShaderTagId srpDefaultUnlitShaderTag = new("SRPDefaultUnlit");
@@ -29,6 +33,9 @@ namespace DGX.SRP
         private static bool enableLights_global = true;
         public static bool IsLightsEnabled => enableLights_global;
 
+        private DgxRenderPipelineGlobalSettings m_GlobalSettings;
+        
+        public override RenderPipelineGlobalSettings defaultSettings => m_GlobalSettings;
         public static event Action<Camera, CommandBuffer> OnBeforeDraw;
         public static event Action<Camera, CommandBuffer> OnAfterDraw;
         public bool IsValid { get; private set; }
@@ -51,6 +58,8 @@ namespace DGX.SRP
             public RenderTargetIdentifier Depth_ID;
             public RenderTexture LinearDepth;
             public RenderTargetIdentifier LinearDepth_ID;
+            public RenderTexture FinalBlit;
+            public RenderTargetIdentifier FinalBlit_ID;
 
             public bool isHDR;
 
@@ -61,6 +70,7 @@ namespace DGX.SRP
                 if(GBuffer2) RenderTexture.ReleaseTemporary(GBuffer2);
                 if(Depth) RenderTexture.ReleaseTemporary(Depth);
                 if(LinearDepth) RenderTexture.ReleaseTemporary(LinearDepth);
+                if(FinalBlit) RenderTexture.ReleaseTemporary(FinalBlit);
             }
         }
 
@@ -69,6 +79,8 @@ namespace DGX.SRP
         public RenderPipeline(RenderPipelineAsset asset)
         {
             GraphicsSettings.useScriptableRenderPipelineBatching = true;
+            m_GlobalSettings = DgxRenderPipelineGlobalSettings.instance;
+                
             Asset = asset;
             checkResources();
 
@@ -154,6 +166,8 @@ namespace DGX.SRP
         {
             base.Dispose(disposing);
             IsValid = false;
+            
+            renderGraph.Cleanup();
 
             foreach (var cameraRT in cameraRenderTextures)
             {
@@ -233,27 +247,6 @@ namespace DGX.SRP
             return mesh;
         }
         
-        void SetupMatrixConstants(CommandBuffer cmd, Camera camera)
-        {
-            Matrix4x4 proj = camera.projectionMatrix;
-            Matrix4x4 view = camera.worldToCameraMatrix;
-            Matrix4x4 gpuProj = GL.GetGPUProjectionMatrix(proj, false);
-            var vp = gpuProj * view;
-            cmd.SetGlobalMatrix("unity_MatrixInvVP", Matrix4x4.Inverse(vp));
-            
-            // var frustumCorners = new Vector3[4];
-            // camera.CalculateFrustumCorners(new Rect(0, 0, 1, 1), camera.farClipPlane, Camera.MonoOrStereoscopicEye.Mono, frustumCorners);
-            // var cornerMatrix = new Matrix4x4();
-            //
-            // for (int i = 0; i < 4; i++)
-            // {
-            //     var worldSpaceCorner = camera.transform.TransformVector(frustumCorners[i]);
-            //     //Debug.DrawRay(camera.transform.position, worldSpaceCorner, Color.blue);
-            //     cornerMatrix.SetRow(i, worldSpaceCorner);
-            // }
-            // cmd.SetGlobalMatrix("_WorldSpaceFrustumCorners", cornerMatrix);
-        }
-        
         protected override void Render(ScriptableRenderContext context, Camera[] cameras)
         {
             checkResources();
@@ -272,259 +265,526 @@ namespace DGX.SRP
 
             foreach (Camera camera in cameras)
             {
-                var rt = getCameraRenderTextures(camera);
-
-                switch (rt.RenderSettings.IntervalMode)
+                var renderGraphParameters = new RenderGraphParameters
                 {
-                    case CameraRenderIntervalMode.None:
-                        break;
-                    case CameraRenderIntervalMode.Time:
-                    {
-                        var interval = rt.RenderSettings.RenderTimeInverval;
-                        if (interval > 0 && (currentTime - rt.LastUpdateTime < interval))
-                        {
-                            continue;
-                        }
-                    }
-                        break;
-                    case CameraRenderIntervalMode.Frame:
-                    {
-                        var interval = rt.RenderSettings.RenderFrameInverval;
-                        rt.RenderFrameCounter++;
-
-                        if (rt.RenderFrameCounter > interval)
-                        {
-                            rt.RenderFrameCounter = 0;
-                        }
-                        else
-                        {
-                            continue;
-                        }
-                    }
-                        break;
-                    default:
-                        throw new ArgumentOutOfRangeException();
+                    commandBuffer = CommandBufferPool.Get(),
+                    currentFrameIndex = Time.frameCount,
+                    executionName = "Render camera",
+                    scriptableRenderContext = context
+                };
+                renderGraph.BeginRecording(renderGraphParameters);
+                {
+                    RenderCamera(context, camera, currentTime);    
                 }
-                rt.LastUpdateTime = currentTime;
+                renderGraph.EndRecordingAndExecute();
+                
+                context.ExecuteCommandBuffer(renderGraphParameters.commandBuffer);
+                context.Submit();
+                CommandBufferPool.Release(renderGraphParameters.commandBuffer);
+            }
+            
+            renderGraph.EndFrame();
+        }
+
+        private void RenderCamera(ScriptableRenderContext context, Camera camera, float currentTime)
+        {
+            var rt = getCameraRenderTextures(camera);
+
+            switch (rt.RenderSettings.IntervalMode)
+            {
+                case CameraRenderIntervalMode.None:
+                    break;
+                case CameraRenderIntervalMode.Time:
+                {
+                    var interval = rt.RenderSettings.RenderTimeInverval;
+                    if (interval > 0 && (currentTime - rt.LastUpdateTime < interval))
+                    {
+                        return;
+                    }
+                }
+                    break;
+                case CameraRenderIntervalMode.Frame:
+                {
+                    var interval = rt.RenderSettings.RenderFrameInverval;
+                    rt.RenderFrameCounter++;
+
+                    if (rt.RenderFrameCounter > interval)
+                    {
+                        rt.RenderFrameCounter = 0;
+                    }
+                    else
+                    {
+                        return;
+                    }
+                }
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException();
+            }
+
+            rt.LastUpdateTime = currentTime;
 
 #if UNITY_EDITOR
-                if (camera.cameraType == CameraType.SceneView) 
-                {
-                    ScriptableRenderContext.EmitWorldGeometryForSceneView(camera);
-                }
+            if (camera.cameraType == CameraType.SceneView)
+            {
+                ScriptableRenderContext.EmitWorldGeometryForSceneView(camera);
+            }
 #endif
-                
-                // Get the culling parameters from the current Camera
-                if (camera.TryGetCullingParameters(out var cullingParameters) == false)
-                {
-                    continue;
-                }
 
-                cullingParameters.maximumVisibleLights = int.MaxValue;
-                cullingParameters.shadowDistance = Mathf.Min(Asset.ShadowSettings.MaxDistance, camera.farClipPlane);
+            // Get the culling parameters from the current Camera
+            if (camera.TryGetCullingParameters(out var cullingParameters) == false)
+            {
+                return;
+            }
 
-                // Use the culling parameters to perform a cull operation, and store the results
-                var cullingResults = context.Cull(ref cullingParameters);
-                
-                var cmd = new CommandBuffer();
-                ReflectionProbeManager.UpdateGpuData(cmd, ref cullingResults);
+            cullingParameters.maximumVisibleLights = int.MaxValue;
+            cullingParameters.shadowDistance = Mathf.Min(Asset.ShadowSettings.MaxDistance, camera.farClipPlane);
 
-                var shouldRenderShadows = enableShadows_global && rt.RenderSettings.RenderShadows;
+            // Use the culling parameters to perform a cull operation, and store the results
+            var cullingResults = context.Cull(ref cullingParameters);
 
-                if (enableLights_global)
-                {
-                    RenderLights(context, cullingResults, shouldRenderShadows);    
-                }
-                
-                var depthTextureID = rt.Depth_ID;
-                
-                
-                var clearFlags = camera.clearFlags;
-                bool shouldClearColor = clearFlags == CameraClearFlags.Color;
-                
+            ReflectionProbeManagerPass.Record(renderGraph, rt.TargetCamera, ReflectionProbeManager, ref cullingResults);
+
+            
+            var shouldRenderShadows = enableShadows_global && rt.RenderSettings.RenderShadows;
+
+            if (enableLights_global)
+            {
+                LightRenderPass.Record(renderGraph, rt.TargetCamera, lightRenderer, Asset.ShadowSettings, shouldRenderShadows, ref cullingResults);
+            }
+
+            var depthTextureID = rt.Depth_ID;
+
+
+            var clearFlags = camera.clearFlags;
+            bool shouldClearColor = clearFlags == CameraClearFlags.Color;
+
 #if UNITY_EDITOR
-                if (camera.cameraType == CameraType.Preview || camera.cameraType == CameraType.SceneView)
-                {
-                    shouldClearColor = true;
-                }
+            if (camera.cameraType == CameraType.Preview || camera.cameraType == CameraType.SceneView)
+            {
+                shouldClearColor = true;
+            }
 #endif
-                
-                context.SetupCameraProperties(camera);
-                
-                // Tell Unity how to sort the geometry, based on the current Camera
-                var sortingSettings = new SortingSettings(camera);
-                DrawingSettings drawingSettings;
-                
-                // Tell Unity how to filter the culling results, to further specify which geometry to draw
-                // Use FilteringSettings.defaultValue to specify no filtering
-                var filteringSettings = FilteringSettings.defaultValue;
-                
-                RenderTexture colorTarget = null;
-                RenderTargetIdentifier colorTextureID;
-                var cameraRect = camera.rect;
-                var useDedicatedColorTarget = shouldDrawToDedicatedColorTarget(camera, rt.RenderSettings);
 
+            // Tell Unity how to sort the geometry, based on the current Camera
+            var sortingSettings = new SortingSettings(camera);
+
+            // Tell Unity how to filter the culling results, to further specify which geometry to draw
+            // Use FilteringSettings.defaultValue to specify no filtering
+            var filteringSettings = FilteringSettings.defaultValue;
+
+            RenderTargetIdentifier colorTextureID;
+
+            var useFinalBlit = rt.FinalBlit == true;
+
+            if (useFinalBlit)
+            {
+                colorTextureID = rt.FinalBlit_ID;
+            }
+            else
+            {
+                colorTextureID = BuiltinRenderTextureType.CameraTarget;
+            }
+            
+            SetupPass.Record(renderGraph, camera, depthTextureID, rt);
+
+            if (rt.RenderSettings.SkipDeferredPass == false)
+            {
+                GBufferPass.Record(renderGraph, camera, rt, depthTextureID, in cullingResults, in sortingSettings, in filteringSettings);
+                
+                DeferredLightingPass.Record(
+                    renderGraph, 
+                    camera, 
+                    rt,
+                    colorTextureID, 
+                    LightingPassMaterial,
+                    lightRenderer.VisibleSpotLights.Count > 0, 
+                    shouldClearColor,
+                    useFinalBlit);
+            }
+            else
+            {
+                ClearPass.Record(renderGraph, camera, colorTextureID, depthTextureID, shouldClearColor);
+            }
+
+            // FORWARD UNLIT
+            ForwardUnlitPass.Record(renderGraph, camera, colorTextureID, depthTextureID, in cullingResults, in sortingSettings, in filteringSettings);
+
+            // SKYBOX
+            SkyBoxPass.Record(renderGraph, camera, colorTextureID, depthTextureID);
+
+            // FORWARD TRANSPARENTS
+            ForwardTransparentPass.Record(renderGraph, camera, colorTextureID, depthTextureID, in cullingResults, in sortingSettings, in filteringSettings);
+
+            if (useFinalBlit)
+            {
+                FinalBlitPass.Record(renderGraph, rt.TargetCamera, rt.FinalBlit_ID);
+            }
+
+            GizmosPass.Record(renderGraph, rt.TargetCamera);
+
+            CleanupPass.Record(renderGraph, camera, lightRenderer);
+        }
+
+        abstract class BasePass
+        {
+            protected Camera Camera;
+            
+            public abstract void Render(RenderGraphContext context);
+        }
+
+        class SetupPass : BasePass
+        {
+            private CameraData cameraData;
+            private RenderTargetIdentifier depthTextureID;
+            
+            public override void Render(RenderGraphContext context)
+            {
+                context.renderContext.SetupCameraProperties(Camera);
+
+                if (cameraData.LinearDepth)
+                {
+                    context.cmd.SetGlobalTexture("_LinearDepth", cameraData.LinearDepth_ID);
+                }
+
+                context.cmd.SetGlobalTexture("_Depth", depthTextureID);
+
+                OnBeforeDraw?.Invoke(Camera, context.cmd);
+            }
+            
+            public static void Record(
+                RenderGraph renderGraph,
+                Camera camera,
+                RenderTargetIdentifier depthTextureID,
+                CameraData cameraData)
+            {
+                using RenderGraphBuilder builder =
+                    renderGraph.AddRenderPass("Setup", out SetupPass newPass);
+                newPass.Camera = camera;
+                newPass.depthTextureID = depthTextureID;
+                newPass.cameraData = cameraData;
+                builder.SetRenderFunc<SetupPass>((pass, context) => pass.Render(context));
+            }
+        }
+
+        class ClearPass : BasePass
+        {
+            RenderTargetIdentifier colorTextureID;
+            RenderTargetIdentifier depthTextureID;
+            private bool clearColor;
+            
+            public override void Render(RenderGraphContext context)
+            {
+                context.cmd.SetRenderTarget(colorTextureID, depthTextureID);
+                context.cmd.ClearRenderTarget(true,
+                    clearColor,
+                    Camera.backgroundColor);
+
+                context.renderContext.ExecuteCommandBuffer(context.cmd);
+                context.cmd.Clear();
+            }
+            
+            public static void Record(
+                RenderGraph renderGraph,
+                Camera camera,
+                RenderTargetIdentifier colorTextureID,
+                RenderTargetIdentifier depthTextureID,
+                bool clearColor)
+            {
+                using RenderGraphBuilder builder =
+                    renderGraph.AddRenderPass("Clear", out ClearPass newPass);
+                newPass.Camera = camera;
+                newPass.colorTextureID = colorTextureID;
+                newPass.depthTextureID = depthTextureID;
+                newPass.clearColor = clearColor;
+                builder.SetRenderFunc<ClearPass>((pass, context) => pass.Render(context));
+            }
+        }
+
+        class GBufferPass : BasePass
+        {
+            RenderTargetIdentifier depthTextureID;
+            private SortingSettings sortingSettings;
+            private CullingResults cullingResults;
+            private FilteringSettings filteringSettings;
+            private CameraData cameraData;
+            ShaderTagId shaderTagId = new("gbuffer");
+            
+            public override void Render(RenderGraphContext context)
+            {
+                // GBUFFER
+                context.cmd.SetGlobalTexture("_GT0", cameraData.GBuffer0);
+                context.cmd.SetGlobalTexture("_GT1", cameraData.GBuffer1);
+                context.cmd.SetGlobalTexture("_GT2", cameraData.GBuffer2);
+
+                //RenderTargetIdentifier depthTextureID = rt.Depth_ID;
+                context.cmd.SetRenderTarget(cameraData.GBufferIDs, depthTextureID);
+
+#if UNITY_EDITOR
+                if (Camera.cameraType == CameraType.Preview || Camera.cameraType == CameraType.SceneView)
+                {
+                    context.cmd.ClearRenderTarget(true, true, Camera.backgroundColor);
+                }
+                else
+                {
+                    context.cmd.ClearRenderTarget(true, false, Camera.backgroundColor);
+                }
+#else
+                context.cmd.ClearRenderTarget(true, false, Camera.backgroundColor);
+#endif
+
+                context.renderContext.ExecuteCommandBuffer(context.cmd);
+                context.cmd.Clear();
+
+                // Create a DrawingSettings struct that describes which geometry to draw and how to draw it
+                var drawingSettings = new DrawingSettings(shaderTagId, sortingSettings)
+                {
+                    perObjectData = PerObjectData.Lightmaps | PerObjectData.LightProbe,
+                    enableInstancing = true
+                };
+
+                filteringSettings.renderQueueRange = RenderQueueRange.opaque;
+
+                // Schedule a command to draw the geometry, based on the settings you have defined
+                context.renderContext.DrawRenderers(cullingResults, ref drawingSettings, ref filteringSettings);
+
+                // LINEAR DEPTH
+                // cmd = new CommandBuffer();
+                // cmd.name = "Linearize depth";
+                // cmd.SetGlobalVector("_BlitScaleBias", new Vector4(1,1,0,0));
+                // cmd.Blit(rt.Depth, rt.LinearDepth, LinearizeDepthMaterial);
+                // context.ExecuteCommandBuffer(cmd);
+                // cmd.Release();
+            }
+            
+            public static void Record(
+                RenderGraph renderGraph,
+                Camera camera,
+                CameraData cameraData,
+                RenderTargetIdentifier depthTextureID,
+                in CullingResults cullingResults,
+                in SortingSettings sortingSettings,
+                in FilteringSettings filteringSettings)
+            {
+                using RenderGraphBuilder builder =
+                    renderGraph.AddRenderPass("GBuffer", out GBufferPass newPass);
+                newPass.Camera = camera;
+                newPass.cameraData = cameraData;
+                newPass.depthTextureID = depthTextureID;
+                newPass.sortingSettings = sortingSettings;
+                newPass.cullingResults = cullingResults;
+                newPass.filteringSettings = filteringSettings;
+                builder.SetRenderFunc<GBufferPass>((pass, context) => pass.Render(context));
+            }
+        }
+        
+        class DeferredLightingPass : BasePass
+        {
+            RenderTargetIdentifier colorTextureID;
+            private CameraData cameraData;
+            private bool hasVisibleSpotLights;
+            private bool clearColor;
+            private Material lightingPassMaterial;
+            private bool useDedicatedColorTarget;
+
+            void SetupMatrixConstants(CommandBuffer cmd)
+            {
+                Matrix4x4 proj = Camera.projectionMatrix;
+                Matrix4x4 view = Camera.worldToCameraMatrix;
+                Matrix4x4 gpuProj = GL.GetGPUProjectionMatrix(proj, false);
+                var vp = gpuProj * view;
+                cmd.SetGlobalMatrix("unity_MatrixInvVP", Matrix4x4.Inverse(vp));
+            
+                // var frustumCorners = new Vector3[4];
+                // camera.CalculateFrustumCorners(new Rect(0, 0, 1, 1), camera.farClipPlane, Camera.MonoOrStereoscopicEye.Mono, frustumCorners);
+                // var cornerMatrix = new Matrix4x4();
+                //
+                // for (int i = 0; i < 4; i++)
+                // {
+                //     var worldSpaceCorner = camera.transform.TransformVector(frustumCorners[i]);
+                //     //Debug.DrawRay(camera.transform.position, worldSpaceCorner, Color.blue);
+                //     cornerMatrix.SetRow(i, worldSpaceCorner);
+                // }
+                // cmd.SetGlobalMatrix("_WorldSpaceFrustumCorners", cornerMatrix);
+            }
+            
+            public override void Render(RenderGraphContext context)
+            {
+                // DEFERRED LIGHTING
+                SetupMatrixConstants(context.cmd);
+
+                context.cmd.SetRenderTarget(colorTextureID, cameraData.GBuffer0TargetId);
+                if (clearColor)
+                {
+                    context.cmd.ClearRenderTarget(false, true, Camera.backgroundColor);
+                }
+
+                if (hasVisibleSpotLights)
+                {
+                    context.cmd.EnableShaderKeyword(SPOT_LIGHTS);
+                }
+                else
+                {
+                    context.cmd.DisableShaderKeyword(SPOT_LIGHTS);
+                }
+
+                int deferredPass;
+                bool isFogEnabled = RenderSettings.fog && Camera.orthographic == false;
+
+                if (isFogEnabled)
+                {
+                    deferredPass = 0;
+                }
+                else
+                {
+                    deferredPass = 1;
+                }
+                
+                var cameraRect = Camera.rect;
                 Mesh fullscreenMesh;
-                    
+
                 if (useDedicatedColorTarget)
                 {
-                    // TODO support gamma space
-                    var colorTargetFormat = rt.isHDR ? RenderTextureFormat.DefaultHDR : RenderTextureFormat.Default;
-                        
-                    colorTarget = RenderTexture.GetTemporary(rt.Depth.width, rt.Depth.height, 0, colorTargetFormat, RenderTextureReadWrite.sRGB);
-                    colorTextureID = colorTarget;
-                    cmd.SetGlobalVector("_DrawScale", new Vector4(1, 1,0,0));
+                    context.cmd.SetGlobalVector("_DrawScale", new Vector4(1, 1, 0, 0));
                     fullscreenMesh = fullscreenTriangle;
                 }
                 else
                 {
-                    colorTextureID = BuiltinRenderTextureType.CameraTarget;
-                        
                     var drawScale = new Vector4(cameraRect.width, cameraRect.height, 0, 0);
-                    cmd.SetGlobalVector("_DrawScale", drawScale);
+                    context.cmd.SetGlobalVector("_DrawScale", drawScale);
                     bool isFullRect = cameraRect == fullRect;
                     fullscreenMesh = isFullRect ? fullscreenTriangle : fullscreenQuad;
                 }
 
-                if (rt.LinearDepth)
-                {
-                    cmd.SetGlobalTexture("_LinearDepth", rt.LinearDepth_ID);    
-                }
-                
-                cmd.SetGlobalTexture("_Depth", depthTextureID);
+                context.cmd.DrawMesh(fullscreenMesh, Matrix4x4.identity, lightingPassMaterial, 0, deferredPass);
+                context.renderContext.ExecuteCommandBuffer(context.cmd);
+                context.cmd.Clear();
+            }
+            
+            public static void Record(
+                RenderGraph renderGraph,
+                Camera camera,
+                CameraData cameraData,
+                RenderTargetIdentifier colorTextureID,
+                Material lightingPassMaterial,
+                bool hasVisibleSpotlights,
+                bool clearColor,
+                bool useDedicatedColorTarget)
+            {
+                using RenderGraphBuilder builder =
+                    renderGraph.AddRenderPass("Deferred lighting", out DeferredLightingPass newPass);
+                newPass.Camera = camera;
+                newPass.cameraData = cameraData;
+                newPass.clearColor = clearColor;
+                newPass.colorTextureID = colorTextureID;
+                newPass.hasVisibleSpotLights = hasVisibleSpotlights;
+                newPass.lightingPassMaterial = lightingPassMaterial;
+                newPass.useDedicatedColorTarget = useDedicatedColorTarget;
+                builder.SetRenderFunc<DeferredLightingPass>((pass, context) => pass.Render(context));
+            }
+        }
 
-                OnBeforeDraw?.Invoke(camera, cmd);
-
-                if (rt.RenderSettings.SkipDeferredPass == false)
-                {
-                    // GBUFFER
-                    cmd.name = "gbuffer";
-                    cmd.SetGlobalTexture("_GT0", rt.GBuffer0);
-                    cmd.SetGlobalTexture("_GT1", rt.GBuffer1);
-                    cmd.SetGlobalTexture("_GT2", rt.GBuffer2);
-                
-                    //RenderTargetIdentifier depthTextureID = rt.Depth_ID;
-                    cmd.SetRenderTarget(rt.GBufferIDs, depthTextureID);
-                    
-#if UNITY_EDITOR
-                    if (camera.cameraType == CameraType.Preview || camera.cameraType == CameraType.SceneView)
-                    {
-                        cmd.ClearRenderTarget(true, true, camera.backgroundColor);
-                    }
-                    else
-                    {
-                        cmd.ClearRenderTarget(true, false, camera.backgroundColor);
-                    }
-#else
-                    cmd.ClearRenderTarget(true, false, camera.backgroundColor);
-#endif
-                    
-                    context.ExecuteCommandBuffer(cmd); 
-                    cmd.Release();
-                
-                    // Tell Unity which geometry to draw, based on its LightMode Pass tag value
-                    var shaderTagId = new ShaderTagId("gbuffer");
-
-                    // Create a DrawingSettings struct that describes which geometry to draw and how to draw it
-                    drawingSettings = new DrawingSettings(shaderTagId, sortingSettings)
-                    {
-                        perObjectData = PerObjectData.Lightmaps | PerObjectData.LightProbe,
-                        enableInstancing = true
-                    };
-
-                    filteringSettings.renderQueueRange = RenderQueueRange.opaque;
-        
-                    // Schedule a command to draw the geometry, based on the settings you have defined
-                    context.DrawRenderers(cullingResults, ref drawingSettings, ref filteringSettings);    
-                    
-                    // LINEAR DEPTH
-                    // cmd = new CommandBuffer();
-                    // cmd.name = "Linearize depth";
-                    // cmd.SetGlobalVector("_BlitScaleBias", new Vector4(1,1,0,0));
-                    // cmd.Blit(rt.Depth, rt.LinearDepth, LinearizeDepthMaterial);
-                    // context.ExecuteCommandBuffer(cmd);
-                    // cmd.Release();
-                    
-                    
-                    // DEFERRED LIGHTING
-                    cmd = new CommandBuffer();
-                    cmd.name = "lightpass";
-
-                    SetupMatrixConstants(cmd, camera);
-                    
-                    cmd.SetRenderTarget(colorTextureID, rt.GBuffer0TargetId);
-                    if (shouldClearColor)
-                    {
-                        cmd.ClearRenderTarget(false, true, camera.backgroundColor);    
-                    }
-
-                    if (lightRenderer.VisibleSpotLights.Count > 0)
-                    {
-                        cmd.EnableShaderKeyword(SPOT_LIGHTS);
-                    }
-                    else
-                    {
-                        cmd.DisableShaderKeyword(SPOT_LIGHTS);
-                    }
-
-                    int deferredPass;
-                    bool isFogEnabled = RenderSettings.fog && camera.orthographic == false;
-                    
-                    if (isFogEnabled)
-                    {
-                        deferredPass = 0;
-                    }
-                    else
-                    {
-                        deferredPass = 1;
-                    }
-                    
-                    cmd.DrawMesh(fullscreenMesh, Matrix4x4.identity, LightingPassMaterial, 0, deferredPass);
-                    context.ExecuteCommandBuffer(cmd);
-                    cmd.Release();
-                }
-                else
-                {
-                    cmd.SetRenderTarget(colorTextureID, depthTextureID);
-                    cmd.ClearRenderTarget(true, 
-                        shouldClearColor,
-                        camera.backgroundColor);
-                    
-                    context.ExecuteCommandBuffer(cmd); 
-                    cmd.Release();
-                }
-                
-                // FORWARD UNLIT
-                //cmd.SetViewport(camera.pixelRect);
-                cmd = new CommandBuffer();
-                cmd.name = "Forward unlit";
+        class ForwardUnlitPass : BasePass
+        {
+            RenderTargetIdentifier colorTextureID;
+            RenderTargetIdentifier depthTextureID;
+            private SortingSettings sortingSettings;
+            private CullingResults cullingResults;
+            private FilteringSettings filteringSettings;
+            
+            public override void Render(RenderGraphContext context)
+            {
                 sortingSettings.criteria = SortingCriteria.CommonOpaque;
-                drawingSettings = new DrawingSettings(srpDefaultUnlitShaderTag, sortingSettings)
+                var drawingSettings = new DrawingSettings(srpDefaultUnlitShaderTag, sortingSettings)
                 {
                     enableInstancing = true,
                 };
                 filteringSettings.renderQueueRange = RenderQueueRange.opaque;
-                
-                cmd.SetRenderTarget(colorTextureID, depthTextureID);
-                context.ExecuteCommandBuffer(cmd);
-                cmd.Release();
 
-                context.DrawRenderers(
+                context.cmd.SetRenderTarget(colorTextureID, depthTextureID);
+                context.renderContext.ExecuteCommandBuffer(context.cmd);
+                context.cmd.Clear();
+
+                context.renderContext.DrawRenderers(
                     cullingResults, ref drawingSettings, ref filteringSettings
                 );
-                
-                // SKYBOX
-                skyboxPass(context, camera, colorTextureID, depthTextureID);
+            }
+            
+            public static void Record(
+                RenderGraph renderGraph,
+                Camera camera,
+                RenderTargetIdentifier colorTextureID,
+                RenderTargetIdentifier depthTextureID,
+                in CullingResults cullingResults,
+                in SortingSettings sortingSettings,
+                in FilteringSettings filteringSettings)
+            {
+                using RenderGraphBuilder builder =
+                    renderGraph.AddRenderPass("Forward unlit", out ForwardUnlitPass newPass);
+                newPass.Camera = camera;
+                newPass.colorTextureID = colorTextureID;
+                newPass.depthTextureID = depthTextureID;
+                newPass.sortingSettings = sortingSettings;
+                newPass.cullingResults = cullingResults;
+                newPass.filteringSettings = filteringSettings;
+                builder.SetRenderFunc<ForwardUnlitPass>((pass, context) => pass.Render(context));
+            }
+        }
 
-                // FORWARD TRANSPARENTS
-                cmd = new CommandBuffer();
-                cmd.name = "forward transparents";
-                cmd.SetRenderTarget(colorTextureID, depthTextureID);
-                context.ExecuteCommandBuffer(cmd);
-                cmd.Release();
+        class SkyBoxPass : BasePass
+        {
+            RenderTargetIdentifier colorTextureID;
+            RenderTargetIdentifier depthTextureID;
+            
+            public override void Render(RenderGraphContext context)
+            {
+                context.cmd.SetRenderTarget(colorTextureID, depthTextureID);
+                context.renderContext.ExecuteCommandBuffer(context.cmd);
+                context.cmd.Clear();
+
+                context.renderContext.DrawSkybox(Camera);
+            }
+            
+            public static void Record(RenderGraph renderGraph, Camera camera, RenderTargetIdentifier colorTextureID,
+                RenderTargetIdentifier depthTextureID)
+            {
+                var renderSkybox = camera.clearFlags == CameraClearFlags.Skybox && RenderSettings.skybox != null;
+
+                if (renderSkybox == false)
+                {
+                    return;
+                }
+
+                // if (camera.cameraType == CameraType.SceneView || camera.cameraType == CameraType.Preview)
+                // {
+                //     renderSkybox = true;
+                // }
+                
+                using RenderGraphBuilder builder =
+                    renderGraph.AddRenderPass("Skybox", out SkyBoxPass newPass);
+                newPass.Camera = camera;
+                newPass.colorTextureID = colorTextureID;
+                newPass.depthTextureID = depthTextureID;
+                builder.SetRenderFunc<SkyBoxPass>((pass, context) => pass.Render(context));
+            }
+        }
+
+        class ForwardTransparentPass : BasePass
+        {
+            RenderTargetIdentifier colorTextureID;
+            RenderTargetIdentifier depthTextureID;
+            private SortingSettings sortingSettings;
+            private CullingResults cullingResults;
+            private FilteringSettings filteringSettings;
+            
+            public override void Render(RenderGraphContext context)
+            {
+                context.cmd.SetRenderTarget(colorTextureID, depthTextureID);
+                context.renderContext.ExecuteCommandBuffer(context.cmd);
+                context.cmd.Clear();
                 
                 sortingSettings.criteria = SortingCriteria.CommonTransparent;
-                drawingSettings = new DrawingSettings(srpDefaultUnlitShaderTag, sortingSettings)
+                var drawingSettings = new DrawingSettings(srpDefaultUnlitShaderTag, sortingSettings)
                 {
                     perObjectData = PerObjectData.Lightmaps | PerObjectData.ReflectionProbes,
                     enableInstancing = true
@@ -532,83 +792,174 @@ namespace DGX.SRP
                 drawingSettings.SetShaderPassName(1, dgxForwardShaderTag);
                 filteringSettings.renderQueueRange = RenderQueueRange.transparent;
                 
-
-                context.DrawRenderers(
+                context.renderContext.DrawRenderers(
                     cullingResults, ref drawingSettings, ref filteringSettings
                 );
+            }
+            
+            public static void Record(
+                RenderGraph renderGraph,
+                Camera camera,
+                RenderTargetIdentifier colorTextureID,
+                RenderTargetIdentifier depthTextureID,
+                in CullingResults cullingResults,
+                in SortingSettings sortingSettings,
+                in FilteringSettings filteringSettings)
+            {
+                using RenderGraphBuilder builder =
+                    renderGraph.AddRenderPass("Forward transparent", out ForwardTransparentPass newPass);
+                newPass.Camera = camera;
+                newPass.colorTextureID = colorTextureID;
+                newPass.depthTextureID = depthTextureID;
+                newPass.sortingSettings = sortingSettings;
+                newPass.cullingResults = cullingResults;
+                newPass.filteringSettings = filteringSettings;
+                builder.SetRenderFunc<ForwardTransparentPass>((pass, context) => pass.Render(context));
+            }
+        }
 
-                if (colorTarget)
-                {
-                    cmd = new CommandBuffer();
-                    cmd.name = "final blit";
-                    //cmd.SetRenderTarget(BuiltinRenderTextureType.CameraTarget);
-                    cmd.Blit(colorTarget, BuiltinRenderTextureType.CameraTarget, new Vector2(1.0f/camera.rect.width, 1.0f/camera.rect.height), new Vector2());
-                    context.ExecuteCommandBuffer(cmd);
-                    cmd.Release();
-                }
+        class ReflectionProbeManagerPass : BasePass
+        {
+            private ReflectionProbeManager manager;
+            private CullingResults cullingResults;
+            
+            public override void Render(RenderGraphContext context)
+            {
+                manager.UpdateGpuData(context.cmd, ref cullingResults);
+                context.renderContext.ExecuteCommandBuffer(context.cmd);
+                context.cmd.Clear();
+            }
+            
+            public static void Record(
+                RenderGraph renderGraph,
+                Camera camera,
+                ReflectionProbeManager manager,
+                ref CullingResults cullingResults)
+            {
+                using RenderGraphBuilder builder =
+                    renderGraph.AddRenderPass("Reflection probe manager", out ReflectionProbeManagerPass newPass);
+                newPass.Camera = camera;
+                newPass.manager = manager;
+                newPass.cullingResults = cullingResults;
+                builder.AllowPassCulling(false);
                 
-#if UNITY_EDITOR
-                if (UnityEditor.Handles.ShouldRenderGizmos()  
-                    && camera.sceneViewFilterMode != Camera.SceneViewFilterMode.ShowFiltered) 
-                {
-                    context.DrawGizmos(camera, GizmoSubset.PreImageEffects);
-                    context.DrawGizmos(camera, GizmoSubset.PostImageEffects);
-                }
-#endif
+                builder.SetRenderFunc<ReflectionProbeManagerPass>((pass, context) => pass.Render(context));
+            }
+        }
+
+        class LightRenderPass : BasePass
+        {
+            private LightsRenderer renderer;
+            private bool renderShadows;
+            private ShadowSettings shadowSettings;
+            private CullingResults cullingResults;
+            
+            public override void Render(RenderGraphContext context)
+            {
+                renderer.Setup(ref cullingResults, shadowSettings, renderShadows);
+                renderer.Render(ref context);
+            }
+            
+            public static void Record(
+                RenderGraph renderGraph,
+                Camera camera,
+                LightsRenderer lightsRenderer,
+                ShadowSettings shadowSettings,
+                bool renderShadows,
+                ref CullingResults cullingResults)
+            {
+                using RenderGraphBuilder builder =
+                    renderGraph.AddRenderPass("Light render", out LightRenderPass newPass);
+                newPass.Camera = camera;
+                newPass.renderer = lightsRenderer;
+                newPass.cullingResults = cullingResults;
+                newPass.shadowSettings = shadowSettings;
+                newPass.renderShadows = renderShadows;
+                
+                builder.SetRenderFunc<LightRenderPass>((pass, context) => pass.Render(context));
+            }
+        }
+
+        class CleanupPass : BasePass
+        {
+            private LightsRenderer lightsRenderer;
+            private RenderTexture colorTarget;
+            
+            public override void Render(RenderGraphContext context)
+            {
                 if (OnAfterDraw != null)
                 {
-                    cmd = new CommandBuffer();
-                    cmd.name = "on after draw";
-                    OnBeforeDraw(camera, cmd);
-                    context.ExecuteCommandBuffer(cmd);
-                    cmd.Release();
+                    OnAfterDraw(Camera, context.cmd);
+                    context.renderContext.ExecuteCommandBuffer(context.cmd);
+                    context.cmd.Clear();
                 }
                 
-                context.Submit();
-
-                if (enableLights_global)
-                {
-                    lightRenderer.Cleanup();    
-                }
-
-                if (colorTarget)
-                {
-                    RenderTexture.ReleaseTemporary(colorTarget);
-                }
+                lightsRenderer.Cleanup(ref context);
+                
+                context.renderContext.ExecuteCommandBuffer(context.cmd);
+                context.cmd.Clear();
             }
-        }
-
-        private static void skyboxPass(ScriptableRenderContext context, Camera camera, RenderTargetIdentifier colorTextureID,
-            RenderTargetIdentifier depthTextureID)
-        {
-            var renderSkybox = camera.clearFlags == CameraClearFlags.Skybox && RenderSettings.skybox != null;
-
-            // if (camera.cameraType == CameraType.SceneView || camera.cameraType == CameraType.Preview)
-            // {
-            //     renderSkybox = true;
-            // }
-            
-            if (renderSkybox)
+            public static void Record(
+                RenderGraph renderGraph,
+                Camera camera,
+                LightsRenderer lightsRenderer)
             {
-                var cmd = new CommandBuffer();
-                cmd.name = "skybox";
-                cmd.SetRenderTarget(colorTextureID, depthTextureID);
-                context.ExecuteCommandBuffer(cmd);
-                cmd.Release();
-
-                context.DrawSkybox(camera);
+                using RenderGraphBuilder builder =
+                    renderGraph.AddRenderPass("Cleanup", out CleanupPass newPass);
+                newPass.Camera = camera;
+                newPass.lightsRenderer = lightsRenderer;
+                builder.SetRenderFunc<CleanupPass>((pass, context) => pass.Render(context));
             }
         }
 
-        bool shouldDrawToDedicatedColorTarget(Camera camera, CameraRenderSettingsData settings)
+        class FinalBlitPass : BasePass
         {
-            return SystemInfo.graphicsUVStartsAtTop || camera.rect != fullRect || settings.LowResRendering;
+            private RenderTargetIdentifier colorTarget;
+            
+            public override void Render(RenderGraphContext context)
+            {
+                //cmd.SetRenderTarget(BuiltinRenderTextureType.CameraTarget);
+                context.cmd.Blit(colorTarget, BuiltinRenderTextureType.CameraTarget,
+                    new Vector2(1.0f / Camera.rect.width, 1.0f / Camera.rect.height), new Vector2());
+                context.renderContext.ExecuteCommandBuffer(context.cmd);    
+            }
+            
+            public static void Record(
+                RenderGraph renderGraph,
+                Camera camera,
+                RenderTargetIdentifier colorTarget)
+            {
+                using RenderGraphBuilder builder =
+                    renderGraph.AddRenderPass("Final blit", out FinalBlitPass newPass);
+                newPass.Camera = camera;
+                newPass.colorTarget = colorTarget;
+                builder.SetRenderFunc<FinalBlitPass>((pass, context) => pass.Render(context));
+            }
         }
 
-        private void RenderLights(ScriptableRenderContext context, CullingResults cullingResults, bool renderShadows)
+        class GizmosPass : BasePass
         {
-            lightRenderer.Setup(context, cullingResults, Asset.ShadowSettings, renderShadows);
-            lightRenderer.Render();
+            public override void Render(RenderGraphContext context)
+            {
+#if UNITY_EDITOR
+                context.renderContext.DrawGizmos(Camera, GizmoSubset.PreImageEffects);
+                context.renderContext.DrawGizmos(Camera, GizmoSubset.PostImageEffects);
+#endif
+            }
+
+            [Conditional("UNITY_EDITOR")]
+            public static void Record(RenderGraph graph, Camera camera)
+            {
+#if UNITY_EDITOR
+                if (UnityEditor.Handles.ShouldRenderGizmos()
+                    && camera.sceneViewFilterMode != Camera.SceneViewFilterMode.ShowFiltered)
+                {
+                    using var builder = graph.AddRenderPass("Gizmos", out GizmosPass gizmosPass);
+                    gizmosPass.Camera = camera;
+                    builder.SetRenderFunc<GizmosPass>((pass, context) => pass.Render(context));
+                }
+#endif
+            }
         }
 
         CameraData getCameraRenderTextures(Camera camera)
@@ -681,6 +1032,25 @@ namespace DGX.SRP
                 createNew = true;
             }
             
+            var shouldDrawToDedicatedColorTarget = SystemInfo.graphicsUVStartsAtTop || camera.rect != fullRect || rt.RenderSettings.LowResRendering;
+
+            if (shouldDrawToDedicatedColorTarget)
+            {
+                if (rt.FinalBlit == false)
+                {
+                    createNew = true;
+                }
+            }
+            else
+            {
+                if (rt.FinalBlit)
+                {
+                    RenderTexture.ReleaseTemporary(rt.FinalBlit);
+                    rt.FinalBlit = null;
+                    rt.FinalBlit_ID = default;
+                }
+            }
+            
             if (createNew)
             {
                 rt.Release();
@@ -732,6 +1102,16 @@ namespace DGX.SRP
                     rt.GBufferIDs[0] = rt.GBuffer0TargetId;
                     rt.GBufferIDs[1] = rt.GBuffer1TargetId;
                     rt.GBufferIDs[2] = rt.GBuffer2TargetId;
+                }
+
+                if (shouldDrawToDedicatedColorTarget)
+                {
+                    // TODO support gamma space
+                    var colorTargetFormat = rt.isHDR ? RenderTextureFormat.DefaultHDR : RenderTextureFormat.Default;
+                    
+                    rt.FinalBlit = RenderTexture.GetTemporary(rt.Depth.width, rt.Depth.height, 0, colorTargetFormat,
+                        RenderTextureReadWrite.sRGB);
+                    rt.FinalBlit_ID = rt.FinalBlit;
                 }
             }
 

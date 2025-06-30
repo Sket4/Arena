@@ -49,6 +49,11 @@ Shader"Arena/Water"
 
         Pass
         {
+            Tags
+            {
+                "LightMode" = "DGXForward"
+            }
+            
             HLSLPROGRAM
             #pragma target 4.5
             #pragma require 2darray

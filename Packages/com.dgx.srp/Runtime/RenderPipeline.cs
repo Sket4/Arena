@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using UnityEngine;
 using UnityEngine.Rendering;
+using UnityEngine.Rendering.RendererUtils;
 using UnityEngine.Rendering.RenderGraphModule;
 using Object = UnityEngine.Object;
 
@@ -366,12 +367,8 @@ namespace DGX.SRP
             }
 #endif
 
-            // Tell Unity how to sort the geometry, based on the current Camera
-            var sortingSettings = new SortingSettings(camera);
-
             // Tell Unity how to filter the culling results, to further specify which geometry to draw
             // Use FilteringSettings.defaultValue to specify no filtering
-            var filteringSettings = FilteringSettings.defaultValue;
 
             RenderTargetIdentifier colorTextureID;
 
@@ -390,7 +387,7 @@ namespace DGX.SRP
 
             if (rt.RenderSettings.SkipDeferredPass == false)
             {
-                GBufferPass.Record(renderGraph, camera, rt, depthTextureID, in cullingResults, in sortingSettings, in filteringSettings);
+                GBufferPass.Record(renderGraph, camera, rt, depthTextureID, in cullingResults);
                 
                 DeferredLightingPass.Record(
                     renderGraph, 
@@ -408,13 +405,15 @@ namespace DGX.SRP
             }
 
             // FORWARD UNLIT
-            ForwardUnlitPass.Record(renderGraph, camera, colorTextureID, depthTextureID, in cullingResults, in sortingSettings, in filteringSettings);
+            GeometryPass.Record(renderGraph, "Forward unlit", camera, 
+                colorTextureID, depthTextureID, in cullingResults, true, false);
 
             // SKYBOX
             SkyBoxPass.Record(renderGraph, camera, colorTextureID, depthTextureID);
 
             // FORWARD TRANSPARENTS
-            ForwardTransparentPass.Record(renderGraph, camera, colorTextureID, depthTextureID, in cullingResults, in sortingSettings, in filteringSettings);
+            GeometryPass.Record(renderGraph, "Forward transparent", camera, 
+                colorTextureID, depthTextureID, in cullingResults, false, true);
 
             if (useFinalBlit)
             {
@@ -504,9 +503,7 @@ namespace DGX.SRP
         class GBufferPass : BasePass
         {
             RenderTargetIdentifier depthTextureID;
-            private SortingSettings sortingSettings;
             private CullingResults cullingResults;
-            private FilteringSettings filteringSettings;
             private CameraData cameraData;
             ShaderTagId shaderTagId = new("gbuffer");
             
@@ -532,22 +529,19 @@ namespace DGX.SRP
 #else
                 context.cmd.ClearRenderTarget(true, false, Camera.backgroundColor);
 #endif
-
+                
+                // Schedule a command to draw the geometry, based on the settings you have defined
+                var rendererList = context.renderContext.CreateRendererList(new RendererListDesc(shaderTagId, cullingResults, Camera)
+                {
+                    sortingCriteria = SortingCriteria.CommonOpaque,
+                    rendererConfiguration = PerObjectData.Lightmaps | PerObjectData.LightProbe,
+                    renderQueueRange = RenderQueueRange.opaque,
+                });
+                context.cmd.DrawRendererList(rendererList);
+                
                 context.renderContext.ExecuteCommandBuffer(context.cmd);
                 context.cmd.Clear();
-
-                // Create a DrawingSettings struct that describes which geometry to draw and how to draw it
-                var drawingSettings = new DrawingSettings(shaderTagId, sortingSettings)
-                {
-                    perObjectData = PerObjectData.Lightmaps | PerObjectData.LightProbe,
-                    enableInstancing = true
-                };
-
-                filteringSettings.renderQueueRange = RenderQueueRange.opaque;
-
-                // Schedule a command to draw the geometry, based on the settings you have defined
-                context.renderContext.DrawRenderers(cullingResults, ref drawingSettings, ref filteringSettings);
-
+                
                 // LINEAR DEPTH
                 // cmd = new CommandBuffer();
                 // cmd.name = "Linearize depth";
@@ -555,6 +549,8 @@ namespace DGX.SRP
                 // cmd.Blit(rt.Depth, rt.LinearDepth, LinearizeDepthMaterial);
                 // context.ExecuteCommandBuffer(cmd);
                 // cmd.Release();
+                
+                
             }
             
             public static void Record(
@@ -562,18 +558,14 @@ namespace DGX.SRP
                 Camera camera,
                 CameraData cameraData,
                 RenderTargetIdentifier depthTextureID,
-                in CullingResults cullingResults,
-                in SortingSettings sortingSettings,
-                in FilteringSettings filteringSettings)
+                in CullingResults cullingResults)
             {
                 using RenderGraphBuilder builder =
                     renderGraph.AddRenderPass("GBuffer", out GBufferPass newPass);
                 newPass.Camera = camera;
                 newPass.cameraData = cameraData;
                 newPass.depthTextureID = depthTextureID;
-                newPass.sortingSettings = sortingSettings;
                 newPass.cullingResults = cullingResults;
-                newPass.filteringSettings = filteringSettings;
                 builder.SetRenderFunc<GBufferPass>((pass, context) => pass.Render(context));
             }
         }
@@ -684,50 +676,63 @@ namespace DGX.SRP
             }
         }
 
-        class ForwardUnlitPass : BasePass
+        class GeometryPass : BasePass
         {
             RenderTargetIdentifier colorTextureID;
             RenderTargetIdentifier depthTextureID;
-            private SortingSettings sortingSettings;
-            private CullingResults cullingResults;
-            private FilteringSettings filteringSettings;
+
+            private RendererListHandle rendererList;
+
+            private static readonly ShaderTagId[] shaderTagIds =
+            {
+                srpDefaultUnlitShaderTag,
+                dgxForwardShaderTag
+            };
             
             public override void Render(RenderGraphContext context)
             {
-                sortingSettings.criteria = SortingCriteria.CommonOpaque;
-                var drawingSettings = new DrawingSettings(srpDefaultUnlitShaderTag, sortingSettings)
-                {
-                    enableInstancing = true,
-                };
-                filteringSettings.renderQueueRange = RenderQueueRange.opaque;
-
                 context.cmd.SetRenderTarget(colorTextureID, depthTextureID);
+                context.cmd.DrawRendererList(rendererList);
+                
                 context.renderContext.ExecuteCommandBuffer(context.cmd);
                 context.cmd.Clear();
-
-                context.renderContext.DrawRenderers(
-                    cullingResults, ref drawingSettings, ref filteringSettings
-                );
             }
             
             public static void Record(
                 RenderGraph renderGraph,
+                string passName,
                 Camera camera,
                 RenderTargetIdentifier colorTextureID,
                 RenderTargetIdentifier depthTextureID,
                 in CullingResults cullingResults,
-                in SortingSettings sortingSettings,
-                in FilteringSettings filteringSettings)
+                bool opaque,
+                bool lighting)
             {
                 using RenderGraphBuilder builder =
-                    renderGraph.AddRenderPass("Forward unlit", out ForwardUnlitPass newPass);
+                    renderGraph.AddRenderPass(passName, out GeometryPass newPass);
                 newPass.Camera = camera;
                 newPass.colorTextureID = colorTextureID;
                 newPass.depthTextureID = depthTextureID;
-                newPass.sortingSettings = sortingSettings;
-                newPass.cullingResults = cullingResults;
-                newPass.filteringSettings = filteringSettings;
-                builder.SetRenderFunc<ForwardUnlitPass>((pass, context) => pass.Render(context));
+
+                PerObjectData perObjectData;
+                if (lighting)
+                {
+                    perObjectData = PerObjectData.Lightmaps | PerObjectData.ReflectionProbes;    
+                }
+                else
+                {
+                    perObjectData = PerObjectData.None;
+                }
+
+                var list = renderGraph.CreateRendererList(new RendererListDesc(shaderTagIds, cullingResults, camera)
+                {
+                    sortingCriteria = opaque ? SortingCriteria.CommonOpaque : SortingCriteria.CommonTransparent,
+                    rendererConfiguration = perObjectData,
+                    renderQueueRange = opaque ? RenderQueueRange.opaque : RenderQueueRange.transparent,
+                });
+                newPass.rendererList = builder.UseRendererList(list);
+                
+                builder.SetRenderFunc<GeometryPass>((pass, context) => pass.Render(context));
             }
         }
 
@@ -768,56 +773,7 @@ namespace DGX.SRP
                 builder.SetRenderFunc<SkyBoxPass>((pass, context) => pass.Render(context));
             }
         }
-
-        class ForwardTransparentPass : BasePass
-        {
-            RenderTargetIdentifier colorTextureID;
-            RenderTargetIdentifier depthTextureID;
-            private SortingSettings sortingSettings;
-            private CullingResults cullingResults;
-            private FilteringSettings filteringSettings;
-            
-            public override void Render(RenderGraphContext context)
-            {
-                context.cmd.SetRenderTarget(colorTextureID, depthTextureID);
-                context.renderContext.ExecuteCommandBuffer(context.cmd);
-                context.cmd.Clear();
-                
-                sortingSettings.criteria = SortingCriteria.CommonTransparent;
-                var drawingSettings = new DrawingSettings(srpDefaultUnlitShaderTag, sortingSettings)
-                {
-                    perObjectData = PerObjectData.Lightmaps | PerObjectData.ReflectionProbes,
-                    enableInstancing = true
-                };
-                drawingSettings.SetShaderPassName(1, dgxForwardShaderTag);
-                filteringSettings.renderQueueRange = RenderQueueRange.transparent;
-                
-                context.renderContext.DrawRenderers(
-                    cullingResults, ref drawingSettings, ref filteringSettings
-                );
-            }
-            
-            public static void Record(
-                RenderGraph renderGraph,
-                Camera camera,
-                RenderTargetIdentifier colorTextureID,
-                RenderTargetIdentifier depthTextureID,
-                in CullingResults cullingResults,
-                in SortingSettings sortingSettings,
-                in FilteringSettings filteringSettings)
-            {
-                using RenderGraphBuilder builder =
-                    renderGraph.AddRenderPass("Forward transparent", out ForwardTransparentPass newPass);
-                newPass.Camera = camera;
-                newPass.colorTextureID = colorTextureID;
-                newPass.depthTextureID = depthTextureID;
-                newPass.sortingSettings = sortingSettings;
-                newPass.cullingResults = cullingResults;
-                newPass.filteringSettings = filteringSettings;
-                builder.SetRenderFunc<ForwardTransparentPass>((pass, context) => pass.Render(context));
-            }
-        }
-
+        
         class ReflectionProbeManagerPass : BasePass
         {
             private ReflectionProbeManager manager;

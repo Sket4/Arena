@@ -163,8 +163,8 @@ namespace DGX.SRP
                     });
             }
             
-            renderDirectionalLights(ref context);
             renderSpotLights(ref context);
+            renderDirectionalLights(ref context);
         }
 
         private void prepareSpotLights()
@@ -393,10 +393,12 @@ namespace DGX.SRP
                     
                     commands.SetGlobalDepthBias(0, light.shadowBias);
                     
-                    ExecuteBuffer(ref context);
+                    var list = context.renderContext.CreateShadowRendererList(ref shadowDrawingSettings);
+                    commands.DrawRendererList(list);
                     
-                    context.renderContext.DrawShadows(ref shadowDrawingSettings);
                     commands.SetGlobalDepthBias(0, 0);
+                    
+                    ExecuteBuffer(ref context);
                 }
 
                 isMainLightRendered = true;

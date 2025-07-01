@@ -27,6 +27,7 @@ Shader"Arena/Character"
     {
         Tags 
         { 
+            "RenderPipeline" = "DGX"
             "RenderType"="Opaque" 
             "IgnoreProjector" = "True"
             "Queue"="Geometry"

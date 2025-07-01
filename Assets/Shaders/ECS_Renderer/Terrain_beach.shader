@@ -32,6 +32,7 @@ Shader "Arena/Terrain (for beach)"
     {
         Tags 
         { 
+            "RenderPipeline" = "DGX"
             "RenderType"="Opaque" 
         }
         LOD 100

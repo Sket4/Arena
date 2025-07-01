@@ -44,6 +44,7 @@ Shader "Arena/Environment Transparent"
     {
         Tags 
         { 
+            "RenderPipeline" = "DGX"
             "Queue"="Transparent"
             "RenderType"="Transparent"
         }

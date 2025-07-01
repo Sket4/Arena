@@ -43,7 +43,13 @@ Shader"Arena/Water"
     }
     SubShader
     {
-        Tags { "RenderType"="Transparent" "Queue"="Transparent" }
+        Tags 
+        {
+            "RenderPipeline" = "DGX" 
+            "RenderType"="Transparent" 
+            "Queue"="Transparent" 
+            
+        }
         LOD 100
         Blend SrcAlpha OneMinusSrcAlpha
 

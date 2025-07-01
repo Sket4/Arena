@@ -42,6 +42,7 @@ Shader "Arena/Environment"
     {
         Tags 
         { 
+            "RenderPipeline" = "DGX"
             "Queue"="Geometry"
         }
         LOD 100

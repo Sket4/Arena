@@ -35,6 +35,7 @@ Shader "Arena/Terrain"
     {
         Tags 
         { 
+            "RenderPipeline" = "DGX"
             "RenderType"="Opaque" 
         }
         LOD 100

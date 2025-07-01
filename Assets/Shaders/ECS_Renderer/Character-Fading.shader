@@ -22,6 +22,7 @@ Shader"Arena/Character Fading"
     {
         Tags
         {
+            "RenderPipeline" = "DGX"
             "RenderType"="Opaque"
             "Queue"="AlphaTest"
         }

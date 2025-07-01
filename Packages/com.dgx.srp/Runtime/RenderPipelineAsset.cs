@@ -45,7 +45,7 @@ namespace DGX.SRP
         Shader _terrainDetailGrassShader;
         #endif
         
-        public override string renderPipelineShaderTag => string.Empty;
+        public override string renderPipelineShaderTag => "DGX";
 
 #if UNITY_EDITOR
         public override Shader terrainDetailLitShader => _terrainDetailLitShader;

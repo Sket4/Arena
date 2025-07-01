@@ -22,6 +22,7 @@ Shader "Hidden/Arena/ShadowCaster-Skinned"
     {
         Tags 
         {
+            "RenderPipeline" = "DGX"
             "Queue"="Geometry" 
         }
         Pass

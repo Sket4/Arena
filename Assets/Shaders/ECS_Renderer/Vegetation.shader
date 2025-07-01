@@ -42,6 +42,7 @@ Shader "Arena/Vegetation"
     {
         Tags 
         { 
+            "RenderPipeline" = "DGX"
             "RenderType"="TransparentCutout" 
         	"Queue"="AlphaTest"
         }

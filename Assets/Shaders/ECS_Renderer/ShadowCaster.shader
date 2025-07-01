@@ -36,6 +36,7 @@ Shader "Hidden/Arena/ShadowCaster"
     {
         Tags 
         {
+            "RenderPipeline" = "DGX"
             "Queue"="Geometry" 
         }
         Pass

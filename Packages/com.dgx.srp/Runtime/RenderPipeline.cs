@@ -351,7 +351,7 @@ namespace DGX.SRP
 
             if (enableLights_global)
             {
-                LightRenderPass.Record(renderGraph, rt.TargetCamera, lightRenderer, Asset.ShadowSettings, shouldRenderShadows, ref cullingResults);
+                LightRenderPass.Record(renderGraph, context, rt.TargetCamera, lightRenderer, Asset.ShadowSettings, shouldRenderShadows, ref cullingResults);
             }
 
             var depthTextureID = rt.Depth_ID;
@@ -812,12 +812,12 @@ namespace DGX.SRP
             
             public override void Render(RenderGraphContext context)
             {
-                renderer.Setup(ref cullingResults, shadowSettings, renderShadows);
                 renderer.Render(ref context);
             }
             
             public static void Record(
                 RenderGraph renderGraph,
+                ScriptableRenderContext context,
                 Camera camera,
                 LightsRenderer lightsRenderer,
                 ShadowSettings shadowSettings,
@@ -831,6 +831,8 @@ namespace DGX.SRP
                 newPass.cullingResults = cullingResults;
                 newPass.shadowSettings = shadowSettings;
                 newPass.renderShadows = renderShadows;
+                
+                lightsRenderer.Setup(renderGraph, context, builder, ref cullingResults, shadowSettings, renderShadows);
                 
                 builder.SetRenderFunc<LightRenderPass>((pass, context) => pass.Render(context));
             }

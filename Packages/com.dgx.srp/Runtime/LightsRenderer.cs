@@ -23,9 +23,16 @@ namespace DGX.SRP
         public float Intensity => data3.w;
         public Matrix4x4 LocalToWorld { get; private set; }
 
-        public bool HasShadows { get; private set; }
+        public bool HasShadows { get; set; }
 
         public int Index { get; private set; }
+        
+        // only for directional ligts?
+        public RendererListHandle RendererListHandle { get; set; }
+        public Matrix4x4 ViewMatrix;
+        public Matrix4x4 ProjectionMatrix;
+        public Vector4 CullingSphere;
+        public int AtlasSize;
 
         public Vector3 Direction
         {
@@ -71,6 +78,12 @@ namespace DGX.SRP
             HasShadows = false;
 
             Index = -1;
+
+            RendererListHandle = default;
+            ProjectionMatrix = default;
+            ViewMatrix = default;
+            CullingSphere = default;
+            AtlasSize = default;
             
             Update(light, index);
         }
@@ -104,10 +117,7 @@ namespace DGX.SRP
         private static int spotLightLocalToWorldInvMatrixId = Shader.PropertyToID("_SpotLight_M_Inv");
         private static int mainLightShadowOffsets0 = Shader.PropertyToID("_MainLightShadowOffsets0");
         private static int mainLightShadowOffsets1 = Shader.PropertyToID("_MainLightShadowOffsets1");
-
-
-        private CullingResults cullingResults;
-        private ShadowSettings settings;
+        
 
         private List<LightInfo> visibleSpotLights = new();
         private List<LightInfo> visibleDirectionalLights = new();
@@ -122,18 +132,34 @@ namespace DGX.SRP
         private int shadowedDirectionalLights = 0;
         private NativeArray<ShadowSplitData> shadowSplitDataPerLight;
         private bool needCleanup = false;
+        private ShadowSettings shadowSettings;
 
-        public void Setup(ref CullingResults cullingResults, ShadowSettings settings, bool renderShadows)
+        public void Setup(RenderGraph graph, ScriptableRenderContext context, RenderGraphBuilder builder, ref CullingResults cullingResults, ShadowSettings settings, bool renderShadows)
         {
-            this.cullingResults = cullingResults;
-            this.settings = settings;
+            needCleanup = true;
+            
             this.renderShadows = renderShadows;
+            shadowSettings = settings;
             
             cullingInfoPerLight = new NativeArray<LightShadowCasterCullingInfo>(
                 cullingResults.visibleLights.Length, Allocator.Temp);
             shadowSplitDataPerLight = new NativeArray<ShadowSplitData>(
                 cullingInfoPerLight.Length, //* maxTilesPerLight,
                 Allocator.Temp, NativeArrayOptions.UninitializedMemory);
+            
+            prepareSpotLights(ref cullingResults);
+            prepareDirectionalLights(builder, graph, in cullingResults);
+
+            if (shadowedDirectionalLights + shadowedSpotLights > 0)
+            {
+                context.CullShadowCasters(
+                    cullingResults,
+                    new ShadowCastersCullingInfos
+                    {
+                        perLightInfos = cullingInfoPerLight,
+                        splitBuffer = shadowSplitDataPerLight
+                    });
+            }
         }
 
         [RuntimeInitializeOnLoadMethod]
@@ -147,27 +173,11 @@ namespace DGX.SRP
 
         public void Render(ref RenderGraphContext context)
         {
-            needCleanup = true;
-            
-            prepareSpotLights();
-            prepareDirectionalLights();
-
-            if (shadowedDirectionalLights + shadowedSpotLights > 0)
-            {
-                context.renderContext.CullShadowCasters(
-                    cullingResults,
-                    new ShadowCastersCullingInfos
-                    {
-                        perLightInfos = cullingInfoPerLight,
-                        splitBuffer = shadowSplitDataPerLight
-                    });
-            }
-            
             renderSpotLights(ref context);
             renderDirectionalLights(ref context);
         }
 
-        private void prepareSpotLights()
+        private void prepareSpotLights(ref CullingResults cullingResults)
         {
             for (var index = visibleSpotLights.Count - 1; index >= 0; index--)
             {
@@ -295,7 +305,7 @@ namespace DGX.SRP
             ExecuteBuffer(ref context);
         }
 
-        void prepareDirectionalLights()
+        void prepareDirectionalLights(RenderGraphBuilder builder, RenderGraph graph, in CullingResults cullingResults)
         {
             visibleDirectionalLights.Clear();
 
@@ -308,8 +318,55 @@ namespace DGX.SRP
                 {
                     continue;
                 }
+
+                var li = new LightInfo(visibleLight, i);
                 
-                visibleDirectionalLights.Add(new LightInfo(visibleLight, i));
+                if (renderShadows == false
+                    || cullingResults.GetShadowCasterBounds(li.Index, out var shadowCasterBounds) == false)
+                {
+                    li.HasShadows = false;
+                    visibleDirectionalLights.Add(li);
+                    continue;
+                }
+                
+                var shadowDrawingSettings = new ShadowDrawingSettings(cullingResults, li.Index);
+                var atlasSize = (int)shadowSettings.DirectionalMapSize;
+                int cascadeCount = 1;
+                
+                cullingResults.ComputeDirectionalShadowMatricesAndCullingPrimitives(
+                    li.Index,
+                    0,
+                    1,
+                    Vector3.zero,
+                    atlasSize,
+                    0,
+                    out var viewMatrix,
+                    out var projMatrix,
+                    out var shadowSplitData
+                );
+                li.ViewMatrix = viewMatrix;
+                li.ProjectionMatrix = projMatrix;
+                li.CullingSphere = shadowSplitData.cullingSphere;
+
+                var cascadeCullingFactor = 0;
+                
+                shadowSplitData.shadowCascadeBlendCullingFactor = cascadeCullingFactor;
+                shadowSplitDataPerLight[li.Index] = shadowSplitData;
+                
+                li.RendererListHandle =
+                    builder.UseRendererList(graph.CreateShadowRendererList(
+                        ref shadowDrawingSettings));
+
+                int splitOffset = li.Index;//* maxTilesPerLight;
+
+                cullingInfoPerLight[li.Index] =
+                    new LightShadowCasterCullingInfo
+                    {
+                        projectionType = BatchCullingProjectionType.Orthographic,
+                        splitRange = new RangeInt(splitOffset, cascadeCount)
+                    };
+                
+                visibleDirectionalLights.Add(li);
             }
 
             shadowedDirectionalLights = 0;
@@ -327,7 +384,7 @@ namespace DGX.SRP
         {
             var commands = context.cmd;
             
-            var atlasSize = (int)settings.DirectionalMapSize;
+            var atlasSize = (int)shadowSettings.DirectionalMapSize;
             commands.GetTemporaryRT(dirShadowAtlasId, atlasSize, atlasSize, 16, FilterMode.Bilinear, RenderTextureFormat.Shadowmap);
             commands.SetRenderTarget(dirShadowAtlasId, RenderBufferLoadAction.DontCare, RenderBufferStoreAction.Store);
             commands.ClearRenderTarget(true, false, Color.clear);
@@ -343,63 +400,40 @@ namespace DGX.SRP
                 
                 var light = visibleLight.Light;
 
-                if (cullingResults.GetShadowCasterBounds(visibleLight.Index, out var shadowCasterBounds) == false)
-                {
-                    continue;
-                }
+                commands.SetViewProjectionMatrices(visibleLight.ViewMatrix, visibleLight.ProjectionMatrix);
+                var mtx = visibleLight.ProjectionMatrix * visibleLight.ViewMatrix;
+                convertShadowMatrix(ref mtx);
+                commands.SetGlobalMatrix("_ShadowVP", mtx);
+                var mainLightShadowParams = new Vector4();
+                mainLightShadowParams.x = light.shadowStrength;
+                mainLightShadowParams.y = shadowSettings.MaxDistance;
 
-                if (renderShadows)
-                {
-                    var shadowDrawingSettings = new ShadowDrawingSettings(cullingResults, visibleLight.Index);
+                // TODO
+                int shadowedDirectionalLightCount = 1;
+                int split = shadowedDirectionalLightCount <= 1 ? 1 : 2;
+                int tileSize = atlasSize / split;
+                var cullingSphere = visibleLight.CullingSphere;
+                var texelSize = 2f * cullingSphere.w / tileSize;
+                texelSize *= 1.4142136f;
+                    
+                // пока поддерживается только один каскад
+                var cascadeData = new Vector4(
+                    1f / cullingSphere.w,
+                    texelSize
+                );
 
-                    cullingResults.ComputeDirectionalShadowMatricesAndCullingPrimitives(
-                        visibleLight.Index,
-                        0,
-                        1,
-                        Vector3.zero,
-                        atlasSize,
-                        0,
-                        out var viewMatrix,
-                        out var projMatrix,
-                        out var shadowSplitData
-                    );
+                var normalBias = light.shadowNormalBias * cascadeData.y;
+                mainLightShadowParams.z = normalBias;
                     
-                    commands.SetViewProjectionMatrices(viewMatrix, projMatrix);
-                    var mtx = projMatrix * viewMatrix;
-                    convertShadowMatrix(ref mtx);
-                    commands.SetGlobalMatrix("_ShadowVP", mtx);
-                    var mainLightShadowParams = new Vector4();
-                    mainLightShadowParams.x = light.shadowStrength;
-                    mainLightShadowParams.y = settings.MaxDistance;
-
-                    // TODO
-                    int shadowedDirectionalLightCount = 1;
-                    int split = shadowedDirectionalLightCount <= 1 ? 1 : 2;
-                    int tileSize = atlasSize / split;
-                    var cullingSphere = shadowSplitData.cullingSphere;
-                    var texelSize = 2f * cullingSphere.w / tileSize;
-                    texelSize *= 1.4142136f;
+                commands.SetGlobalVector("dgx_MainLightShadowParams", mainLightShadowParams);
                     
-                    // пока поддерживается только один каскад
-                    var cascadeData = new Vector4(
-                        1f / cullingSphere.w,
-                        texelSize
-                    );
-
-                    var normalBias = light.shadowNormalBias * cascadeData.y;
-                    mainLightShadowParams.z = normalBias;
+                commands.SetGlobalDepthBias(0, light.shadowBias);
                     
-                    commands.SetGlobalVector("dgx_MainLightShadowParams", mainLightShadowParams);
+                commands.DrawRendererList(visibleLight.RendererListHandle);
                     
-                    commands.SetGlobalDepthBias(0, light.shadowBias);
+                commands.SetGlobalDepthBias(0, 0);
                     
-                    var list = context.renderContext.CreateShadowRendererList(ref shadowDrawingSettings);
-                    commands.DrawRendererList(list);
-                    
-                    commands.SetGlobalDepthBias(0, 0);
-                    
-                    ExecuteBuffer(ref context);
-                }
+                ExecuteBuffer(ref context);
 
                 isMainLightRendered = true;
             }

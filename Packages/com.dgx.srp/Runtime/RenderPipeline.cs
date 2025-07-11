@@ -898,11 +898,14 @@ namespace DGX.SRP
 
         class GizmosPass : BasePass
         {
+            private RendererListHandle postImageRenderList;
+            private RendererListHandle preImageRenderList;
+
             public override void Render(RenderGraphContext context)
             {
 #if UNITY_EDITOR
-                context.renderContext.DrawGizmos(Camera, GizmoSubset.PreImageEffects);
-                context.renderContext.DrawGizmos(Camera, GizmoSubset.PostImageEffects);
+                context.cmd.DrawRendererList(preImageRenderList);
+                context.cmd.DrawRendererList(postImageRenderList);
 #endif
             }
 
@@ -915,6 +918,12 @@ namespace DGX.SRP
                 {
                     using var builder = graph.AddRenderPass("Gizmos", out GizmosPass gizmosPass);
                     gizmosPass.Camera = camera;
+                    
+                    var preImageList = graph.CreateGizmoRendererList(camera, GizmoSubset.PostImageEffects);
+                    var postImageList = graph.CreateGizmoRendererList(camera, GizmoSubset.PostImageEffects);
+                    gizmosPass.postImageRenderList = builder.UseRendererList(postImageList);
+                    gizmosPass.preImageRenderList = builder.UseRendererList(preImageList);
+                    
                     builder.SetRenderFunc<GizmosPass>((pass, context) => pass.Render(context));
                 }
 #endif

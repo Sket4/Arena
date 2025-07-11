@@ -1,0 +1,141 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!200 &20000000
+ShaderVariantCollection:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: shaderVariants
+  m_Shaders:
+  - first: {fileID: 10770, guid: 0000000000000000f000000000000000, type: 0}
+    second:
+      variants:
+      - keywords: 
+        passType: 0
+      - keywords: UNITY_UI_ALPHACLIP
+        passType: 0
+  - first: {fileID: 66, guid: 0000000000000000f000000000000000, type: 0}
+    second:
+      variants:
+      - keywords: 
+        passType: 0
+  - first: {fileID: 46, guid: 0000000000000000f000000000000000, type: 0}
+    second:
+      variants:
+      - keywords: SHADOWS_DEPTH
+        passType: 8
+  - first: {fileID: 108, guid: 0000000000000000f000000000000000, type: 0}
+    second:
+      variants:
+      - keywords: 
+        passType: 0
+  - first: {fileID: 9000, guid: 0000000000000000f000000000000000, type: 0}
+    second:
+      variants:
+      - keywords: 
+        passType: 0
+  - first: {fileID: 9001, guid: 0000000000000000f000000000000000, type: 0}
+    second:
+      variants:
+      - keywords: 
+        passType: 0
+  - first: {fileID: 9002, guid: 0000000000000000f000000000000000, type: 0}
+    second:
+      variants:
+      - keywords: 
+        passType: 0
+  - first: {fileID: 9003, guid: 0000000000000000f000000000000000, type: 0}
+    second:
+      variants:
+      - keywords: 
+        passType: 0
+  - first: {fileID: 9004, guid: 0000000000000000f000000000000000, type: 0}
+    second:
+      variants:
+      - keywords: 
+        passType: 0
+  - first: {fileID: 9007, guid: 0000000000000000f000000000000000, type: 0}
+    second:
+      variants:
+      - keywords: 
+        passType: 0
+  - first: {fileID: 9101, guid: 0000000000000000f000000000000000, type: 0}
+    second:
+      variants:
+      - keywords: 
+        passType: 0
+  - first: {fileID: 9103, guid: 0000000000000000f000000000000000, type: 0}
+    second:
+      variants:
+      - keywords: UIE_FORCE_GAMMA
+        passType: 0
+  - first: {fileID: 19011, guid: 0000000000000000f000000000000000, type: 0}
+    second:
+      variants:
+      - keywords: 
+        passType: 0
+  - first: {fileID: 4800000, guid: 890f95a84a3cafb429be88bfe5cbb3d7, type: 3}
+    second:
+      variants:
+      - keywords: DGX_PBR_RENDERING DGX_SHADOWS_ENABLED
+        passType: 0
+      - keywords: DGX_PBR_RENDERING DGX_SHADOWS_ENABLED FOG_LINEAR
+        passType: 0
+  - first: {fileID: 4800000, guid: 45cc61943f2234633ba3c04722e19d38, type: 3}
+    second:
+      variants:
+      - keywords: BLIT_DECODE_HDR DISABLE_TEXTURE2D_X_ARRAY
+        passType: 0
+  - first: {fileID: 4800000, guid: 0f6665d0c9aa760428a35dd4133f81af, type: 3}
+    second:
+      variants:
+      - keywords: ARENA_SKIN_COLOR DOTS_INSTANCING_ON FOG_LINEAR TG_SKINNING UG_QUALITY_MED
+          _BONECOUNT_FOUR
+        passType: 13
+      - keywords: ARENA_SKIN_COLOR DOTS_INSTANCING_ON FOG_LINEAR TG_SKINNING UG_QUALITY_MED
+          _BONECOUNT_ONE
+        passType: 13
+      - keywords: DOTS_INSTANCING_ON FOG_LINEAR TG_SKINNING UG_QUALITY_MED _BONECOUNT_ONE
+        passType: 13
+  - first: {fileID: 4800000, guid: 537b6c3f7a4218d459a2cdaea0cd4bf7, type: 3}
+    second:
+      variants:
+      - keywords: 
+        passType: 8
+      - keywords: DOTS_INSTANCING_ON
+        passType: 8
+      - keywords: DOTS_INSTANCING_ON LIGHTMAP_ON UG_QUALITY_MED
+        passType: 13
+      - keywords: DOTS_INSTANCING_ON UG_QUALITY_MED
+        passType: 13
+  - first: {fileID: 4800000, guid: 338d8a0dc0976dd42ac914673d44bde9, type: 3}
+    second:
+      variants:
+      - keywords: DOTS_INSTANCING_ON FOG_LINEAR LIGHTMAP_ON UG_QUALITY_MED
+        passType: 13
+      - keywords: DOTS_INSTANCING_ON FOG_LINEAR UG_QUALITY_MED
+        passType: 13
+      - keywords: DOTS_INSTANCING_ON FOG_LINEAR UG_QUALITY_MED USE_BASECOLOR_INSTANCE
+        passType: 13
+      - keywords: DOTS_INSTANCING_ON FOG_LINEAR UG_QUALITY_MED USE_BASECOLOR_INSTANCE
+          USE_SPECULAR_MULT
+        passType: 13
+  - first: {fileID: 4800000, guid: fe393ace9b354375a9cb14cdbbc28be4, type: 3}
+    second:
+      variants:
+      - keywords: 
+        passType: 0
+      - keywords: UNDERLAY_ON
+        passType: 0
+  - first: {fileID: 4800000, guid: 8d1ec7f8a401113428dc9a72767242b6, type: 3}
+    second:
+      variants:
+      - keywords: 
+        passType: 8
+      - keywords: DOTS_INSTANCING_ON
+        passType: 8
+      - keywords: DOTS_INSTANCING_ON TG_SKINNING
+        passType: 8
+      - keywords: TG_SKINNING
+        passType: 8

@@ -64,7 +64,7 @@ Shader"Arena/Character"
             #pragma multi_compile _ DOTS_INSTANCING_ON
 
             #pragma shader_feature_local TG_USE_ALPHACLIP
-            #pragma shader_feature_local __ ARENA_SKIN_COLOR
+            #pragma shader_feature_local _ ARENA_SKIN_COLOR
 
             #pragma multi_compile UG_QUALITY_LOW UG_QUALITY_MED UG_QUALITY_HIGH
             #pragma multi_compile _BONECOUNT_ONE _BONECOUNT_FOUR

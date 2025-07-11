@@ -6,6 +6,8 @@ using Unity.Entities;
 using Unity.Mathematics;
 using Unity.Physics;
 using Unity.Transforms;
+using UnityEngine;
+
 namespace Arena.Client
 {
     [BurstCompile]
@@ -209,7 +211,9 @@ namespace Arena.Client
 
                                     if (settings.AlignToNormal)
                                     {
-                                        if (hit.SurfaceNormal.Equals(math.up()) == false)
+                                        var upDot = math.dot(hit.SurfaceNormal, math.up());
+                                        
+                                        if (upDot < 0.98f)
                                         {
                                             var axis = math.cross(math.up(), hit.SurfaceNormal);
                                             
@@ -229,6 +233,8 @@ namespace Arena.Client
                                     Commands.SetSharedComponent(sortIndex, cellInstance, new TerrainDetailCellSharedData(settingsEntity));
                                     var scale = random.NextFloat(settings.MinScale, settings.MaxScale);
                                     scale *= strength;
+                                    scale = math.min(0.01f, scale);
+                                    //Debug.Log($"pos: {hit.Position}, rot: {rotation.value}");
                                     Commands.SetComponent(sortIndex, cellInstance, LocalTransform.FromPositionRotationScale(hit.Position, rotation, scale));    
                                 
                                     //Debug.DrawRay(coord, math.up() * 0.1f, Color.green);

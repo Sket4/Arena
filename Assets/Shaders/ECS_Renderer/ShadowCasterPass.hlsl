@@ -60,7 +60,7 @@ struct Attributes
 struct Varyings
 {
     float4 positionCS   : SV_POSITION;
-    #if defined(TG_USE_ALPHACLIP)
+    #if defined(TG_USE_ALPHACLIP) || defined(TG_FADING)
     float2 uv       : TEXCOORD0;
     #endif
 

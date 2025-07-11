@@ -100,6 +100,7 @@ namespace DGX.SRP.Editor.ShaderGraph
             var result = new SubShaderDescriptor()
             {
                 //pipelineTag = UniversalTarget.kPipelineTag,
+                pipelineTag = "DGX",
                 customTags = "",
                 renderType = renderType,
                 renderQueue = renderQueue,

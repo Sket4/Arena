@@ -879,7 +879,8 @@ namespace DGX.SRP
                 //cmd.SetRenderTarget(BuiltinRenderTextureType.CameraTarget);
                 context.cmd.Blit(colorTarget, BuiltinRenderTextureType.CameraTarget,
                     new Vector2(1.0f / Camera.rect.width, 1.0f / Camera.rect.height), new Vector2());
-                context.renderContext.ExecuteCommandBuffer(context.cmd);    
+                context.renderContext.ExecuteCommandBuffer(context.cmd); 
+                context.cmd.Clear();
             }
             
             public static void Record(

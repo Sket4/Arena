@@ -237,7 +237,8 @@ namespace Arena.Client
 
             var useHiRes = SystemInfo.graphicsMemorySize > 512;
             var renderTextureSize = useHiRes ? mapTextureSize * 2 : mapTextureSize;
-            var targetRenderTexture = RenderTexture.GetTemporary(renderTextureSize, renderTextureSize, 16, RenderTextureFormat.Default, RenderTextureReadWrite.Default, 8);
+            //var targetRenderTexture = RenderTexture.GetTemporary(renderTextureSize, renderTextureSize, 16, RenderTextureFormat.Default, RenderTextureReadWrite.Default, 8);
+            var targetRenderTexture = RenderTexture.GetTemporary(renderTextureSize, renderTextureSize);
             targetRenderTexture.name = "Map render texture hires";
             
 

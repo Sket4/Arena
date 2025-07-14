@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using TzarGames.Common;
 using TzarGames.Common.UI;
@@ -8,6 +9,7 @@ using TzarGames.GameCore.Client;
 using TzarGames.GameCore.Items;
 using TzarGames.GameFramework.UI;
 using Unity.Entities;
+using Unity.Mathematics;
 using UnityEngine;
 using UnityEngine.UI;
 using LocalizedString = UnityEngine.Localization.LocalizedString;
@@ -73,6 +75,7 @@ namespace Arena.Client.UI
         SkillUpgradeUI skillUpgradePrefab = default;
 
         [SerializeField] private LocalizedString requiredLevelText;
+        [SerializeField] private LocalizedString damageMultiplierText;
 
         [Header("Activate ability panel")] 
         [SerializeField] private UIBase activateAbilityWindow;
@@ -379,6 +382,61 @@ namespace Arena.Client.UI
             skillUpgradeUiPool.CreateObjects(10);
         }
 
+        void updateItemDescription(SkillUpgradeUI skillUI, Entity abilityPrefab, Entity abilityEntity, int currentLevel)
+        {
+            if (currentLevel == 0)
+            {
+                currentLevel = 1;
+            }
+            
+            if (HasData<Description>(abilityPrefab))
+            {
+                skillUI.Description = GetSharedComponentManaged<Description>(abilityPrefab).ToString();    
+            }
+            else
+            {
+                skillUI.Description = "";
+            }
+
+            float baseDamageMultiplier = 1;
+            float additionalDamageMultiplier = 1;
+
+            if (HasData<CopyOwnerDamageToAbility>(abilityPrefab))
+            {
+                var copy = GetData<CopyOwnerDamageToAbility>(abilityPrefab);
+                baseDamageMultiplier = copy.Multiplier;
+            }
+            
+            if (HasData<ModifyDamageByLevelAbility>(abilityPrefab))
+            {
+                var modify = GetData<ModifyDamageByLevelAbility>(abilityPrefab);
+                additionalDamageMultiplier = modify.Calculate((ushort)currentLevel);
+            }
+
+            var combinedMultiplier = baseDamageMultiplier * additionalDamageMultiplier;
+            
+            if (math.abs(combinedMultiplier - 1) > math.EPSILON)
+            {
+                if (string.IsNullOrEmpty(skillUI.Description) == false)
+                {
+                    skillUI.Description += Environment.NewLine;
+                }
+
+                string xStr = "<color=#888888>X</color>";
+                string multStr = $" {xStr}<color=yellow>{combinedMultiplier:0.0}</color>";
+
+                if (math.abs(additionalDamageMultiplier - 1) > math.EPSILON)
+                {
+                    multStr += $"  ( <color=yellow>{baseDamageMultiplier:0.0}</color> {xStr} <color=green>{additionalDamageMultiplier:0.0}</color> )";
+                }
+
+                var formatStr = damageMultiplierText.TryGetLocalizedString();
+                var result = formatStr.Replace("{multiplier}", multStr);
+                result = $"<color=#aaaaaa>{result}</color>";
+                skillUI.Description += result;
+            }
+        }
+
         protected override void OnVisible()
         {
             base.OnVisible();
@@ -444,20 +502,7 @@ namespace Arena.Client.UI
                         skillUI.gameObject.SetActive(true);
                     }
                     activeSkillUiList.Add(skillUI);
-                    skillUI.Icon = GetSharedComponentManaged<AbilityIcon>(abilityPrefab).Sprite;
-                    skillUI.Label = GetSharedComponentManaged<ItemName>(abilityPrefab).ToString();
-                    var abilityMinimalLevel = GetData<MinimalLevel>(abilityPrefab).Value;
-                    skillUI.RequiredLevel = string.Format(requiredLevelText.GetLocalizedString(), abilityMinimalLevel);
                     
-                    // var skillUpgrade = playerCharacter.GetSkillUpgradeBySkillId(skill.Id);
-                    // if(skillUpgrade == null)
-                    // {
-                    //     skillUpgrade = playerCharacter.CreateSkillUpgrade(skill.Id);
-                    // }
-            
-                    skillUI.Counter.MinValue = 0;
-                    skillUI.Counter.MaxValue = GetData<MaximumLevel>(abilityPrefab).Value;
-                     
                     var newInfo = new AbilityUpgradeInfo();
                     newInfo.AbilityUI = skillUI;
                     newInfo.AbilityPrefab = abilityPrefab;
@@ -470,7 +515,19 @@ namespace Arena.Client.UI
                             newInfo.AbilityEntity = ability.AbilityEntity;
                             break;
                         }
-                    }  
+                    }
+                    
+                    var abilityMinimalLevel = GetData<MinimalLevel>(abilityPrefab).Value;
+                    skillUI.RequiredLevel = string.Format(requiredLevelText.GetLocalizedString(), abilityMinimalLevel);
+                    
+                    // var skillUpgrade = playerCharacter.GetSkillUpgradeBySkillId(skill.Id);
+                    // if(skillUpgrade == null)
+                    // {
+                    //     skillUpgrade = playerCharacter.CreateSkillUpgrade(skill.Id);
+                    // }
+            
+                    skillUI.Counter.MinValue = 0;
+                    skillUI.Counter.MaxValue = GetData<MaximumLevel>(abilityPrefab).Value;
                     
                     if (newInfo.AbilityEntity != Entity.Null)
                     {
@@ -480,6 +537,9 @@ namespace Arena.Client.UI
                     {
                         newInfo.AbilityUI.Counter.CurrentValue = 0;
                     }
+                    
+                    skillUI.Icon = GetSharedComponentManaged<AbilityIcon>(abilityPrefab).Sprite;
+                    skillUI.Label = GetSharedComponentManaged<ItemName>(abilityPrefab).ToString();
                     
                     //newInfo.Upgrade = skillUpgrade;
                     abilityUpgrades.Add(newInfo);
@@ -607,8 +667,10 @@ namespace Arena.Client.UI
                 var ui = upgrade.AbilityUI;
                 
                 var abilityMinimalLevel = GetData<MinimalLevel>(upgrade.AbilityPrefab).Value;
-                var currentLevel= GetData<Level>().Value;
-                upgrade.LevelMatch = currentLevel >= abilityMinimalLevel;
+                var currentCharacterLevel= GetData<Level>().Value;
+                upgrade.LevelMatch = currentCharacterLevel >= abilityMinimalLevel;
+                
+                updateItemDescription(ui, upgrade.AbilityPrefab, upgrade.AbilityEntity, upgrade.AbilityUI.Counter.CurrentValue);
 
                 if (upgrade.LevelMatch)
                 {

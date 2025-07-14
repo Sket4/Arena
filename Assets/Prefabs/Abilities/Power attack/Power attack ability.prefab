@@ -151,6 +151,12 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 5485270017481130691, guid: 6d97be5c7877f7d43adb4a2de89bce46, type: 3}
       insertIndex: -1
       addedObject: {fileID: 7318463642266579661}
+    - targetCorrespondingSourceObject: {fileID: 5485270017481130691, guid: 6d97be5c7877f7d43adb4a2de89bce46, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 6052996926651172017}
+    - targetCorrespondingSourceObject: {fileID: 5485270017481130691, guid: 6d97be5c7877f7d43adb4a2de89bce46, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 4869401331342383296}
   m_SourcePrefab: {fileID: 100100000, guid: 6d97be5c7877f7d43adb4a2de89bce46, type: 3}
 --- !u!1 &7076783654523686276 stripped
 GameObject:
@@ -561,3 +567,47 @@ MonoBehaviour:
   ConversionTargetOptions: -1
   ManualMode: 0
   ID: {fileID: -4534312076210292539, guid: 709759d6d50fadb4ab72406e658ed872, type: 2}
+--- !u!114 &6052996926651172017
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7076783654523686276}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 256a1e88684d9b2448e854bda71313dd, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ConversionTargetOptions: -1
+  Value:
+    AddValue: 1
+    MultiplierByLevel: 0.1
+    Operator: 0
+    FirstLevelIsZero: 1
+--- !u!114 &4869401331342383296
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7076783654523686276}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5f8859250c0e56244881f874b2ad3b96, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ConversionTargetOptions: 5
+  Value:
+    Value:
+      m_TableReference:
+        m_TableCollectionName: GUID:aad91b28e51f6fc489b46b3d5b4a981a
+      m_TableEntryReference:
+        m_KeyId: 133168567227871232
+        m_Key: 
+      m_FallbackState: 0
+      m_WaitForCompletion: 0
+      m_LocalVariables: []
+  references:
+    version: 2
+    RefIds: []

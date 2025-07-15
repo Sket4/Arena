@@ -41,6 +41,10 @@ namespace TzarGames.GameCore.Abilities.Generated
 		[NativeDisableContainerSafetyRestriction]
 		[ReadOnly] public ComponentTypeHandle<TzarGames.GameCore.Abilities.ConvertOwnerInputToRotationAbility> ConvertOwnerInputToRotationAbilityType;
 		[NativeDisableContainerSafetyRestriction]
+		[ReadOnly] public ComponentTypeHandle<TzarGames.GameCore.Level> LevelType;
+		[NativeDisableContainerSafetyRestriction]
+		[ReadOnly] public ComponentTypeHandle<TzarGames.GameCore.Abilities.ModifyDamageByLevelAbility> ModifyDamageByLevelAbilityType;
+		[NativeDisableContainerSafetyRestriction]
 		public ComponentTypeHandle<TzarGames.GameCore.Abilities.ChangeOwnerColliderAbility> ChangeOwnerColliderAbilityType;
 		[NativeDisableContainerSafetyRestriction]
 		public ComponentTypeHandle<TzarGames.GameCore.HitQuery> HitQueryType;
@@ -60,6 +64,7 @@ namespace TzarGames.GameCore.Abilities.Generated
 		public TzarGames.GameCore.Abilities.CopyOwnerTransformToAbilityOnStartJob _CopyOwnerTransformToAbilityOnStartJob;
 		public TzarGames.GameCore.Abilities.CopyOwnerTransformToAbilityOnUpdateJob _CopyOwnerTransformToAbilityOnUpdateJob;
 		public TzarGames.GameCore.Abilities.DurationJob _DurationJob;
+		public TzarGames.GameCore.Abilities.ModifyDamageByLevelAbilityJob _ModifyDamageByLevelAbilityJob;
 		public TzarGames.GameCore.Abilities.ModifyOwnerCharacteristicsJob _ModifyOwnerCharacteristicsJob;
 		public TzarGames.GameCore.Abilities.MoveAbilityComponentJob _MoveAbilityComponentJob;
 		public TzarGames.GameCore.HitFlagAbilityComponentJob _HitFlagAbilityComponentJob;
@@ -87,6 +92,8 @@ namespace TzarGames.GameCore.Abilities.Generated
 			var DamageArray = chunk.GetNativeArray(ref DamageType);
 			var CopyOwnerTransformToAbilityOnStartArray = chunk.GetNativeArray(ref CopyOwnerTransformToAbilityOnStartType);
 			var ConvertOwnerInputToRotationAbilityArray = chunk.GetNativeArray(ref ConvertOwnerInputToRotationAbilityType);
+			var LevelArray = chunk.GetNativeArray(ref LevelType);
+			var ModifyDamageByLevelAbilityArray = chunk.GetNativeArray(ref ModifyDamageByLevelAbilityType);
 			var ChangeOwnerColliderAbilityArray = chunk.GetNativeArray(ref ChangeOwnerColliderAbilityType);
 			var HitQueryArray = chunk.GetNativeArray(ref HitQueryType);
 			var InstigatorArray = chunk.GetNativeArray(ref InstigatorType);
@@ -148,6 +155,8 @@ namespace TzarGames.GameCore.Abilities.Generated
 				var _LocalTransformRef = new RefRW<Unity.Transforms.LocalTransform>(LocalTransformArray, c);
 				ref var _LocalTransform = ref _LocalTransformRef.ValueRW;
 				var _ConvertOwnerInputToRotationAbility = ConvertOwnerInputToRotationAbilityArray[c];
+				var _Level = LevelArray[c];
+				var _ModifyDamageByLevelAbility = ModifyDamageByLevelAbilityArray[c];
 				var _ChangeOwnerColliderAbilityRef = new RefRW<TzarGames.GameCore.Abilities.ChangeOwnerColliderAbility>(ChangeOwnerColliderAbilityArray, c);
 				ref var _ChangeOwnerColliderAbility = ref _ChangeOwnerColliderAbilityRef.ValueRW;
 				var _HitQueryRef = new RefRW<TzarGames.GameCore.HitQuery>(HitQueryArray, c);
@@ -167,6 +176,7 @@ namespace TzarGames.GameCore.Abilities.Generated
 					_CopyOwnerDamageToAbilityJob.OnStarted(in _AbilityOwner, in _CopyOwnerDamageToAbility, ref _Damage);
 					_CopyOwnerTransformToAbilityOnStartJob.OnStarted(in _AbilityOwner, in _CopyOwnerTransformToAbilityOnStart, ref _LocalTransform);
 					_ConvertOwnerInputToRotationOnStartAbilityJob.OnStarted(in _AbilityOwner, in _ConvertOwnerInputToRotationAbility, ref _LocalTransform);
+					_ModifyDamageByLevelAbilityJob.OnStarted(in _Level, in _ModifyDamageByLevelAbility, ref _Damage);
 					_ChangeOwnerColliderAbilityJob.OnStarted(in _AbilityOwner, ref _ChangeOwnerColliderAbility, unfilteredChunkIndex, Commands);
 					_HitQueryAbilityComponentJob.OnStarted(in _AbilityOwner, ref _HitQuery, ref _Instigator);
 					_AbilityCooldownJob.OnStarted(ref _AbilityCooldown);
@@ -287,6 +297,8 @@ namespace TzarGames.GameCore.Abilities.Generated
 					ComponentType.ReadWrite<TzarGames.GameCore.Damage>(),
 					ComponentType.ReadOnly<TzarGames.GameCore.Abilities.CopyOwnerTransformToAbilityOnStart>(),
 					ComponentType.ReadOnly<TzarGames.GameCore.Abilities.ConvertOwnerInputToRotationAbility>(),
+					ComponentType.ReadOnly<TzarGames.GameCore.Level>(),
+					ComponentType.ReadOnly<TzarGames.GameCore.Abilities.ModifyDamageByLevelAbility>(),
 					ComponentType.ReadWrite<TzarGames.GameCore.Abilities.ChangeOwnerColliderAbility>(),
 					ComponentType.ReadWrite<TzarGames.GameCore.HitQuery>(),
 					ComponentType.ReadWrite<TzarGames.GameCore.Instigator>(),
@@ -324,6 +336,8 @@ namespace TzarGames.GameCore.Abilities.Generated
 			job.DamageType = state.GetComponentTypeHandle<TzarGames.GameCore.Damage>();
 			job.CopyOwnerTransformToAbilityOnStartType = state.GetComponentTypeHandle<TzarGames.GameCore.Abilities.CopyOwnerTransformToAbilityOnStart>(true);
 			job.ConvertOwnerInputToRotationAbilityType = state.GetComponentTypeHandle<TzarGames.GameCore.Abilities.ConvertOwnerInputToRotationAbility>(true);
+			job.LevelType = state.GetComponentTypeHandle<TzarGames.GameCore.Level>(true);
+			job.ModifyDamageByLevelAbilityType = state.GetComponentTypeHandle<TzarGames.GameCore.Abilities.ModifyDamageByLevelAbility>(true);
 			job.ChangeOwnerColliderAbilityType = state.GetComponentTypeHandle<TzarGames.GameCore.Abilities.ChangeOwnerColliderAbility>();
 			job.HitQueryType = state.GetComponentTypeHandle<TzarGames.GameCore.HitQuery>();
 			job.InstigatorType = state.GetComponentTypeHandle<TzarGames.GameCore.Instigator>();
@@ -350,6 +364,7 @@ namespace TzarGames.GameCore.Abilities.Generated
 			job._CopyOwnerTransformToAbilityOnStartJob.TransformFromEntity = ComponentLookupLocalTransform;
 
 			job._CopyOwnerTransformToAbilityOnUpdateJob.TransformFromEntity = ComponentLookupLocalTransform;
+
 
 
 			job._ModifyOwnerCharacteristicsJob.SpeedModificatorFromEntity = BufferLookupSpeedModificator;
@@ -381,6 +396,8 @@ namespace TzarGames.GameCore.Abilities.Generated
 			job.DamageType.Update(ref state);
 			job.CopyOwnerTransformToAbilityOnStartType.Update(ref state);
 			job.ConvertOwnerInputToRotationAbilityType.Update(ref state);
+			job.LevelType.Update(ref state);
+			job.ModifyDamageByLevelAbilityType.Update(ref state);
 			job.ChangeOwnerColliderAbilityType.Update(ref state);
 			job.HitQueryType.Update(ref state);
 			job.InstigatorType.Update(ref state);
@@ -401,6 +418,7 @@ namespace TzarGames.GameCore.Abilities.Generated
 			job._CopyOwnerTransformToAbilityOnStartJob.TransformFromEntity.Update(ref state);
 
 			job._CopyOwnerTransformToAbilityOnUpdateJob.TransformFromEntity.Update(ref state);
+
 
 
 			job._ModifyOwnerCharacteristicsJob.SpeedModificatorFromEntity.Update(ref state);

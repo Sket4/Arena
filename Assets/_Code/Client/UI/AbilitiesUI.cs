@@ -76,6 +76,8 @@ namespace Arena.Client.UI
 
         [SerializeField] private LocalizedString requiredLevelText;
         [SerializeField] private LocalizedString damageMultiplierText;
+        [SerializeField] private LocalizedString cooldownText;
+        [SerializeField] private LocalizedString durationFormatText;
 
         [Header("Activate ability panel")] 
         [SerializeField] private UIBase activateAbilityWindow;
@@ -423,17 +425,52 @@ namespace Arena.Client.UI
                 }
 
                 string xStr = "<color=#888888>X</color>";
-                string multStr = $" {xStr}<color=yellow>{combinedMultiplier:0.0}</color>";
+                string multStr = $" {xStr}<color=yellow>{combinedMultiplier:0.##}</color>";
 
                 if (math.abs(additionalDamageMultiplier - 1) > math.EPSILON)
                 {
-                    multStr += $"  ( <color=yellow>{baseDamageMultiplier:0.0}</color> {xStr} <color=green>{additionalDamageMultiplier:0.0}</color> )";
+                    multStr += $"  ( <color=yellow>{baseDamageMultiplier:0.##}</color> {xStr} <color=green>{additionalDamageMultiplier:0.##}</color> )";
                 }
 
                 var formatStr = damageMultiplierText.TryGetLocalizedString();
                 var result = formatStr.Replace("{multiplier}", multStr);
                 result = $"<color=#aaaaaa>{result}</color>";
                 skillUI.Description += result;
+            }
+
+            if (HasData<AbilityCooldown>(abilityPrefab))
+            {
+                var cooldown = GetData<AbilityCooldown>(abilityPrefab).Time;
+                var cooldownStr = cooldownText.GetLocalizedString().Replace("{cldwn}", cooldown.ToString("0.#"));
+                skillUI.Description += Environment.NewLine + cooldownStr;
+            }
+
+            if (HasData<Duration>(abilityPrefab))
+            {
+                var duration = GetData<Duration>(abilityPrefab).BaseValue;
+
+                if (duration > 0)
+                {
+                    float modDuration = 1;
+                    
+                    if (HasData<ModifyDurationByLevelAbility>(abilityPrefab))
+                    {
+                        var mod = GetData<ModifyDurationByLevelAbility>(abilityPrefab);
+                        modDuration = mod.Calculate((ushort)currentLevel);
+                    }
+
+                    var combined = duration * modDuration;
+                    
+                    var durStr = $" <color=yellow>{combined:0.##}</color>";
+
+                    if (math.abs(modDuration - 1.0f) > math.EPSILON)
+                    {
+                        durStr += $"  ( {duration:0.##} X <color=green>{modDuration:0.##}</color> )";
+                    }
+
+                    skillUI.Description += Environment.NewLine + durationFormatText.GetLocalizedString()
+                        .Replace("{duration}", durStr);
+                }
             }
         }
 

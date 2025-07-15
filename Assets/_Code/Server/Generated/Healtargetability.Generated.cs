@@ -389,6 +389,7 @@ namespace TzarGames.GameCore.Abilities.Generated
 
 			var BufferLookupSpeedModificator = state.GetBufferLookup<TzarGames.GameCore.SpeedModificator>(true);
 			var ComponentLookupTarget = state.GetComponentLookup<TzarGames.GameCore.Target>(true);
+			var ComponentTypeHandleDuration = state.GetComponentTypeHandle<TzarGames.GameCore.Abilities.Duration>(true);
 			var BufferTypeHandleOnAbilityStartEventCommandData = state.GetBufferTypeHandle<TzarGames.GameCore.Abilities.OnAbilityStartEventCommandData>(true);
 			var BufferTypeHandleOnAbilityStopEventCommandData = state.GetBufferTypeHandle<TzarGames.GameCore.Abilities.OnAbilityStopEventCommandData>(true);
 			var BufferTypeHandleOnAbilityUpdateEventCommandData = state.GetBufferTypeHandle<TzarGames.GameCore.Abilities.OnAbilityUpdateEventCommandData>(true);
@@ -403,6 +404,7 @@ namespace TzarGames.GameCore.Abilities.Generated
 
 
 
+			job._ScriptVizAbilityJob.DurationType = ComponentTypeHandleDuration;
 			job._ScriptVizAbilityJob.StartEventType = BufferTypeHandleOnAbilityStartEventCommandData;
 			job._ScriptVizAbilityJob.StopEventType = BufferTypeHandleOnAbilityStopEventCommandData;
 			job._ScriptVizAbilityJob.UpdateEventType = BufferTypeHandleOnAbilityUpdateEventCommandData;
@@ -448,6 +450,7 @@ namespace TzarGames.GameCore.Abilities.Generated
 
 
 
+			job._ScriptVizAbilityJob.DurationType.Update(ref state);
 			job._ScriptVizAbilityJob.StartEventType.Update(ref state);
 			job._ScriptVizAbilityJob.StopEventType.Update(ref state);
 			job._ScriptVizAbilityJob.UpdateEventType.Update(ref state);

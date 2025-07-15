@@ -446,6 +446,7 @@ namespace TzarGames.GameCore.Abilities.Generated
 			job._MoveAbilityComponentJob.TransformFromEntity = ComponentLookupLocalTransform;
 
 
+			job._ScriptVizAbilityJob.DurationType = ComponentTypeHandleDuration;
 			job._ScriptVizAbilityJob.StartEventType = BufferTypeHandleOnAbilityStartEventCommandData;
 			job._ScriptVizAbilityJob.StopEventType = BufferTypeHandleOnAbilityStopEventCommandData;
 			job._ScriptVizAbilityJob.UpdateEventType = BufferTypeHandleOnAbilityUpdateEventCommandData;
@@ -512,6 +513,7 @@ namespace TzarGames.GameCore.Abilities.Generated
 			job._MoveAbilityComponentJob.TransformFromEntity.Update(ref state);
 
 
+			job._ScriptVizAbilityJob.DurationType.Update(ref state);
 			job._ScriptVizAbilityJob.StartEventType.Update(ref state);
 			job._ScriptVizAbilityJob.StopEventType.Update(ref state);
 			job._ScriptVizAbilityJob.UpdateEventType.Update(ref state);

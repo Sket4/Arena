@@ -462,6 +462,7 @@ namespace TzarGames.GameCore.Abilities.Generated
 			var ComponentTypeHandleCriticalDamageMultiplier = state.GetComponentTypeHandle<TzarGames.GameCore.CriticalDamageMultiplier>(true);
 			var BufferTypeHandleEntityInstance = state.GetBufferTypeHandle<TzarGames.GameCore.EntityInstance>();
 			var ComponentTypeHandleWeaponSurface = state.GetComponentTypeHandle<TzarGames.GameCore.WeaponSurface>(true);
+			var ComponentTypeHandleDuration = state.GetComponentTypeHandle<TzarGames.GameCore.Abilities.Duration>(true);
 			var BufferTypeHandleOnAbilityStartEventCommandData = state.GetBufferTypeHandle<TzarGames.GameCore.Abilities.OnAbilityStartEventCommandData>(true);
 			var BufferTypeHandleOnAbilityStopEventCommandData = state.GetBufferTypeHandle<TzarGames.GameCore.Abilities.OnAbilityStopEventCommandData>(true);
 			var BufferTypeHandleOnAbilityUpdateEventCommandData = state.GetBufferTypeHandle<TzarGames.GameCore.Abilities.OnAbilityUpdateEventCommandData>(true);
@@ -508,6 +509,7 @@ namespace TzarGames.GameCore.Abilities.Generated
 			job._AbilityCylinderHitActionJob.Targets = ComponentLookupTarget;
 			job._AbilityCylinderHitActionJob.SurfaceType = ComponentTypeHandleWeaponSurface;
 
+			job._ScriptVizAbilityJob.DurationType = ComponentTypeHandleDuration;
 			job._ScriptVizAbilityJob.StartEventType = BufferTypeHandleOnAbilityStartEventCommandData;
 			job._ScriptVizAbilityJob.StopEventType = BufferTypeHandleOnAbilityStopEventCommandData;
 			job._ScriptVizAbilityJob.UpdateEventType = BufferTypeHandleOnAbilityUpdateEventCommandData;
@@ -596,6 +598,7 @@ namespace TzarGames.GameCore.Abilities.Generated
 			job._AbilityCylinderHitActionJob.Targets.Update(ref state);
 			job._AbilityCylinderHitActionJob.SurfaceType.Update(ref state);
 
+			job._ScriptVizAbilityJob.DurationType.Update(ref state);
 			job._ScriptVizAbilityJob.StartEventType.Update(ref state);
 			job._ScriptVizAbilityJob.StopEventType.Update(ref state);
 			job._ScriptVizAbilityJob.UpdateEventType.Update(ref state);

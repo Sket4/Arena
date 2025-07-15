@@ -24,6 +24,8 @@ namespace TzarGames.GameCore.Abilities.Generated
 		[ReadOnly] public ComponentTypeHandle<TzarGames.GameCore.Abilities.AbilityID> AbilityIDType;
 		[NativeDisableContainerSafetyRestriction]
 		public ComponentTypeHandle<TzarGames.GameCore.Abilities.AbilityCooldown> AbilityCooldownType;
+		[NativeDisableContainerSafetyRestriction]
+		public ComponentTypeHandle<TzarGames.GameCore.Abilities.Duration> DurationType;
 		public EntityTypeHandle EntityType;
 		[NativeDisableContainerSafetyRestriction]
 		[ReadOnly] public ComponentTypeHandle<TzarGames.GameCore.Abilities.AbilityOwner> AbilityOwnerType;
@@ -36,8 +38,14 @@ namespace TzarGames.GameCore.Abilities.Generated
 		[NativeDisableContainerSafetyRestriction]
 		public ComponentTypeHandle<TzarGames.GameCore.ScriptViz.ScriptVizState> ScriptVizStateType;
 		[ReadOnly] public SharedComponentTypeHandle<TzarGames.GameCore.ScriptViz.ScriptVizCodeInfo> ScriptVizCodeInfoType;
+		[NativeDisableContainerSafetyRestriction]
+		[ReadOnly] public ComponentTypeHandle<TzarGames.GameCore.Level> LevelType;
+		[NativeDisableContainerSafetyRestriction]
+		[ReadOnly] public ComponentTypeHandle<TzarGames.GameCore.Abilities.ModifyDurationByLevelAbility> ModifyDurationByLevelAbilityType;
 
 		public TzarGames.GameCore.Abilities.AbilityCooldownJob _AbilityCooldownJob;
+		public TzarGames.GameCore.Abilities.DurationJob _DurationJob;
+		public TzarGames.GameCore.Abilities.ModifyDurationByLevelAbilityJob _ModifyDurationByLevelAbilityJob;
 		public TzarGames.GameCore.Abilities.ScriptVizAbilityJob _ScriptVizAbilityJob;
 
 
@@ -54,6 +62,7 @@ namespace TzarGames.GameCore.Abilities.Generated
 			var AbilityStateArray = chunk.GetNativeArray(ref AbilityStateType);
 			var AbilityIDArray = chunk.GetNativeArray(ref AbilityIDType);
 			var AbilityCooldownArray = chunk.GetNativeArray(ref AbilityCooldownType);
+			var DurationArray = chunk.GetNativeArray(ref DurationType);
 			var EntityArray = chunk.GetNativeArray(EntityType);
 			var AbilityOwnerArray = chunk.GetNativeArray(ref AbilityOwnerType);
 			var VariableDataByteAccessor = chunk.GetBufferAccessor(ref VariableDataByteType);
@@ -61,6 +70,8 @@ namespace TzarGames.GameCore.Abilities.Generated
 			var ConstantEntityVariableDataAccessor = chunk.GetBufferAccessor(ref ConstantEntityVariableDataType);
 			var ScriptVizStateArray = chunk.GetNativeArray(ref ScriptVizStateType);
 			var _ScriptVizCodeInfo = chunk.GetSharedComponent(ScriptVizCodeInfoType);
+			var LevelArray = chunk.GetNativeArray(ref LevelType);
+			var ModifyDurationByLevelAbilityArray = chunk.GetNativeArray(ref ModifyDurationByLevelAbilityType);
 
 			var entityCount = chunk.Count;
 
@@ -85,6 +96,8 @@ namespace TzarGames.GameCore.Abilities.Generated
 				}
 				var _AbilityCooldownRef = new RefRW<TzarGames.GameCore.Abilities.AbilityCooldown>(AbilityCooldownArray, c);
 				ref var _AbilityCooldown = ref _AbilityCooldownRef.ValueRW;
+				var _DurationRef = new RefRW<TzarGames.GameCore.Abilities.Duration>(DurationArray, c);
+				ref var _Duration = ref _DurationRef.ValueRW;
 				var abilityEntity = EntityArray[c];
 				bool isOwner;
 				if(IsServer)
@@ -123,6 +136,7 @@ namespace TzarGames.GameCore.Abilities.Generated
 				{
 					AbilityControl _abilityControl = default;
 					_AbilityCooldownJob.OnIdleUpdate(deltaTime, ref _AbilityCooldown);
+					_DurationJob.OnIdleUpdate(ref _Duration);
 					_ScriptVizAbilityJob.OnIdleUpdate(abilityEntity, unfilteredChunkIndex, in _AbilityOwner, Commands, in abilityInterface, ref _VariableDataByteBuffer, ref _EntityVariableDataBuffer, ref _abilityControl, in _ConstantEntityVariableDataBuffer, ref _ScriptVizState, in _ScriptVizCodeInfo, deltaTime);
 				}
 
@@ -141,11 +155,16 @@ namespace TzarGames.GameCore.Abilities.Generated
 					}
 				}
 
+				var _Level = LevelArray[c];
+				var _ModifyDurationByLevelAbility = ModifyDurationByLevelAbilityArray[c];
+
 				bool isJustStarted = false;
 
 				if (_AbilityState.Value == AbilityStates.WaitingForValidation || _AbilityState.Value == AbilityStates.ValidatedAndWaitingForStart)
 				{
 					AbilityControl _abilityControl = default;
+					_DurationJob.OnStarted(ref _Duration);
+					_ModifyDurationByLevelAbilityJob.OnStarted(in _Level, in _ModifyDurationByLevelAbility, ref _Duration);
 					_AbilityCooldownJob.OnStarted(ref _AbilityCooldown);
 					_ScriptVizAbilityJob.OnStarted(abilityEntity, in _AbilityOwner, unfilteredChunkIndex, Commands, in abilityInterface, ref _abilityControl, ref _VariableDataByteBuffer, ref _EntityVariableDataBuffer, in _ConstantEntityVariableDataBuffer, ref _ScriptVizState, in _ScriptVizCodeInfo, deltaTime);
 
@@ -166,6 +185,7 @@ namespace TzarGames.GameCore.Abilities.Generated
 				if(_AbilityState.Value == AbilityStates.Running)
 				{
 					AbilityControl _abilityControl = default;
+					_DurationJob.OnUpdate(deltaTime, ref _Duration, ref _abilityControl);
 					_AbilityCooldownJob.OnUpdate(deltaTime, ref _AbilityCooldown);
 					_ScriptVizAbilityJob.OnUpdate(abilityEntity, unfilteredChunkIndex, in _AbilityOwner, Commands, abilityInterface, ref _VariableDataByteBuffer, ref _EntityVariableDataBuffer, ref _abilityControl, in _ConstantEntityVariableDataBuffer, ref _ScriptVizState, in _ScriptVizCodeInfo, deltaTime);
 
@@ -180,6 +200,7 @@ namespace TzarGames.GameCore.Abilities.Generated
 					var eventEntity = Commands.CreateEntity(unfilteredChunkIndex, AbilityEventArchetype);
 					Commands.SetComponent(unfilteredChunkIndex, eventEntity, new AbilityEvent { AbilityEntity = abilityEntity, EventType = AbilityEvents.Stopped });
 					AbilityControl _abilityControl = default;
+					_DurationJob.OnStopped(ref _Duration);
 					_ScriptVizAbilityJob.OnStopped(abilityEntity, unfilteredChunkIndex, in _AbilityOwner, Commands, in abilityInterface, ref _VariableDataByteBuffer, ref _EntityVariableDataBuffer, ref _abilityControl, in _ConstantEntityVariableDataBuffer, ref _ScriptVizState, in _ScriptVizCodeInfo, deltaTime);
 
 					_AbilityState.Value = AbilityStates.Idle;
@@ -244,12 +265,15 @@ namespace TzarGames.GameCore.Abilities.Generated
 					ComponentType.ReadWrite<TzarGames.GameCore.Abilities.AbilityState>(),
 					ComponentType.ReadOnly<TzarGames.GameCore.Abilities.AbilityID>(),
 					ComponentType.ReadWrite<TzarGames.GameCore.Abilities.AbilityCooldown>(),
+					ComponentType.ReadWrite<TzarGames.GameCore.Abilities.Duration>(),
 					ComponentType.ReadOnly<TzarGames.GameCore.Abilities.AbilityOwner>(),
 					ComponentType.ReadWrite<TzarGames.GameCore.ScriptViz.VariableDataByte>(),
 					ComponentType.ReadWrite<TzarGames.GameCore.ScriptViz.EntityVariableData>(),
 					ComponentType.ReadOnly<TzarGames.GameCore.ScriptViz.ConstantEntityVariableData>(),
 					ComponentType.ReadWrite<TzarGames.GameCore.ScriptViz.ScriptVizState>(),
 					ComponentType.ReadOnly<TzarGames.GameCore.ScriptViz.ScriptVizCodeInfo>(),
+					ComponentType.ReadOnly<TzarGames.GameCore.Level>(),
+					ComponentType.ReadOnly<TzarGames.GameCore.Abilities.ModifyDurationByLevelAbility>(),
 				}
 			};
 			query = state.GetEntityQuery(entityQueryDesc);
@@ -275,6 +299,7 @@ namespace TzarGames.GameCore.Abilities.Generated
 			job.AbilityStateType = state.GetComponentTypeHandle<TzarGames.GameCore.Abilities.AbilityState>();
 			job.AbilityIDType = state.GetComponentTypeHandle<TzarGames.GameCore.Abilities.AbilityID>(true);
 			job.AbilityCooldownType = state.GetComponentTypeHandle<TzarGames.GameCore.Abilities.AbilityCooldown>();
+			job.DurationType = state.GetComponentTypeHandle<TzarGames.GameCore.Abilities.Duration>();
 			job.EntityType = state.GetEntityTypeHandle();
 			job.AbilityOwnerType = state.GetComponentTypeHandle<TzarGames.GameCore.Abilities.AbilityOwner>(true);
 			job.VariableDataByteType = state.GetBufferTypeHandle<TzarGames.GameCore.ScriptViz.VariableDataByte>();
@@ -282,13 +307,19 @@ namespace TzarGames.GameCore.Abilities.Generated
 			job.ConstantEntityVariableDataType = state.GetBufferTypeHandle<TzarGames.GameCore.ScriptViz.ConstantEntityVariableData>(true);
 			job.ScriptVizStateType = state.GetComponentTypeHandle<TzarGames.GameCore.ScriptViz.ScriptVizState>();
 			job.ScriptVizCodeInfoType = state.GetSharedComponentTypeHandle<TzarGames.GameCore.ScriptViz.ScriptVizCodeInfo>();
+			job.LevelType = state.GetComponentTypeHandle<TzarGames.GameCore.Level>(true);
+			job.ModifyDurationByLevelAbilityType = state.GetComponentTypeHandle<TzarGames.GameCore.Abilities.ModifyDurationByLevelAbility>(true);
 
+			var ComponentTypeHandleDuration = state.GetComponentTypeHandle<TzarGames.GameCore.Abilities.Duration>(true);
 			var BufferTypeHandleOnAbilityStartEventCommandData = state.GetBufferTypeHandle<TzarGames.GameCore.Abilities.OnAbilityStartEventCommandData>(true);
 			var BufferTypeHandleOnAbilityStopEventCommandData = state.GetBufferTypeHandle<TzarGames.GameCore.Abilities.OnAbilityStopEventCommandData>(true);
 			var BufferTypeHandleOnAbilityUpdateEventCommandData = state.GetBufferTypeHandle<TzarGames.GameCore.Abilities.OnAbilityUpdateEventCommandData>(true);
 			var BufferTypeHandleOnAbilityUpdateIdleEventCommandData = state.GetBufferTypeHandle<TzarGames.GameCore.Abilities.OnAbilityUpdateIdleEventCommandData>(true);
 
 
+
+
+			job._ScriptVizAbilityJob.DurationType = ComponentTypeHandleDuration;
 			job._ScriptVizAbilityJob.StartEventType = BufferTypeHandleOnAbilityStartEventCommandData;
 			job._ScriptVizAbilityJob.StopEventType = BufferTypeHandleOnAbilityStopEventCommandData;
 			job._ScriptVizAbilityJob.UpdateEventType = BufferTypeHandleOnAbilityUpdateEventCommandData;
@@ -309,6 +340,7 @@ namespace TzarGames.GameCore.Abilities.Generated
 			job.AbilityStateType.Update(ref state);
 			job.AbilityIDType.Update(ref state);
 			job.AbilityCooldownType.Update(ref state);
+			job.DurationType.Update(ref state);
 			job.EntityType.Update(ref state);
 			job.AbilityOwnerType.Update(ref state);
 			job.VariableDataByteType.Update(ref state);
@@ -316,9 +348,14 @@ namespace TzarGames.GameCore.Abilities.Generated
 			job.ConstantEntityVariableDataType.Update(ref state);
 			job.ScriptVizStateType.Update(ref state);
 			job.ScriptVizCodeInfoType.Update(ref state);
+			job.LevelType.Update(ref state);
+			job.ModifyDurationByLevelAbilityType.Update(ref state);
 
 
 
+
+
+			job._ScriptVizAbilityJob.DurationType.Update(ref state);
 			job._ScriptVizAbilityJob.StartEventType.Update(ref state);
 			job._ScriptVizAbilityJob.StopEventType.Update(ref state);
 			job._ScriptVizAbilityJob.UpdateEventType.Update(ref state);

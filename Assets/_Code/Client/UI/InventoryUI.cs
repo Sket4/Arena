@@ -27,6 +27,7 @@ namespace Arena.Client.UI
 
 		[SerializeField] private Button allItemsButton;
 		[SerializeField] private Button weaponButton;
+		[SerializeField] private Button otherButton;
 		[SerializeField] private Button armorButton;
 
 		[SerializeField]
@@ -63,7 +64,7 @@ namespace Arena.Client.UI
         protected override void OnVisible()
         {
 	        base.OnVisible();
-            ShowAllItems();
+            ShowWeapons();
 		}
 
         public void ShowAllItems()
@@ -78,6 +79,15 @@ namespace Arena.Client.UI
 	        showTab(weaponButton);
 	        ClearFilter();
 	        AddFilter<Weapon>();
+	        UpdateUI();
+        }
+        public void ShowOther()
+        {
+	        showTab(otherButton);
+	        ClearFilter();
+	        AddExcludeFilter<Weapon>();
+	        AddExcludeFilter<Shield>();
+	        AddExcludeFilter<ArmorSet>();
 	        UpdateUI();
         }
 

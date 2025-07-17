@@ -38,10 +38,12 @@ namespace Arena.Client.UI
 		private bool needRefreshItems = true;
 
 		private List<ComponentType> filter = new();
+		private List<ComponentType> excludeFilter = new();
 
 		protected void ClearFilter()
 		{
 			filter.Clear();
+			excludeFilter.Clear();
 		}
 
 		public void AddFilters(IEnumerable<ComponentType> filters)
@@ -52,6 +54,10 @@ namespace Arena.Client.UI
 		public void AddFilter<T>()
 		{
 			filter.Add(ComponentType.ReadOnly(typeof(T)));
+		}
+		public void AddExcludeFilter<T>()
+		{
+			excludeFilter.Add(ComponentType.ReadOnly(typeof(T)));
 		}
 
 		protected override void OnVisible()
@@ -222,13 +228,22 @@ namespace Arena.Client.UI
             {
 	            var passFilter = false;
 
-	            if (filter.Count > 0)
+	            if (filter.Count > 0 || excludeFilter.Count > 0)
 	            {
 		            foreach (var type in filter)
 		            {
 			            if (EntityManager.HasComponent(item.ItemEntity, type))
 			            {
 				            passFilter = true;
+				            break;
+			            }
+		            }
+
+		            foreach (var componentType in excludeFilter)
+		            {
+			            if (EntityManager.HasComponent(item.ItemEntity, componentType))
+			            {
+				            passFilter = false;
 				            break;
 			            }
 		            }

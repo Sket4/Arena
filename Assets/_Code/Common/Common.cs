@@ -25,6 +25,7 @@ namespace Arena
     public static class ArenaMessages
     {
         public static readonly Message DestroyMessage = Message.CreateFromString("destroy");
+        public static readonly Message InitializeMessage = Message.CreateFromString("initialize");
     }
     
     public enum ArenaMatchState

@@ -13,7 +13,7 @@ OcclusionCullingSettings:
 --- !u!104 &2
 RenderSettings:
   m_ObjectHideFlags: 0
-  serializedVersion: 9
+  serializedVersion: 10
   m_Fog: 1
   m_FogColor: {r: 0.4509804, g: 0.6, b: 0.69803923, a: 1}
   m_FogMode: 1
@@ -42,8 +42,8 @@ RenderSettings:
 --- !u!157 &3
 LightmapSettings:
   m_ObjectHideFlags: 0
-  serializedVersion: 12
-  m_GIWorkflowMode: 1
+  serializedVersion: 13
+  m_BakeOnSceneLoad: 0
   m_GISettings:
     serializedVersion: 2
     m_BounceScale: 1
@@ -66,9 +66,6 @@ LightmapSettings:
     m_LightmapParameters: {fileID: 0}
     m_LightmapsBakeMode: 1
     m_TextureCompression: 1
-    m_FinalGather: 0
-    m_FinalGatherFiltering: 1
-    m_FinalGatherRayCount: 256
     m_ReflectionCompression: 2
     m_MixedBakeMode: 2
     m_BakeBackend: 1
@@ -166,10 +163,10 @@ MonoBehaviour:
   debugQuests:
   - questKey: {fileID: -8442518551227696366, guid: 709759d6d50fadb4ab72406e658ed872, type: 2}
     State: 0
-    Exclude: 0
+    Exclude: 1
   - questKey: {fileID: -8715106840094028656, guid: 709759d6d50fadb4ab72406e658ed872, type: 2}
     State: 0
-    Exclude: 1
+    Exclude: 0
   debugGameProgressIntegers: []
 --- !u!4 &76681953
 Transform:

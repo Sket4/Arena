@@ -14,6 +14,7 @@ namespace Arena.Client
     [Serializable]
     public struct TerrainDetailTargetLastPosition : IComponentData
     {
+        public bool IsInitialized;
         public float2 Value;
     }
     

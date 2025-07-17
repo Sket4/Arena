@@ -66,6 +66,7 @@ namespace Arena.Client.UI
 
         [SerializeField] private ShopUI itemShop = default;
         [SerializeField] private CharacterUI characterUI = default;
+        public CharacterUI CharacterUI => characterUI;
 
         [SerializeField] private TzarGames.GameFramework.UI.GameUIBase loading = default;
 

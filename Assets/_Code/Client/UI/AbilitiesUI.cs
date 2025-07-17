@@ -417,7 +417,8 @@ namespace Arena.Client.UI
 
             var combinedMultiplier = baseDamageMultiplier * additionalDamageMultiplier;
             
-            if (math.abs(combinedMultiplier - 1) > math.EPSILON)
+            if (math.abs(additionalDamageMultiplier - 1) > math.EPSILON 
+                || math.abs(baseDamageMultiplier - 1) > math.EPSILON)
             {
                 if (string.IsNullOrEmpty(skillUI.Description) == false)
                 {
@@ -731,12 +732,12 @@ namespace Arena.Client.UI
 
                 if (isActiveSkill)
                 {
-                    var playerAbilities = GetData<PlayerAbilities>();
+                    //var playerAbilities = GetData<PlayerAbilities>();
                         
                     ui.ActivateButton.gameObject.SetActive(true);
-                    ui.ActivateButton.interactable = upgrade.LevelMatch 
-                                                     && upgrade.AbilityEntity != Entity.Null 
-                                                     && playerAbilities.Contains(upgrade.AbilityEntity) == false;
+                    ui.ActivateButton.interactable = upgrade.LevelMatch
+                                                     && upgrade.AbilityEntity != Entity.Null; 
+                                                     //&& playerAbilities.Contains(upgrade.AbilityEntity) == false;
                         
                     ui.PassiveAbilityLabel.SetActive(false);
                 }

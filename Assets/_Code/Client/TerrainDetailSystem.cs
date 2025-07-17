@@ -28,7 +28,10 @@ namespace Arena.Client
         public float3 PlayerPosition;
 
         private static readonly quaternion upRotation = quaternion.Euler(math.radians(-90), 0, 0);
-        
+        public bool IsJustInitialized;
+        public Message InitializeMessage;
+        //public double CurrentTime;
+
         public void Execute(Entity settingsEntity, [ChunkIndexInQuery] int sortIndex, in TerrainDetailGenerationSettings settings)
         {
             var radius = settings.SpawnRadius;
@@ -206,6 +209,16 @@ namespace Arena.Client
                                 {
                                     var cellInstance = Commands.Instantiate(sortIndex, settings.Prefab);
                                     var dir = random.NextFloat2Direction();
+
+                                    if (IsJustInitialized)
+                                    {
+                                        var messageEntity = Commands.CreateEntity(sortIndex, MessageArchetype);
+                                        Commands.AddComponent(sortIndex, messageEntity, new MessageDelay(1.0f / 60));
+                                        Commands.SetComponent(sortIndex, messageEntity, InitializeMessage);
+                                        var messageTargets = Commands.SetBuffer<Targets>(sortIndex, messageEntity);
+                                        messageTargets.Add(new Targets(cellInstance));
+                                        //Debug.Log($"sending init cell msg {InitializeMessage.HashCode}");
+                                    }
                             
                                     var rotation = quaternion.LookRotation(new float3(dir.x, 0, dir.y), math.up());
 
@@ -289,6 +302,7 @@ namespace Arena.Client
         {
             bool hasChangedPosition = false;
             float3 playerPosition = default;
+            bool isJustInitialized = false;
             
             foreach (var (target, lastPosition, transform, pc, entity) 
                      in SystemAPI.Query<
@@ -326,8 +340,13 @@ namespace Arena.Client
                 var cmd = SystemAPI.GetSingleton<GameCommandBufferSystem.Singleton>().CreateCommandBuffer(state.World.Unmanaged);
                 cmd.SetComponent(entity, new TerrainDetailTargetLastPosition
                 {
+                    IsInitialized = true,
                     Value = snapPos
                 });
+                if (lastPosition.ValueRO.IsInitialized == false)
+                {
+                    isJustInitialized = true;
+                }
             }
 
             if (hasChangedPosition == false)
@@ -358,7 +377,10 @@ namespace Arena.Client
                 PhysicsWorld = physicsWorld,
                 TerrainMaterialLookup = terrainMaterialLookup,
                 MessageArchetype = messageArchetype,
-                DestroyMessage = ArenaMessages.DestroyMessage
+                DestroyMessage = ArenaMessages.DestroyMessage,
+                InitializeMessage = ArenaMessages.InitializeMessage,
+                IsJustInitialized = isJustInitialized,
+                //CurrentTime = SystemAPI.Time.ElapsedTime
             };
             state.Dependency = job.ScheduleParallel(state.Dependency);
             state.Dependency = cellChunks.Dispose(state.Dependency);

@@ -54,6 +54,9 @@ MeshRenderer:
   m_ReflectionProbeUsage: 1
   m_RayTracingMode: 2
   m_RayTraceProcedural: 0
+  m_RayTracingAccelStructBuildFlagsOverride: 0
+  m_RayTracingAccelStructBuildFlags: 1
+  m_SmallMeshCulling: 1
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
@@ -142,15 +145,17 @@ MonoBehaviour:
   m_lineSpacingMax: 0
   m_paragraphSpacing: 0
   m_charWidthMaxAdj: 0
-  m_enableWordWrapping: 1
+  m_TextWrappingMode: 1
   m_wordWrappingRatios: 0.4
   m_overflowMode: 0
   m_linkedTextComponent: {fileID: 0}
   parentLinkedComponent: {fileID: 0}
   m_enableKerning: 1
+  m_ActiveFontFeatures: 00000000
   m_enableExtraPadding: 0
   checkPaddingRequired: 0
   m_isRichText: 0
+  m_EmojiFallbackSupport: 1
   m_parseCtrlCharacters: 1
   m_isOrthographic: 0
   m_isCullingEnabled: 0
@@ -259,7 +264,7 @@ PrefabInstance:
       value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 415287891258781815, guid: 0bf51a1bca34e654e921aa8665597d21, type: 3}
-      propertyPath: m_Materials.Array.data[0]
+      propertyPath: 'm_Materials.Array.data[0]'
       value: 
       objectReference: {fileID: 2100000, guid: 2ffa034a2e787644695efe18eb8c090b, type: 2}
     - target: {fileID: 919132149155446097, guid: 0bf51a1bca34e654e921aa8665597d21, type: 3}
@@ -279,7 +284,7 @@ PrefabInstance:
       value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 3099756089343826349, guid: 0bf51a1bca34e654e921aa8665597d21, type: 3}
-      propertyPath: m_Materials.Array.data[0]
+      propertyPath: 'm_Materials.Array.data[0]'
       value: 
       objectReference: {fileID: 2100000, guid: 2ffa034a2e787644695efe18eb8c090b, type: 2}
     - target: {fileID: 5465940246521907071, guid: 0bf51a1bca34e654e921aa8665597d21, type: 3}
@@ -1462,7 +1467,7 @@ MonoBehaviour:
               y: 809638400
               z: 2610783883
               w: 234999937
-        Position: {x: 447, y: 237}
+        Position: {x: 447.3333, y: 236.66667}
         input:
           ID:
             Value:
@@ -1726,7 +1731,7 @@ MonoBehaviour:
               y: 1233300299
               z: 3559476126
               w: 1185609667
-        Position: {x: -1379, y: 419}
+        Position: {x: -1378.6666, y: 418.66666}
         output:
           ID:
             Value:
@@ -1965,7 +1970,7 @@ MonoBehaviour:
               y: 1292516219
               z: 2389908630
               w: 2859012066
-        Position: {x: 7699, y: 73}
+        Position: {x: 7699.3335, y: 72.66667}
         input:
           ID:
             Value:
@@ -2001,7 +2006,7 @@ MonoBehaviour:
               y: 1285281678
               z: 3418541447
               w: 1206539166
-        Position: {x: 2355, y: 215}
+        Position: {x: 2355.3333, y: 214.66667}
         Message:
           m_TableReference:
             m_TableCollectionName: GUID:aad91b28e51f6fc489b46b3d5b4a981a
@@ -2084,7 +2089,7 @@ MonoBehaviour:
               y: 1077986832
               z: 3143810495
               w: 308038022
-        Position: {x: 3252, y: 293}
+        Position: {x: 3252, y: 292.66666}
         Message:
           m_TableReference:
             m_TableCollectionName: GUID:aad91b28e51f6fc489b46b3d5b4a981a
@@ -2161,7 +2166,7 @@ MonoBehaviour:
               y: 1141173353
               z: 440250765
               w: 2321951217
-        Position: {x: 2753, y: 239}
+        Position: {x: 2753.3333, y: 238.66667}
         Message:
           m_TableReference:
             m_TableCollectionName: GUID:aad91b28e51f6fc489b46b3d5b4a981a
@@ -2290,7 +2295,7 @@ MonoBehaviour:
               y: 1174205946
               z: 1841608094
               w: 1693913359
-        Position: {x: 6299, y: 73}
+        Position: {x: 6299.3335, y: 72.66667}
         Message:
           m_TableReference:
             m_TableCollectionName: GUID:aad91b28e51f6fc489b46b3d5b4a981a
@@ -2379,7 +2384,7 @@ MonoBehaviour:
               y: 1144797781
               z: 2733575573
               w: 1229780591
-        Position: {x: 2094, y: -227}
+        Position: {x: 2094, y: -227.33333}
         Message:
           m_TableReference:
             m_TableCollectionName: GUID:aad91b28e51f6fc489b46b3d5b4a981a
@@ -2722,7 +2727,7 @@ MonoBehaviour:
               y: 1323110203
               z: 2792774072
               w: 1962379184
-        Position: {x: 4655, y: 324}
+        Position: {x: 4655.3335, y: 324}
         Message:
           m_TableReference:
             m_TableCollectionName: GUID:aad91b28e51f6fc489b46b3d5b4a981a
@@ -2851,7 +2856,7 @@ MonoBehaviour:
               y: 1313410957
               z: 2886541459
               w: 527097838
-        Position: {x: 5276, y: 465}
+        Position: {x: 5276, y: 464.66666}
         input:
           ID:
             Value:
@@ -2929,7 +2934,7 @@ MonoBehaviour:
               y: 1136157862
               z: 2350834876
               w: 4031076669
-        Position: {x: 5276, y: 193}
+        Position: {x: 5276, y: 192.66667}
         input:
           ID:
             Value:
@@ -3007,7 +3012,7 @@ MonoBehaviour:
               y: 1233325717
               z: 1408691597
               w: 1170349594
-        Position: {x: 4363, y: -25}
+        Position: {x: 4363.3335, y: -25.333332}
         input:
           ID:
             Value:
@@ -3065,7 +3070,7 @@ MonoBehaviour:
               y: 1277778865
               z: 3566176440
               w: 4006476638
-        Position: {x: -533, y: 353}
+        Position: {x: -532.6666, y: 352.66666}
         InputSocket:
           ID:
             Value:
@@ -3127,7 +3132,7 @@ MonoBehaviour:
               y: 1116380742
               z: 1728422536
               w: 1138438691
-        Position: {x: -241, y: 267}
+        Position: {x: -240.66667, y: 266.66666}
         input:
           ID:
             Value:
@@ -3200,7 +3205,7 @@ MonoBehaviour:
               y: 1087506420
               z: 4080200866
               w: 333442190
-        Position: {x: 3525, y: -177}
+        Position: {x: 3525.3333, y: -177.33333}
         input:
           ID:
             Value:
@@ -3370,7 +3375,7 @@ MonoBehaviour:
               y: 1172359816
               z: 2924011705
               w: 2081108707
-        Position: {x: 3210, y: -177}
+        Position: {x: 3210, y: -177.33333}
         InputSocket:
           ID:
             Value:
@@ -3432,7 +3437,7 @@ MonoBehaviour:
               y: 1148857539
               z: 2842564763
               w: 557723598
-        Position: {x: 7278, y: 73}
+        Position: {x: 7278, y: 72.66667}
         input:
           ID:
             Value:
@@ -3475,7 +3480,7 @@ MonoBehaviour:
               y: 1169972205
               z: 1112068515
               w: 3946471400
-        Position: {x: 5668, y: 193}
+        Position: {x: 5668, y: 192.66667}
         input:
           ID:
             Value:
@@ -3531,7 +3536,7 @@ MonoBehaviour:
               y: 1130197682
               z: 1229153417
               w: 3237568449
-        Position: {x: -1215, y: 321}
+        Position: {x: -1214.6667, y: 320.66666}
         input:
           ID:
             Value:
@@ -3582,7 +3587,7 @@ MonoBehaviour:
               y: 1203904131
               z: 544660146
               w: 681668322
-        Position: {x: 1723, y: 528}
+        Position: {x: 1723.3334, y: 528}
         input:
           ID:
             Value:
@@ -3717,7 +3722,7 @@ MonoBehaviour:
               y: 1304780789
               z: 2915347898
               w: 3913212725
-        Position: {x: 2579, y: 547}
+        Position: {x: 2579.3333, y: 546.6667}
         input:
           ID:
             Value:
@@ -3805,7 +3810,7 @@ MonoBehaviour:
                 y: 1136646952
                 z: 3364148636
                 w: 1104874232
-        questKey: {fileID: -8442518551227696366, guid: 709759d6d50fadb4ab72406e658ed872, type: 2}
+        questKey: {fileID: -8715106840094028656, guid: 709759d6d50fadb4ab72406e658ed872, type: 2}
         ProgressSocket:
           ID:
             Value:
@@ -3885,7 +3890,7 @@ MonoBehaviour:
               y: 1139189412
               z: 1245466280
               w: 4075711149
-        Position: {x: 1159, y: 1181}
+        Position: {x: 1159.3334, y: 1180.6666}
         Message:
           m_TableReference:
             m_TableCollectionName: GUID:aad91b28e51f6fc489b46b3d5b4a981a
@@ -4105,7 +4110,7 @@ MonoBehaviour:
               y: 1135079058
               z: 1984235392
               w: 2584599891
-        Position: {x: 1896, y: 1181}
+        Position: {x: 1896, y: 1180.6666}
         input:
           ID:
             Value:
@@ -4178,7 +4183,7 @@ MonoBehaviour:
               y: 1212409561
               z: 1255734675
               w: 2245687144
-        Position: {x: 1601, y: 1181}
+        Position: {x: 1601.3334, y: 1180.6666}
         InputSocket:
           ID:
             Value:
@@ -4376,7 +4381,7 @@ MonoBehaviour:
               y: 1194132717
               z: 2135838621
               w: 1318908205
-        Position: {x: 2603, y: 1722}
+        Position: {x: 2603.3333, y: 1722}
         Message:
           m_TableReference:
             m_TableCollectionName: GUID:aad91b28e51f6fc489b46b3d5b4a981a
@@ -5642,7 +5647,7 @@ MonoBehaviour:
               y: 1144180925
               z: 1084428723
               w: 949826126
-        Position: {x: 2630, y: 1027}
+        Position: {x: 2630, y: 1026.6666}
         input:
           ID:
             Value:
@@ -5701,7 +5706,7 @@ MonoBehaviour:
               y: 1257869993
               z: 3286676401
               w: 1288381047
-        Position: {x: -852, y: 369}
+        Position: {x: -852, y: 368.66666}
         input:
           ID:
             Value:
@@ -6449,7 +6454,7 @@ MonoBehaviour:
               y: 3527950258
               z: 1083736483
               w: 1112830510
-        Position: {x: 2630, y: 1251}
+        Position: {x: 2630, y: 1250.6666}
         input:
           ID:
             Value:
@@ -7875,7 +7880,7 @@ MonoBehaviour:
               y: 1273217561
               z: 566207397
               w: 2989550269
-        Position: {x: 2627, y: 1499}
+        Position: {x: 2627.3333, y: 1498.6666}
         input:
           ID:
             Value:
@@ -8322,7 +8327,7 @@ MonoBehaviour:
               y: 1335656372
               z: 3434024383
               w: 975723697
-        Position: {x: 6799, y: -17}
+        Position: {x: 6799.3335, y: -17.333332}
         Message:
           m_TableReference:
             m_TableCollectionName: GUID:aad91b28e51f6fc489b46b3d5b4a981a

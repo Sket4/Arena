@@ -32,6 +32,8 @@ namespace Arena.Client.UI
         [SerializeField] private Image foodIndicatorCooldown;
         private Entity foodIndicatorEntity;
 
+        [SerializeField] private GameObject characterButtonNotification;
+
         public void SetFoodIndicatorEntity(Entity entity)
         {
             foodIndicatorEntity = entity;
@@ -122,6 +124,8 @@ namespace Arena.Client.UI
                     }
                 }
             }
+            
+            updateCharacterButton();
         }
 
         public Map GetOrCreateMapCamera(Entity targetEntity, EntityManager em)
@@ -335,6 +339,17 @@ namespace Arena.Client.UI
                 mapCamera.Camera.enabled = enable;
             }
             mapCameraEnabledState = enable;
+        }
+
+        public void OnAbilityPointsChanged()
+        {
+            updateCharacterButton();
+        }
+
+        void updateCharacterButton()
+        {
+            var points = GetData<AbilityPoints>();
+            characterButtonNotification.SetActive(points.Count > 0);
         }
     }
 }

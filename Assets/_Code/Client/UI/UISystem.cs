@@ -163,7 +163,20 @@ namespace Arena.Client
                     }
                     
                 }).Run();
+
+            Entities
+                .WithoutBurst()
+                .WithChangeFilter<AbilityPointChangedEvent>().ForEach(() =>
+            {
+                if(uiQuery.TryGetSingleton<GameUI>(out var ui) == false)
+                {
+                    return;
+                }
+
+                ui.HUD.OnAbilityPointsChanged();
+                ui.CharacterUI.UpdateAbilityNotification();
                 
+            }).Run();
             
             Entities
                 .WithStoreEntityQueryInField(ref dialogueQuery)

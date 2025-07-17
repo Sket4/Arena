@@ -199,6 +199,20 @@ namespace Arena
 
                     if (abilityID == request.AbilityID)
                     {
+                        for (int i = 0; i < PlayerAbilities.SlotCount; i++)
+                        {
+                            if (i == request.Slot)
+                            {
+                                continue;
+                            }
+                            var slot = playerAbilities.GetAt(i);
+
+                            if (slot.Ability == abilityInfo.Ability)
+                            {
+                                playerAbilities.ResetAt(i);
+                            }
+                        }
+                        
                         switch (request.Slot)
                         {
                             case 0:

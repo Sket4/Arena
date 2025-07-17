@@ -139,6 +139,8 @@ namespace Arena.Server
                     }
                 }
             }
+            
+            commands.SetComponent(entity, new AbilityPoints { Count = (ushort)data.AbilityData.AbilityPoints });
 
             PlayerAbilities playerAbilities = default;
             playerAbilities.Reset();

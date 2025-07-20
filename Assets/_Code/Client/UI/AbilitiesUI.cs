@@ -88,6 +88,7 @@ namespace Arena.Client.UI
         [SerializeField] private Button slot3_button;
         [SerializeField] private Image slot3_icon;
         [SerializeField] private Sprite emptySlotIcon;
+        [SerializeField] private Color emptySlotColor = Color.chocolate;
 
         Pool<SkillUpgradeUI> skillUpgradeUiPool;
         List<SkillUpgradeUI> activeSkillUiList = new List<SkillUpgradeUI>();
@@ -575,7 +576,25 @@ namespace Arena.Client.UI
                     {
                         newInfo.AbilityUI.Counter.CurrentValue = 0;
                     }
-                    
+
+                    if (HasData<ColorData>(abilityPrefab))
+                    {
+                        Color iconColor;
+                        if (newInfo.AbilityEntity != Entity.Null)
+                        {
+                            iconColor = GetData<ColorData>(newInfo.AbilityEntity).Color;
+                        }
+                        else
+                        {
+                            iconColor = GetData<ColorData>(abilityPrefab).Color;
+                        }
+
+                        skillUI.IconColor = iconColor;
+                    }
+                    else
+                    {
+                        skillUI.IconColor = Color.white;
+                    }
                     skillUI.Icon = GetSharedComponentManaged<AbilityIcon>(abilityPrefab).Sprite;
                     skillUI.Label = GetSharedComponentManaged<ItemName>(abilityPrefab).ToString();
                     
@@ -598,27 +617,43 @@ namespace Arena.Client.UI
                         var playerAbilities = GetData<PlayerAbilities>();
                         if (playerAbilities.Ability1.Ability != Entity.Null)
                         {
+                            var ab = playerAbilities.Ability1.Ability;
+                            slot1_icon.color = HasData<ColorData>(ab)
+                                ? GetData<ColorData>(ab).Color
+                                : Color.white;
+                            
                             slot1_icon.sprite = GetSharedComponentManaged<AbilityIcon>(playerAbilities.Ability1.Ability).Sprite;
                         }
                         else
                         {
                             slot1_icon.sprite = emptySlotIcon;
+                            slot1_icon.color = emptySlotColor;
                         }
                         if (playerAbilities.Ability2.Ability != Entity.Null)
                         {
+                            var ab = playerAbilities.Ability2.Ability;
+                            slot2_icon.color = HasData<ColorData>(ab)
+                                ? GetData<ColorData>(ab).Color
+                                : Color.white;
                             slot2_icon.sprite = GetSharedComponentManaged<AbilityIcon>(playerAbilities.Ability2.Ability).Sprite;
                         }
                         else
                         {
                             slot2_icon.sprite = emptySlotIcon;
+                            slot2_icon.color = emptySlotColor;
                         }
                         if (playerAbilities.Ability3.Ability != Entity.Null)
                         {
+                            var ab = playerAbilities.Ability3.Ability;
+                            slot3_icon.color = HasData<ColorData>(ab)
+                                ? GetData<ColorData>(ab).Color
+                                : Color.white;
                             slot3_icon.sprite = GetSharedComponentManaged<AbilityIcon>(playerAbilities.Ability3.Ability).Sprite;
                         }
                         else
                         {
                             slot3_icon.sprite = emptySlotIcon;
+                            slot3_icon.color = emptySlotColor;
                         }
                     });
                 }

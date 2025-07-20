@@ -57,6 +57,12 @@ namespace Arena.Client.UI
             }
         }
 
+        public Color IconColor
+        {
+            get => icon.color;
+            set => icon.color = value;
+        }
+
         public void OnPushedToPool()
         {
             icon.sprite = null;

@@ -226,26 +226,41 @@ namespace Arena.Client.UI
 
             foreach (var item in itemUiElements)
             {
-	            var passFilter = false;
+	            bool passFilter;
 
 	            if (filter.Count > 0 || excludeFilter.Count > 0)
 	            {
-		            foreach (var type in filter)
-		            {
-			            if (EntityManager.HasComponent(item.ItemEntity, type))
-			            {
-				            passFilter = true;
-				            break;
-			            }
-		            }
-
+		            bool excluded = false;
+		            
 		            foreach (var componentType in excludeFilter)
 		            {
 			            if (EntityManager.HasComponent(item.ItemEntity, componentType))
 			            {
-				            passFilter = false;
+				            excluded = true;
 				            break;
 			            }
+		            }
+
+		            if (excluded)
+		            {
+			            passFilter = false;
+		            }
+					else if (filter.Count > 0)
+		            {
+			            passFilter = false;
+			            
+			            foreach (var type in filter)
+			            {
+				            if (EntityManager.HasComponent(item.ItemEntity, type))
+				            {
+					            passFilter = true;
+					            break;
+				            }
+			            }
+		            }
+		            else
+		            {
+			            passFilter = true;
 		            }
 	            }
 	            else

@@ -93,9 +93,6 @@ PrefabInstance:
       addedObject: {fileID: -5518941661550117249}
     - targetCorrespondingSourceObject: {fileID: 5485270017481130691, guid: 6d97be5c7877f7d43adb4a2de89bce46, type: 3}
       insertIndex: -1
-      addedObject: {fileID: -5340575380525497087}
-    - targetCorrespondingSourceObject: {fileID: 5485270017481130691, guid: 6d97be5c7877f7d43adb4a2de89bce46, type: 3}
-      insertIndex: -1
       addedObject: {fileID: -4929759022368643562}
     - targetCorrespondingSourceObject: {fileID: 5485270017481130691, guid: 6d97be5c7877f7d43adb4a2de89bce46, type: 3}
       insertIndex: -1
@@ -239,21 +236,6 @@ MonoBehaviour:
       x: 0
       y: 0
       z: 0
---- !u!114 &-5340575380525497087
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7076783654523686276}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: fb8d960da6c760e468775cdd55c187ae, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  ConversionTargetOptions: -1
-  Value:
-    Sprite: {fileID: 21300000, guid: d01050f99178c2c4bb06d1ef7388c10b, type: 3}
 --- !u!114 &-4929759022368643562
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -383,7 +365,7 @@ MonoBehaviour:
   ConversionTargetOptions: -1
   isRepeating: 0
   events:
-  - ActivationTime: 0.8
+  - ActivationTime: 0.5
     ExecuteOnlyOnServer: 0
     ExecuteOnlyOnOwner: 0
     ConversionOptions: 7
@@ -536,7 +518,7 @@ MonoBehaviour:
   Value:
     ForwardDirOffset: 0
     RightDirOffset: 0
-    ExecuteOnUpdate: 0
+    ExecuteOnUpdate: 1
 --- !u!114 &7823801270697178767
 MonoBehaviour:
   m_ObjectHideFlags: 0

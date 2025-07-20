@@ -10,6 +10,7 @@ namespace Arena
         [SerializeField] private Sprite defaultIcon;
         [SerializeField] private Image skillIconImage = default;
         [SerializeField] private Image cooldownImage = default;
+        [SerializeField] private Color defaultCooldownTint = Color.gray;
         
         private Entity skillInstance;
         private EntityManager manager;
@@ -41,11 +42,13 @@ namespace Arena
             {
                 if (manager.HasComponent<AbilityDisabledIcon>(newSkill))
                 {
+                    cooldownImage.color = Color.white;
                     cooldownImage.sprite = manager.GetSharedComponentManaged<AbilityDisabledIcon>(newSkill).Sprite;    
                 }
                 else
                 {
-                    Debug.LogError($"Ability does not have an {nameof(AbilityDisabledIcon)} component");
+                    cooldownImage.color = defaultCooldownTint;
+                    cooldownImage.sprite = skillIconImage.sprite;
                 }
             }
         }

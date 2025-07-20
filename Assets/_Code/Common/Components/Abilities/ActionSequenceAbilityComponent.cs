@@ -42,7 +42,8 @@ namespace Arena.Abilities
     [Serializable]
     public struct AbilitySequenceAction : IBufferElementData
     {
-        public float Duration;
+        public float DurationMultiplier;
+        public float ModifiedDuration;
         public float EventActivationTime;
         public bool IsEventsActivated;
         public byte EventCount;
@@ -55,7 +56,7 @@ namespace Arena.Abilities
         [Serializable]
         class AbilitySequenceActionAuthoring
         {
-            public float Duration = 1;
+            public float DurationMultiplier = 1;
             [Range(0,1)]
             public float EventActivationTime = 0.5f;
             public AbilityActionAssetBase[] Actions;
@@ -101,7 +102,7 @@ namespace Arena.Abilities
 
                     var bakedAction = new AbilitySequenceAction
                     {
-                        Duration = sequenceAction.Duration,
+                        DurationMultiplier = sequenceAction.DurationMultiplier,
                         EventActivationTime = sequenceAction.EventActivationTime,
                         EventCount = (byte)sequenceAction.Actions.Length
                     };
@@ -163,7 +164,7 @@ namespace Arena.Abilities
         [ReadOnly]
         public ComponentLookup<PlayerInput> PlayerInputFromEntity;
 
-        [MethodPriority(AbilitySystem.DefaultHighPriority)]
+        [MethodPriority(AbilitySystem.DefaultHighPriority-1)]
         public void OnStarted(ref Duration duration, ref ActionSequenceSharedData sharedData, ref DynamicBuffer<AbilitySequenceAction> actions, ref ActionCaller caller)
         {
             sharedData.LastAcceptedPendingAbilityID = AbilityID.Null;
@@ -173,6 +174,7 @@ namespace Arena.Abilities
             {
                 var sequenceAction = actions[index];
                 sequenceAction.IsEventsActivated = false;
+                sequenceAction.ModifiedDuration = duration.Value * sequenceAction.DurationMultiplier;
                 actions[index] = sequenceAction;
             }
             
@@ -186,14 +188,14 @@ namespace Arena.Abilities
 
             var currentAction = actions[sharedData.CurrentActionIndex];
 
-            if (currentAction.Duration - duration.ElapsedTime < sharedData.NextActionAcceptTimeWindow
+            if (currentAction.ModifiedDuration - duration.ElapsedTime < sharedData.NextActionAcceptTimeWindow
                 && input.PendingAbilityID != AbilityID.Null)
             {
                 // игрок попытался применить некоторое умение (это же самое или другое) ближе к концу текущего шага
                 sharedData.LastAcceptedPendingAbilityID = input.PendingAbilityID;
             }
 
-            if (currentAction.IsEventsActivated == false && duration.ElapsedTime / currentAction.Duration >= currentAction.EventActivationTime)
+            if (currentAction.IsEventsActivated == false && duration.ElapsedTime / currentAction.ModifiedDuration >= currentAction.EventActivationTime)
             {
                 currentAction.IsEventsActivated = true;
                 actions[sharedData.CurrentActionIndex] = currentAction;
@@ -210,7 +212,7 @@ namespace Arena.Abilities
                 }
             }
 
-            if (duration.ElapsedTime < currentAction.Duration)
+            if (duration.ElapsedTime < currentAction.ModifiedDuration)
             {
                 // время текущего действия еще не истекло, ничего не делаем
                 return;
@@ -232,7 +234,7 @@ namespace Arena.Abilities
                 return;
             }
 
-            duration.ElapsedTime -= currentAction.Duration;
+            duration.ElapsedTime -= currentAction.ModifiedDuration;
             
             currentAction = actions[sharedData.CurrentActionIndex];
             abilityControl.StopRequest = false;
@@ -242,7 +244,7 @@ namespace Arena.Abilities
 
         private static void StartAction(in AbilitySequenceAction currentAction, in ActionSequenceSharedData sharedData, ref ActionCaller actionCaller, ref Duration duration)
         {
-            duration.Value = currentAction.Duration;
+            duration.Value = currentAction.ModifiedDuration;
 
             for (int i = 0; i < sharedData.ScriptVizStartEventCount; i++)
             {

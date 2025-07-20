@@ -87,8 +87,6 @@ namespace Arena
             var itemModSystem = gameLoop.AddPreSimGameSystem<ItemModificatorSystem>();
             itemModSystem.RegisterDefaultModificatorJobs();
 
-            gameLoop.AddPreSimGameSystem<CharacteristicSystem>();
-
             var itemActivationGroup = gameLoop.AddGameSystem<ItemActivationSystemGroup>();
             {
                 gameLoop.AddGameSystem<CharacterWearingItemRequestSystem>(itemActivationGroup);
@@ -109,6 +107,7 @@ namespace Arena
                 gameLoop.AddPreSimGameSystem<TzarGames.GameCore.RVO.SimulatorSystem>();
             }
 
+            gameLoop.AddGameSystem<CharacteristicSystem>();
             gameLoop.AddGameSystem<SceneLoaderSystem>();
             gameLoop.AddGameSystem<ItemUsageSystem>();
             gameLoop.AddGameSystem<ItemUsageCheckSystem>();

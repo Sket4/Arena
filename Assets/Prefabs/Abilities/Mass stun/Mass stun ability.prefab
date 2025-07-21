@@ -20,6 +20,8 @@ GameObject:
   - component: {fileID: -1246627903890310970}
   - component: {fileID: -2213923513382241843}
   - component: {fileID: 8404965538640801624}
+  - component: {fileID: -8827191344713650893}
+  - component: {fileID: 1960405094190984186}
   m_Layer: 0
   m_Name: Mass stun ability
   m_TagString: Untagged
@@ -34,12 +36,13 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 4716152116219115689}
+  serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 30.161354, y: -11.060138, z: 42.63218}
   m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &8493525488351666110
 MonoBehaviour:
@@ -53,7 +56,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 63992f4bbcc053b40be550dbfa8e7280, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  ID: {fileID: -65232570095544259, guid: 709759d6d50fadb4ab72406e658ed872, type: 2}
+  ConversionTargetOptions: -1
+  ManualMode: 0
+  ID: {fileID: 1281627135652469530, guid: 709759d6d50fadb4ab72406e658ed872, type: 2}
 --- !u!114 &6005852783396990099
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -66,13 +71,19 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: def8a2210b88299438e27f8302518a77, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  ConversionTargetOptions: -1
   id: 385505ba-66ef-4328-a394-86421dfdea29
   data:
     SetDamage: 1
-    SingleHit: 0
-    UseDirection: 0
-  hitPrefab: {fileID: 8067799000912350131, guid: 709759d6d50fadb4ab72406e658ed872,
-    type: 2}
+    SetTarget: 0
+    SetRotationMode: 0
+    SetRadius: 0
+    SetHeight: 0
+    SetSurfaceType: 0
+    AddHitInstanceToEntityInstanceArray: 0
+    callerId: 0
+    actionId: 0
+  hitPrefab: {fileID: 4852120679683697110, guid: 709759d6d50fadb4ab72406e658ed872, type: 2}
 --- !u!114 &-8076563125173718432
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -85,8 +96,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2184a26a8c05747419ee0ac580840477, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Data:
-    BaseValue: 2
+  ConversionTargetOptions: -1
+  Value:
+    BaseValue: 0
     Value: 0
     ElapsedTime: 0
 --- !u!114 &-1818114303232121514
@@ -101,8 +113,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c007b4403b7be5e4480d377e2fdf9724, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  ConversionTargetOptions: -1
+  isRepeating: 0
   events:
   - ActivationTime: 0.604
+    ExecuteOnlyOnServer: 0
+    ExecuteOnlyOnOwner: 0
+    ConversionOptions: 7
     Actions:
     - {fileID: 6005852783396990099}
 --- !u!114 &-8059834137543074234
@@ -117,6 +134,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f6d90243c16c94ab38d7223d13ec7b20, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  ConversionTargetOptions: -1
   Value:
     Value: 3
 --- !u!114 &-8403955365642505514
@@ -131,6 +149,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 266f9153676b1bb4c9ad6a90639e1056, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  ConversionTargetOptions: -1
   Value:
     Value: 2
 --- !u!114 &-2464453483308869252
@@ -145,6 +164,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7380b83c6b7cba4439b0406930ae919e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  ConversionTargetOptions: -1
   copyOnStart: 1
   copyOnUpdate: 1
   copyRotation: 0
@@ -160,6 +180,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 48153bc3f8338e346841165ac1b6f03c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  ConversionTargetOptions: -1
   Value:
     Time: 5
     Elapsed: 0
@@ -175,9 +196,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d696e2d6024da45eaa65a3a05e3ad47f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  ConversionTargetOptions: -1
   Value:
-    Value: 0
     BaseValue: 0
+    value: 0
 --- !u!114 &-2213923513382241843
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -190,6 +212,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: dcce213e20106c245842acc94fd66588, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  ConversionTargetOptions: -1
   Value:
     Multiplier: 3
 --- !u!114 &8404965538640801624
@@ -204,7 +227,39 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7080abdabcd714f50a781842244250b3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  ConversionTargetOptions: -1
   Value:
     SurfaceType:
       Id: 0
   surfaceType: {fileID: 11400000, guid: e37d05324acaf4964a5657ff0288cace, type: 2}
+--- !u!114 &-8827191344713650893
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4716152116219115689}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d4de39d3a3b0c86418f132c1af4ee94e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ConversionTargetOptions: 5
+  animations: []
+--- !u!114 &1960405094190984186
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4716152116219115689}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c163c30c4a7596d498a62d2043c06c02, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ConversionTargetOptions: -1
+  durationAsAnimDuration: 0
+  useCustomTransitionTime: 0
+  customTransitionTime: 0.2
+  cancelAnimationOnStop: 0

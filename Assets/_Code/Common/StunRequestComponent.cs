@@ -9,11 +9,16 @@ namespace Arena
         public float Duration;
     }
 
+    [System.Serializable]
+    public struct StunDuration : IComponentData
+    {
+        public float Value;
+    }
+
     public struct Stunned : IComponentData
     {
         public bool PendingFinish;
         public bool PendingStart;
-        public float Duration;
         public double StartTime;
         public Entity ModificatorOwner;
     }

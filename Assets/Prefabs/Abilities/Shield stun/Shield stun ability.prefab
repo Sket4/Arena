@@ -72,6 +72,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Shield stun ability
       objectReference: {fileID: 0}
+    - target: {fileID: 5631216334524811211, guid: 6d97be5c7877f7d43adb4a2de89bce46, type: 3}
+      propertyPath: Value.Value
+      value: 1
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -157,6 +161,12 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 5485270017481130691, guid: 6d97be5c7877f7d43adb4a2de89bce46, type: 3}
       insertIndex: -1
       addedObject: {fileID: 6281695829864940077}
+    - targetCorrespondingSourceObject: {fileID: 5485270017481130691, guid: 6d97be5c7877f7d43adb4a2de89bce46, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 3122490238543652390}
+    - targetCorrespondingSourceObject: {fileID: 5485270017481130691, guid: 6d97be5c7877f7d43adb4a2de89bce46, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 847616595701355046}
   m_SourcePrefab: {fileID: 100100000, guid: 6d97be5c7877f7d43adb4a2de89bce46, type: 3}
 --- !u!1 &7076783654523686276 stripped
 GameObject:
@@ -305,7 +315,7 @@ MonoBehaviour:
   Value:
     ActionWhenNoTarget: 1
     UseOwnerTargetPosition: 1
-    WriteToOwnerTargetPositionOnStart: 0
+    WriteToOwnerTargetPositionOnStart: 1
 --- !u!114 &-1999449095365119288
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -320,7 +330,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   ConversionTargetOptions: -1
   Value:
-    Multiplier: 3
+    Multiplier: 1
 --- !u!114 &-1748172958892321914
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -374,6 +384,7 @@ MonoBehaviour:
     ConversionOptions: 7
     Actions:
     - {fileID: 3610557820811004393}
+    - {fileID: 847616595701355046}
 --- !u!114 &1657241675474489730
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -536,7 +547,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   ConversionTargetOptions: -3
   Value:
-    Sprite: {fileID: 21300000, guid: 2aa610ee60963794eaa22cdd1940a421, type: 3}
+    Sprite: {fileID: 21300000, guid: e3808ee372ebf4600b397f54f14868a2, type: 3}
 --- !u!114 &7318463642266579661
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -567,7 +578,7 @@ MonoBehaviour:
   ConversionTargetOptions: -1
   Value:
     AddValue: 1
-    MultiplierByLevel: 0.1
+    MultiplierByLevel: 0.05
     Operator: 0
     FirstLevelIsZero: 1
 --- !u!114 &4869401331342383296
@@ -588,7 +599,7 @@ MonoBehaviour:
       m_TableReference:
         m_TableCollectionName: GUID:aad91b28e51f6fc489b46b3d5b4a981a
       m_TableEntryReference:
-        m_KeyId: 133168567227871232
+        m_KeyId: 135745594163453952
         m_Key: 
       m_FallbackState: 0
       m_WaitForCompletion: 0
@@ -610,4 +621,136 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   ConversionTargetOptions: 5
   Value:
-    Color: {r: 0.9811321, g: 0.18974723, b: 0.26825845, a: 1}
+    Color: {r: 0.7973889, g: 0, b: 0.9716981, a: 1}
+--- !u!114 &3122490238543652390
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7076783654523686276}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 25d87a6b957a60841942c7e71e0c252f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ConversionTargetOptions: -1
+  Graph:
+    rid: 2788797389635059849
+  references:
+    version: 2
+    RefIds:
+    - rid: 2788797389635059849
+      type: {class: ScriptVizGraph, ns: TzarGames.GameCore.ScriptViz.Graph, asm: TzarGames.GameCore}
+      data:
+        pages: []
+        states: []
+        layers:
+        - id: scene
+          pages: []
+          states: []
+          variables: []
+        - id: 425322711f3da6f44b2b013d01e1cd72
+          pages:
+          - ID:
+              Value:
+                Value:
+                  x: 1332481981
+                  y: 1262614115
+                  z: 3335345540
+                  w: 1287944899
+            Name: 
+            ConversionTargetOptions: 7
+            variables:
+            - rid: 2788797400760451198
+            nodes:
+            - rid: 2788797400760451193
+          states: []
+          variables: []
+        Name: 
+    - rid: 2788797400760451193
+      type: {class: AbilityActionEventNode, ns: TzarGames.GameCore.Abilities, asm: Arena.Common}
+      data:
+        ID:
+          Value:
+            Value:
+              x: 611146128
+              y: 2034947460
+              z: 3519791491
+              w: 523634297
+        Position: {x: 583, y: 373}
+        output:
+          ID:
+            Value:
+              Value:
+                x: 2866189995
+                y: 1329713734
+                z: 851222171
+                w: 2691656453
+          ConnectedSocketIDs: []
+        AbilityOwnerSocket:
+          ID:
+            Value:
+              Value:
+                x: 949017750
+                y: 2286597986
+                z: 1838326175
+                w: 1789919420
+          ConnectedSocketIDs: []
+          AuthoringValue: {fileID: 0}
+        DataSocket:
+          ID:
+            Value:
+              Value:
+                x: 2738199058
+                y: 625762315
+                z: 2506904722
+                w: 1293850814
+          ConnectedSocketIDs: []
+        EventIdSocket:
+          ID:
+            Value:
+              Value:
+                x: 1075862788
+                y: 1581598426
+                z: 3348944001
+                w: 2883645062
+          ConnectedSocketIDs: []
+          Value: 0
+        StunDuration:
+          ID:
+            Value:
+              Value:
+                x: 2823321863
+                y: 994600806
+                z: 2974077059
+                w: 3025471591
+          ConnectedSocketIDs: []
+          Value: 0
+    - rid: 2788797400760451198
+      type: {class: DynamicArrayVariable, ns: TzarGames.GameCore.ScriptViz.Graph, asm: TzarGames.GameCore}
+      data:
+        ID:
+          Value:
+            Value:
+              x: 3897500658
+              y: 2907013660
+              z: 273906308
+              w: 3745594347
+        Name: _delayed_commands
+        NetSyncEnabled: 0
+        IsHidden: 1
+--- !u!114 &847616595701355046
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7076783654523686276}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d8c76cadb183b4274b9c4d5c35570d30, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ConversionTargetOptions: -1
+  id: 1b49e4ba-e663-4cc6-9405-3507bf8c6191

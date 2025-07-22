@@ -116,10 +116,15 @@ namespace Arena.Client
                     var targetPosition = SystemAPI.GetComponent<LocalTransform>(hit.Entity);
 
                     var dirToTarget = targetPosition.Position - myPos;
-
+                    
                     dirToTarget = math.normalize(dirToTarget);
 
                     var dp = math.dot(dirToTarget, myDir);
+
+                    if (dp < 0)
+                    {
+                        continue;
+                    }
 
                     if(dp > maxDP)
                     {

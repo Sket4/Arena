@@ -1,5 +1,6 @@
 using TzarGames.GameCore;
 using TzarGames.GameCore.Abilities;
+using Unity.Burst;
 using Unity.Collections;
 using Unity.Entities;
 using Unity.Jobs;
@@ -13,6 +14,8 @@ namespace Arena
     {
         TimeSystem timeSystem;
         GameCommandBufferSystem commandBufferSystem;
+        private BufferLookup<SpeedModificator> speedModsLookup;
+        private BufferLookup<CharacterAbilityBlocker> abilityBlockerLookup;
         Entity stunModificatorEntity;
         EntityQuery speedModificatorQuery;
 
@@ -29,6 +32,8 @@ namespace Arena
             #endif
 
             speedModificatorQuery = GetEntityQuery(typeof(HitBufferElement), ComponentType.ReadOnly<StunRequest>());
+            speedModsLookup = GetBufferLookup<SpeedModificator>();
+            abilityBlockerLookup = GetBufferLookup<CharacterAbilityBlocker>();
         }
 
         protected override void OnUpdate()
@@ -41,7 +46,7 @@ namespace Arena
                 StunRequests = stunRequestsList.AsDeferredJobArray(),
                 HitType = GetBufferTypeHandle<HitBufferElement>(),
                 RequestType = GetComponentTypeHandle<StunRequest>(),
-                Commands = commands,
+                Commands = commands
             };
 
             Entities
@@ -52,17 +57,19 @@ namespace Arena
             }).Schedule();
 
 
+            speedModsLookup.Update(this);
+            abilityBlockerLookup.Update(this);
+            
             var stunUpdateJob = new StunUpdateJob()
             {
                 Commands = commands,
                 CurrentTime = timeSystem.GameTime,
-                StunModificatorEntity = stunModificatorEntity
+                StunModificatorEntity = stunModificatorEntity,
+                SpeedModLookup = speedModsLookup,
+                AbilityBlockerLookup = abilityBlockerLookup
             };
 
-            Entities.ForEach((Entity entity, int entityInQueryIndex, DynamicBuffer<SpeedModificator> speedModificators, DynamicBuffer<CharacterAbilityBlocker> blockModificators, ref Stunned stunned) =>
-            {
-                stunUpdateJob.Execute(entity, entityInQueryIndex, speedModificators, blockModificators, ref stunned);
-            }).Schedule();
+            Dependency = stunUpdateJob.Schedule(Dependency);
 
             commandBufferSystem.AddJobHandleForProducer(Dependency);
         }
@@ -79,6 +86,7 @@ namespace Arena
             {
                 bool added = false;
                 Stunned stunned = default;
+                StunDuration duration = default;
 
                 for(int c=0; c<StunRequests.Length; c++)
                 {
@@ -90,19 +98,21 @@ namespace Arena
                     {
                         var hits = reqBuffers[i];
 
-                        if(ProcessTarget(index, entity, hits, requests[i], out Stunned newStunned))
+                        if(ProcessTarget(index, entity, hits, requests[i], out Stunned newStunned, out var newStunDuration))
                         {
                             if(added)
                             {
-                                if(newStunned.Duration > stunned.Duration)
+                                if(newStunDuration.Value > duration.Value)
                                 {
-                                    stunned.Duration = newStunned.Duration;
+                                    duration.Value = newStunDuration.Value;
+                                    stunned = newStunned;
                                 }
                             }
                             else
                             {
                                 added = true;
                                 stunned = newStunned;
+                                duration = newStunDuration;
                             }
                         }
                     }
@@ -111,10 +121,11 @@ namespace Arena
                 if(added)
                 {
                     Commands.AddComponent(index, entity, stunned);
+                    Commands.AddComponent(index, entity, duration);
                 }
             }
 
-            public bool ProcessTarget(int index, Entity hitTarget, DynamicBuffer<HitBufferElement> hits, StunRequest stun, out Stunned stunned)
+            public bool ProcessTarget(int index, Entity hitTarget, DynamicBuffer<HitBufferElement> hits, StunRequest stun, out Stunned stunned, out StunDuration stunDuration)
             {
                 for(int i=0; i<hits.Length; i++)
                 {
@@ -128,23 +139,30 @@ namespace Arena
                     stunned = new Stunned
                     {
                         PendingStart = true,
-                        Duration = stun.Duration,
+                    };
+                    stunDuration = new StunDuration
+                    {
+                        Value = stun.Duration
                     };
 
                     return true;
                 }
                 stunned = default;
+                stunDuration = default;
                 return false;
             }
         }
+        [BurstCompile]
 
-        struct StunUpdateJob
+        partial struct StunUpdateJob : IJobEntity
         {
             public Entity StunModificatorEntity;
             public double CurrentTime;
             public EntityCommandBuffer.ParallelWriter Commands;
+            public BufferLookup<SpeedModificator> SpeedModLookup;
+            public BufferLookup<CharacterAbilityBlocker> AbilityBlockerLookup;
 
-            public void Execute(Entity entity, int index, DynamicBuffer<SpeedModificator> speedModificators, DynamicBuffer<CharacterAbilityBlocker> blockModificators, ref Stunned stunned)
+            public void Execute(Entity entity, [ChunkIndexInQuery] int index, ref Stunned stunned, in StunDuration stunDuration)
             {
                 if(stunned.PendingStart)
                 {
@@ -152,30 +170,45 @@ namespace Arena
                     stunned.PendingStart = false;
                     stunned.ModificatorOwner = StunModificatorEntity;
 
-                    var speedModificator = new SpeedModificator
+                    if (SpeedModLookup.TryGetBuffer(entity, out var speedMods))
                     {
-                        Value = new CharacteristicModificator
+                        var speedModificator = new SpeedModificator
                         {
-                            Value = 0,
-                            Operator = ModificatorOperators.MULTIPLY_ACTUAL
-                        },
-                        Owner = StunModificatorEntity
-                    };
-                    speedModificators.Add(speedModificator);
+                            Value = new CharacteristicModificator
+                            {
+                                Value = 0,
+                                Operator = ModificatorOperators.MULTIPLY_ACTUAL
+                            },
+                            Owner = StunModificatorEntity
+                        };
+                        speedMods.Add(speedModificator);
+                    }
 
-                    var blockModificator = new CharacterAbilityBlocker
+                    if (AbilityBlockerLookup.TryGetBuffer(entity, out var abilityBlockers))
                     {
-                        Entity = StunModificatorEntity,
-                        ForceStopCurrentAbility = true
-                    };
-                    blockModificators.Add(blockModificator);
+                        var blockModificator = new CharacterAbilityBlocker
+                        {
+                            Entity = StunModificatorEntity,
+                            ForceStopCurrentAbility = true
+                        };
+                        abilityBlockers.Add(blockModificator);    
+                    }
                 }
 
-                if(CurrentTime - stunned.StartTime >= stunned.Duration || stunned.PendingFinish)
+                if(CurrentTime - stunned.StartTime >= stunDuration.Value || stunned.PendingFinish)
                 {
                     Commands.RemoveComponent<Stunned>(index, entity);
-                    IOwnedModificatorExtensions.RemoveModificatorsWithOwner(StunModificatorEntity, speedModificators);
-                    CharacterAbilityBlocker.RemoveFromBuffer(StunModificatorEntity, blockModificators);
+                    Commands.RemoveComponent<StunDuration>(index, entity);
+                    
+                    if (SpeedModLookup.TryGetBuffer(entity, out var speedMods))
+                    {
+                        IOwnedModificatorExtensions.RemoveModificatorsWithOwner(StunModificatorEntity, speedMods);
+                    }
+
+                    if (AbilityBlockerLookup.TryGetBuffer(entity, out var abilityBlockers))
+                    {
+                        CharacterAbilityBlocker.RemoveFromBuffer(StunModificatorEntity, abilityBlockers);
+                    }
                 }
             }
         }

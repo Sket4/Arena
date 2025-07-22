@@ -399,6 +399,7 @@ namespace TzarGames.GameCore.Abilities.Generated
 			var BufferTypeHandleOnAbilityStopEventCommandData = state.GetBufferTypeHandle<TzarGames.GameCore.Abilities.OnAbilityStopEventCommandData>(true);
 			var BufferTypeHandleOnAbilityUpdateEventCommandData = state.GetBufferTypeHandle<TzarGames.GameCore.Abilities.OnAbilityUpdateEventCommandData>(true);
 			var BufferTypeHandleOnAbilityUpdateIdleEventCommandData = state.GetBufferTypeHandle<TzarGames.GameCore.Abilities.OnAbilityUpdateIdleEventCommandData>(true);
+			var BufferTypeHandleEntityInstance = state.GetBufferTypeHandle<TzarGames.GameCore.EntityInstance>(true);
 
 
 
@@ -424,6 +425,7 @@ namespace TzarGames.GameCore.Abilities.Generated
 			job._ScriptVizAbilityJob.StopEventType = BufferTypeHandleOnAbilityStopEventCommandData;
 			job._ScriptVizAbilityJob.UpdateEventType = BufferTypeHandleOnAbilityUpdateEventCommandData;
 			job._ScriptVizAbilityJob.UpdateIdleEventType = BufferTypeHandleOnAbilityUpdateIdleEventCommandData;
+			job._ScriptVizAbilityJob.EntityInstanceArrayType = BufferTypeHandleEntityInstance;
 
 			return job;
 		}
@@ -484,6 +486,7 @@ namespace TzarGames.GameCore.Abilities.Generated
 			job._ScriptVizAbilityJob.StopEventType.Update(ref state);
 			job._ScriptVizAbilityJob.UpdateEventType.Update(ref state);
 			job._ScriptVizAbilityJob.UpdateIdleEventType.Update(ref state);
+			job._ScriptVizAbilityJob.EntityInstanceArrayType.Update(ref state);
 
 		}
 	}

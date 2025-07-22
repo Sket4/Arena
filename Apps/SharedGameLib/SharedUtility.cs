@@ -97,6 +97,7 @@ namespace Arena
                 new CharacterTemplateAbility(21),        // рывок
                 new CharacterTemplateAbility(22),        // круговая атака
                 new CharacterTemplateAbility(172),        // ускорение
+                new CharacterTemplateAbility(175),        // оглушение щитом
             }
         };
 

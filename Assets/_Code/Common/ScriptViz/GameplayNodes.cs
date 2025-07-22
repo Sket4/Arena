@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using JetBrains.Annotations;
 using TzarGames.GameCore;
 using TzarGames.GameCore.Abilities;
 using TzarGames.GameCore.ScriptViz;
@@ -264,6 +265,16 @@ namespace Arena.ScriptViz
             {
                 return "Скрыть сообщение";
             }
+        }
+    }
+
+    [Serializable]
+    [FriendlyName("Стан (G/A/S)")]
+    public class AbilityRequestOperationNode : ComponentOperationNode<StunRequest>
+    {
+        public override string GetNodeName(ScriptVizGraphPage page)
+        {
+            return "Стан";
         }
     }
     

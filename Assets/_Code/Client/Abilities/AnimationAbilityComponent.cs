@@ -14,6 +14,7 @@ namespace Arena.Client.Abilities
         public bool UseAbilityDuration;
         public bool UseCustomTransitionTime;
         public float CustomTransitionTime;
+        public bool IsFightingAnimation;
     }
 
     public struct AnimationAbilityStopComponentData : IComponentData, IAbilityComponentJob<AnimationAbilityComponentStopJob>
@@ -28,6 +29,7 @@ namespace Arena.Client.Abilities
         [SerializeField]
         bool durationAsAnimDuration = false;
 
+        [SerializeField] private bool isFightingAnimation = false;
         [SerializeField] private bool useCustomTransitionTime = false;
         [SerializeField] private float customTransitionTime = 0.2f;
 
@@ -45,7 +47,8 @@ namespace Arena.Client.Abilities
             {
                 UseAbilityDuration = durationAsAnimDuration,
                 UseCustomTransitionTime = useCustomTransitionTime,
-                CustomTransitionTime = customTransitionTime
+                CustomTransitionTime = customTransitionTime,
+                IsFightingAnimation = isFightingAnimation
             });
             if (cancelAnimationOnStop)
             {
@@ -113,8 +116,12 @@ namespace Arena.Client.Abilities
                 Target = abilityOwner.Value,
                 AnimationID = animId,
                 UseTransitionTime = component.UseCustomTransitionTime,
-                TransitionTime = component.CustomTransitionTime
+                TransitionTime = component.CustomTransitionTime,
             });
+            if (component.IsFightingAnimation)
+            {
+                commands.AddComponent(commandBufferIndex, animEvent, new FightingAnimationTag());
+            }
             if(component.UseAbilityDuration && abilityData.HasComponent(DurationType))
             {
                 var duration = abilityData.GetComponent(DurationType);

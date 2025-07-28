@@ -17,6 +17,7 @@ namespace TzarGames.GameCore.Generated
 			ScriptVizCommandRegistry.RegisterCommand(typeof(TzarGames.GameCore.ScriptViz.SetComponentOperationCommand<TzarGames.Rendering.ParticleSystemEmissionState>), TzarGames.GameCore.ScriptViz.SetComponentOperationCommand<TzarGames.Rendering.ParticleSystemEmissionState>.Exec);
 			ScriptVizCommandRegistry.RegisterCommand(typeof(TzarGames.GameCore.ScriptViz.AddComponentOperationCommand<TzarGames.Rendering.ParticleSystemEmissionState>), TzarGames.GameCore.ScriptViz.AddComponentOperationCommand<TzarGames.Rendering.ParticleSystemEmissionState>.Exec);
 			ScriptVizCommandRegistry.RegisterCommand(typeof(TzarGames.GameCore.ScriptViz.RemoveComponentOperationCommand<TzarGames.Rendering.ParticleSystemEmissionState>), TzarGames.GameCore.ScriptViz.RemoveComponentOperationCommand<TzarGames.Rendering.ParticleSystemEmissionState>.Exec);
+			ScriptVizCommandRegistry.RegisterCommand(typeof(Arena.Client.ScriptViz.CameraShakeCommand), Arena.Client.ScriptViz.CameraShakeCommand.Exec);
 		}
 	}
 }

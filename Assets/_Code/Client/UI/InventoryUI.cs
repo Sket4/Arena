@@ -64,7 +64,7 @@ namespace Arena.Client.UI
         protected override void OnVisible()
         {
 	        base.OnVisible();
-            ShowWeapons();
+            ShowAllItems();
 		}
 
         public void ShowAllItems()

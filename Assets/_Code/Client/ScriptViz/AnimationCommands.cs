@@ -79,6 +79,7 @@ namespace Arena.Client.ScriptViz
         public InputEntityVar TargetAnimator;
         public InputVar<float> TransitionTime;
         public InputVar<float> Duration;
+        public bool IsFightingAnimation;
         
         [BurstCompile]
         [AOT.MonoPInvokeCallback(typeof(ScriptVizCommandRegistry.ExecuteDelegate))]
@@ -98,6 +99,10 @@ namespace Arena.Client.ScriptViz
                 UseTransitionTime = true,
                 TransitionTime = transitionTime
             });
+            if (data->IsFightingAnimation)
+            {
+                context.Commands.AddComponent(context.SortIndex, animEvent, new FightingAnimationTag());
+            }
             if(data->Duration.Address.IsValid)
             {
                 var duration = data->Duration.Read(ref context);
@@ -124,6 +129,7 @@ namespace Arena.Client.ScriptViz
         public EntitySocket TargetAnimatorSocket = new();
         
         public AnimationID AnimationID;
+        public bool IsFightingAnimation;
         
         [HideInInspector]
         public FloatSocket TransitionTimeSocket = new(0.2f);
@@ -143,6 +149,7 @@ namespace Arena.Client.ScriptViz
             var cmd = new PlayCharacterAnimationCommand();
             compilerAllocator.InitializeInputVar(ref cmd.TargetAnimator, TargetAnimatorSocket);
             cmd.AnimationID.Address = compilerAllocator.WriteConstantDataAndGetAddress(AnimationID.Id);
+            cmd.IsFightingAnimation = IsFightingAnimation;
             compilerAllocator.InitializeInputVar(ref cmd.TransitionTime, TransitionTimeSocket);
             compilerAllocator.InitializeInputVar(ref cmd.Duration, DurationSocket);
             commandAddress = compilerAllocator.WriteCommand(ref cmd);

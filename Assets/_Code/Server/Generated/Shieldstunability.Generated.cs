@@ -75,11 +75,14 @@ namespace TzarGames.GameCore.Abilities.Generated
 		[NativeDisableContainerSafetyRestriction]
 		[ReadOnly] public ComponentTypeHandle<TzarGames.GameCore.Abilities.ModifyDamageByLevelAbility> ModifyDamageByLevelAbilityType;
 		[NativeDisableContainerSafetyRestriction]
+		[ReadOnly] public ComponentTypeHandle<Arena.Abilities.ArenaRequireItemsData> ArenaRequireItemsDataType;
+		[NativeDisableContainerSafetyRestriction]
 		[ReadOnly] public BufferTypeHandle<TzarGames.GameCore.Abilities.HitQueryAbilityAction> HitQueryAbilityActionType;
 		[NativeDisableContainerSafetyRestriction]
 		[ReadOnly] public BufferTypeHandle<TzarGames.GameCore.Abilities.ArenaAbilityAction> ArenaAbilityActionType;
 
 		public TzarGames.GameCore.Abilities.MoveToTargetAbilityComponentJob _MoveToTargetAbilityComponentJob;
+		public Arena.Abilities.ArenaRequireItemsValidationAbilityJob _ArenaRequireItemsValidationAbilityJob;
 		public TzarGames.GameCore.Abilities.AbilityCooldownJob _AbilityCooldownJob;
 		public TzarGames.GameCore.Abilities.AttackHeightJob _AttackHeightJob;
 		public TzarGames.GameCore.Abilities.ConvertOwnerInputToRotationOnStartAbilityJob _ConvertOwnerInputToRotationOnStartAbilityJob;
@@ -97,8 +100,12 @@ namespace TzarGames.GameCore.Abilities.Generated
 		public TzarGames.GameCore.Abilities.ScriptVizAbilityJob _ScriptVizAbilityJob;
 
 
-		bool Validate(in TzarGames.GameCore.Abilities.AbilityCooldown _AbilityCooldown)
+		bool Validate(in TzarGames.GameCore.Abilities.AbilityOwner _AbilityOwner, in Arena.Abilities.ArenaRequireItemsData _ArenaRequireItemsData, in TzarGames.GameCore.Abilities.AbilityCooldown _AbilityCooldown)
 		{
+			if(_ArenaRequireItemsValidationAbilityJob.OnValidate(in _AbilityOwner, in _ArenaRequireItemsData) == false)
+			{
+				return false;
+			}
 			if(_AbilityCooldownJob.OnValidate(in _AbilityCooldown) == false)
 			{
 				return false;
@@ -136,6 +143,7 @@ namespace TzarGames.GameCore.Abilities.Generated
 			var ConvertOwnerInputToRotationAbilityArray = chunk.GetNativeArray(ref ConvertOwnerInputToRotationAbilityType);
 			var LevelArray = chunk.GetNativeArray(ref LevelType);
 			var ModifyDamageByLevelAbilityArray = chunk.GetNativeArray(ref ModifyDamageByLevelAbilityType);
+			var ArenaRequireItemsDataArray = chunk.GetNativeArray(ref ArenaRequireItemsDataType);
 			var HitQueryAbilityActionAccessor = chunk.GetBufferAccessor(ref HitQueryAbilityActionType);
 			var ArenaAbilityActionAccessor = chunk.GetBufferAccessor(ref ArenaAbilityActionType);
 
@@ -206,9 +214,11 @@ namespace TzarGames.GameCore.Abilities.Generated
 					_ScriptVizAbilityJob.OnIdleUpdate(abilityEntity, unfilteredChunkIndex, in _AbilityOwner, Commands, in abilityInterface, ref _VariableDataByteBuffer, ref _EntityVariableDataBuffer, ref _abilityControl, in _ConstantEntityVariableDataBuffer, ref _ScriptVizState, in _ScriptVizCodeInfo, deltaTime);
 				}
 
+				var _ArenaRequireItemsData = ArenaRequireItemsDataArray[c];
+
 				if(_AbilityState.Value == AbilityStates.WaitingForValidation)
 				{
-					var validateResult = Validate(in _AbilityCooldown);
+					var validateResult = Validate(in _AbilityOwner, in _ArenaRequireItemsData, in _AbilityCooldown);
 					if(validateResult)
 					{
 						_AbilityState.Value = AbilityStates.ValidatedAndWaitingForStart;
@@ -449,6 +459,7 @@ namespace TzarGames.GameCore.Abilities.Generated
 					ComponentType.ReadOnly<TzarGames.GameCore.Abilities.ConvertOwnerInputToRotationAbility>(),
 					ComponentType.ReadOnly<TzarGames.GameCore.Level>(),
 					ComponentType.ReadOnly<TzarGames.GameCore.Abilities.ModifyDamageByLevelAbility>(),
+					ComponentType.ReadOnly<Arena.Abilities.ArenaRequireItemsData>(),
 					ComponentType.ReadOnly<TzarGames.GameCore.Abilities.HitQueryAbilityAction>(),
 					ComponentType.ReadOnly<TzarGames.GameCore.Abilities.ArenaAbilityAction>(),
 				}
@@ -502,6 +513,7 @@ namespace TzarGames.GameCore.Abilities.Generated
 			job.ConvertOwnerInputToRotationAbilityType = state.GetComponentTypeHandle<TzarGames.GameCore.Abilities.ConvertOwnerInputToRotationAbility>(true);
 			job.LevelType = state.GetComponentTypeHandle<TzarGames.GameCore.Level>(true);
 			job.ModifyDamageByLevelAbilityType = state.GetComponentTypeHandle<TzarGames.GameCore.Abilities.ModifyDamageByLevelAbility>(true);
+			job.ArenaRequireItemsDataType = state.GetComponentTypeHandle<Arena.Abilities.ArenaRequireItemsData>(true);
 			job.HitQueryAbilityActionType = state.GetBufferTypeHandle<TzarGames.GameCore.Abilities.HitQueryAbilityAction>(true);
 			job.ArenaAbilityActionType = state.GetBufferTypeHandle<TzarGames.GameCore.Abilities.ArenaAbilityAction>(true);
 
@@ -511,6 +523,7 @@ namespace TzarGames.GameCore.Abilities.Generated
 			var ComponentLookupLocalTransform = state.GetComponentLookup<Unity.Transforms.LocalTransform>(true);
 			var ComponentLookupRadius = state.GetComponentLookup<TzarGames.GameCore.Radius>(true);
 			var ComponentTypeHandleRadius = state.GetComponentTypeHandle<TzarGames.GameCore.Radius>(true);
+			var ComponentLookupCharacterEquipment = state.GetComponentLookup<Arena.CharacterEquipment>(true);
 			var ComponentLookupAttackVerticalOffset = state.GetComponentLookup<TzarGames.GameCore.AttackVerticalOffset>(true);
 			var ComponentLookupDamage = state.GetComponentLookup<TzarGames.GameCore.Damage>(true);
 			var ComponentLookupAttackRadius = state.GetComponentLookup<TzarGames.GameCore.AttackRadius>(true);
@@ -539,6 +552,8 @@ namespace TzarGames.GameCore.Abilities.Generated
 			job._MoveToTargetAbilityComponentJob.TransformFromEntity = ComponentLookupLocalTransform;
 			job._MoveToTargetAbilityComponentJob.RadiusFromEntity = ComponentLookupRadius;
 			job._MoveToTargetAbilityComponentJob.RadiusType = ComponentTypeHandleRadius;
+
+			job._ArenaRequireItemsValidationAbilityJob.EquipmentLookup = ComponentLookupCharacterEquipment;
 
 
 			job._AttackHeightJob.MeleeAttackerFromEntity = ComponentLookupAttackVerticalOffset;
@@ -627,6 +642,7 @@ namespace TzarGames.GameCore.Abilities.Generated
 			job.ConvertOwnerInputToRotationAbilityType.Update(ref state);
 			job.LevelType.Update(ref state);
 			job.ModifyDamageByLevelAbilityType.Update(ref state);
+			job.ArenaRequireItemsDataType.Update(ref state);
 			job.HitQueryAbilityActionType.Update(ref state);
 			job.ArenaAbilityActionType.Update(ref state);
 
@@ -637,6 +653,8 @@ namespace TzarGames.GameCore.Abilities.Generated
 			job._MoveToTargetAbilityComponentJob.TransformFromEntity.Update(ref state);
 			job._MoveToTargetAbilityComponentJob.RadiusFromEntity.Update(ref state);
 			job._MoveToTargetAbilityComponentJob.RadiusType.Update(ref state);
+
+			job._ArenaRequireItemsValidationAbilityJob.EquipmentLookup.Update(ref state);
 
 
 			job._AttackHeightJob.MeleeAttackerFromEntity.Update(ref state);

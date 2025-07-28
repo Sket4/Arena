@@ -108,7 +108,7 @@ namespace Arena
                         SystemAPI.SetComponent(item.Owner, equipment);
                     }
 
-                }).Schedule();
+                }).Run();
 
 
             Entities.ForEach((ref ActivateItemRequest request) =>
@@ -144,7 +144,7 @@ namespace Arena
                     request.State = ActivateItemRequestState.Cancelled;
                 } 
 
-            }).Schedule();
+            }).Run();
 
             bool validate = ValidateWearRequests;
 
@@ -295,7 +295,7 @@ namespace Arena
                     SystemAPI.SetComponent(item.Owner, equipment);
                 }
 
-            }).Schedule();
+            }).Run();
         }
     }
 }

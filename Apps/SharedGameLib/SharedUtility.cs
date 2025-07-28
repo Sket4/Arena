@@ -15,6 +15,7 @@ namespace Arena
         public int ActiveAbility1;
 
         public List<CharacterTemplateAbility> AvailableAbilities;
+        public List<CharacterTemplateAbility> BasicAbilities;
     }
 
     public class CharacterTemplateAbility
@@ -98,6 +99,11 @@ namespace Arena
                 new CharacterTemplateAbility(22),        // круговая атака
                 new CharacterTemplateAbility(172),        // ускорение
                 new CharacterTemplateAbility(175),        // оглушение щитом
+            },
+
+            BasicAbilities = new List<CharacterTemplateAbility>
+            {
+                new CharacterTemplateAbility(177),        // атака с разбега
             }
         };
 
@@ -280,6 +286,11 @@ namespace Arena
 
             addAbility(data, template.AttackAbility, 1);
             addAbility(data, template.ActiveAbility1, 1);
+
+            foreach(var ability in template.BasicAbilities)
+            {
+                addAbility(data, ability.AbilityID, 1);
+            }
         }
 
         static void addAbility(CharacterData data, int typeId, int level)

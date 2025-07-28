@@ -1,6 +1,7 @@
 using System;
 using TzarGames.GameCore;
 using TzarGames.GameCore.Abilities;
+using TzarGames.GameCore.ScriptViz.Graph;
 using Unity.Burst;
 using Unity.Collections;
 using Unity.Entities;
@@ -413,10 +414,7 @@ namespace Arena
                     else
                     {
                         var instance = Commands.Instantiate(request.Prefab);
-                        Commands.AppendToBuffer(target.Value, new AbilityArray
-                        {
-                            AbilityEntity = instance
-                        });
+                        Commands.AppendToBuffer(target.Value, new AbilityArray(request.Request.AbilityID, instance));
                         Commands.SetComponent(instance, new AbilityOwner { Value = target.Value });
                         Commands.SetComponent(instance, new Level
                         {

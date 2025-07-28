@@ -15,6 +15,10 @@ namespace Arena.Client
         public float TransitionTime;
     }
 
+    public struct FightingAnimationTag : IComponentData
+    {
+    }
+
     public struct CharacterAnimationStopEvent : IComponentData
     {
         public Entity Target;
@@ -26,6 +30,7 @@ namespace Arena.Client
     public partial class AnimationSystem : GameSystemBase
     {
         private const int IdleAnimationID = 2;
+        private const int FightingStanceAnimationID = 24;
         private const int RunningAnimationID = 3;
         private const int WalkingAnimationID = 20;
         private const int JumpLoopAnimationID = 22;
@@ -109,6 +114,11 @@ namespace Arena.Client
                     animation.PendingAnimationTransitionTime = -1;
                 }
 
+                if (SystemAPI.HasComponent<FightingAnimationTag>(entity))
+                {
+                    animation.PendingAnimationIsFighting = true;
+                }
+
                 SystemAPI.SetComponent(playEvent.Target, animation);
                 commands.DestroyEntity(entity);
 
@@ -133,6 +143,7 @@ namespace Arena.Client
 
             var bodyLookup = BodyLookup;
             bodyLookup.Update(this);
+            var elapsedTime = SystemAPI.Time.ElapsedTime;
             
             Entities
                 .WithReadOnly(bodyLookup)
@@ -185,10 +196,18 @@ namespace Arena.Client
                             animation.PendingAnimationTransitionTime = -1;
                         }
 
+                        if (animation.PendingAnimationIsFighting)
+                        {
+                            animation.LastFightingAnimationPlayTime = elapsedTime;
+                            animation.PendingAnimationIsFighting = false;
+                        }
+
                         //Debug.Log($"Play anim {animation.CurrentAnimationID} {animation.CurrentAnimationDuration}");
                     }
 
                     var idleAnimIndex = SimpleAnimation.GetClipIndexByID(clipIdToIndexBuffer, IdleAnimationID);
+                    var fightingStanceAnimIndex =
+                        SimpleAnimation.GetClipIndexByID(clipIdToIndexBuffer, FightingStanceAnimationID);
 
                     if (animation.CurrentAnimationID != AnimationID.Invalid)
                     {
@@ -205,7 +224,6 @@ namespace Arena.Client
                                     var clipDuration = animator.GetClipDuration(currentAnimIndex, ref animBuffer);
                                     speedScale = clipDuration / animation.CurrentAnimationDuration;
                                 }
-                                
                                 
                                 transitionDuration = math.min(transitionDuration, transitionDuration / speedScale);
                                 
@@ -318,8 +336,19 @@ namespace Arena.Client
                                     //{
                                     //Debug.Log($"Transiting to idle, fromspd {animator.FromClipSpeed} tospd {animator.ToClipSpeed}, nextspd {1.0f}");
                                     //}
-                                    animator.TransitionTo(idleAnimIndex, transitionDuration, 1.0f, ref animBuffer, false);
-                                    animator.ToClipSpeed = 1.0f;
+                                    
+                                    var fightingStanceTime = elapsedTime - animation.LastFightingAnimationPlayTime;
+                                    
+                                    if (fightingStanceTime < animation.FightingStanceTime && fightingStanceAnimIndex != -1)
+                                    {
+                                        animator.TransitionTo(fightingStanceAnimIndex, transitionDuration, 1.0f, ref animBuffer, false);
+                                        animator.ToClipSpeed = 1.0f;   
+                                    }
+                                    else
+                                    {
+                                        animator.TransitionTo(idleAnimIndex, transitionDuration, 1.0f, ref animBuffer, false);
+                                        animator.ToClipSpeed = 1.0f;    
+                                    }
                                 }
                                 else
                                 {

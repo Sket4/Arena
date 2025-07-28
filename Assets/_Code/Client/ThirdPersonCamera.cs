@@ -1,5 +1,7 @@
+using Arena.Client.ScriptViz;
 using TzarGames.GameCore;
 using TzarGames.Rendering;
+using Unity.Collections;
 using Unity.Entities;
 using Unity.Mathematics;
 using Unity.Physics;
@@ -172,6 +174,7 @@ namespace Arena.Client
     {
         ThirdPersonCamera cameraPrefab;
         private EntityQuery sceneCameraSettingsQuery;
+        private EntityQuery cameraQuery;
         private ComponentLookup<IgnoreCameraCollision> ignoreCollisionLookup;
 
         struct HitCollector : ICollector<ColliderCastHit>
@@ -211,6 +214,7 @@ namespace Arena.Client
             cameraPrefab = ClientGameSettings.Get.CameraPrefab.GetComponent<ThirdPersonCamera>();
             sceneCameraSettingsQuery = GetEntityQuery(ComponentType.ReadOnly<SceneCameraSettings>());
             ignoreCollisionLookup = GetComponentLookup<IgnoreCameraCollision>(true);
+            cameraQuery = GetEntityQuery(ComponentType.ReadOnly<ThirdPersonCamera>());
         }
 
         protected override void OnDestroy()
@@ -475,6 +479,21 @@ namespace Arena.Client
                     camera.DoLateUpdate();
 
                 }).Run();
+
+            var cmd = new EntityCommandBuffer(Allocator.Temp);
+            
+            Entities
+                .WithoutBurst()
+                .WithAll<CameraShakeRequest>()
+                .ForEach((Entity entity) =>
+                {
+                    var camera = cameraQuery.GetSingleton<ThirdPersonCamera>();
+                    camera.ShakeQuick();
+                    cmd.DestroyEntity(entity);
+                
+                }).Run();
+            
+            cmd.Playback(EntityManager);
         }
 
         static void UpdateCamera(ref CameraData cameraData, ref LocalTransform transform)

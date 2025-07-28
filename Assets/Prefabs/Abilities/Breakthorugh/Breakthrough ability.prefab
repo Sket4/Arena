@@ -74,7 +74,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5631216334524811211, guid: 6d97be5c7877f7d43adb4a2de89bce46, type: 3}
       propertyPath: Value.Value
-      value: 3
+      value: 7
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -140,6 +140,9 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 5485270017481130691, guid: 6d97be5c7877f7d43adb4a2de89bce46, type: 3}
       insertIndex: -1
       addedObject: {fileID: 8505060346308930521}
+    - targetCorrespondingSourceObject: {fileID: 5485270017481130691, guid: 6d97be5c7877f7d43adb4a2de89bce46, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: -8912439292298974919}
   m_SourcePrefab: {fileID: 100100000, guid: 6d97be5c7877f7d43adb4a2de89bce46, type: 3}
 --- !u!1 &7076783654523686276 stripped
 GameObject:
@@ -291,6 +294,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   ConversionTargetOptions: -3
   durationAsAnimDuration: 0
+  isFightingAnimation: 1
   useCustomTransitionTime: 1
   customTransitionTime: 0.1
   cancelAnimationOnStop: 1
@@ -340,7 +344,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   ConversionTargetOptions: -3
   Value:
-    Sprite: {fileID: 21300000, guid: 9314e5e726849aa45b93855a3a84a311, type: 3}
+    Sprite: {fileID: 21300000, guid: 0bcc45f6136a6a643a2758e4b4944952, type: 3}
 --- !u!114 &6448743718022639314
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -369,11 +373,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   ConversionTargetOptions: -3
-  prefab: {fileID: 100002, guid: 8c9850c880b58e147b981fd253d1c583, type: 3}
+  prefab: {fileID: 5550126844459338629, guid: d7eb02093f8f25842ac79611cce7e820, type: 3}
   destroyOnStop: 1
-  setTranslation: 0
+  setTranslation: 1
   setRotation: 0
-  setOwnerAsInstigator: 1
+  setOwnerAsInstigator: 0
   parentType: 2
 --- !u!114 &7843766611878215899
 MonoBehaviour:
@@ -389,7 +393,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   ConversionTargetOptions: -3
   animations:
-  - {fileID: 11400000, guid: 716d2f776794eea48b3636612d13a391, type: 2}
+  - {fileID: 11400000, guid: 393bd5ca15429664b8b7fce52c540132, type: 2}
 --- !u!114 &8081495554578976465
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -404,7 +408,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   ConversionTargetOptions: -1
   Value:
-    Value: 1.5
+    Value: 0.6
 --- !u!114 &8844828558227683199
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -479,3 +483,18 @@ MonoBehaviour:
     MultiplierByLevel: 0.2
     Operator: 0
     FirstLevelIsZero: 1
+--- !u!114 &-8912439292298974919
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7076783654523686276}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1e6cca92264446849b381f1b082b5411, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ConversionTargetOptions: 5
+  Value:
+    Color: {r: 0, g: 0.47873163, b: 1, a: 1}

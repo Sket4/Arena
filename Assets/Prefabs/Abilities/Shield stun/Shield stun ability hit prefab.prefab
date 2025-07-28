@@ -18,9 +18,9 @@ GameObject:
   - component: {fileID: -5578895790048936009}
   - component: {fileID: -4106927917717547244}
   - component: {fileID: -4159064303966995558}
-  - component: {fileID: -3214704482040801145}
   - component: {fileID: 4368433737569979986}
   - component: {fileID: 5842127124413283837}
+  - component: {fileID: -9179844938002284692}
   m_Layer: 0
   m_Name: Shield stun ability hit prefab
   m_TagString: Untagged
@@ -180,22 +180,6 @@ MonoBehaviour:
   ConversionTargetOptions: -1
   Value:
     IsProcessed: 0
---- !u!114 &-3214704482040801145
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 696732183080357019}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 51a61881d0a144eaa80fa03ddccc37e4, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  ConversionTargetOptions: -1
-  Value:
-    Id: 0
-  surfaceType: {fileID: 11400000, guid: e37d05324acaf4964a5657ff0288cace, type: 2}
 --- !u!114 &4368433737569979986
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -225,3 +209,800 @@ MonoBehaviour:
   ConversionTargetOptions: -1
   Value:
     Duration: 3
+--- !u!114 &-9179844938002284692
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 696732183080357019}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 25d87a6b957a60841942c7e71e0c252f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ConversionTargetOptions: -1
+  Graph:
+    rid: 6627432235534909614
+  references:
+    version: 2
+    RefIds:
+    - rid: 6627432235534909614
+      type: {class: ScriptVizGraph, ns: TzarGames.GameCore.ScriptViz.Graph, asm: TzarGames.GameCore}
+      data:
+        pages: []
+        states: []
+        layers:
+        - id: scene
+          pages: []
+          states: []
+          variables: []
+        - id: 5707dd4015c028e46be6fcc048f8897d
+          pages:
+          - ID:
+              Value:
+                Value:
+                  x: 3579004203
+                  y: 1217415314
+                  z: 369534368
+                  w: 1354346133
+            Name: 
+            ConversionTargetOptions: 7
+            variables:
+            - rid: 6627432235534909618
+            - rid: 6627432235534909622
+            - rid: 6627432235534909627
+            nodes:
+            - rid: 6627432235534909616
+            - rid: 6627432235534909619
+            - rid: 6627432235534909621
+            - rid: 6627432235534909631
+            - rid: 6627432235534909632
+            - rid: 6627432235534909633
+            - rid: 6627432235534909636
+            - rid: 6627432235534909715
+          states: []
+          variables: []
+        Name: 
+    - rid: 6627432235534909616
+      type: {class: OnHitQueryHitEventNode, ns: TzarGames.GameCore.ScriptViz.Commands, asm: TzarGames.GameCore}
+      data:
+        ID:
+          Value:
+            Value:
+              x: 1890113915
+              y: 1332670409
+              z: 3592971932
+              w: 259427639
+        Position: {x: 727.3333, y: 444}
+        output:
+          ID:
+            Value:
+              Value:
+                x: 2986879888
+                y: 1198962561
+                z: 3528276651
+                w: 867767269
+          ConnectedSocketIDs:
+          - Value:
+              Value:
+                x: 1387577607
+                y: 1137689921
+                z: 1892191911
+                w: 3239654197
+        TargetSocket:
+          ID:
+            Value:
+              Value:
+                x: 3787570616
+                y: 1326852006
+                z: 1548706458
+                w: 4243002639
+          ConnectedSocketIDs: []
+          AuthoringValue: {fileID: 0}
+        InstigatorSocket:
+          ID:
+            Value:
+              Value:
+                x: 4229088005
+                y: 1336626279
+                z: 1507394716
+                w: 1171478878
+          ConnectedSocketIDs: []
+          AuthoringValue: {fileID: 0}
+        HitPositionSocket:
+          ID:
+            Value:
+              Value:
+                x: 3583786933
+                y: 1240024933
+                z: 1581877910
+                w: 1709354770
+          ConnectedSocketIDs:
+          - Value:
+              Value:
+                x: 3424913891
+                y: 1161746029
+                z: 4264819101
+                w: 3429923704
+          - Value:
+              Value:
+                x: 838729816
+                y: 1235260405
+                z: 2774492804
+                w: 647367716
+          Value:
+            x: 0
+            y: 0
+            z: 0
+        HitNormalSocket:
+          ID:
+            Value:
+              Value:
+                x: 1138401174
+                y: 1115607171
+                z: 2517958046
+                w: 657517044
+          ConnectedSocketIDs: []
+          Value:
+            x: 0
+            y: 0
+            z: 0
+    - rid: 6627432235534909618
+      type: {class: AudioClipVariable, ns: TzarGames.GameCore.ScriptViz, asm: TzarGames.GameCore.Client}
+      data:
+        ID:
+          Value:
+            Value:
+              x: 3358793244
+              y: 1131687485
+              z: 3334668735
+              w: 737442162
+        Name: hit clip 1
+        NetSyncEnabled: 0
+        IsHidden: 0
+        AudioClip: {fileID: 8300000, guid: 127fa9f0e488ce340bc163ef21c97683, type: 3}
+    - rid: 6627432235534909619
+      type: {class: GetAudioClipReferenceVarCommandNode, ns: TzarGames.GameCore.ScriptViz, asm: TzarGames.GameCore.Client}
+      data:
+        ID:
+          Value:
+            Value:
+              x: 1896257992
+              y: 1283256144
+              z: 3585596545
+              w: 799172146
+        Position: {x: 926, y: 392.66666}
+        input:
+          ID:
+            Value:
+              Value:
+                x: 1387577607
+                y: 1137689921
+                z: 1892191911
+                w: 3239654197
+          ConnectedSocketIDs:
+          - Value:
+              Value:
+                x: 2986879888
+                y: 1198962561
+                z: 3528276651
+                w: 867767269
+        output:
+          ID:
+            Value:
+              Value:
+                x: 474186195
+                y: 1146357649
+                z: 2730581149
+                w: 2119505532
+          ConnectedSocketIDs:
+          - Value:
+              Value:
+                x: 3532495286
+                y: 1082286906
+                z: 3901996970
+                w: 2530008192
+        getVariableId:
+          Value:
+            Value:
+              x: 3358793244
+              y: 1131687485
+              z: 3334668735
+              w: 737442162
+        WriteOutput:
+          ID:
+            Value:
+              Value:
+                x: 910531513
+                y: 1171516710
+                z: 4175567757
+                w: 4056017742
+          ConnectedSocketIDs:
+          - Value:
+              Value:
+                x: 639438117
+                y: 1167501704
+                z: 3832436906
+                w: 700809285
+          Value:
+            Value:
+              Id:
+                GlobalId:
+                  SceneObjectIdentifier0: 0
+                  SceneObjectIdentifier1: 0
+                  AssetGUID:
+                    Value:
+                      x: 0
+                      y: 0
+                      z: 0
+                      w: 0
+                  IdentifierType: 0
+                GenerationType: 0
+    - rid: 6627432235534909621
+      type: {class: PlayAudioClipNode, ns: TzarGames.GameCore.ScriptViz, asm: TzarGames.GameCore.Client}
+      data:
+        ID:
+          Value:
+            Value:
+              x: 2706478942
+              y: 1216623366
+              z: 2761114538
+              w: 881236810
+        Position: {x: 1228, y: 360}
+        input:
+          ID:
+            Value:
+              Value:
+                x: 3532495286
+                y: 1082286906
+                z: 3901996970
+                w: 2530008192
+          ConnectedSocketIDs:
+          - Value:
+              Value:
+                x: 474186195
+                y: 1146357649
+                z: 2730581149
+                w: 2119505532
+        output:
+          ID:
+            Value:
+              Value:
+                x: 4198774231
+                y: 1311264691
+                z: 1797679493
+                w: 3379856994
+          ConnectedSocketIDs:
+          - Value:
+              Value:
+                x: 4231234197
+                y: 1111270584
+                z: 2250725523
+                w: 644730227
+        Clip:
+          ID:
+            Value:
+              Value:
+                x: 639438117
+                y: 1167501704
+                z: 3832436906
+                w: 700809285
+          ConnectedSocketIDs:
+          - Value:
+              Value:
+                x: 910531513
+                y: 1171516710
+                z: 4175567757
+                w: 4056017742
+          Value:
+            Value:
+              Id:
+                GlobalId:
+                  SceneObjectIdentifier0: 0
+                  SceneObjectIdentifier1: 0
+                  AssetGUID:
+                    Value:
+                      x: 0
+                      y: 0
+                      z: 0
+                      w: 0
+                  IdentifierType: 0
+                GenerationType: 0
+        InstigatorSocket:
+          ID:
+            Value:
+              Value:
+                x: 1382468923
+                y: 1078625136
+                z: 2953562528
+                w: 2115766491
+          ConnectedSocketIDs: []
+          AuthoringValue: {fileID: 0}
+        OutputAudioEventEntitySocket:
+          ID:
+            Value:
+              Value:
+                x: 2865101020
+                y: 1282530097
+                z: 3693074843
+                w: 1518182634
+          ConnectedSocketIDs:
+          - Value:
+              Value:
+                x: 1947166008
+                y: 1197406274
+                z: 1825288581
+                w: 1530837499
+          AuthoringValue: {fileID: 0}
+        DisableAutoDestroy: 0
+        AttachToInstigator: 0
+        Settings:
+          RandomizeVolume: 0
+          MinVolume: 1
+          MaxVolume: 1
+          RandomizePitch: 0
+          MinPitch: 0.05
+          MaxPitch: 1.05
+          Loop: 0
+          SpatializeBlend: 1
+          BypassEffects: 0
+          SetMinDistance: 0
+          MinDistance: 0
+          SetMaxDistance: 0
+          MaxDistance: 0
+        AudioMixerGroup: {fileID: 24300002, guid: 64c795c25d71240459ab99e981490730, type: 2}
+    - rid: 6627432235534909622
+      type: {class: DynamicArrayVariable, ns: TzarGames.GameCore.ScriptViz.Graph, asm: TzarGames.GameCore}
+      data:
+        ID:
+          Value:
+            Value:
+              x: 1909567244
+              y: 1238910147
+              z: 1355021742
+              w: 3976841146
+        Name: _delayed_commands
+        NetSyncEnabled: 0
+        IsHidden: 1
+    - rid: 6627432235534909627
+      type: {class: AudioClipVariable, ns: TzarGames.GameCore.ScriptViz, asm: TzarGames.GameCore.Client}
+      data:
+        ID:
+          Value:
+            Value:
+              x: 3331302745
+              y: 1139588317
+              z: 2403234728
+              w: 1266193336
+        Name: New variable
+        NetSyncEnabled: 0
+        IsHidden: 0
+        AudioClip: {fileID: 8300000, guid: 34099865ba46b6444bfcaf74b6bd7ac0, type: 3}
+    - rid: 6627432235534909631
+      type: {class: PlayAudioClipNode, ns: TzarGames.GameCore.ScriptViz, asm: TzarGames.GameCore.Client}
+      data:
+        ID:
+          Value:
+            Value:
+              x: 3631417671
+              y: 1248738936
+              z: 3411126176
+              w: 3474742600
+        Position: {x: 2447.3333, y: 444}
+        input:
+          ID:
+            Value:
+              Value:
+                x: 2538268936
+                y: 1233577300
+                z: 802672260
+                w: 668389278
+          ConnectedSocketIDs:
+          - Value:
+              Value:
+                x: 697488022
+                y: 1269923346
+                z: 1119629235
+                w: 4253740379
+        output:
+          ID:
+            Value:
+              Value:
+                x: 2955939299
+                y: 1335201807
+                z: 820472765
+                w: 559006756
+          ConnectedSocketIDs:
+          - Value:
+              Value:
+                x: 1699093473
+                y: 1262657632
+                z: 3231927184
+                w: 2933252404
+        Clip:
+          ID:
+            Value:
+              Value:
+                x: 1963700568
+                y: 1241444022
+                z: 42349967
+                w: 3394817785
+          ConnectedSocketIDs:
+          - Value:
+              Value:
+                x: 1257370693
+                y: 1233148679
+                z: 1435480994
+                w: 3891492283
+          Value:
+            Value:
+              Id:
+                GlobalId:
+                  SceneObjectIdentifier0: 0
+                  SceneObjectIdentifier1: 0
+                  AssetGUID:
+                    Value:
+                      x: 0
+                      y: 0
+                      z: 0
+                      w: 0
+                  IdentifierType: 0
+                GenerationType: 0
+        InstigatorSocket:
+          ID:
+            Value:
+              Value:
+                x: 2531829194
+                y: 1282755997
+                z: 3855862916
+                w: 1502511879
+          ConnectedSocketIDs: []
+          AuthoringValue: {fileID: 0}
+        OutputAudioEventEntitySocket:
+          ID:
+            Value:
+              Value:
+                x: 1771168965
+                y: 1309208100
+                z: 2456846228
+                w: 3969095608
+          ConnectedSocketIDs:
+          - Value:
+              Value:
+                x: 4245308727
+                y: 1205735051
+                z: 3252531612
+                w: 4265668687
+          AuthoringValue: {fileID: 0}
+        DisableAutoDestroy: 0
+        AttachToInstigator: 0
+        Settings:
+          RandomizeVolume: 0
+          MinVolume: 1
+          MaxVolume: 1
+          RandomizePitch: 0
+          MinPitch: 0.05
+          MaxPitch: 1.05
+          Loop: 0
+          SpatializeBlend: 1
+          BypassEffects: 0
+          SetMinDistance: 0
+          MinDistance: 0
+          SetMaxDistance: 0
+          MaxDistance: 0
+        AudioMixerGroup: {fileID: 24300002, guid: 64c795c25d71240459ab99e981490730, type: 2}
+    - rid: 6627432235534909632
+      type: {class: SetTransformCommandNode, ns: TzarGames.GameCore.ScriptViz.Graph, asm: TzarGames.GameCore}
+      data:
+        ID:
+          Value:
+            Value:
+              x: 4048213704
+              y: 1280836749
+              z: 2595177912
+              w: 1495817575
+        Position: {x: 1870.6667, y: 408}
+        input:
+          ID:
+            Value:
+              Value:
+                x: 4231234197
+                y: 1111270584
+                z: 2250725523
+                w: 644730227
+          ConnectedSocketIDs:
+          - Value:
+              Value:
+                x: 4198774231
+                y: 1311264691
+                z: 1797679493
+                w: 3379856994
+        output:
+          ID:
+            Value:
+              Value:
+                x: 341215245
+                y: 1240327634
+                z: 2551583678
+                w: 3180720494
+          ConnectedSocketIDs:
+          - Value:
+              Value:
+                x: 541431434
+                y: 1323867610
+                z: 2675997341
+                w: 3810578287
+        Target:
+          ID:
+            Value:
+              Value:
+                x: 1947166008
+                y: 1197406274
+                z: 1825288581
+                w: 1530837499
+          ConnectedSocketIDs:
+          - Value:
+              Value:
+                x: 2865101020
+                y: 1282530097
+                z: 3693074843
+                w: 1518182634
+          AuthoringValue: {fileID: 0}
+        TargetPosition:
+          ID:
+            Value:
+              Value:
+                x: 3424913891
+                y: 1161746029
+                z: 4264819101
+                w: 3429923704
+          ConnectedSocketIDs:
+          - Value:
+              Value:
+                x: 3583786933
+                y: 1240024933
+                z: 1581877910
+                w: 1709354770
+          Value:
+            x: 0
+            y: 0
+            z: 0
+        TargetRotation:
+          ID:
+            Value:
+              Value:
+                x: 613276761
+                y: 1308321172
+                z: 2422834330
+                w: 325154125
+          ConnectedSocketIDs: []
+          Value:
+            value:
+              x: 0
+              y: 0
+              z: 0
+              w: 1
+        TargetScale:
+          ID:
+            Value:
+              Value:
+                x: 3139246029
+                y: 1311681025
+                z: 518723724
+                w: 2447054030
+          ConnectedSocketIDs: []
+          Value: 1
+    - rid: 6627432235534909633
+      type: {class: GetAudioClipReferenceVarCommandNode, ns: TzarGames.GameCore.ScriptViz, asm: TzarGames.GameCore.Client}
+      data:
+        ID:
+          Value:
+            Value:
+              x: 3155652347
+              y: 1181605067
+              z: 3601194156
+              w: 694565189
+        Position: {x: 2228, y: 426.66666}
+        input:
+          ID:
+            Value:
+              Value:
+                x: 541431434
+                y: 1323867610
+                z: 2675997341
+                w: 3810578287
+          ConnectedSocketIDs:
+          - Value:
+              Value:
+                x: 341215245
+                y: 1240327634
+                z: 2551583678
+                w: 3180720494
+        output:
+          ID:
+            Value:
+              Value:
+                x: 697488022
+                y: 1269923346
+                z: 1119629235
+                w: 4253740379
+          ConnectedSocketIDs:
+          - Value:
+              Value:
+                x: 2538268936
+                y: 1233577300
+                z: 802672260
+                w: 668389278
+        getVariableId:
+          Value:
+            Value:
+              x: 3331302745
+              y: 1139588317
+              z: 2403234728
+              w: 1266193336
+        WriteOutput:
+          ID:
+            Value:
+              Value:
+                x: 1257370693
+                y: 1233148679
+                z: 1435480994
+                w: 3891492283
+          ConnectedSocketIDs:
+          - Value:
+              Value:
+                x: 1963700568
+                y: 1241444022
+                z: 42349967
+                w: 3394817785
+          Value:
+            Value:
+              Id:
+                GlobalId:
+                  SceneObjectIdentifier0: 0
+                  SceneObjectIdentifier1: 0
+                  AssetGUID:
+                    Value:
+                      x: 0
+                      y: 0
+                      z: 0
+                      w: 0
+                  IdentifierType: 0
+                GenerationType: 0
+    - rid: 6627432235534909636
+      type: {class: SetTransformCommandNode, ns: TzarGames.GameCore.ScriptViz.Graph, asm: TzarGames.GameCore}
+      data:
+        ID:
+          Value:
+            Value:
+              x: 379976511
+              y: 1271987428
+              z: 3325904517
+              w: 2233873443
+        Position: {x: 3026.6667, y: 474.66666}
+        input:
+          ID:
+            Value:
+              Value:
+                x: 1699093473
+                y: 1262657632
+                z: 3231927184
+                w: 2933252404
+          ConnectedSocketIDs:
+          - Value:
+              Value:
+                x: 2955939299
+                y: 1335201807
+                z: 820472765
+                w: 559006756
+        output:
+          ID:
+            Value:
+              Value:
+                x: 554517935
+                y: 1337978579
+                z: 1377070981
+                w: 1550962236
+          ConnectedSocketIDs:
+          - Value:
+              Value:
+                x: 142744213
+                y: 1241444821
+                z: 4119029659
+                w: 2822929191
+        Target:
+          ID:
+            Value:
+              Value:
+                x: 4245308727
+                y: 1205735051
+                z: 3252531612
+                w: 4265668687
+          ConnectedSocketIDs:
+          - Value:
+              Value:
+                x: 1771168965
+                y: 1309208100
+                z: 2456846228
+                w: 3969095608
+          AuthoringValue: {fileID: 0}
+        TargetPosition:
+          ID:
+            Value:
+              Value:
+                x: 838729816
+                y: 1235260405
+                z: 2774492804
+                w: 647367716
+          ConnectedSocketIDs:
+          - Value:
+              Value:
+                x: 3583786933
+                y: 1240024933
+                z: 1581877910
+                w: 1709354770
+          Value:
+            x: 0
+            y: 0
+            z: 0
+        TargetRotation:
+          ID:
+            Value:
+              Value:
+                x: 2306619350
+                y: 1322563997
+                z: 4269700522
+                w: 540574586
+          ConnectedSocketIDs: []
+          Value:
+            value:
+              x: 0
+              y: 0
+              z: 0
+              w: 1
+        TargetScale:
+          ID:
+            Value:
+              Value:
+                x: 1091279543
+                y: 1180428435
+                z: 4047707270
+                w: 3029281247
+          ConnectedSocketIDs: []
+          Value: 1
+    - rid: 6627432235534909715
+      type: {class: CameraShakeNode, ns: Arena.Client.ScriptViz, asm: Arena.Client}
+      data:
+        ID:
+          Value:
+            Value:
+              x: 4179806400
+              y: 1259129142
+              z: 1248278719
+              w: 3779272960
+        Position: {x: 3441.3333, y: 474.66666}
+        input:
+          ID:
+            Value:
+              Value:
+                x: 142744213
+                y: 1241444821
+                z: 4119029659
+                w: 2822929191
+          ConnectedSocketIDs:
+          - Value:
+              Value:
+                x: 554517935
+                y: 1337978579
+                z: 1377070981
+                w: 1550962236
+        output:
+          ID:
+            Value:
+              Value:
+                x: 101761750
+                y: 1268568434
+                z: 3917998267
+                w: 2080197873
+          ConnectedSocketIDs: []

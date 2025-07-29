@@ -2,12 +2,14 @@
 
 using System;
 using System.Collections;
+using System.Threading.Tasks;
 using TzarGames.Common;
 using TzarGames.Common.UI;
 using TzarGames.GameCore;
 using UniRx;
 using UniRx.Triggers;
 using Unity.Entities;
+using Unity.Entities.Content;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.UI;
@@ -58,6 +60,8 @@ namespace Arena.Client.UI
 		[SerializeField] private EntityEvent onItemUnwear = default;
 		[SerializeField] private EntityEvent onItemSell = default;
 		[SerializeField] private UnityEvent onCannotWear = default;
+
+		[SerializeField] private AudioClip defaultUsageAudio;
 
 		private Button currentTab = null;
 
@@ -121,7 +125,7 @@ namespace Arena.Client.UI
             currentTab = tab;
         }
 
-		public void OnUseClicked()
+		public async void OnUseClicked()
 		{
  			if (LastSelected == null || LastSelected.ItemEntity == Entity.Null)
 			{
@@ -134,6 +138,23 @@ namespace Arena.Client.UI
 			{
 				ItemEntity = LastSelected.ItemEntity
 			});
+
+			AudioClip usageClip = defaultUsageAudio;
+
+			if (HasData<ItemUsageSound>(itemEntity))
+			{
+				var usageData = GetData<ItemUsageSound>(itemEntity);
+				if (usageData.ClipRef.LoadingStatus != ObjectLoadingStatus.Completed)
+				{
+					if (usageData.ClipRef.LoadingStatus == ObjectLoadingStatus.None)
+					{
+						usageData.ClipRef.LoadAsync();
+					}
+					await Task.Yield();
+					usageData.ClipRef.WaitForCompletion();	
+				}
+				usageClip = usageData.ClipRef.Result;
+			}
 
 			Observable
 				.EveryLateUpdate()
@@ -152,7 +173,11 @@ namespace Arena.Client.UI
 				if (req.Status == UseRequestStatus.Success)
 				{
 					RefreshItems();
-					onItemUse.Invoke(itemEntity);	
+					onItemUse.Invoke(itemEntity);
+					if (usageClip)
+					{
+						PlayRandomSound.PlayClip(usageClip);
+					}
 				}
 			});
 		}

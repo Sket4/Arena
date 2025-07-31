@@ -1,13 +1,14 @@
+using TzarGames.GameCore;
 using TzarGames.Rendering;
 using Unity.Burst;
 using Unity.Collections;
 using Unity.Entities;
+using Unity.Transforms;
 
 namespace Arena.Client.Presentation
 {
-    [UpdateInGroup(typeof(PresentationSystemGroup))]
-    [UpdateAfter(typeof(LightProbeSystem))]
-    [UpdateBefore(typeof(RenderingSystem))]
+    [UpdateAfter(typeof(TransformSystemGroup))]
+    [UpdateBefore(typeof(GameCommandBufferSystem))]
     [RequireMatchingQueriesForUpdate]
     [BurstCompile]
     public partial struct CopyAmbientLightSystem : ISystem
@@ -21,12 +22,12 @@ namespace Arena.Client.Presentation
                 AmbientLookup = state.GetComponentLookup<AmbientCubePackedColorsData>(true)
             };
             state.RequireForUpdate<CopyAmbientLight>();
-            state.RequireForUpdate<BeginPresentationEntityCommandBufferSystem.Singleton>();
+            state.RequireForUpdate<GameCommandBufferSystem.Singleton>();
         }
 
         void OnUpdate(ref SystemState state)
         {
-            var cmdBufferSingleton = SystemAPI.GetSingleton<BeginPresentationEntityCommandBufferSystem.Singleton>();
+            var cmdBufferSingleton = SystemAPI.GetSingleton<GameCommandBufferSystem.Singleton>();
             updateJob.AmbientLookup.Update(ref state);
             updateJob.Commands = cmdBufferSingleton.CreateCommandBuffer(state.WorldUnmanaged);
             updateJob.Schedule();
@@ -34,6 +35,7 @@ namespace Arena.Client.Presentation
     }
 
     [BurstCompile]
+    [WithAll(typeof(AmbientCubePackedColorsData))]
     partial struct UpdateJob : IJobEntity
     {
         [ReadOnly]

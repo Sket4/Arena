@@ -1,6 +1,8 @@
 using Arena.GameSceneCode;
 using Arena.Maze;
+using TzarGames.AnimationFramework;
 using TzarGames.GameCore;
+using TzarGames.GameCore.ScriptViz;
 using TzarGames.MatchFramework;
 using TzarGames.MatchFramework.Server;
 using TzarGames.MultiplayerKit;
@@ -69,8 +71,9 @@ namespace Arena.Server
     }
 
     [DisableAutoCreation]
-    [UpdateAfter(typeof(GameSceneSystem))]
+    [UpdateAfter(typeof(ScriptVizSystem))]
     [UpdateBefore(typeof(MessageDispatherCleanSystem))]
+    [UpdateBefore(typeof(AnimationCommandBufferSystem))]
     public partial class ArenaMatchSystem : MatchBaseSystem, IServerArenaCommands, IRpcProcessor
     {
         public static readonly Message MatchFinishedMessage = Message.CreateFromString("match_finished");

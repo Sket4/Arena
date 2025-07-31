@@ -1,4 +1,5 @@
 using Arena.ScriptViz;
+using TzarGames.AnimationFramework;
 using TzarGames.GameCore;
 using TzarGames.GameCore.ScriptViz;
 using Unity.Burst;
@@ -96,6 +97,7 @@ namespace Arena.Maze
     
     [RequireMatchingQueriesForUpdate]
     [UpdateBefore(typeof(GameCommandBufferSystem))]
+    [UpdateBefore(typeof(AnimationCommandBufferSystem))]
     [DisableAutoCreation]
     public partial class ZoneSystem : GameSystemBase
     {

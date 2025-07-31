@@ -4,19 +4,20 @@ using Unity.Mathematics;
 using UnityEngine;
 using AnimationState = TzarGames.AnimationFramework.AnimationState;
 
+//[UpdateBefore(typeof(AnimationSystemGroup))]
+[UpdateInGroup(typeof(SimulationSystemGroup), OrderFirst = true)]
 [UpdateBefore(typeof(AnimationSystemGroup))]
 public partial class SimpleAnimationSystem : SystemBase
 {
     protected override void OnUpdate()
     {
-        CompleteDependency();
+        //CompleteDependency();
 
         float deltaTime = World.Time.DeltaTime;
 
         Entities
             .WithNone<CopyAnimStatesFrom>()
             .ForEach((
-                Entity entity,
                 DynamicBuffer<AnimationState> animStates,
                 ref SimpleAnimation simpleAnimation
                 ) =>

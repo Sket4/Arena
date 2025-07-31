@@ -1,3 +1,4 @@
+using TzarGames.AnimationFramework;
 using TzarGames.GameCore;
 using TzarGames.GameCore.Abilities;
 using Unity.Burst;
@@ -10,6 +11,7 @@ namespace Arena
     [DisableAutoCreation]
     [UpdateAfter(typeof(HitQuerySystem))]
     [UpdateBefore(typeof(DestroyHitSystem))]
+    [UpdateBefore(typeof(AnimationCommandBufferSystem))]
     public partial class StunSystem : SystemBase
     {
         TimeSystem timeSystem;

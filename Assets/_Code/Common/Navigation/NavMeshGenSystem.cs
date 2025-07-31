@@ -32,7 +32,8 @@ namespace Arena
 
     [RequireMatchingQueriesForUpdate]
     [DisableAutoCreation]
-    [UpdateAfter(typeof(TransformSystemGroup))]
+    //[UpdateAfter(typeof(TransformSystemGroup))]
+    [UpdateAfter(typeof(GameCommandBufferSystem))]
     public partial class NavMeshGenSystem : GameSystemBase
     {
         protected override void OnCreate()

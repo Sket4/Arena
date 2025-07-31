@@ -10,6 +10,7 @@ using UnityEngine;
 namespace Arena.Client
 {
     [DisableAutoCreation]
+    [RequireMatchingQueriesForUpdate]
     [UpdateAfter(typeof(AbilitySystem))]
     [UpdateBefore(typeof(SimpleMovementSystem))]
     public partial class AutoAimSystem : GameSystemBase
@@ -20,7 +21,7 @@ namespace Arena.Client
         {
             base.OnCreate();
             targetsQuery = GetEntityQuery(
-                ComponentType.ReadOnly<LocalTransform>(),
+                ComponentType.ReadOnly<LocalToWorld>(),
                 ComponentType.ReadOnly<Height>(),
                 ComponentType.ReadOnly<Group>()
                 );
@@ -38,7 +39,7 @@ namespace Arena.Client
         {
             var otherTargetChunks = CreateArchetypeChunkArray(targetsQuery, Allocator.TempJob);
 
-            var translationType = GetComponentTypeHandle<LocalTransform>(true);
+            var translationType = GetComponentTypeHandle<LocalToWorld>(true);
             var heightType = GetComponentTypeHandle<Height>(true);
             var groupType = GetComponentTypeHandle<Group>(true);
             
@@ -50,6 +51,7 @@ namespace Arena.Client
                 .WithReadOnly(groupType)
                 .WithReadOnly(otherTargetChunks)
                 .WithChangeFilter<AutoAim>()
+                .WithDisposeOnCompletion(otherTargetChunks)
                 .ForEach((Entity entity, ref LocalTransform transform, in HitQuery hitQuery, in Instigator instigator, in AutoAim autoAim) =>
             {
                 if(SystemAPI.HasComponent<Group>(instigator.Value) == false)
@@ -125,9 +127,7 @@ namespace Arena.Client
                     transform.Rotation = quaternion.LookRotation( targetDir, new float3(0,1,0));
                 }
                 
-            }).Run();
-
-            otherTargetChunks.Dispose();
+            }).Schedule();
         }
     }
 }

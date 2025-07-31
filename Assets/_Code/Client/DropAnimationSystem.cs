@@ -8,7 +8,6 @@ namespace Arena.Client
 {
     [RequireMatchingQueriesForUpdate]
     [DisableAutoCreation]
-    [UpdateAfter(typeof(TransformSystemGroup))]
     public partial class DropAnimationSystem : SystemBase
     {
         TimeSystem timeSystem;

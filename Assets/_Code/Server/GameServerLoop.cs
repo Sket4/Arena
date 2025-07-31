@@ -63,7 +63,7 @@ namespace Arena.Server
             AddGameSystem<SceneLoaderServerNotificationSystem>();
 
             // для управления загрузкой игровых сцен
-            AddGameSystem<GameSceneSystem>();
+            AddGameSystem<GameSceneSystem>(initGroup);
             AddGameSystem<ServerGameSceneSystem>();
             
 #if UNITY_EDITOR

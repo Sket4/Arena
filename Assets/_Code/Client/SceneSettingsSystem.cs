@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using TzarGames.AnimationFramework;
 using TzarGames.Rendering;
 using Unity.Entities;
 using Unity.Entities.Content;
@@ -9,6 +10,7 @@ namespace Arena.Client
 {
     [DisableAutoCreation]
     [RequireMatchingQueriesForUpdate]
+    [UpdateBefore(typeof(AnimationCommandBufferSystem))]
     public partial class SceneSettingsSystem : SystemBase
     {
         struct SkyboxMaterialLoading : IComponentData

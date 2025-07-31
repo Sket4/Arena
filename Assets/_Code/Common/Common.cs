@@ -3,6 +3,7 @@ using TzarGames.GameCore;
 using TzarGames.GameCore.Abilities;
 using TzarGames.GameCore.ScriptViz;
 using TzarGames.MultiplayerKit;
+using Unity.Burst;
 using Unity.Collections;
 using Unity.Entities;
 
@@ -108,7 +109,7 @@ namespace Arena
             }
 
             gameLoop.AddGameSystem<CharacteristicSystem>();
-            gameLoop.AddGameSystem<SceneLoaderSystem>();
+            gameLoop.AddGameSystem<SceneLoaderSystem>(gameLoop.World.GetExistingSystemManaged<InitializationSystemGroup>());
             gameLoop.AddGameSystem<ItemUsageSystem>();
             gameLoop.AddGameSystem<ItemUsageCheckSystem>();
             gameLoop.AddGameSystem<ProcessUsedItemRequestSystem>();

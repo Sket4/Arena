@@ -1,3 +1,4 @@
+using TzarGames.AnimationFramework;
 using TzarGames.GameCore;
 using Unity.Burst;
 using Unity.Entities;
@@ -18,6 +19,7 @@ namespace Arena
     [DisableAutoCreation]
     //[UpdateAfter(typeof(TimeSystem))]
     [UpdateBefore(typeof(SpawnerSystem))]
+    [UpdateBefore(typeof(AnimationCommandBufferSystem))]
     public partial class ArenaSpawnerSystem : GameSystemBase
     {
         TimeSystem timeSystem;

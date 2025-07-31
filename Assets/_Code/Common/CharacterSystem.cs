@@ -1,3 +1,4 @@
+using TzarGames.AnimationFramework;
 using TzarGames.GameCore;
 using TzarGames.GameCore.RVO;
 using Unity.CharacterController;
@@ -10,6 +11,7 @@ namespace Arena
 {
     [DisableAutoCreation]
     [UpdateAfter(typeof(ApplyDamageSystem))]
+    [UpdateBefore(typeof(AnimationCommandBufferSystem))]
     public partial class CharacterSystem : GameSystemBase
     {
         private const float minDamageFallHeight = 5;

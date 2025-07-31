@@ -1,4 +1,5 @@
 using System;
+using TzarGames.AnimationFramework;
 using TzarGames.GameCore;
 using Unity.Entities;
 using UnityEngine;
@@ -7,6 +8,7 @@ namespace Arena
 {
     [DisableAutoCreation]
     [UpdateBefore(typeof(UseItemRequestSystem))]
+    [UpdateBefore(typeof(AnimationCommandBufferSystem))]
     public partial class ItemUsageCheckSystem : SystemBase
     {
         protected override void OnCreate()

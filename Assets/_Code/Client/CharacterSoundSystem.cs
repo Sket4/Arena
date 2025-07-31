@@ -1,3 +1,4 @@
+using TzarGames.AnimationFramework;
 using TzarGames.GameCore;
 using TzarGames.GameCore.Client;
 using Unity.Entities;
@@ -8,6 +9,8 @@ namespace Arena.Client
 {
     [DisableAutoCreation]
     [UpdateBefore(typeof(GameCommandBufferSystem))]
+    [UpdateBefore(typeof(AnimationCommandBufferSystem))]
+    [UpdateAfter(typeof(ApplyDamageSystem))]
     public partial class CharacterSoundSystem : GameSystemBase
     {
         protected override void OnSystemUpdate()

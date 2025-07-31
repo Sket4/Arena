@@ -1,3 +1,4 @@
+using TzarGames.AnimationFramework;
 using TzarGames.GameCore;
 using TzarGames.GameCore.Client.Physics;
 using Unity.Collections;
@@ -12,6 +13,7 @@ namespace Arena.Client.Physics
 {
     [UpdateAfter(typeof(ApplyDamageSystem))]
     [UpdateBefore(typeof(DestroyHitSystem))]
+    [UpdateBefore(typeof(AnimationCommandBufferSystem))]
     [DisableAutoCreation]
     public partial class RagdollAndBreakableSystem : GameSystemBase
     {

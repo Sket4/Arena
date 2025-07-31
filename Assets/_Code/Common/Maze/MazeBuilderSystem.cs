@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using TzarGames.AnimationFramework;
 using TzarGames.GameCore;
 using Unity.Burst;
 using Unity.Collections;
@@ -43,6 +44,7 @@ namespace Arena.Maze
     [DisableAutoCreation]
     [RequireMatchingQueriesForUpdate]
     [UpdateBefore(typeof(GameCommandBufferSystem))]
+    [UpdateBefore(typeof(AnimationCommandBufferSystem))]
     public partial class MazeBuilderSystem : GameSystemBase
     {
         EntityArchetype cellArchetype;

@@ -9,6 +9,7 @@ namespace Arena
 {
     [DisableAutoCreation]
     [UpdateAfter(typeof(TransformSystemGroup))]
+    [RequireMatchingQueriesForUpdate]
     public partial class LootObjectSpawnSystem : GameSystemBase
     {
         protected override void OnCreate()
@@ -35,7 +36,7 @@ namespace Arena
                 //UnityEngine.Debug.DrawRay(l2w.Position, math.forward(l2w.Rotation), Color.magenta, 100);
 
                 //UnityEngine.Debug.Log($"Spawning object on position {l2w.Position}");
-            }).Run();
+            }).Schedule();
         }
     }
 }

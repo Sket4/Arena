@@ -1,5 +1,6 @@
 ﻿using System.Threading.Tasks;
 using Arena.Items;
+using TzarGames.AnimationFramework;
 using TzarGames.Common;
 using TzarGames.GameCore;
 using TzarGames.MultiplayerKit;
@@ -11,7 +12,7 @@ using UnityEngine;
 namespace Arena.Client
 {
     [DisableAutoCreation]
-    [UpdateBefore(typeof(GameCommandBufferSystem))]
+    [UpdateBefore(typeof(AnimationCommandBufferSystem))]
     public partial class ClientArenaMatchSystem : GameSystemBase, IRpcProcessor
     {
         public NetworkIdentity NetIdentity { get; set; }

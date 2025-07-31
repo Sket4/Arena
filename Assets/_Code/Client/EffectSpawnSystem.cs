@@ -1,4 +1,5 @@
-﻿using TzarGames.GameCore;
+﻿using TzarGames.AnimationFramework;
+using TzarGames.GameCore;
 using TzarGames.Rendering;
 using Unity.Entities;
 using Unity.Mathematics;
@@ -103,6 +104,8 @@ namespace Arena.Client
 
     [DisableAutoCreation]
     [UpdateBefore(typeof(EventCleanSystem))]
+    [UpdateBefore(typeof(AnimationCommandBufferSystem))]
+    [RequireMatchingQueriesForUpdate]
     partial class LevelUpEffectSpawnSystem : GameSystemBase
     {
         protected override void OnSystemUpdate()

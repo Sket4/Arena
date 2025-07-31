@@ -1,6 +1,7 @@
 ﻿using Arena.ArenaGame;
 using Arena.Client.Physics;
 using Arena.GameSceneCode;
+using TzarGames.AnimationFramework;
 using Unity.CharacterController;
 using TzarGames.GameCore;
 using TzarGames.GameCore.Client;
@@ -47,7 +48,7 @@ namespace Arena.Client
                     gameLoop.AddGameSystem<LocalGameItemPickupSoundSystem>();    
                 }
                 
-                gameLoop.AddGameSystem<DropAnimationSystem>();
+                gameLoop.AddGameSystem<DropAnimationSystem>(presentGroup);
                 gameLoop.AddGameSystem<CharacterAppearanceSystem>();
                 gameLoop.AddGameSystemUnmanaged<CharacterAppearanceNativeSystem>();
 
@@ -62,7 +63,7 @@ namespace Arena.Client
 
             if(isLocalGame)
             {
-                gameLoop.AddGameSystem<GameSceneSystem>();
+                gameLoop.AddGameSystem<GameSceneSystem>(gameLoop.World.GetExistingSystemManaged<InitializationSystemGroup>());
                 gameLoop.AddGameSystem<ArenaPlayerDataLocalStoreSystem>();
             }
 

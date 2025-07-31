@@ -501,7 +501,7 @@ namespace Arena
                     RequestType = GetComponentTypeHandle<GetAimPointRequest>(true),
                 };
 #if TZAR_GAMECORE_THREADS
-                Dependency = getTransformJob.Schedule(Dependency);
+                Dependency = getAimPointJob.Schedule(Dependency);
 #else
                 Dependency.Complete();
                 getAimPointJob.Run();

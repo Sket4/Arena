@@ -30,6 +30,7 @@ namespace Arena
 
     [DisableAutoCreation]
     [UpdateBefore(typeof(GameCommandBufferSystem))]
+    [RequireMatchingQueriesForUpdate]
     public partial class CraftSystem : GameSystemBase
     {
         private EntityArchetype transactionArchetype;

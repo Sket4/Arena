@@ -1,3 +1,4 @@
+using TzarGames.AnimationFramework;
 using TzarGames.GameCore;
 using TzarGames.MatchFramework;
 using TzarGames.MultiplayerKit;
@@ -14,6 +15,7 @@ namespace Arena
     }
     
     [DisableAutoCreation]
+    [UpdateBefore(typeof(AnimationCommandBufferSystem))]
     public partial class DifficultySystem : GameSystemBase
     {
         private EntityQuery changedPlayersQuery;
@@ -65,7 +67,7 @@ namespace Arena
                         ModificatorEntity = SystemAPI.GetSingletonEntity<DifficultyData>(),
                         DifficultyData = diffData
                     };
-                    job.Run(healthModQuery);
+                    Dependency = job.Schedule(healthModQuery, Dependency);
                 }
                 else
                 {
@@ -74,7 +76,7 @@ namespace Arena
                         ModificatorEntity = SystemAPI.GetSingletonEntity<DifficultyData>(),
                         DifficultyData = diffData
                     };
-                    job.Run(healthModOnlyChangedQuery);
+                    Dependency = job.Schedule(healthModOnlyChangedQuery, Dependency);
                 }
             }
             else
@@ -89,11 +91,11 @@ namespace Arena
 
                     if (changedDifficultyDataQuery.IsEmpty)
                     {
-                        job.Run(healthModOnlyChangedQuery);    
+                        Dependency = job.Schedule(healthModOnlyChangedQuery, Dependency);    
                     }
                     else
                     {
-                        job.Run(healthModQuery);
+                        Dependency = job.Schedule(healthModQuery, Dependency);
                     }
                 }
             }

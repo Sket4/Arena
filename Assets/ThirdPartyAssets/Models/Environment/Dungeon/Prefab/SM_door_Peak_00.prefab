@@ -64,10 +64,10 @@ Rigidbody:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 689644902693780017}
-  serializedVersion: 4
+  serializedVersion: 5
   m_Mass: 1
-  m_Drag: 0
-  m_AngularDrag: 0.05
+  m_LinearDamping: 0
+  m_AngularDamping: 0.05
   m_CenterOfMass: {x: 0, y: 0, z: 0}
   m_InertiaTensor: {x: 1, y: 1, z: 1}
   m_InertiaRotation: {x: 0, y: 0, z: 0, w: 1}
@@ -125,7 +125,7 @@ MonoBehaviour:
               w: 0
           IdentifierType: 0
         GenerationType: 0
-  sprite: {fileID: 21300000, guid: fc15fec5aea6a4e7c8d3af67916b7889, type: 3}
+  sprite: {fileID: 21300000, guid: 2696629ae8372444bb464b80f169c446, type: 3}
 --- !u!114 &8115410268176338175
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -153,6 +153,7 @@ MonoBehaviour:
         - id: scene
           pages: []
           states: []
+          variables: []
         - id: f52a8cc59e31e214296bee2a945a81a4
           pages:
           - ID:
@@ -162,6 +163,7 @@ MonoBehaviour:
                   y: 1078527156
                   z: 2484943529
                   w: 3884569630
+            Name: 
             ConversionTargetOptions: 7
             variables:
             - rid: 4958927677326622730
@@ -203,6 +205,7 @@ MonoBehaviour:
                   z: 470410128
                   w: 3002067498
             Name: Closed
+          variables: []
         Name: 
     - rid: 4958927677326622726
       type: {class: InteractionEventNode, ns: Arena.ScriptViz, asm: Arena.Common}
@@ -304,6 +307,7 @@ MonoBehaviour:
               w: 2514406104
         Name: _delayed_commands
         NetSyncEnabled: 0
+        IsHidden: 0
     - rid: 4958927677326622735
       type: {class: IsInStateCheckNode, ns: TzarGames.GameCore.ScriptViz.Graph, asm: TzarGames.GameCore}
       data:
@@ -658,6 +662,7 @@ MonoBehaviour:
           MaxPitch: 1
           Loop: 0
           SpatializeBlend: 1
+          BypassEffects: 0
           SetMinDistance: 0
           MinDistance: 0
           SetMaxDistance: 0
@@ -675,6 +680,7 @@ MonoBehaviour:
               w: 3831317341
         Name: open clip
         NetSyncEnabled: 0
+        IsHidden: 0
         AudioClip: {fileID: 8300000, guid: 99db94b07ca54924e8dc5eb818d7f44d, type: 3}
     - rid: 4958927725170262057
       type: {class: GetAudioClipReferenceVarCommandNode, ns: TzarGames.GameCore.ScriptViz, asm: TzarGames.GameCore.Client}
@@ -765,6 +771,7 @@ MonoBehaviour:
               w: 231952145
         Name: is blocked
         NetSyncEnabled: 0
+        IsHidden: 0
         Value: 0
     - rid: 5272189145556975622
       type: {class: BranchCommandNode, ns: TzarGames.GameCore.ScriptViz.Graph, asm: TzarGames.GameCore}
@@ -937,6 +944,16 @@ MonoBehaviour:
                 z: 600234418
                 w: 1587392816
           ConnectedSocketIDs: []
+        MessageEntityOutSocket:
+          ID:
+            Value:
+              Value:
+                x: 0
+                y: 0
+                z: 0
+                w: 0
+          ConnectedSocketIDs: []
+          AuthoringValue: {fileID: 0}
         OptionalID: door
         Message:
           m_TableReference:
@@ -947,6 +964,7 @@ MonoBehaviour:
           m_FallbackState: 0
           m_WaitForCompletion: 0
           m_LocalVariables: []
+        ShowAlert: 1
     - rid: 5272189145556975636
       type: {class: MessageEventNode, ns: TzarGames.GameCore.ScriptViz.Graph, asm: TzarGames.GameCore}
       data:
@@ -1220,6 +1238,9 @@ MeshRenderer:
   m_ReflectionProbeUsage: 1
   m_RayTracingMode: 2
   m_RayTraceProcedural: 0
+  m_RayTracingAccelStructBuildFlagsOverride: 0
+  m_RayTracingAccelStructBuildFlags: 1
+  m_SmallMeshCulling: 1
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
@@ -1283,7 +1304,7 @@ Transform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!95 &6329054662928245306
 Animator:
-  serializedVersion: 5
+  serializedVersion: 7
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
@@ -1297,6 +1318,7 @@ Animator:
   m_ApplyRootMotion: 0
   m_LinearVelocityBlending: 0
   m_StabilizeFeet: 0
+  m_AnimatePhysics: 0
   m_WarningMessage: 
   m_HasTransformHierarchy: 1
   m_AllowConstantClipSamplingOptimization: 1
@@ -1315,6 +1337,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   ConversionTargetOptions: -1
+  OptionalCopyFrom: {fileID: 0}
   AnimationRoot: {fileID: 0}
   DefaultClipIndex: 0
   Clips:
@@ -1323,15 +1346,19 @@ MonoBehaviour:
     ID: {fileID: 11400000, guid: 53bed7b3c88fcbb478a5626f613a373a, type: 2}
     Loop: 1
     SpeedScale: 1
-    ComputeRootmotionDeltas: 0
     BakeFlags: 0
+    OtherProperties:
+      CustomSourceRigPrefab: {fileID: 0}
+      CustomSourceAvatar: {fileID: 0}
   - Label: Open
     Clip: {fileID: 7400000, guid: 4b5508470a217714092463fe8d240c3f, type: 2}
     ID: {fileID: 11400000, guid: be55cdcd51e83b24bbb9613cedd85585, type: 2}
     Loop: 0
     SpeedScale: 1
-    ComputeRootmotionDeltas: 0
     BakeFlags: 0
+    OtherProperties:
+      CustomSourceRigPrefab: {fileID: 0}
+      CustomSourceAvatar: {fileID: 0}
 --- !u!114 &5076467544314998978
 MonoBehaviour:
   m_ObjectHideFlags: 0

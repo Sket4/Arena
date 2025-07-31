@@ -62,7 +62,7 @@ namespace Arena.Client
                     lt2Ref.ValueRW.Rotation = math.slerp(lt2Ref.ValueRO.Rotation, eyeData.TargetRotation2, delta);
                 }
                 
-            }).Run();
+            }).Schedule();
         }
     }    
 }

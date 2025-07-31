@@ -244,6 +244,9 @@ MeshRenderer:
   m_ReflectionProbeUsage: 1
   m_RayTracingMode: 2
   m_RayTraceProcedural: 0
+  m_RayTracingAccelStructBuildFlagsOverride: 0
+  m_RayTracingAccelStructBuildFlags: 1
+  m_SmallMeshCulling: 1
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
@@ -497,6 +500,9 @@ MeshRenderer:
   m_ReflectionProbeUsage: 1
   m_RayTracingMode: 2
   m_RayTraceProcedural: 0
+  m_RayTracingAccelStructBuildFlagsOverride: 0
+  m_RayTracingAccelStructBuildFlags: 1
+  m_SmallMeshCulling: 1
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
@@ -675,6 +681,9 @@ MeshRenderer:
   m_ReflectionProbeUsage: 1
   m_RayTracingMode: 2
   m_RayTraceProcedural: 0
+  m_RayTracingAccelStructBuildFlagsOverride: 0
+  m_RayTracingAccelStructBuildFlags: 1
+  m_SmallMeshCulling: 1
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
@@ -1411,6 +1420,9 @@ MeshRenderer:
   m_ReflectionProbeUsage: 1
   m_RayTracingMode: 2
   m_RayTraceProcedural: 0
+  m_RayTracingAccelStructBuildFlagsOverride: 0
+  m_RayTracingAccelStructBuildFlags: 1
+  m_SmallMeshCulling: 1
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
@@ -2383,6 +2395,9 @@ MeshRenderer:
   m_ReflectionProbeUsage: 1
   m_RayTracingMode: 2
   m_RayTraceProcedural: 0
+  m_RayTracingAccelStructBuildFlagsOverride: 0
+  m_RayTracingAccelStructBuildFlags: 1
+  m_SmallMeshCulling: 1
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
@@ -3546,6 +3561,9 @@ MeshRenderer:
   m_ReflectionProbeUsage: 1
   m_RayTracingMode: 2
   m_RayTraceProcedural: 0
+  m_RayTracingAccelStructBuildFlagsOverride: 0
+  m_RayTracingAccelStructBuildFlags: 1
+  m_SmallMeshCulling: 1
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
@@ -4007,6 +4025,9 @@ MeshRenderer:
   m_ReflectionProbeUsage: 1
   m_RayTracingMode: 2
   m_RayTraceProcedural: 0
+  m_RayTracingAccelStructBuildFlagsOverride: 0
+  m_RayTracingAccelStructBuildFlags: 1
+  m_SmallMeshCulling: 1
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
@@ -5669,6 +5690,9 @@ SkinnedMeshRenderer:
   m_ReflectionProbeUsage: 1
   m_RayTracingMode: 3
   m_RayTraceProcedural: 0
+  m_RayTracingAccelStructBuildFlagsOverride: 0
+  m_RayTracingAccelStructBuildFlags: 1
+  m_SmallMeshCulling: 1
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
@@ -6017,6 +6041,9 @@ SkinnedMeshRenderer:
   m_ReflectionProbeUsage: 1
   m_RayTracingMode: 3
   m_RayTraceProcedural: 0
+  m_RayTracingAccelStructBuildFlagsOverride: 0
+  m_RayTracingAccelStructBuildFlags: 1
+  m_SmallMeshCulling: 1
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
@@ -6399,6 +6426,9 @@ MeshRenderer:
   m_ReflectionProbeUsage: 1
   m_RayTracingMode: 2
   m_RayTraceProcedural: 0
+  m_RayTracingAccelStructBuildFlagsOverride: 0
+  m_RayTracingAccelStructBuildFlags: 1
+  m_SmallMeshCulling: 1
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
@@ -6487,15 +6517,17 @@ MonoBehaviour:
   m_lineSpacingMax: 0
   m_paragraphSpacing: 0
   m_charWidthMaxAdj: 0
-  m_enableWordWrapping: 1
+  m_TextWrappingMode: 1
   m_wordWrappingRatios: 0.4
   m_overflowMode: 0
   m_linkedTextComponent: {fileID: 0}
   parentLinkedComponent: {fileID: 0}
   m_enableKerning: 1
+  m_ActiveFontFeatures: 00000000
   m_enableExtraPadding: 0
   checkPaddingRequired: 0
   m_isRichText: 0
+  m_EmojiFallbackSupport: 1
   m_parseCtrlCharacters: 1
   m_isOrthographic: 0
   m_isCullingEnabled: 0
@@ -6811,7 +6843,7 @@ PrefabInstance:
       value: 0.3728397
       objectReference: {fileID: 0}
     - target: {fileID: -5259649333815654885, guid: f78a7d160df1c9b4dbd66bb00f2460c9, type: 3}
-      propertyPath: m_Materials.Array.data[0]
+      propertyPath: 'm_Materials.Array.data[0]'
       value: 
       objectReference: {fileID: 2100000, guid: 319c4e9fe7482034fa46ff9ce9b5f08c, type: 2}
     - target: {fileID: -5216370911713760403, guid: f78a7d160df1c9b4dbd66bb00f2460c9, type: 3}
@@ -6911,11 +6943,11 @@ PrefabInstance:
       value: -0.081268854
       objectReference: {fileID: 0}
     - target: {fileID: -622315195186596709, guid: f78a7d160df1c9b4dbd66bb00f2460c9, type: 3}
-      propertyPath: m_Materials.Array.data[0]
+      propertyPath: 'm_Materials.Array.data[0]'
       value: 
       objectReference: {fileID: 2100000, guid: 319c4e9fe7482034fa46ff9ce9b5f08c, type: 2}
     - target: {fileID: -449617360455886377, guid: f78a7d160df1c9b4dbd66bb00f2460c9, type: 3}
-      propertyPath: m_Materials.Array.data[0]
+      propertyPath: 'm_Materials.Array.data[0]'
       value: 
       objectReference: {fileID: 2100000, guid: 5e81603009d987b4da55e5980c9d8a78, type: 2}
     - target: {fileID: 514013618435479783, guid: f78a7d160df1c9b4dbd66bb00f2460c9, type: 3}
@@ -7031,7 +7063,7 @@ PrefabInstance:
       value: -0.011997077
       objectReference: {fileID: 0}
     - target: {fileID: 2541853492542060057, guid: f78a7d160df1c9b4dbd66bb00f2460c9, type: 3}
-      propertyPath: m_Materials.Array.data[0]
+      propertyPath: 'm_Materials.Array.data[0]'
       value: 
       objectReference: {fileID: 2100000, guid: 5e81603009d987b4da55e5980c9d8a78, type: 2}
     - target: {fileID: 2645372944606226887, guid: f78a7d160df1c9b4dbd66bb00f2460c9, type: 3}
@@ -7183,7 +7215,7 @@ PrefabInstance:
       value: -0.05453967
       objectReference: {fileID: 0}
     - target: {fileID: 8997401986674049776, guid: f78a7d160df1c9b4dbd66bb00f2460c9, type: 3}
-      propertyPath: m_Materials.Array.data[0]
+      propertyPath: 'm_Materials.Array.data[0]'
       value: 
       objectReference: {fileID: 2100000, guid: 319c4e9fe7482034fa46ff9ce9b5f08c, type: 2}
     m_RemovedComponents: []
@@ -7477,12 +7509,16 @@ MonoBehaviour:
     PendingAnimationID: 0
     PendingAnimationDuration: 0
     PendingAnimationTransitionTime: 0
+    PendingAnimationIsFighting: 0
+    LastFightingAnimationPlayTime: 0
     CurrentAnimationID: 0
     CurrentAnimationDuration: 0
+    FightingStanceTime: 0
     DefaultRunningVelocity: 0
     MaxWalkingVelocity: 0
   Animator: {fileID: 1481729965734692194}
   DefaultRunningVelocity: 4
+  FightingStanceTime: 4
   MaxWalkingVelocity: 1
 --- !u!114 &874018182312922045
 MonoBehaviour:
@@ -9347,7 +9383,7 @@ MonoBehaviour:
               w: 0
           IdentifierType: 0
         GenerationType: 0
-  sprite: {fileID: 21300000, guid: 2f1eaeeaad36ee5469eff7ff158f37ba, type: 3}
+  sprite: {fileID: 21300000, guid: 6af8a75a2cb1a4dc795ee88de3f6a0a6, type: 3}
 --- !u!114 &915361096448470580
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -9586,7 +9622,7 @@ PrefabInstance:
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 3389292710102646617, guid: 2b900d7c67e75314e867e1a5e81d209a, type: 3}
-      propertyPath: m_Animations.Array.data[0]
+      propertyPath: 'm_Animations.Array.data[0]'
       value: 
       objectReference: {fileID: 7400000, guid: 794cebe995dab0f48927e60175908639, type: 2}
     - target: {fileID: 3914530788172405013, guid: 2b900d7c67e75314e867e1a5e81d209a, type: 3}

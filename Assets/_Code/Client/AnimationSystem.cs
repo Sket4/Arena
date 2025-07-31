@@ -85,7 +85,7 @@ namespace Arena.Client
                 animation.TransitionTo(index, 0, 1.0f, ref animStates, true);
                 SystemAPI.SetComponent(target.Value, animation);
 
-            }).Run();
+            }).Schedule();
         }
 
         private void updateCharacterAnimation(EntityCommandBuffer commands)
@@ -122,7 +122,7 @@ namespace Arena.Client
                 SystemAPI.SetComponent(playEvent.Target, animation);
                 commands.DestroyEntity(entity);
 
-            }).Run();
+            }).Schedule();
 
             Entities.ForEach((Entity entity, in CharacterAnimationStopEvent playEvent) =>
             {
@@ -139,7 +139,7 @@ namespace Arena.Client
                 SystemAPI.SetComponent(playEvent.Target, animation);
                 commands.DestroyEntity(entity);
 
-            }).Run();
+            }).Schedule();
 
             var bodyLookup = BodyLookup;
             bodyLookup.Update(this);
@@ -359,7 +359,7 @@ namespace Arena.Client
                     }
                     SystemAPI.SetComponent(animation.AnimatorEntity, animator);
 
-                }).Run();
+                }).Schedule();
         }
     }
 }

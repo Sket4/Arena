@@ -16,7 +16,9 @@ namespace Arena.Client
             var collisionWorld = SystemAPI.GetSingleton<PhysicsWorldSingleton>().CollisionWorld;
             EntityCommandBuffer.ParallelWriter commands = CreateEntityCommandBufferParallel();
 
-            Entities.ForEach((Entity entity, int entityInQueryIndex, in EnemyDetectionSettings enemyDetectionSettings, in Group group, in EnemyDetectionData enemyDetectionData, in LocalTransform transform) =>
+            Entities
+                .WithReadOnly(collisionWorld)
+                .ForEach((Entity entity, int entityInQueryIndex, in EnemyDetectionSettings enemyDetectionSettings, in Group group, in EnemyDetectionData enemyDetectionData, in LocalTransform transform) =>
             {
                 var cfilter = CollisionFilter.Default;
                 cfilter.CollidesWith = enemyDetectionSettings.TraceLayers;
@@ -80,7 +82,7 @@ namespace Arena.Client
                     commands.SetComponent(entityInQueryIndex, entity, data);
                 }
 
-            }).Run();
+            }).ScheduleParallel();
         }
     }
 }

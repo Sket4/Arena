@@ -79,7 +79,7 @@ namespace Arena.Client
 
                 }).Run();
             
-            new InputJob().Run();
+            new InputJob().Schedule();
         }
     }
 }

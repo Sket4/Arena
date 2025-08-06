@@ -8,6 +8,8 @@ namespace Arena.Client.UI.MainMenu
         [SerializeField]
         Toggle shadows = default;
 
+        [SerializeField] private Toggle fpsLimit = default;
+
         [SerializeField]
         private TMPro.TMP_Dropdown qualityDropdown;
 
@@ -19,6 +21,7 @@ namespace Arena.Client.UI.MainMenu
             base.OnVisible();
             qualityDropdown.value = (int)AppSettings.GraphicsSettings.Quality;
             shadows.isOn = AppSettings.GraphicsSettings.Shadows;
+            fpsLimit.isOn = AppSettings.GraphicsSettings.FpsLimit;
         }
 
         public void OnQualityChanged(int val)
@@ -29,6 +32,11 @@ namespace Arena.Client.UI.MainMenu
         public void OnShadowEnabledChanged(bool enabled)
         {
             AppSettings.GraphicsSettings.Shadows = enabled;
+        }
+
+        public void OnFpsLimitEnabled(bool enabled)
+        {
+            AppSettings.GraphicsSettings.FpsLimit = enabled;
         }
     }
 }

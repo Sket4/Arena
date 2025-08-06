@@ -102,13 +102,13 @@ namespace Arena.Client.Physics
 
                     }
 
-                }).Run();
+                }).Schedule();
             }
 
             if(deathRagdollsQuery.CalculateEntityCount() > 0)
             {
                 var ragdollBones = GetBufferLookup<RagdollBoneEntity>(true);
-                var jointPairs = CreateArchetypeChunkArrayWithUpdateAllocator(physicsJointBodyPairsQuery);
+                var jointPairs = CreateArchetypeChunkArray(physicsJointBodyPairsQuery, Allocator.TempJob);
                 var entityType = GetEntityTypeHandle();
                 var pairType = GetComponentTypeHandle<PhysicsConstrainedBodyPair>(true);
 
@@ -116,6 +116,9 @@ namespace Arena.Client.Physics
                 .WithStoreEntityQueryInField(ref deathRagdollsQuery)
                 //.WithStructuralChanges()
                 //.WithoutBurst()
+                .WithDisposeOnCompletion(jointPairs)
+                .WithReadOnly(jointPairs)
+                .WithReadOnly(pairType)
                 .WithChangeFilter<DeathData>()
                 .ForEach((Entity entity, in DeathData deathData, in CharacterAnimation characterAnimation, in LivingState livingState) =>
                 {
@@ -235,7 +238,7 @@ namespace Arena.Client.Physics
                         animStates[i] = state;
                     }
 
-                }).Run();
+                }).Schedule();
             }
 
             //var ifTriggerPressed = UnityEngine.InputSystem.Keyboard.current.spaceKey.wasPressedThisFrame;

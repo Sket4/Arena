@@ -56,7 +56,7 @@ namespace Arena.Client
         protected override void Start()
         {
             base.Start();
-            Application.targetFrameRate = 60;
+            AppSettings.GraphicsSettings.AdjustFpsLimit();
             Debug.Log($"Graphics device type: {SystemInfo.graphicsDeviceType}");
         }
 

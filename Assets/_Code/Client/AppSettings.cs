@@ -74,8 +74,9 @@ namespace Arena
 
         public static class GraphicsSettings
         {
-            private const string QUALITY = "TOTAL_GRAPHICS_QUALITY";
-            private const string SHADOWS = "TOTAL_GRAPHICS_SHADOWS";
+            private const string QUALITY = "ARENA_GRAPHICS_QUALITY";
+            private const string SHADOWS = "ARENA_GRAPHICS_SHADOWS";
+            private const string FPSLIMIT = "ARENA_GRAPHICS_SHADOWS";
 
             [ConsoleCommand]
             public static void SetLowQuality()
@@ -132,6 +133,31 @@ namespace Arena
                     Adjust();
                 }
             }
+            
+            public static bool FpsLimit
+            {
+	            get
+	            {
+		            return PlayerPrefs.GetInt(FPSLIMIT, 1) > 0;
+	            }
+	            set
+	            {
+		            PlayerPrefs.SetInt(FPSLIMIT, value ? 1 : 0);
+		            AdjustFpsLimit();
+	            }
+            }
+
+            public static void AdjustFpsLimit()
+            {
+	            if (FpsLimit)
+	            {
+		            Application.targetFrameRate = 30;
+	            }
+	            else
+	            {
+		            Application.targetFrameRate = 60;
+	            }
+            }
 
             [RuntimeInitializeOnLoadMethod]
             public static void Adjust()
@@ -166,6 +192,8 @@ namespace Arena
                 QualitySettings.SetQualityLevel((int)quality);
                 
                 DGX.SRP.RenderPipeline.EnableShadows(Shadows);
+                
+                AdjustFpsLimit();
             }
         }
 	}

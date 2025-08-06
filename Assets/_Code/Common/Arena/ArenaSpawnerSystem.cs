@@ -1,6 +1,7 @@
 using TzarGames.AnimationFramework;
 using TzarGames.GameCore;
 using Unity.Burst;
+using Unity.Collections;
 using Unity.Entities;
 using UnityEngine;
 
@@ -53,7 +54,7 @@ namespace Arena
             
             var currentTime = timeSystem.GameTime;
             var commands = CreateEntityCommandBufferParallel();
-            var spawnedChunks = CreateArchetypeChunkArrayWithUpdateAllocator(spawnedQuery);
+            var spawnedChunks = CreateArchetypeChunkArray(spawnedQuery, Allocator.TempJob);
             var spawnedType = GetComponentTypeHandle<SpawnedBy>(true);
             var livingStateType = GetComponentTypeHandle<LivingState>(true);
             var entityType = GetEntityTypeHandle();
@@ -183,8 +184,8 @@ namespace Arena
                 //commands.AddComponent(nativeThreadIndex, requestEntity, new AllocateIdRequest());
 
             }).Run();
-            
-            
+
+            Dependency = spawnedChunks.Dispose(Dependency);
 
             Entities
                 .WithChangeFilter<SpawnedBy>()

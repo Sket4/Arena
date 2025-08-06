@@ -33,7 +33,6 @@ namespace Arena.Client.UI.MainMenu
         private GameObject rateButton = default;
 
         private Entity currentCharacterEntity = Entity.Null;
-        private CharacterData currentCharacter = null;
 
 	    void setSocialAuthenticating(bool on)
 	    {
@@ -58,37 +57,22 @@ namespace Arena.Client.UI.MainMenu
 
                 var selectedCharacter = GameState.Instance.SelectedCharacter;
 
-                if (utilSystem.EntityManager.Exists(currentCharacterEntity)
-                    && utilSystem.EntityManager.HasComponent<Disabled>(currentCharacterEntity))
+                if (currentCharacterEntity != Entity.Null)
                 {
-                    utilSystem.EntityManager.RemoveComponent<Disabled>(currentCharacterEntity);
+                    utilSystem.EntityManager.DestroyEntity(currentCharacterEntity);
+                    currentCharacterEntity = Entity.Null;
                 }
-
-                if (currentCharacter != null)
+                
+                if (utilSystem.HasSingleton<PlayerController>())
                 {
-                    if (currentCharacter == selectedCharacter)
-                    {
-                        return;
-                    }
-                    currentCharacter = null;
-                    if (currentCharacterEntity != Entity.Null)
-                    {
-                        utilSystem.EntityManager.DestroyEntity(currentCharacterEntity);
-                        currentCharacterEntity = Entity.Null;
-                    }
+                    var character = utilSystem.GetSingletonEntity<PlayerController>();
+                    utilSystem.EntityManager.DestroyEntity(character);
                 }
 
                 if (selectedCharacter != null)
                 {
                     characterNameLabel.text = selectedCharacter.Name;
-
-                    if (utilSystem.HasSingleton<PlayerController>())
-                    {
-                        var character = utilSystem.GetSingletonEntity<PlayerController>();
-                        utilSystem.EntityManager.DestroyEntity(character);
-                    }
-                    
-                    MainUI.CreateCharacter(utilSystem, selectedCharacter);  
+                    currentCharacterEntity = MainUI.CreateCharacter(utilSystem, selectedCharacter);  
                 }
             }));
         }
@@ -103,19 +87,19 @@ namespace Arena.Client.UI.MainMenu
             {
                 var em = gameLoop.World.EntityManager;
                 
-                if (em.Exists(currentCharacterEntity) == false)
+                if (em.Exists(currentCharacterEntity))
                 {
-                    return;
+                    em.DestroyEntity(currentCharacterEntity);
                 }
-
-                if (em.HasComponent<Disabled>(currentCharacterEntity) == false)
+                
+                var utilSystem = gameLoop.World.GetExistingSystemManaged<UtilitySystem>();
+                if (utilSystem.HasSingleton<PlayerController>())
                 {
-                    em.AddComponentData(currentCharacterEntity, new Disabled());
+                    var character = utilSystem.GetSingletonEntity<PlayerController>();
+                    utilSystem.EntityManager.DestroyEntity(character);
                 }
-
-                var animation = em.GetComponentData<CharacterAnimation>(currentCharacterEntity);
-
-                gameLoop.World.EntityManager.SetComponentData(animation.AnimatorEntity, LocalTransform.FromScale(0));
+                
+                currentCharacterEntity = Entity.Null;
             }));
         }
 

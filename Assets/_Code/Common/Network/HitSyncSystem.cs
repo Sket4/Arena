@@ -62,7 +62,7 @@ namespace Arena
                 return;
             }
 
-            var hitChunks = CreateArchetypeChunkArrayWithUpdateAllocator(hitsQuery);
+            var hitChunks = CreateArchetypeChunkArray(hitsQuery, Allocator.TempJob);
             var hitType = GetComponentTypeHandle<Hit>(true);
             var damageType = GetComponentTypeHandle<Damage>(true);
             var critStateType = GetComponentTypeHandle<CriticalHitState>(true);

@@ -130,6 +130,18 @@ namespace Arena.Client.UI
             }
         }
 
+        public bool EnablePreviewImage
+        {
+	        get
+	        {
+		        return preview.enabled;
+	        }
+	        set
+	        {
+		        preview.enabled = value;
+	        }
+        }
+
         public void ShowPreviewWithFading()
         {
 	        StartCoroutine(previewAnim());
@@ -510,6 +522,14 @@ namespace Arena.Client.UI
 					return;
 				}
 				iconImage.sprite = value;
+				if (iconImage.sprite == null)
+				{
+					iconImage.enabled = false;
+				}
+				else
+				{
+					iconImage.enabled = true;
+				}
 			}
 		}
 
@@ -753,9 +773,6 @@ namespace Arena.Client.UI
 			}
 			
 			Item = item;
-
-			RefreshIcon(manager);
-			
 			ItemName = manager.GetSharedComponentManaged<ItemName>(item).ToString();
 
 			ShowDamageModificator(false);

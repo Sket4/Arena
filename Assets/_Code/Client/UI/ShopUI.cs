@@ -7,6 +7,7 @@ using Arena.Items;
 using TzarGames.Common;
 using TzarGames.Common.UI;
 using TzarGames.GameCore;
+using TzarGames.GameCore.Items;
 using Unity.Collections;
 using Unity.Entities;
 using Unity.Mathematics;
@@ -406,8 +407,24 @@ namespace Arena.Client.UI
             var c = (Color)new Color32(color.r, color.g, color.b, 1);
             selectedColor = c;
             colorPicker.CurrentColor = c;
-            PreviewRenderGameWorldLauncher.Instance.ShowPreviewItemWithColor(item.ID, color);
-            shopItemInfo.ShowPreviewWithFading();
+
+            if (HasData<ActivatedItemAppearance>(currentSelectedItem.ItemPrefab))
+            {
+                shopItemInfo.ItemIcon = null;
+                shopItemInfo.EnablePreviewImage = true;
+                PreviewRenderGameWorldLauncher.Instance.ShowPreviewItemWithColor(item.ID, color);
+                shopItemInfo.ShowPreviewWithFading();    
+            }
+            else
+            {
+                shopItemInfo.EnablePreviewImage = false;
+                var icon = GetData<ItemIcon>(currentSelectedItem.ItemPrefab);
+                shopItemInfo.ItemIcon = null;
+                StartCoroutine(ItemIcon.LoadIcon(icon.Sprite, (result) =>
+                {
+                    shopItemInfo.ItemIcon = result;
+                }));
+            }
         }
 
         void updateItemExistance(in DynamicBuffer<InventoryElement> inventory)

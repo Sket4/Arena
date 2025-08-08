@@ -2,24 +2,37 @@
 %TAG !u! tag:unity3d.com,2011:
 --- !u!21 &2100000
 Material:
-  serializedVersion: 6
+  serializedVersion: 8
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_Name: NPC_Character_05_Hair
-  m_Shader: {fileID: 46, guid: 0000000000000000f000000000000000, type: 0}
-  m_ShaderKeywords: _ALPHATEST_ON _METALLICGLOSSMAP _NORMALMAP
+  m_Shader: {fileID: 4800000, guid: 0f6665d0c9aa760428a35dd4133f81af, type: 3}
+  m_Parent: {fileID: 0}
+  m_ModifiedSerializedProperties: 0
+  m_ValidKeywords:
+  - TG_SKINNING
+  - TG_USE_ALPHACLIP
+  - _BONECOUNT_ONE
+  m_InvalidKeywords:
+  - _ALPHATEST_ON
+  - _METALLICGLOSSMAP
+  - _NORMALMAP
   m_LightmapFlags: 4
   m_EnableInstancingVariants: 0
   m_DoubleSidedGI: 0
-  m_CustomRenderQueue: 2450
-  stringTagMap:
-    RenderType: TransparentCutout
+  m_CustomRenderQueue: -1
+  stringTagMap: {}
   disabledShaderPasses: []
+  m_LockedProperties: 
   m_SavedProperties:
     serializedVersion: 3
     m_TexEnvs:
+    - _BaseMap:
+        m_Texture: {fileID: 2800000, guid: a2d6c85fb101ced4b8c316bcd7331f18, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
     - _BumpMap:
         m_Texture: {fileID: 2800000, guid: 3e3d67a00377e6c419a3abceb6d4ed50, type: 3}
         m_Scale: {x: 1, y: 1}
@@ -40,12 +53,20 @@ Material:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
+    - _FadeMap:
+        m_Texture: {fileID: 2800000, guid: e012ffcacce2e504eb5bf2e214ec9043, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
     - _MainTex:
         m_Texture: {fileID: 2800000, guid: a2d6c85fb101ced4b8c316bcd7331f18, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _MetallicGlossMap:
         m_Texture: {fileID: 2800000, guid: 5ef159132420a1642a8e18d94d64bc9f, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _MetallicSmoothnessMap:
+        m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _OcclusionMap:
@@ -56,11 +77,16 @@ Material:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
+    m_Ints:
+    - _BoneCount: 0
     m_Floats:
+    - _AlphaClip: 1
     - _BumpScale: 1
+    - _Cull: 0
     - _Cutoff: 0.155
     - _DetailNormalMapScale: 1
     - _DstBlend: 0
+    - _Fading: 0
     - _GlossMapScale: 1
     - _Glossiness: 0.5
     - _GlossyReflections: 1
@@ -68,12 +94,19 @@ Material:
     - _Mode: 1
     - _OcclusionStrength: 1
     - _Parallax: 0.02
+    - _Smoothness: 0.131
     - _SmoothnessTextureChannel: 0
     - _SpecularHighlights: 1
     - _SrcBlend: 1
     - _UVSec: 0
+    - _UseSkinColor: 0
+    - _UseSkinning: 1
     - _ZWrite: 1
     m_Colors:
+    - _BaseColor: {r: 1, g: 1, b: 1, a: 1}
     - _Color: {r: 1, g: 1, b: 1, a: 1}
     - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
+    - _SkinColor: {r: 1, g: 1, b: 1, a: 1}
+    - _SkinningData: {r: 0, g: 1, b: 0, a: 0}
   m_BuildTextureStacks: []
+  m_AllowLocking: 1

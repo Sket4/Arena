@@ -94,9 +94,8 @@ namespace Arena
                 gameLoop.AddGameSystem<ActivateItemRequestSystem>(itemActivationGroup);
             }
             
-            gameLoop.AddPreSimGameSystemUnmanaged<WritePreviousTranslationSystem>();
+            
             gameLoop.AddPreSimGameSystem<ApplyXpSystem>();
-            gameLoop.AddPreSimGameSystem<SimpleMovementSystem>();
             gameLoop.AddPreSimGameSystem<LevelSystem>();
             
             if(isAuthoritative)
@@ -108,6 +107,8 @@ namespace Arena
                 gameLoop.AddPreSimGameSystem<TzarGames.GameCore.RVO.SimulatorSystem>();
             }
 
+            gameLoop.AddGameSystemUnmanaged<WritePreviousTranslationSystem>();
+            gameLoop.AddGameSystem<SimpleMovementSystem>();
             gameLoop.AddGameSystem<CharacteristicSystem>();
             gameLoop.AddGameSystem<SceneLoaderSystem>(gameLoop.World.GetExistingSystemManaged<InitializationSystemGroup>());
             gameLoop.AddGameSystem<ItemUsageSystem>();

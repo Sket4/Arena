@@ -375,12 +375,13 @@ namespace Arena.Client
                     var animation = SystemAPI.GetComponent<CharacterAnimation>(cameraData.Target);
 
                     LocalToWorld targetL2W;
+                    var targetEntity = animation.AnimatorEntity;
 
-                    if (SystemAPI.HasComponent<LocalToWorld>(animation.AnimatorEntity) == false)
+                    if (SystemAPI.HasComponent<LocalToWorld>(targetEntity) == false)
                     {
                         return;
                     }
-                    targetL2W = SystemAPI.GetComponent<LocalToWorld>(animation.AnimatorEntity);
+                    targetL2W = SystemAPI.GetComponent<LocalToWorld>(targetEntity);
 
                     var viewDirection = SystemAPI.GetComponent<ViewDirection>(cameraData.Target);
                     var input = SystemAPI.GetComponent<PlayerInput>(cameraData.Target);

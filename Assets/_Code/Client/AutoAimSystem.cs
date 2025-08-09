@@ -12,7 +12,6 @@ namespace Arena.Client
     [DisableAutoCreation]
     [RequireMatchingQueriesForUpdate]
     [UpdateAfter(typeof(AbilitySystem))]
-    [UpdateBefore(typeof(SimpleMovementSystem))]
     public partial class AutoAimSystem : GameSystemBase
     {
         private EntityQuery targetsQuery;

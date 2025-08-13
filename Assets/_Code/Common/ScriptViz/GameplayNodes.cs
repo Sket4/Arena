@@ -247,7 +247,14 @@ namespace Arena.ScriptViz
                 {
                     try
                     {
-                        return $"Скрыть '{Message.GetLocalizedString()}'";
+                        if (Message.IsEmpty)
+                        {
+                            return $"Скрыть сообщение {OptionalID}'";   
+                        }
+                        else
+                        {
+                            return $"Скрыть '{Message.GetLocalizedString()}'";    
+                        }
                     }
                     catch (Exception ex)
                     {

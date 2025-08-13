@@ -71,9 +71,8 @@ namespace Arena.Server
     }
 
     [DisableAutoCreation]
-    [UpdateAfter(typeof(ScriptVizSystem))]
+    [UpdateAfter(typeof(UpdateLinkedTransformsSystem))]
     [UpdateBefore(typeof(MessageDispatherCleanSystem))]
-    [UpdateBefore(typeof(AnimationCommandBufferSystem))]
     public partial class ArenaMatchSystem : MatchBaseSystem, IServerArenaCommands, IRpcProcessor
     {
         public static readonly Message MatchFinishedMessage = Message.CreateFromString("match_finished");

@@ -224,10 +224,10 @@ namespace Arena
                 CameraTexture = null;
             }
 
-            if (entityManager.Equals(default) == false && entityManager.Exists(mapEntity))
-            {
-                entityManager.DestroyEntity(mapEntity);
-            }
+            // if (entityManager.Equals(default) == false && entityManager.Exists(mapEntity))
+            // {
+            //     entityManager.DestroyEntity(mapEntity);
+            // }
         }
     }
 }

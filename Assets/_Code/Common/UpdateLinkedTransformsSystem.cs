@@ -9,7 +9,6 @@ using UnityEngine;
 namespace Arena
 {
     [UpdateAfter(typeof(TransformSystemGroup))]
-    [UpdateBefore(typeof(GameCommandBufferSystem))]
     [DisableAutoCreation]
     [BurstCompile]
     public partial struct UpdateLinkedTransformsSystem : ISystem
@@ -101,16 +100,16 @@ namespace Arena
                 return;
             }
             Debug.Log("Обновление UpdateLinkedTransforms");
-            
-            var cmdSingleton = SystemAPI.GetSingleton<GameCommandBufferSystem.Singleton>();
-            
-            var commands = cmdSingleton.CreateCommandBuffer(state.WorldUnmanaged).AsParallelWriter();
-            
+
+            using var commands = new EntityCommandBuffer(Allocator.TempJob);
             
             updateJob.UpdateState(ref state);
-            updateJob.Commands = commands;
+            updateJob.Commands = commands.AsParallelWriter();
             
             state.Dependency = updateJob.ScheduleParallel(query, state.Dependency);
+            state.Dependency.Complete();
+            
+            commands.Playback(state.EntityManager);
         }
     }
 }

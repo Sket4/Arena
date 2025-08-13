@@ -13,7 +13,7 @@ OcclusionCullingSettings:
 --- !u!104 &2
 RenderSettings:
   m_ObjectHideFlags: 0
-  serializedVersion: 9
+  serializedVersion: 10
   m_Fog: 1
   m_FogColor: {r: 0.5, g: 0.5, b: 0.5, a: 1}
   m_FogMode: 1
@@ -42,8 +42,8 @@ RenderSettings:
 --- !u!157 &3
 LightmapSettings:
   m_ObjectHideFlags: 0
-  serializedVersion: 12
-  m_GIWorkflowMode: 1
+  serializedVersion: 13
+  m_BakeOnSceneLoad: 0
   m_GISettings:
     serializedVersion: 2
     m_BounceScale: 1
@@ -66,9 +66,6 @@ LightmapSettings:
     m_LightmapParameters: {fileID: 0}
     m_LightmapsBakeMode: 1
     m_TextureCompression: 1
-    m_FinalGather: 0
-    m_FinalGatherFiltering: 1
-    m_FinalGatherRayCount: 256
     m_ReflectionCompression: 2
     m_MixedBakeMode: 2
     m_BakeBackend: 1
@@ -446,7 +443,7 @@ MonoBehaviour:
               y: 1129927271
               z: 3348715173
               w: 2498817701
-        Position: {x: 628, y: 477.3333}
+        Position: {x: 628, y: 477.33334}
         output:
           ID:
             Value:
@@ -488,7 +485,7 @@ MonoBehaviour:
               y: 1150117751
               z: 1731136435
               w: 3794089868
-        Position: {x: 882, y: 477.3333}
+        Position: {x: 882, y: 477.33334}
         input:
           ID:
             Value:
@@ -552,7 +549,7 @@ MonoBehaviour:
               y: 1235451231
               z: 323300507
               w: 45289638
-        Position: {x: 1272.6666, y: 477.3333}
+        Position: {x: 1272.6666, y: 477.33334}
         input:
           ID:
             Value:
@@ -616,7 +613,7 @@ MonoBehaviour:
               y: 1184341933
               z: 330157212
               w: 2599808028
-        Position: {x: 1091.3334, y: 477.3333}
+        Position: {x: 1091.3334, y: 477.33334}
         input:
           ID:
             Value:
@@ -726,7 +723,7 @@ MonoBehaviour:
               y: 1291732138
               z: 2054605996
               w: 2797153429
-        Position: {x: 628, y: 727.3333}
+        Position: {x: 628, y: 727.3334}
         output:
           ID:
             Value:
@@ -754,7 +751,7 @@ MonoBehaviour:
               y: 1248315691
               z: 1859103163
               w: 2205558971
-        Position: {x: 1226, y: 727.3333}
+        Position: {x: 1226, y: 727.3334}
         input:
           ID:
             Value:
@@ -818,7 +815,7 @@ MonoBehaviour:
               y: 1282126251
               z: 1795134633
               w: 3804546353
-        Position: {x: 1506.6666, y: 727.3333}
+        Position: {x: 1506.6666, y: 727.3334}
         input:
           ID:
             Value:
@@ -886,16 +883,16 @@ MonoBehaviour:
           ConnectedSocketIDs:
           - Value:
               Value:
-                x: 3078273824
-                y: 1241888939
-                z: 1031267479
-                w: 2034503866
-          - Value:
-              Value:
                 x: 593544330
                 y: 1253401406
                 z: 929209781
                 w: 3481709343
+          - Value:
+              Value:
+                x: 3078273824
+                y: 1241888939
+                z: 1031267479
+                w: 2034503866
           Value: 0
     - rid: 5272189481285321131
       type: {class: SetIntVariableNode, ns: TzarGames.GameCore.ScriptViz.Graph, asm: TzarGames.GameCore}
@@ -907,7 +904,7 @@ MonoBehaviour:
               y: 1162579743
               z: 2671890601
               w: 711160266
-        Position: {x: 1705.3334, y: 703.3333}
+        Position: {x: 1705.3334, y: 703.3334}
         input:
           ID:
             Value:
@@ -1068,7 +1065,7 @@ MonoBehaviour:
               y: 1122014014
               z: 1127597978
               w: 3194092383
-        Position: {x: 1974, y: 703.3333}
+        Position: {x: 1974, y: 703.3334}
         input:
           ID:
             Value:
@@ -1415,7 +1412,7 @@ MonoBehaviour:
               y: 1115077623
               z: 969161128
               w: 3676851929
-        Position: {x: 1506.6666, y: 461.33334}
+        Position: {x: 1506.6666, y: 461.3333}
         input:
           ID:
             Value:
@@ -1462,7 +1459,7 @@ MonoBehaviour:
               y: 1239006544
               z: 3639869097
               w: 2646414059
-        Position: {x: 897.3334, y: 727.3333}
+        Position: {x: 897.3334, y: 727.3334}
         input:
           ID:
             Value:
@@ -1706,6 +1703,16 @@ MonoBehaviour:
                 z: 2597136027
                 w: 1341561911
           ConnectedSocketIDs: []
+        MessageEntityOutSocket:
+          ID:
+            Value:
+              Value:
+                x: 1438759276
+                y: 1219783198
+                z: 138496956
+                w: 3624399984
+          ConnectedSocketIDs: []
+          AuthoringValue: {fileID: 0}
         OptionalID: quest
         Message:
           m_TableReference:
@@ -1716,6 +1723,7 @@ MonoBehaviour:
           m_FallbackState: 0
           m_WaitForCompletion: 0
           m_LocalVariables: []
+        ShowAlert: 1
     - rid: 5815056591846113320
       type: {class: ShowMessageNode, ns: Arena.ScriptViz, asm: Arena.Common}
       data:
@@ -1751,6 +1759,16 @@ MonoBehaviour:
                 z: 4238792578
                 w: 1229924365
           ConnectedSocketIDs: []
+        MessageEntityOutSocket:
+          ID:
+            Value:
+              Value:
+                x: 752097971
+                y: 1179894638
+                z: 1233477777
+                w: 2690840670
+          ConnectedSocketIDs: []
+          AuthoringValue: {fileID: 0}
         OptionalID: quest
         Message:
           m_TableReference:
@@ -1761,6 +1779,7 @@ MonoBehaviour:
           m_FallbackState: 0
           m_WaitForCompletion: 0
           m_LocalVariables: []
+        ShowAlert: 1
     - rid: 5815056591846113412
       type: {class: AddIntCommandNode, ns: TzarGames.GameCore.ScriptViz.Graph, asm: TzarGames.GameCore}
       data:
@@ -2019,9 +2038,8 @@ Light:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 528115827}
   m_Enabled: 1
-  serializedVersion: 10
+  serializedVersion: 11
   m_Type: 1
-  m_Shape: 0
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_Intensity: 1
   m_Range: 10
@@ -2071,8 +2089,12 @@ Light:
   m_BoundingSphereOverride: {x: 0, y: 0, z: 0, w: 0}
   m_UseBoundingSphereOverride: 0
   m_UseViewFrustumForShadowCasterCull: 1
+  m_ForceVisible: 0
   m_ShadowRadius: 0
   m_ShadowAngle: 0
+  m_LightUnit: 1
+  m_LuxAtDistance: 1
+  m_EnableSpotReflector: 1
 --- !u!4 &528115830
 Transform:
   m_ObjectHideFlags: 0
@@ -2758,6 +2780,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 35e95dc5ff2b64380880dd7ac5922847, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  m_SerializedVersion: 0
   m_Size: {x: 147.2, y: 8.8, z: 223.4}
   m_Center: {x: 0, y: 1, z: 0}
   m_Area: 1

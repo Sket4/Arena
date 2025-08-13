@@ -296,6 +296,7 @@ namespace Arena.Client.UI
                 var itemEntity = LastSelected.ItemEntity;
 
                 itemInfoContainer.gameObject.SetActive(true);
+                itemInfo.RefreshIcon(EntityManager);
                 itemInfo.UpdateData(itemEntity, GetData<Level>().Value, EntityManager);
 
                 wearButton.gameObject.SetActive(HasData<ActivatedState>(itemEntity) && GetData<ActivatedState>(itemEntity).Activated == false);
